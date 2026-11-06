@@ -53,7 +53,8 @@ tests = [
     'test_night_mode_feedback.py',
     'test_compound_etymology_display.py',
     'test_mnemonic_display.py',
-    'test_night_mode_comprehensive.py'
+    'test_night_mode_comprehensive.py',
+    'test_native_mongolian_replacements.py'
 ]
 
 for t in tests:

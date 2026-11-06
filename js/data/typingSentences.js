@@ -1990,10 +1990,10 @@ export const initialTypingSentences = [
   "level": "口述試験対策",
   "category": "interview_prep",
   "categoryLabel": "口述試験: 自己紹介（Өөрийнхөө тухай）",
-  "textMn": "Би их сургуульд криминологи сурсан. Нийгмийн асуудлыг сонирхдог.",
+  "textMn": "Би их сургуульд гэмт хэрэг судлал сурсан. Нийгмийн асуудлыг сонирхдог.",
   "textJa": "大学で犯罪学を学びました。社会問題に関心があります。",
-  "romaji": "Bi ikh surguulid kriminologi sursan. Niigmiin asuudlyg sonirkhdog.",
-  "explanation": "専攻分野「криминологи（犯罪学）」と関心「нийгмийн асуудлыг сонирхдог（社会問題に興味がある）」。",
+  "romaji": "Bi ikh surguulid gemt khereg sudlal sursan. Niigmiin asuudlyg sonirkhdog.",
+  "explanation": "専攻分野「гэмт хэрэг судлал（犯罪学：固有モンゴル語）」と関心「нийгмийн асуудлыг сонирхдог（社会問題に興味がある）」。",
   "glossary": {
     "сурсан": {
       "dictForm": "сурах",

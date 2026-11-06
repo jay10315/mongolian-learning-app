@@ -14,7 +14,7 @@ class TestInterviewMasterFeature(unittest.TestCase):
 
         # Check personalized details
         self.assertIn("Кахо", content)
-        self.assertIn("криминологи", content)
+        self.assertIn("гэмт хэрэг судлал", content)
         self.assertIn("таван хүнтэй", content)
         self.assertIn("ганцаараа амьдардаг", content)
         self.assertIn("сенбэй", content)
