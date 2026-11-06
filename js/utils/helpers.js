@@ -1236,6 +1236,220 @@ if (typeof window !== 'undefined') {
   window.getWordIllustrationHTML = getWordIllustrationHTML;
 }
 
+/**
+ * 4択テスト用 全選択肢の単語詳細解説アコーディオン生成
+ * 終わった後の結果画面や各問題で、出題された4つの選択肢すべてについて
+ * イラスト、品詞、日本語訳、語幹、単語の成り立ち、語呂合わせ、例文をタップ展開可能にする
+ */
+export function renderChoiceExplanationsHTML(choices, options = {}) {
+  if (!choices || !Array.isArray(choices) || choices.length === 0) return '';
+
+  const expectedAnswer = (options.expectedAnswer || '').toLowerCase().trim();
+  const userAnswer = (options.userAnswer || '').toLowerCase().trim();
+  const title = options.title || '選択肢に出た単語の全解説を見る（タップで開閉）';
+
+  let vocabList = [];
+  try {
+    if (typeof StorageService !== 'undefined' && StorageService.getVocabulary) {
+      vocabList = StorageService.getVocabulary();
+    }
+  } catch (_) {}
+
+  const choiceCardsHTML = choices.map((rawChoice, idx) => {
+    let wordObj = null;
+
+    if (rawChoice && typeof rawChoice === 'object') {
+      if (rawChoice.word && typeof rawChoice.word === 'object') {
+        wordObj = { ...rawChoice.word };
+      } else if (rawChoice.id && (!rawChoice.mongolian && !rawChoice.dictForm)) {
+        const found = vocabList.find(v => String(v.id) === String(rawChoice.id));
+        if (found) {
+          wordObj = { ...found, ...rawChoice };
+        } else {
+          wordObj = { ...rawChoice };
+        }
+      } else {
+        wordObj = { ...rawChoice };
+      }
+
+      // If text property exists and mongolian or japanese is missing
+      if (wordObj && wordObj.text && (!wordObj.mongolian || !wordObj.japanese)) {
+        const clean = wordObj.text.toLowerCase().trim();
+        const found = vocabList.find(v => 
+          (v.mongolian && v.mongolian.toLowerCase().trim() === clean) ||
+          (v.dictForm && v.dictForm.toLowerCase().trim() === clean) ||
+          (v.japanese && v.japanese.toLowerCase().trim() === clean)
+        );
+        if (found) {
+          wordObj = { ...found, ...wordObj };
+        } else if (typeof findWordInDictionary === 'function') {
+          const dictFound = findWordInDictionary(clean);
+          if (dictFound) {
+            wordObj = {
+              mongolian: dictFound.dictForm || clean,
+              dictForm: dictFound.dictForm || clean,
+              japanese: dictFound.meaning,
+              pos: dictFound.pos,
+              pronunciation: dictFound.pron,
+              derivation: dictFound.derivation,
+              ...wordObj
+            };
+          }
+        }
+        if (!wordObj.mongolian && !wordObj.dictForm && !wordObj.japanese) {
+          if (wordObj.isCyrillic) {
+            wordObj.mongolian = wordObj.text;
+          } else {
+            wordObj.japanese = wordObj.text;
+          }
+        }
+      }
+    } else if (typeof rawChoice === 'string') {
+      const clean = rawChoice.toLowerCase().trim();
+      wordObj = vocabList.find(v => 
+        (v.mongolian && v.mongolian.toLowerCase().trim() === clean) ||
+        (v.dictForm && v.dictForm.toLowerCase().trim() === clean) ||
+        (v.japanese && v.japanese.toLowerCase().trim() === clean)
+      );
+      if (!wordObj && typeof findWordInDictionary === 'function') {
+        const found = findWordInDictionary(clean);
+        if (found) {
+          wordObj = {
+            mongolian: found.dictForm || clean,
+            dictForm: found.dictForm || clean,
+            japanese: found.meaning,
+            pos: found.pos,
+            pronunciation: found.pron,
+            derivation: found.derivation
+          };
+        }
+      }
+      if (!wordObj) {
+        wordObj = { mongolian: rawChoice, dictForm: rawChoice, japanese: '' };
+      }
+    }
+
+    if (!wordObj) return '';
+
+    const mn = (wordObj.dictForm || wordObj.mongolian || '').trim();
+    const ja = (wordObj.japanese || wordObj.meaning || wordObj.baseMeaning || '').trim();
+    const mnLower = mn.toLowerCase();
+    const jaLower = ja.toLowerCase();
+
+    // 正解・不正解・ユーザー選択の判定
+    let isChoiceCorrect = false;
+    if (expectedAnswer) {
+      isChoiceCorrect = (mnLower === expectedAnswer || jaLower === expectedAnswer || (wordObj.mongolian && wordObj.mongolian.toLowerCase() === expectedAnswer));
+    }
+    let isChoiceUserPicked = false;
+    if (userAnswer) {
+      isChoiceUserPicked = (mnLower === userAnswer || jaLower === userAnswer || (wordObj.mongolian && wordObj.mongolian.toLowerCase() === userAnswer));
+    }
+
+    const details = (typeof getWordGrammarDetails === 'function') ? getWordGrammarDetails(wordObj) : null;
+    const isV = details ? details.isVerb : false;
+    const pron = wordObj.pronunciation || '';
+    const isCaution = typeof isPronunciationCautionWord === 'function' ? isPronunciationCautionWord(wordObj) : false;
+
+    // 成り立ち＆語呂合わせ
+    const etymologyHTML = (typeof getWordEtymologyHTML === 'function') 
+      ? getWordEtymologyHTML(wordObj, wordObj.mongolian || mn) 
+      : '';
+    const mnemonicHTML = (typeof getWordMnemonicHTML === 'function') 
+      ? getWordMnemonicHTML(wordObj, wordObj.mongolian || mn) 
+      : '';
+    const illustrationHTML = (typeof getWordIllustrationHTML === 'function')
+      ? getWordIllustrationHTML(wordObj, { size: 'sm' })
+      : '';
+
+    return `
+      <div class="p-3 rounded-xl border ${isChoiceCorrect ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800' : (isChoiceUserPicked ? 'bg-rose-50/80 dark:bg-rose-950/40 border-rose-300 dark:border-rose-800' : 'bg-slate-50/90 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700/80')} space-y-2 transition-all">
+        <div class="flex items-start justify-between gap-2 flex-wrap">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-black flex items-center justify-center shrink-0">
+              ${idx + 1}
+            </span>
+            ${isChoiceCorrect ? `
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200 font-black text-[10px] border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
+                <span>⭕</span> <span>正解</span>
+              </span>
+            ` : `
+              <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold text-[10px]">
+                選択肢
+              </span>
+            `}
+            ${isChoiceUserPicked ? `
+              <span class="px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/80 text-rose-800 dark:text-rose-200 font-black text-[10px] border border-rose-300 dark:border-rose-700 flex items-center gap-1">
+                <span>👉</span> <span>あなたの選択</span>
+              </span>
+            ` : ''}
+          </div>
+
+          ${mn ? `
+            <button type="button" class="btn-speak-choice-word p-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-slate-700 text-slate-500 hover:text-emerald-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer text-xs flex items-center gap-1" data-word="${wordObj.mongolian || mn}" title="発音を聴く">
+              <span>🔊</span> <span class="text-[10px] font-bold">発音</span>
+            </button>
+          ` : ''}
+        </div>
+
+        <div class="flex items-center gap-3">
+          ${illustrationHTML}
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-base font-black text-slate-900 dark:text-white cyrillic-text">${mn}</span>
+              ${pron && isCaution ? `<span class="text-[11px] font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-200 dark:border-amber-800">⚠️ [ ${pron} ]</span>` : ''}
+            </div>
+            <div class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+              ${ja}
+              <span class="text-[10px] text-slate-400 dark:text-slate-400 font-normal ml-1">【${wordObj.pos || '名詞'}】</span>
+            </div>
+          </div>
+        </div>
+
+        ${isV ? `
+          <div class="p-2 rounded-lg bg-white/90 dark:bg-slate-950/70 border border-emerald-100 dark:border-emerald-900/40 text-[11px] text-emerald-950 dark:text-emerald-200 grid grid-cols-2 gap-2">
+            <div><span class="text-slate-400 dark:text-slate-400">📖 辞書形:</span> <strong class="cyrillic-text">${details.dictForm || mn}</strong></div>
+            <div><span class="text-slate-400 dark:text-slate-400">🌱 語幹:</span> <strong class="cyrillic-text text-emerald-700 dark:text-emerald-400">${details.root || '-'}</strong></div>
+          </div>
+        ` : ''}
+
+        ${etymologyHTML}
+        ${mnemonicHTML}
+
+        ${wordObj.exampleMn ? `
+          <div class="p-2 bg-white/90 dark:bg-slate-950/80 rounded-lg border border-slate-100 dark:border-slate-800 text-[11px] space-y-0.5">
+            <div class="font-bold text-slate-700 dark:text-slate-200 cyrillic-text">${wordObj.exampleMn}</div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400">${wordObj.exampleJa || ''}</div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).filter(Boolean).join('');
+
+  if (!choiceCardsHTML) return '';
+
+  return `
+    <details class="choice-explanations-accordion group mt-2.5 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-slate-50/70 dark:bg-slate-900/60 shadow-2xs transition-all">
+      <summary class="flex items-center justify-between p-2.5 sm:p-3 cursor-pointer select-none text-xs font-extrabold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+        <span class="flex items-center gap-2">
+          <span class="text-base">🔍</span>
+          <span class="text-slate-800 dark:text-slate-100">${title}</span>
+          <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">${choices.length}語解説</span>
+        </span>
+        <span class="text-xs text-slate-400 dark:text-slate-500 font-mono group-open:rotate-180 transition-transform duration-200">▼</span>
+      </summary>
+
+      <div class="p-3 border-t border-slate-200 dark:border-slate-700 space-y-2.5 bg-white dark:bg-slate-800/95">
+        ${choiceCardsHTML}
+      </div>
+    </details>
+  `;
+}
+
+if (typeof window !== 'undefined') {
+  window.renderChoiceExplanationsHTML = renderChoiceExplanationsHTML;
+}
+
 
 
 

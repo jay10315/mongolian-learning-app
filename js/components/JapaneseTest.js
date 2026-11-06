@@ -361,6 +361,12 @@ export class JapaneseTestComponent {
                 isVerbQuestion: isV
               })}
 
+              <!-- 4択の場合：選択肢に出た単語の全解説アコーディオン -->
+              ${(typeof renderChoiceExplanationsHTML === 'function' && this.state.choices && this.state.choices.length > 0) ? renderChoiceExplanationsHTML(this.state.choices, {
+                expectedAnswer: q.japanese,
+                userAnswer: this.state.userAnswer
+              }) : ''}
+
               <!-- 音声再生ボタン -->
               <div class="mt-3 flex gap-2">
                 <button type="button" id="btn-speak-ja-feedback" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 inline-flex items-center gap-1 shadow-2xs">
@@ -423,6 +429,16 @@ export class JapaneseTestComponent {
     }
 
     // 音声再生（解説）
+    this.container.querySelectorAll('.btn-speak-choice-word').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const word = btn.getAttribute('data-word');
+        if (word && typeof SpeechService !== 'undefined') {
+          SpeechService.speakMongolian(word);
+        }
+      });
+    });
+
     const speakFBtn = this.container.querySelector('#btn-speak-ja-feedback');
     if (speakFBtn) {
       speakFBtn.addEventListener('click', () => {
@@ -532,7 +548,8 @@ export class JapaneseTestComponent {
       question: q,
       userAnswer,
       isCorrect,
-      expectedAnswer: q.japanese
+      expectedAnswer: q.japanese,
+      choices: this.state.choices ? [...this.state.choices] : null
     });
 
     this.renderTesting();
@@ -676,10 +693,16 @@ export class JapaneseTestComponent {
                     `}
                     ${r.question.root ? `<div class="text-[11px] text-slate-400">語幹: ${r.question.root}</div>` : ''}
                   </div>
-                  <button type="button" class="btn-speak-ja-result text-slate-400 hover:text-emerald-700 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer" data-word="${r.question.mongolian}" title="発音を聞く">
+                  <button type="button" class="btn-speak-ja-result text-slate-400 hover:text-emerald-700 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer shrink-0" data-word="${r.question.mongolian}" title="発音を聞く">
                     🔊
                   </button>
                 </div>
+
+                <!-- 4択問題の場合の選択肢全解説アコーディオン -->
+                ${(typeof renderChoiceExplanationsHTML === 'function' && r.choices && r.choices.length > 0) ? renderChoiceExplanationsHTML(r.choices, {
+                  expectedAnswer: r.expectedAnswer || r.question.japanese,
+                  userAnswer: r.userAnswer
+                }) : ''}
               `).join('')}
             </div>
           `}
@@ -696,7 +719,7 @@ export class JapaneseTestComponent {
     });
 
     // 音声再生
-    this.container.querySelectorAll('.btn-speak-ja-result').forEach(btn => {
+    this.container.querySelectorAll('.btn-speak-ja-result, .btn-speak-choice-word').forEach(btn => {
       btn.addEventListener('click', () => {
         const word = btn.getAttribute('data-word');
         if (word) SpeechService.speakMongolian(word);

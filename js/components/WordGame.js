@@ -1893,7 +1893,8 @@ export class WordGameComponent {
         question: q,
         userAnswer: userText || correctDisplay,
         correctAnswer: correctDisplay,
-        responseSeconds
+        responseSeconds,
+        choices: this.state.choices ? [...this.state.choices] : null
       });
 
       this.renderPlaying();
@@ -1926,7 +1927,8 @@ export class WordGameComponent {
         genre,
         question: q,
         userAnswer: userText || '(選択肢の誤答)',
-        correctAnswer: correctDisplay
+        correctAnswer: correctDisplay,
+        choices: this.state.choices ? [...this.state.choices] : null
       });
 
       // モード別ペナルティ
@@ -2204,10 +2206,16 @@ export class WordGameComponent {
                         <div class="text-slate-700 font-medium">正解: <span class="font-bold text-slate-900">${item.japanese}</span></div>
                         ${!isCorr ? `<div class="text-slate-500">あなたの回答: <span class="line-through text-rose-600">${m.userAnswer}</span></div>` : ''}
                       </div>
-                      <button type="button" class="btn-speak-game-result text-slate-400 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-50 cursor-pointer" data-word="${item.mongolian}" title="発音を聞く">
+                      <button type="button" class="btn-speak-game-result text-slate-400 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-50 cursor-pointer shrink-0" data-word="${item.mongolian}" title="発音を聞く">
                         🔊
                       </button>
                     </div>
+
+                    <!-- 選択肢全解説アコーディオン -->
+                    ${(typeof renderChoiceExplanationsHTML === 'function' && m.choices && m.choices.length > 0) ? renderChoiceExplanationsHTML(m.choices, {
+                      expectedAnswer: m.correctAnswer,
+                      userAnswer: m.userAnswer
+                    }) : ''}
                   `;
                 }
               }).join('')}
@@ -2316,7 +2324,7 @@ export class WordGameComponent {
     });
 
     // 解答一覧の単語発音
-    this.container.querySelectorAll('.btn-speak-game-result, .btn-speak-mistake').forEach(btn => {
+    this.container.querySelectorAll('.btn-speak-game-result, .btn-speak-mistake, .btn-speak-choice-word').forEach(btn => {
       btn.addEventListener('click', () => {
         const word = btn.getAttribute('data-word');
         if (word) SpeechService.speakMongolian(word);

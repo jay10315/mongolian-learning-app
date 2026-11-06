@@ -56,7 +56,8 @@ tests = [
     'test_night_mode_comprehensive.py',
     'test_native_mongolian_replacements.py',
     'test_interview_typing_drill.py',
-    'test_word_illustrations_feature.py'
+    'test_word_illustrations_feature.py',
+    'test_choice_explanations_feature.py'
 ]
 
 for t in tests:

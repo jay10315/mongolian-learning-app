@@ -591,6 +591,7 @@ export class GenreWordMasterComponent {
     this.state.gameMaxCombo = 0;
     this.state.gameCorrectCount = 0;
     this.state.mistakes = [];
+    this.state.gameResults = [];
     this.state.view = 'game';
 
     this.loadGameQuestion();
@@ -763,6 +764,12 @@ export class GenreWordMasterComponent {
                 ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(currentQuestion, currentQuestion.mongolian) : ''}
                 ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(currentQuestion, currentQuestion.mongolian) : ''}
               </div>
+
+              <!-- 選択肢に出た単語の全解説アコーディオン -->
+              ${(typeof renderChoiceExplanationsHTML === 'function' && gameChoices && gameChoices.length > 0) ? renderChoiceExplanationsHTML(gameChoices.map(c => c.word), {
+                expectedAnswer: isMnToJa ? currentQuestion.japanese : currentQuestion.mongolian,
+                userAnswer: selectedChoice && selectedChoice.word ? (isMnToJa ? selectedChoice.word.japanese : selectedChoice.word.mongolian) : ''
+              }) : ''}
             </div>
           ` : ''}
 
@@ -807,6 +814,16 @@ export class GenreWordMasterComponent {
         if (this.state.hasAnswered) return;
         const idx = parseInt(btn.dataset.choiceIndex, 10);
         this.submitAnswer(idx);
+      });
+    });
+
+    this.container.querySelectorAll('.btn-speak-choice-word').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const word = btn.getAttribute('data-word');
+        if (word && typeof SpeechService !== 'undefined') {
+          SpeechService.speak(word, { rate: 0.9 });
+        }
       });
     });
 
@@ -862,6 +879,15 @@ export class GenreWordMasterComponent {
 
       this.state.mistakes.push(this.state.currentQuestion);
     }
+
+    if (!this.state.gameResults) this.state.gameResults = [];
+    this.state.gameResults.push({
+      question: this.state.currentQuestion,
+      questionType: this.state.questionType,
+      choices: this.state.gameChoices ? this.state.gameChoices.map(c => c.word) : [],
+      selectedChoice: chosen ? chosen.word : null,
+      isCorrect: isCorrect
+    });
 
     this.renderUI();
   }
@@ -942,6 +968,53 @@ export class GenreWordMasterComponent {
             </div>
           `}
 
+          <!-- 出題問題と選択肢の全解説アコーディオンリスト -->
+          ${(this.state.gameResults && this.state.gameResults.length > 0) ? `
+            <div class="text-left space-y-3 pt-2">
+              <h4 class="text-xs font-black text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                <span>📋</span> 出題問題と選択肢の全解説 (${this.state.gameResults.length}問):
+              </h4>
+              <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+                ${this.state.gameResults.map((res, qIdx) => {
+                  const qWord = res.question;
+                  const isMnToJa = res.questionType === 'mn_to_ja';
+                  return `
+                    <div class="p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2 text-xs shadow-2xs">
+                      <div class="flex items-start justify-between gap-2">
+                        <div class="space-y-1">
+                          <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${res.isCorrect ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300'}">
+                              第${qIdx + 1}問: ${res.isCorrect ? '⭕ 正解' : '❌ 不正解'}
+                            </span>
+                            <span class="font-black text-slate-900 dark:text-white cyrillic-text text-sm">${qWord.mongolian}</span>
+                            ${qWord.pronunciation ? `<span class="text-[11px] text-amber-600 dark:text-amber-400 font-bold">[${qWord.pronunciation}]</span>` : ''}
+                          </div>
+                          <div class="text-slate-600 dark:text-slate-300 font-bold">
+                            意味: <span class="text-emerald-700 dark:text-emerald-400">${qWord.japanese}</span>
+                          </div>
+                          ${!res.isCorrect && res.selectedChoice ? `
+                            <div class="text-rose-600 dark:text-rose-400 font-bold text-[11px]">
+                              あなたの回答: <span class="line-through">${isMnToJa ? res.selectedChoice.japanese : res.selectedChoice.mongolian}</span>
+                            </div>
+                          ` : ''}
+                        </div>
+                        <button type="button" class="btn-speak-choice-word p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-emerald-700 dark:text-slate-300 cursor-pointer" data-word="${qWord.mongolian}" title="発音を聞く">
+                          🔊
+                        </button>
+                      </div>
+
+                      <!-- 4択の全解説アコーディオン -->
+                      ${(typeof renderChoiceExplanationsHTML === 'function' && res.choices && res.choices.length > 0) ? renderChoiceExplanationsHTML(res.choices, {
+                        expectedAnswer: isMnToJa ? qWord.japanese : qWord.mongolian,
+                        userAnswer: res.selectedChoice ? (isMnToJa ? res.selectedChoice.japanese : res.selectedChoice.mongolian) : ''
+                      }) : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          ` : ''}
+
           <!-- アクションボタン -->
           <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button type="button" id="btn-replay-genre-game" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black text-sm shadow-md active:scale-95 transition-all">
@@ -964,6 +1037,15 @@ export class GenreWordMasterComponent {
   }
 
   static bindResultEvents() {
+    this.container.querySelectorAll('.btn-speak-choice-word').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const word = btn.getAttribute('data-word');
+        if (word && typeof SpeechService !== 'undefined') {
+          SpeechService.speak(word, { rate: 0.9 });
+        }
+      });
+    });
     const replayBtn = this.container.querySelector('#btn-replay-genre-game');
     if (replayBtn) {
       replayBtn.addEventListener('click', () => {
