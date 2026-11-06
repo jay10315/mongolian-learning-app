@@ -1379,4 +1379,104 @@ export const wordFamilyData = {
       ]
     }
   ]
-};
+};,
+    {
+      id: "fam_oilgo",
+      root: "ойлго-",
+      meaning: "分かる、理解する、把握する",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "ойлгох", meaning: "理解する・分かる", suffix: "-х (動詞原形)", note: "物事や言葉の意味を把握する基本動詞" },
+        { word: "ойлголт", meaning: "理解・認識・概念", suffix: "-лт (名詞化)", note: "概念や理解の深さ" },
+        { word: "ойлгомжтой", meaning: "わかりやすい・明白な", suffix: "-мжтой (性質形容詞)", note: "説明がクリアで理解しやすいこと" },
+        { word: "ойлгомжгүй", meaning: "わかりにくい・意味不明な", suffix: "-мжгүй (欠如形容詞)", note: "難解で意味が通じないこと" },
+        { word: "ойлгуулах", meaning: "理解させる・分からせる", suffix: "-уулах (使役動詞)", note: "相手に意味を納得させること" }
+      ]
+    },
+    {
+      id: "fam_bod",
+      root: "бод-",
+      meaning: "思う、考える、計算する",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "бодох", meaning: "思う・考える", suffix: "-ох (動詞原形)", note: "思考する基本動詞" },
+        { word: "бодол", meaning: "考え・思い・思考", suffix: "-ол (名詞化)", note: "頭に浮かぶ意見や考え" },
+        { word: "бодлого", meaning: "政策・問題・配慮", suffix: "-лого (抽象名詞)", note: "国家の政策や数学の文章題" },
+        { word: "бодолтой", meaning: "思慮深い・配慮のある", suffix: "-лтой (属性形容詞)", note: "先々まで考えが及んでいる様子" },
+        { word: "бодлогогүй", meaning: "軽率な・無思慮な", suffix: "-логогүй (欠如形容詞)", note: "深く考えず軽はずみに行動すること" },
+        { word: "бодуулах", meaning: "考えさせる", suffix: "-уулах (使役動詞)", note: "物事を深く考察させること" }
+      ]
+    },
+    {
+      id: "fam_bol",
+      root: "бол-",
+      meaning: "なる、熟す、成就する、可能である",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "болох", meaning: "なる・よい・可能である", suffix: "-ох (動詞原形)", note: "状態の変化や許可を表す最頻出動詞" },
+        { word: "боломж", meaning: "可能性・チャンス・機会", suffix: "-омж (名詞化)", note: "実現可能な機会や条件" },
+        { word: "боломжтой", meaning: "可能な・見込みがある", suffix: "-мжтой (可能性形容詞)", note: "実行できる状態" },
+        { word: "боломжгүй", meaning: "不可能な・無理な", suffix: "-мжгүй (不可能形容詞)", note: "実現できない状態" },
+        { word: "болзоо", meaning: "約束・期日・デート", suffix: "-зоо (名詞化)", note: "日時を取り決める約束" },
+        { word: "бололтой", meaning: "おそらく〜のようだ", suffix: "-олтой (様態助詞)", note: "外見や状況からの推量" }
+      ]
+    },
+    {
+      id: "fam_bai",
+      root: "бай-",
+      meaning: "いる、ある、存在する",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "байх", meaning: "いる・ある・存在する", suffix: "-х (動詞原形)", note: "人や物の存在を表す土台動詞" },
+        { word: "байдал", meaning: "状況・様子・事態", suffix: "-дал (状態名詞)", note: "置かれている情勢や様子" },
+        { word: "байр", meaning: "住まい・アパート・位置", suffix: "-р (場所名詞)", note: "居住空間や建物の位置" },
+        { word: "байгаль", meaning: "自然・大自然・環境", suffix: "-галь (自然名詞)", note: "生きとし生ける大自然環境" },
+        { word: "байгууллага", meaning: "組織・機関・施設", suffix: "-гууллага (使役名詞)", note: "設立された公私機関" }
+      ]
+    },
+    {
+      id: "fam_khichee",
+      root: "хичээ-",
+      meaning: "努力する、励む、気をつける",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "хичээх", meaning: "努力する・励む", suffix: "-х (動詞原形)", note: "自らを奮い立たせる基本動詞" },
+        { word: "хичээл", meaning: "授業・勉強・課", suffix: "-л (名詞化)", note: "学校の授業や学び" },
+        { word: "хичээнгүй", meaning: "勤勉な・熱心な", suffix: "-нгүй (性格形容詞)", note: "真面目にコツコツ励む性質" },
+        { word: "хичээллэх", meaning: "授業を受ける・打ち込む", suffix: "-ллэх (反復動詞化)", note: "スポーツや勉強に打ち込む" }
+      ]
+    },
+    {
+      id: "fam_morood",
+      root: "мөрөөд-",
+      meaning: "夢見る、切望する",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "мөрөөдөх", meaning: "夢見る・切望する", suffix: "-өх (動詞原形)", note: "理想の未来を思い描く動詞" },
+        { word: "мөрөөдөл", meaning: "夢・理想・大志", suffix: "-өл (名詞化)", note: "心に抱く大きな志" },
+        { word: "мөрөөдөгч", meaning: "夢想家・ドリーマー", suffix: "-өгч (人名詞)", note: "夢を追い続ける人" }
+      ]
+    },
+    {
+      id: "fam_kharyaa",
+      root: "харьяа",
+      meaning: "所属、管轄、帰属",
+      pos: "名詞語幹",
+      derivatives: [
+        { word: "харьяат", meaning: "所属する人・国籍保持者", suffix: "-т (属性名詞)", note: "国籍や所属をもつ主体" },
+        { word: "харьяалал", meaning: "所属・管轄・帰属", suffix: "-лал (抽象名詞)", note: "官公庁や団体の管轄区分" },
+        { word: "харьяалагдах", meaning: "所属する・管轄下にある", suffix: "-лагдах (受動動詞化)", note: "特定の組織に帰属すること" }
+      ]
+    },
+    {
+      id: "fam_tsang",
+      root: "цанг-",
+      meaning: "喉が渇く、渇望する",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "цангах", meaning: "喉が渇く", suffix: "-ах (動詞原形)", note: "水が欲しくなる生理現象" },
+        { word: "цангаа", meaning: "渇き・喉の渇き", suffix: "-аа (状態名詞)", note: "喉の強い渇き" },
+        { word: "цангаах", meaning: "喉を渇かせる", suffix: "-аах (使役動詞)", note: "塩辛い物などが喉を渇かせること" }
+      ]
+    }
+
