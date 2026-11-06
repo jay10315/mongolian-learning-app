@@ -52,6 +52,7 @@ files_order = [
     'js/components/CultureQuiz.js',
     'js/components/WordFamilyQuiz.js',
     'js/components/PenguinExpedition.js',
+    'js/components/SpellingGame.js',
     'js/components/Flashcards.js',
     'js/components/ReviewNotebook.js',
     'js/components/MaterialManager.js',

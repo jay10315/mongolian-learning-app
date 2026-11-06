@@ -300,6 +300,30 @@ export class HomeComponent {
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
             
+            <!-- 満月のスペルゲーム（星空タイル並び替え ＆ 自力入力 ＆ ペンギンご飯フィーディング） -->
+            <div class="bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-indigo-900/30 rounded-xl p-5 border-2 border-amber-400 hover:border-amber-500 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between" data-target="spelling_game">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-yellow-300 to-amber-500 text-slate-950 flex items-center justify-center text-xl font-bold shadow-md animate-pulse">
+                    🌕
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 shadow-2xs flex items-center gap-1">
+                    <span>🐟</span> ご飯フィーディング新登場！
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-amber-700 transition-colors flex items-center gap-1.5">
+                  満月のスペルゲーム
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  星空の文字タイル並び替え ＆ 完全自力入力！正解すると美味しいお魚がペンギンのお口に飛び込んでモグモグ満腹フィーバー！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-between text-xs font-black text-amber-700">
+                <span class="flex items-center gap-1"><span>🐟</span> ペンギンにご飯をあげる</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- 単語ゲーム（新機能・スピードラン/サバイバル/コンボ/リラックス） -->
             <div class="bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-indigo-500/10 rounded-xl p-5 border-2 border-amber-400 hover:border-amber-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="word_game">
               <div>

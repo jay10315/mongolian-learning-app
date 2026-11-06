@@ -43,6 +43,7 @@ export class Navbar {
 
     const tabs = [
       { id: 'home', label: 'ホーム', icon: '🏠' },
+      { id: 'spelling_game', label: 'スペルゲーム', icon: '🌕' },
       { id: 'word_game', label: '単語ゲーム', icon: '🎮' },
       { id: 'word_test', label: '単語テスト', icon: '📝' },
       { id: 'japanese_test', label: '日本語訳テスト', icon: '🇯🇵' },

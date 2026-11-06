@@ -24,6 +24,7 @@ import { ShadowingDictationComponent } from './components/ShadowingDictationTest
 import { CultureComponent } from './components/CultureQuiz.js';
 import { WordFamilyComponent } from './components/WordFamilyQuiz.js';
 import { PenguinExpeditionComponent } from './components/PenguinExpedition.js';
+import { SpellingGameComponent } from './components/SpellingGame.js';
 
 class App {
   static currentTab = 'home';
@@ -143,6 +144,9 @@ class App {
         break;
       case 'expedition':
         PenguinExpeditionComponent.render(mainContainer, onNavigate);
+        break;
+      case 'spelling_game':
+        SpellingGameComponent.render(mainContainer, onNavigate);
         break;
       case 'flashcards':
         FlashcardsComponent.render(mainContainer, onNavigate);
