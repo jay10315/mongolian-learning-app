@@ -32252,7 +32252,7 @@ const wordFamilyData = {
       pos: "動詞語幹",
       derivatives: [
         { word: "хийх", meaning: "する・作る", suffix: "-х (動詞原形)", note: "日常のアクション全般" },
-        { word: "хичээл", meaning: "授業・勉学・努力", suffix: "派生名詞", note: "自らを励んで励行すること" },
+        { word: "хичээл", meaning: "授業・勉学・努力", suffix: "-чээл (勤勉・行為名詞)", note: "語幹 хий-（行う）に -чээл が付いて「自らを励むこと」＝授業・勉学" },
         { word: "хийц", meaning: "細工・作り・仕立て", suffix: "-ц (出来栄え名詞)", note: "革や銀細工の作り" },
         { word: "хийгдэх", meaning: "行われる・作られる", suffix: "-гдэх (受身動詞)", note: "イベントや製品が作られる" },
         { word: "хийлгэх", meaning: "させる・作らせる", suffix: "-лгэх (使役動詞)", note: "服を仕立ててもらう時など" }
@@ -32264,9 +32264,9 @@ const wordFamilyData = {
       meaning: "本、経典、教え",
       pos: "名詞語幹",
       derivatives: [
-        { word: "ном", meaning: "本・書籍", suffix: "語幹そのもの", note: "読書の基本" },
-        { word: "номын сан", meaning: "図書館・図書室", suffix: "+ сан (宝庫・集積)", note: "本が集まる場所" },
-        { word: "номын санч", meaning: "司書・図書館員", suffix: "+ ч (職業人)", note: "図書館で働く人" },
+        { word: "ном", meaning: "本・書籍", suffix: "（基本語幹）", note: "読書の基本" },
+        { word: "номын сан", meaning: "図書館・図書室", suffix: "-ын сан (属格＋宝庫・集積)", note: "本が集まる場所" },
+        { word: "номын санч", meaning: "司書・図書館員", suffix: "-ын санч (属格＋職業人)", note: "図書館で働く人" },
         { word: "номхон", meaning: "おとなしい・従順な", suffix: "-хон (性格形容詞)", note: "教えを守る温和な性質" }
       ]
     },
@@ -32276,9 +32276,9 @@ const wordFamilyData = {
       meaning: "家、家庭、住居",
       pos: "名詞語幹",
       derivatives: [
-        { word: "гэр", meaning: "ゲル・我が家", suffix: "語幹そのもの", note: "遊牧民の円形天幕" },
+        { word: "гэр", meaning: "ゲル・我が家", suffix: "（基本語幹）", note: "遊牧民の円形天幕" },
         { word: "гэрлэх", meaning: "結婚する", suffix: "-лэх (動詞化：家庭を持つ)", note: "共に家を築くこと" },
-        { word: "гэр бүл", meaning: "家族・家庭", suffix: "+ бүл (一門・集団)", note: "家庭を共にする家族" },
+        { word: "гэр бүл", meaning: "家族・家庭", suffix: "-бүл (一門・集団)", note: "家庭を共にする家族" },
         { word: "гэрийн", meaning: "家庭の・室内の", suffix: "-ийн (属格・形容詞化)", note: "家畜や宿題など" },
         { word: "гэртээ", meaning: "自宅に（自分の家へ）", suffix: "-тээ (与位格再帰)", note: "我が家に帰る" }
       ]
@@ -32289,7 +32289,7 @@ const wordFamilyData = {
       meaning: "言葉、言う、舌",
       pos: "名詞・動詞根",
       derivatives: [
-        { word: "хэл", meaning: "言語・言葉・舌", suffix: "語幹そのもの", note: "モンゴル語（Монгол хэл）" },
+        { word: "хэл", meaning: "言語・言葉・舌", suffix: "（基本語幹）", note: "モンゴル語（Монгол хэл）" },
         { word: "хэлэх", meaning: "言う・告げる", suffix: "-эх (動詞原形)", note: "言葉を発すること" },
         { word: "хэлэлцүүлэг", meaning: "討論・ディスカッション", suffix: "-элцүүлэг (相互使役名詞)", note: "互いに意見を交わすこと" },
         { word: "хэлэлцээр", meaning: "協定・合意・条約", suffix: "-элцээр (結果名詞)", note: "話し合いの結果" },
@@ -32353,7 +32353,7 @@ const wordFamilyData = {
       meaning: "命、息、生命",
       pos: "名詞語幹",
       derivatives: [
-        { word: "амь", meaning: "命・生命", suffix: "語幹そのもの", note: "かけがえのない命" },
+        { word: "амь", meaning: "命・生命", suffix: "（基本語幹）", note: "かけがえのない命" },
         { word: "амьдрах", meaning: "生きる・生活する・暮らす", suffix: "-драх (動詞化)", note: "日々を暮らすこと" },
         { word: "амьдрал", meaning: "人生・生活・命の営み", suffix: "-драл (名詞化)", note: "日々の営みや一生" },
         { word: "амьтан", meaning: "動物・生き物", suffix: "-тан (所有・具備者)", note: "命あるすべての生き物" },
@@ -32366,7 +32366,7 @@ const wordFamilyData = {
       meaning: "仕事、機能、働く",
       pos: "名詞・動詞根",
       derivatives: [
-        { word: "ажил", meaning: "仕事・タスク・職業", suffix: "語幹そのもの", note: "日々の務め" },
+        { word: "ажил", meaning: "仕事・タスク・職業", suffix: "（基本語幹）", note: "日々の務め" },
         { word: "ажиллах", meaning: "働く・機能する・作動する", suffix: "-лах (動詞化)", note: "会社で働く、機械が動く" },
         { word: "ажилтан", meaning: "従業員・スタッフ・職員", suffix: "-тан (従事者)", note: "働く人々" },
         { word: "ажиллагаа", meaning: "活動・オペレーション・作戦", suffix: "-лагаа (大規模行為)", note: "軍事作戦や救助活動" },
@@ -32394,7 +32394,7 @@ const wordFamilyData = {
         { word: "өгөх", meaning: "あげる・手渡す・贈る", suffix: "-өх (動詞原形)", note: "人に差し出す基本動詞" },
         { word: "өгөгдөл", meaning: "データ・与件・情報", suffix: "-гдөл (所与名詞)", note: "ITや数学のデータ" },
         { word: "өгөөж", meaning: "恵み・実り・リターン", suffix: "-өөж (結果名詞)", note: "大地の恵みや投資の成果" },
-        { word: "өгүүлбэр", meaning: "文・センテンス", suffix: "文法用語", note: "意味を伝える文章単位" }
+        { word: "өгүүлбэр", meaning: "文・センテンス", suffix: "-үүлбэр (使役・名詞化)", note: "語幹 өг-（与える・伝える）に -үүлбэр が付いて「意味を伝達する文章単位」＝文" }
       ]
     }
   ]
@@ -56101,9 +56101,14 @@ class WordFamilyComponent {
     const quizzes = [];
     wordFamilyData.wordFamilies.forEach(fam => {
       fam.derivatives.forEach(drv => {
+        // 接尾辞が '-' で始まらないもの（基本語幹そのもの等）はビルドクイズから除外
+        if (!drv.suffix || !drv.suffix.trim().startsWith('-')) return;
+        const cleanRoot = fam.root.replace(/-/g, '').trim().toLowerCase();
+        if (drv.word.trim().toLowerCase() === cleanRoot) return;
+
         // ダミー接尾辞を他から集める
-        const dummyPool = ['-эх', '-ах', '-эгч', '-агч', '-эсгэлэн', '-дал', '-лэг', '-лт', '-уулах', '-гдэх', '-хон'];
-        const correctSuffix = drv.suffix.split(' ')[0];
+        const dummyPool = ['-эх', '-ах', '-эгч', '-агч', '-эсгэлэн', '-дал', '-лэг', '-лт', '-уулах', '-гдэх', '-хон', '-лал', '-лэл', '-хөн', '-үүлбэр'];
+        const correctSuffix = drv.suffix.trim().split(/\s+/)[0];
         const dists = dummyPool.filter(s => s !== correctSuffix);
         const options = shuffleArray([correctSuffix, ...shuffleArray(dists).slice(0, 3)]);
 

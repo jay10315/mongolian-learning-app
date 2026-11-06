@@ -133,9 +133,14 @@ export class WordFamilyComponent {
     const quizzes = [];
     wordFamilyData.wordFamilies.forEach(fam => {
       fam.derivatives.forEach(drv => {
+        // 接尾辞が '-' で始まらないもの（基本語幹そのもの等）はビルドクイズから除外
+        if (!drv.suffix || !drv.suffix.trim().startsWith('-')) return;
+        const cleanRoot = fam.root.replace(/-/g, '').trim().toLowerCase();
+        if (drv.word.trim().toLowerCase() === cleanRoot) return;
+
         // ダミー接尾辞を他から集める
-        const dummyPool = ['-эх', '-ах', '-эгч', '-агч', '-эсгэлэн', '-дал', '-лэг', '-лт', '-уулах', '-гдэх', '-хон'];
-        const correctSuffix = drv.suffix.split(' ')[0];
+        const dummyPool = ['-эх', '-ах', '-эгч', '-агч', '-эсгэлэн', '-дал', '-лэг', '-лт', '-уулах', '-гдэх', '-хон', '-лал', '-лэл', '-хөн', '-үүлбэр'];
+        const correctSuffix = drv.suffix.trim().split(/\s+/)[0];
         const dists = dummyPool.filter(s => s !== correctSuffix);
         const options = shuffleArray([correctSuffix, ...shuffleArray(dists).slice(0, 3)]);
 
