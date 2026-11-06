@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { GamificationService } from '../services/gamification.js';
-import { SoundEffects, findWordInDictionary } from '../utils/helpers.js';
+import { SoundEffects, findWordInDictionary, renderClickableWordsHTML, showUniversalWordModal, cleanMongolianMojibake } from '../utils/helpers.js';
 
 export class ReadingTestComponent {
   static container = null;
@@ -163,22 +163,10 @@ export class ReadingTestComponent {
 
     // 本文の各単語をタップ可能なトークンに変換
     const renderInteractiveText = (text) => {
-      const paragraphs = text.split(/\n+/);
+      const paragraphs = cleanMongolianMojibake(text).split(/\n+/);
       return paragraphs.map(para => {
-        // キリル文字単語を検出してインタラクティブなspanに包む
-        const tokens = para.split(/([А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?)/g);
-        const wrapped = tokens.map(token => {
-          if (/^[А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?$/.test(token)) {
-            const isLookedUp = StorageService.isWordLookedUp(token);
-            return `<span class="clickable-word cursor-pointer px-0.5 rounded transition-colors inline-block ${
-              isLookedUp 
-                ? 'bg-amber-100/70 border-b-2 border-amber-400 font-bold text-amber-950' 
-                : 'hover:bg-emerald-100 hover:text-emerald-900 border-b border-dotted border-slate-300'
-            }" data-word="${token}" title="タップして辞書解説を表示">${token}</span>`;
-          }
-          return token;
-        }).join('');
-        return `<p class="mb-3 leading-relaxed cyrillic-text text-base sm:text-lg text-slate-800 tracking-wide">${wrapped}</p>`;
+        const wrapped = renderClickableWordsHTML(para, t => StorageService.isWordLookedUp(t));
+        return `<p class="mb-3 leading-relaxed cyrillic-text text-base sm:text-lg text-slate-800 dark:text-slate-100 tracking-wide">${wrapped}</p>`;
       }).join('');
     };
 
@@ -460,6 +448,17 @@ export class ReadingTestComponent {
           this.renderList();
         });
       }
+
+      const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-reading');
+      if (gotoMistakesBtn) {
+        gotoMistakesBtn.addEventListener('click', () => {
+          if (typeof ReviewNotebookComponent !== 'undefined') {
+            ReviewNotebookComponent.state.view = 'list';
+            ReviewNotebookComponent.state.filterType = 'all';
+          }
+          if (this.onNavigate) this.onNavigate('review');
+        });
+      }
     }
   }
 
@@ -493,7 +492,14 @@ export class ReadingTestComponent {
     }
 
     // 5. ポップアップモーダルを表示
-    this.showWordModal(wordInfo, passage.titleMn);
+    showUniversalWordModal({
+      wordInfo,
+      passageTitle: passage.titleMn,
+      onNavigate: this.onNavigate,
+      onClose: () => {
+        this.renderPassage();
+      }
+    });
   }
 
   static showWordModal(wordInfo, passageTitle) {

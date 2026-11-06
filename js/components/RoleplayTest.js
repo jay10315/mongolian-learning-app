@@ -108,6 +108,7 @@ export class RoleplayComponent {
     this.state.score = 0;
     this.state.history = [];
     this.state.showTranslation = false;
+    this.state.mistakes = [];
     this.state.view = 'dialogue';
     this.renderDialogue();
   }
@@ -287,6 +288,31 @@ export class RoleplayComponent {
             SoundEffects.playCorrect();
           } else {
             SoundEffects.playWrong();
+            try {
+              const bestOpt = step.options.find(o => o.isBest) || step.options[0];
+              StorageService.recordMistake({
+                type: 'roleplay',
+                category: sc.title,
+                question: `【${sc.title}】${step.npcText}（${step.npcMeaning || ''}）`,
+                prompt: step.npcText,
+                correctAnswer: bestOpt.text,
+                userAnswer: opt.text,
+                explanation: `${opt.feedback || ''} 【伝統・自然な返し】: ${bestOpt.text}（${bestOpt.meaning}）`,
+                wrongCount: 1
+              });
+              if (!this.state.mistakes) this.state.mistakes = [];
+              this.state.mistakes.push({
+                npcText: step.npcText,
+                npcMeaning: step.npcMeaning,
+                userText: opt.text,
+                userMeaning: opt.meaning,
+                bestText: bestOpt.text,
+                bestMeaning: bestOpt.meaning,
+                feedback: opt.feedback
+              });
+            } catch (err) {
+              console.warn('Roleplay recordMistake error:', err);
+            }
           }
           this.renderDialogue();
         });
@@ -350,6 +376,45 @@ export class RoleplayComponent {
           </div>
         </div>
 
+        <!-- 間違えた返答の確認リスト ＆ 間違いノート保存連携 -->
+        ${(this.state.mistakes && this.state.mistakes.length > 0) ? `
+          <div class="bg-rose-50/70 border border-rose-200 rounded-2xl p-4 text-left space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-rose-900 flex items-center gap-1.5">
+                <span>🔥</span> 改善できる返答 (${this.state.mistakes.length}件)
+              </span>
+              <span class="text-[10px] bg-rose-200 text-rose-800 font-bold px-2 py-0.5 rounded-full">間違いノートに自動保存済</span>
+            </div>
+            
+            <div class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+              ${this.state.mistakes.map((m, mIdx) => `
+                <div class="bg-white p-3 rounded-xl border border-rose-100 text-xs space-y-1.5 shadow-2xs">
+                  <div class="text-slate-500 font-bold text-[11px] flex items-center gap-1">
+                    <span>相手:</span> <span class="text-slate-700 cyrillic-text font-black">${m.npcText}</span>
+                  </div>
+                  <div class="text-rose-700">
+                    <span class="font-bold">あなたの返答:</span> <span class="cyrillic-text font-semibold">${m.userText}</span>
+                    <span class="text-slate-400 text-[10px]">（${m.userMeaning}）</span>
+                  </div>
+                  <div class="text-emerald-700">
+                    <span class="font-bold">✨ 最善の返答:</span> <span class="cyrillic-text font-bold">${m.bestText}</span>
+                    <span class="text-slate-500 text-[10px]">（${m.bestMeaning}）</span>
+                  </div>
+                  ${m.feedback ? `<div class="text-[11px] text-slate-600 bg-slate-50 p-1.5 rounded-lg border border-slate-100">💡 ${m.feedback}</div>` : ''}
+                </div>
+              `).join('')}
+            </div>
+
+            <button type="button" id="btn-goto-mistakes-from-roleplay" class="w-full py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer">
+              <span>🔥 間違いノートで復習する →</span>
+            </button>
+          </div>
+        ` : `
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-xs text-emerald-900 font-bold flex items-center justify-center gap-2">
+            <span>✨</span> 完璧！すべての対話で最も自然で礼儀正しい返答ができました！
+          </div>
+        `}
+
         <div class="flex gap-2">
           <button type="button" id="btn-retry-roleplay" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all">
             もう一度挑戦
@@ -369,5 +434,16 @@ export class RoleplayComponent {
       this.state.view = 'select';
       this.renderSelect();
     });
+
+    const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-roleplay');
+    if (gotoMistakesBtn) {
+      gotoMistakesBtn.addEventListener('click', () => {
+        if (typeof ReviewNotebookComponent !== 'undefined') {
+          ReviewNotebookComponent.state.view = 'list';
+          ReviewNotebookComponent.state.filterType = 'all';
+          this.onNavigate('review');
+        }
+      });
+    }
   }
 }

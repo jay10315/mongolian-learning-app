@@ -1104,7 +1104,46 @@ const VOCABULARY_SYNONYMS = {
 
   // 写真を撮ってもらう
   'зураг авахуулах': ['зураг авхуул', 'зураг авхуулах'],
-  'зураг авхуул': ['зураг авахуулах']
+  'зураг авхуул': ['зураг авахуウлах'],
+
+  // ありがとう
+  'баярлалаа': ['гялайлаа'],
+  'гялайлаа': ['баярлалаа'],
+
+  // こんにちは
+  'сайн байна уу': ['сайн уу'],
+  'сайн уу': ['сайн байна уу'],
+
+  // さようなら
+  'баяртай': ['баяртай байна'],
+  'баяртай байна': ['баяртай'],
+
+  // 車・自動車
+  'машин': ['автомашин'],
+  'автомашин': ['машин'],
+
+  // 自転車
+  'унадаг дугуй': ['дугуй'],
+  'дугуй': ['унадаг дугуй'],
+
+  // 飛行機
+  'онгоц': ['нисэх онгоц'],
+  'нисэх онгоц': ['онгоц'],
+
+  // ペン・ボールペン
+  'үзэг': ['бал'],
+  'бал': ['үзэг'],
+
+  // パソコン・コンピュータ
+  'компьютер': ['тооцоолуур'],
+  'тооцоолуур': ['компьютер'],
+
+  // 携帯電話
+  'гар утас': ['гар утас(тай)'],
+
+  // 辞書
+  'толь бичиг': ['толь'],
+  'толь': ['толь бичиг']
 };
 
 function getWordSynonyms(wordOrItem) {
@@ -36057,7 +36096,7 @@ const initialReadingQuizzes = [
         qIndex: 3,
         question: "Наадам хэзээ эхэлдэг вэ?",
         questionJa: "ナーダム祭りはいつ始まりますか？",
-        options: ["6 сарын 1-нд", "7 сарын 11-нд", "9 сарын 1-нд", "1 сарын 1-нд"],
+        options: ["Зургаан сарын нэгэнд", "Долоон сарын арван нэгэнд", "Есөн сарын нэгэнд", "Нэгэн сарын нэгэнд"],
         answer: 1,
         explanation: "第1段落に「долоон сарын арван нэгнээс эхэлдэг」（7月11日から始まる）と書かれています。"
       }
@@ -48780,8 +48819,8 @@ const STORAGE_KEYS = {
   VOCABULARY: 'mongol_app_vocabulary_v9',
   WORD_PROGRESS: 'mongol_app_word_progress_v1',
   GRAMMAR: 'mongol_app_grammar_v4',
-  GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v5',
-  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v5',
+  GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v6',
+  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v6',
   ILLUSTRATION_QUIZZES: 'mongol_app_illustration_quizzes_v1',
   LISTENING_QUIZZES: 'mongol_app_listening_quizzes_v1',
   READING_QUIZZES: 'mongol_app_reading_quizzes_v1',
@@ -48804,10 +48843,10 @@ class StorageService {
       ['mongol_app_vocabulary_v1', 'mongol_app_vocabulary_v2', 'mongol_app_vocabulary_v3', 'mongol_app_vocabulary_v4', 'mongol_app_vocabulary_v5', 'mongol_app_vocabulary_v6', 'mongol_app_vocabulary_v7', 'mongol_app_vocabulary_v8'].forEach(k => {
         try { localStorage.removeItem(k); } catch (_) {}
       });
-      ['mongol_app_declension_quizzes_v1', 'mongol_app_declension_quizzes_v2', 'mongol_app_declension_quizzes_v3', 'mongol_app_declension_quizzes_v4'].forEach(k => {
+      ['mongol_app_declension_quizzes_v1', 'mongol_app_declension_quizzes_v2', 'mongol_app_declension_quizzes_v3', 'mongol_app_declension_quizzes_v4', 'mongol_app_declension_quizzes_v5'].forEach(k => {
         try { localStorage.removeItem(k); } catch (_) {}
       });
-      ['mongol_app_grammar_quizzes_v1', 'mongol_app_grammar_quizzes_v2', 'mongol_app_grammar_quizzes_v3', 'mongol_app_grammar_quizzes_v4'].forEach(k => {
+      ['mongol_app_grammar_quizzes_v1', 'mongol_app_grammar_quizzes_v2', 'mongol_app_grammar_quizzes_v3', 'mongol_app_grammar_quizzes_v4', 'mongol_app_grammar_quizzes_v5'].forEach(k => {
         try { localStorage.removeItem(k); } catch (_) {}
       });
       ['mongol_app_typing_sentences_v1'].forEach(k => {
@@ -62514,22 +62553,10 @@ class ReadingTestComponent {
 
     // 本文の各単語をタップ可能なトークンに変換
     const renderInteractiveText = (text) => {
-      const paragraphs = text.split(/\n+/);
+      const paragraphs = cleanMongolianMojibake(text).split(/\n+/);
       return paragraphs.map(para => {
-        // キリル文字単語を検出してインタラクティブなspanに包む
-        const tokens = para.split(/([А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?)/g);
-        const wrapped = tokens.map(token => {
-          if (/^[А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?$/.test(token)) {
-            const isLookedUp = StorageService.isWordLookedUp(token);
-            return `<span class="clickable-word cursor-pointer px-0.5 rounded transition-colors inline-block ${
-              isLookedUp 
-                ? 'bg-amber-100/70 border-b-2 border-amber-400 font-bold text-amber-950' 
-                : 'hover:bg-emerald-100 hover:text-emerald-900 border-b border-dotted border-slate-300'
-            }" data-word="${token}" title="タップして辞書解説を表示">${token}</span>`;
-          }
-          return token;
-        }).join('');
-        return `<p class="mb-3 leading-relaxed cyrillic-text text-base sm:text-lg text-slate-800 tracking-wide">${wrapped}</p>`;
+        const wrapped = renderClickableWordsHTML(para, t => StorageService.isWordLookedUp(t));
+        return `<p class="mb-3 leading-relaxed cyrillic-text text-base sm:text-lg text-slate-800 dark:text-slate-100 tracking-wide">${wrapped}</p>`;
       }).join('');
     };
 
@@ -62811,6 +62838,17 @@ class ReadingTestComponent {
           this.renderList();
         });
       }
+
+      const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-reading');
+      if (gotoMistakesBtn) {
+        gotoMistakesBtn.addEventListener('click', () => {
+          if (typeof ReviewNotebookComponent !== 'undefined') {
+            ReviewNotebookComponent.state.view = 'list';
+            ReviewNotebookComponent.state.filterType = 'all';
+          }
+          if (this.onNavigate) this.onNavigate('review');
+        });
+      }
     }
   }
 
@@ -62844,7 +62882,14 @@ class ReadingTestComponent {
     }
 
     // 5. ポップアップモーダルを表示
-    this.showWordModal(wordInfo, passage.titleMn);
+    showUniversalWordModal({
+      wordInfo,
+      passageTitle: passage.titleMn,
+      onNavigate: this.onNavigate,
+      onClose: () => {
+        this.renderPassage();
+      }
+    });
   }
 
   static showWordModal(wordInfo, passageTitle) {
@@ -63652,8 +63697,7 @@ class TypingTestComponent {
                       <div class="text-xs font-bold text-emerald-800">
                         🇯🇵 ${s.textJa}
                       </div>
-                      ${s.romaji ? `<div class="text-[11px] text-slate-400 font-mono">💡 ${s.romaji}</div>` : ''}
-                      ${s.explanation ? `<div class="text-[11px] text-slate-500">📝 ${s.explanation}</div>` : ''}
+                                            ${s.explanation ? `<div class="text-[11px] text-slate-500">📝 ${s.explanation}</div>` : ''}
                     </div>
 
                     <div class="flex items-center gap-1 shrink-0">
@@ -66819,6 +66863,25 @@ class PronunciationTestComponent {
     this.state.sessionScore = (this.state.sessionScore || 0) + (score >= 90 ? 100 : (score >= 75 ? 75 : 30));
     this.state.sessionXp = (this.state.sessionXp || 0) + feedback.xpGained;
 
+    // 苦手克服ノートへの自動記録（75点未満の発音不合格時）
+    if (!isCorrect && this.state.currentItem) {
+      try {
+        const item = this.state.currentItem;
+        StorageService.recordMistake({
+          type: 'pronunciation',
+          category: item.category || '発音特訓',
+          question: `【発音特訓】${item.mongolian}（${item.japanese || ''}）`,
+          prompt: item.mongolian,
+          correctAnswer: item.mongolian,
+          userAnswer: transcript || '(発音ミス)',
+          explanation: `目標: ${item.mongolian}（${item.japanese || ''}）。発音ポイント: ${item.hint || item.phoneticGuide || '口の形とアクセントを意識しましょう。'} (判定スコア: ${score}点)`,
+          wrongCount: 1
+        });
+      } catch (err) {
+        console.warn('Pronunciation recordMistake error:', err);
+      }
+    }
+
     this.state.results.push({
       item: this.state.currentItem,
       score: score,
@@ -66924,6 +66987,20 @@ class PronunciationTestComponent {
           sessionResult: sessionRes
         })}
 
+        <!-- 間違いノート自動保存通知バナー ＆ 直行ボタン -->
+        ${this.state.results.some(r => r.score < 75) ? `
+          <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs text-left">
+            <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5">
+              <span class="text-base">🔥</span>
+              <span>合格点に届かなかった <strong>${this.state.results.filter(r => r.score < 75).length}</strong> 単語を「間違いノート」に自動保存しました</span>
+            </div>
+            <button type="button" id="btn-goto-mistakes-from-pron" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+              <span>間違いノートで特訓</span>
+              <span>→</span>
+            </button>
+          </div>
+        ` : ''}
+
         <!-- 発音平均スコアカード -->
         <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm text-center space-y-3">
           <div class="flex items-center justify-between text-xs text-slate-500 font-bold px-2">
@@ -66994,6 +67071,14 @@ class PronunciationTestComponent {
 
     container.querySelector('#btn-pron-home')?.addEventListener('click', () => {
       if (this.onNavigate) this.onNavigate('home');
+    });
+
+    container.querySelector('#btn-goto-mistakes-from-pron')?.addEventListener('click', () => {
+      if (typeof ReviewNotebookComponent !== 'undefined') {
+        ReviewNotebookComponent.state.view = 'list';
+        ReviewNotebookComponent.state.filterType = 'all';
+      }
+      if (this.onNavigate) this.onNavigate('review');
     });
 
     container.querySelectorAll('.btn-play-list-item').forEach(btn => {
@@ -67117,6 +67202,7 @@ class RoleplayComponent {
     this.state.score = 0;
     this.state.history = [];
     this.state.showTranslation = false;
+    this.state.mistakes = [];
     this.state.view = 'dialogue';
     this.renderDialogue();
   }
@@ -67296,6 +67382,31 @@ class RoleplayComponent {
             SoundEffects.playCorrect();
           } else {
             SoundEffects.playWrong();
+            try {
+              const bestOpt = step.options.find(o => o.isBest) || step.options[0];
+              StorageService.recordMistake({
+                type: 'roleplay',
+                category: sc.title,
+                question: `【${sc.title}】${step.npcText}（${step.npcMeaning || ''}）`,
+                prompt: step.npcText,
+                correctAnswer: bestOpt.text,
+                userAnswer: opt.text,
+                explanation: `${opt.feedback || ''} 【伝統・自然な返し】: ${bestOpt.text}（${bestOpt.meaning}）`,
+                wrongCount: 1
+              });
+              if (!this.state.mistakes) this.state.mistakes = [];
+              this.state.mistakes.push({
+                npcText: step.npcText,
+                npcMeaning: step.npcMeaning,
+                userText: opt.text,
+                userMeaning: opt.meaning,
+                bestText: bestOpt.text,
+                bestMeaning: bestOpt.meaning,
+                feedback: opt.feedback
+              });
+            } catch (err) {
+              console.warn('Roleplay recordMistake error:', err);
+            }
           }
           this.renderDialogue();
         });
@@ -67359,6 +67470,45 @@ class RoleplayComponent {
           </div>
         </div>
 
+        <!-- 間違えた返答の確認リスト ＆ 間違いノート保存連携 -->
+        ${(this.state.mistakes && this.state.mistakes.length > 0) ? `
+          <div class="bg-rose-50/70 border border-rose-200 rounded-2xl p-4 text-left space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-rose-900 flex items-center gap-1.5">
+                <span>🔥</span> 改善できる返答 (${this.state.mistakes.length}件)
+              </span>
+              <span class="text-[10px] bg-rose-200 text-rose-800 font-bold px-2 py-0.5 rounded-full">間違いノートに自動保存済</span>
+            </div>
+            
+            <div class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+              ${this.state.mistakes.map((m, mIdx) => `
+                <div class="bg-white p-3 rounded-xl border border-rose-100 text-xs space-y-1.5 shadow-2xs">
+                  <div class="text-slate-500 font-bold text-[11px] flex items-center gap-1">
+                    <span>相手:</span> <span class="text-slate-700 cyrillic-text font-black">${m.npcText}</span>
+                  </div>
+                  <div class="text-rose-700">
+                    <span class="font-bold">あなたの返答:</span> <span class="cyrillic-text font-semibold">${m.userText}</span>
+                    <span class="text-slate-400 text-[10px]">（${m.userMeaning}）</span>
+                  </div>
+                  <div class="text-emerald-700">
+                    <span class="font-bold">✨ 最善の返答:</span> <span class="cyrillic-text font-bold">${m.bestText}</span>
+                    <span class="text-slate-500 text-[10px]">（${m.bestMeaning}）</span>
+                  </div>
+                  ${m.feedback ? `<div class="text-[11px] text-slate-600 bg-slate-50 p-1.5 rounded-lg border border-slate-100">💡 ${m.feedback}</div>` : ''}
+                </div>
+              `).join('')}
+            </div>
+
+            <button type="button" id="btn-goto-mistakes-from-roleplay" class="w-full py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer">
+              <span>🔥 間違いノートで復習する →</span>
+            </button>
+          </div>
+        ` : `
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-xs text-emerald-900 font-bold flex items-center justify-center gap-2">
+            <span>✨</span> 完璧！すべての対話で最も自然で礼儀正しい返答ができました！
+          </div>
+        `}
+
         <div class="flex gap-2">
           <button type="button" id="btn-retry-roleplay" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all">
             もう一度挑戦
@@ -67378,6 +67528,17 @@ class RoleplayComponent {
       this.state.view = 'select';
       this.renderSelect();
     });
+
+    const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-roleplay');
+    if (gotoMistakesBtn) {
+      gotoMistakesBtn.addEventListener('click', () => {
+        if (typeof ReviewNotebookComponent !== 'undefined') {
+          ReviewNotebookComponent.state.view = 'list';
+          ReviewNotebookComponent.state.filterType = 'all';
+          this.onNavigate('review');
+        }
+      });
+    }
   }
 }
 
@@ -67424,6 +67585,7 @@ class InterviewMasterComponent {
   static typingIsCorrect = false;
   static typingShowHint = false;
   static typingCompleted = {};
+  static typingMistakes = [];
 
   static render(container, onNavigate) {
     this.container = container;
@@ -67864,6 +68026,30 @@ class InterviewMasterComponent {
           <p class="text-xs sm:text-sm text-emerald-100 max-w-lg mx-auto leading-relaxed">
             面接官の質問とお題だけを見て、全 ${totalSentences} 文のモンゴル語を自力で打ち切りました！頭と指に文章が深く定着しています。
           </p>
+          ${(this.typingMistakes && this.typingMistakes.length > 0) ? `
+            <div class="p-4 bg-white/95 dark:bg-slate-900/90 rounded-2xl border border-rose-300 text-left space-y-3 text-slate-800 dark:text-slate-200">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-rose-700 flex items-center gap-1.5">
+                  <span>🔥</span> タイピングで間違えた文 (${this.typingMistakes.length}件)
+                </span>
+                <span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full">間違いノートに保存済</span>
+              </div>
+              <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                ${this.typingMistakes.map(m => `
+                  <div class="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200 text-xs space-y-1">
+                    <div class="font-bold text-slate-700">🇯🇵 ${m.ja}</div>
+                    <div class="text-emerald-700 font-bold cyrillic-text">正解: ${m.mn}</div>
+                    <div class="text-rose-600">入力: <span class="line-through">${m.user}</span></div>
+                    ${m.note ? `<div class="text-[10px] text-slate-500">💡 ${m.note}</div>` : ''}
+                  </div>
+                `).join('')}
+              </div>
+              <button type="button" id="btn-goto-mistakes-from-interview" class="w-full py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                <span>🔥 間違いノートで復習する →</span>
+              </button>
+            </div>
+          ` : ''}
+
           <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
             <button
               type="button"
@@ -68250,6 +68436,7 @@ class InterviewMasterComponent {
           this.typingHasAnswered = false;
           this.typingIsCorrect = false;
           this.typingShowHint = false;
+          this.typingMistakes = [];
           this.render(container, this.onNavigate);
         }
       });
@@ -68492,6 +68679,38 @@ class InterviewMasterComponent {
         this.onNavigate('roleplay');
       });
     }
+
+    const restartTypingBtn = container.querySelector('#btn-restart-typing-drill');
+    if (restartTypingBtn) {
+      restartTypingBtn.addEventListener('click', () => {
+        this.typingSentenceIndex = 0;
+        this.typingUserInput = '';
+        this.typingHasAnswered = false;
+        this.typingIsCorrect = false;
+        this.typingShowHint = false;
+        this.typingMistakes = [];
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    const gotoStep4Btn = container.querySelector('#btn-goto-step4-speech');
+    if (gotoStep4Btn) {
+      gotoStep4Btn.addEventListener('click', () => {
+        this.currentStep = 4;
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    const gotoMistakesInterviewBtn = container.querySelector('#btn-goto-mistakes-from-interview');
+    if (gotoMistakesInterviewBtn) {
+      gotoMistakesInterviewBtn.addEventListener('click', () => {
+        if (typeof ReviewNotebookComponent !== 'undefined') {
+          ReviewNotebookComponent.state.view = 'list';
+          ReviewNotebookComponent.state.filterType = 'all';
+        }
+        if (this.onNavigate) this.onNavigate('review');
+      });
+    }
   }
 
   static handleTypingSubmit(topic) {
@@ -68541,6 +68760,13 @@ class InterviewMasterComponent {
           explanation: `${correctText}（${currentSentence.ja}）。${currentSentence.note || ''}`
         });
       } catch (_) {}
+      if (!this.typingMistakes) this.typingMistakes = [];
+      this.typingMistakes.push({
+        ja: currentSentence.ja,
+        mn: correctText,
+        user: userText || '(未回答)',
+        note: currentSentence.note
+      });
     }
 
     this.render(this.container, this.onNavigate);

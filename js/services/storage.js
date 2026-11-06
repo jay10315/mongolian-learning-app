@@ -27,8 +27,8 @@ const STORAGE_KEYS = {
   VOCABULARY: 'mongol_app_vocabulary_v9',
   WORD_PROGRESS: 'mongol_app_word_progress_v1',
   GRAMMAR: 'mongol_app_grammar_v4',
-  GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v5',
-  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v5',
+  GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v6',
+  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v6',
   ILLUSTRATION_QUIZZES: 'mongol_app_illustration_quizzes_v1',
   LISTENING_QUIZZES: 'mongol_app_listening_quizzes_v1',
   READING_QUIZZES: 'mongol_app_reading_quizzes_v1',
@@ -51,10 +51,10 @@ export class StorageService {
       ['mongol_app_vocabulary_v1', 'mongol_app_vocabulary_v2', 'mongol_app_vocabulary_v3', 'mongol_app_vocabulary_v4', 'mongol_app_vocabulary_v5', 'mongol_app_vocabulary_v6', 'mongol_app_vocabulary_v7', 'mongol_app_vocabulary_v8'].forEach(k => {
         try { localStorage.removeItem(k); } catch (_) {}
       });
-      ['mongol_app_declension_quizzes_v1', 'mongol_app_declension_quizzes_v2', 'mongol_app_declension_quizzes_v3', 'mongol_app_declension_quizzes_v4'].forEach(k => {
+      ['mongol_app_declension_quizzes_v1', 'mongol_app_declension_quizzes_v2', 'mongol_app_declension_quizzes_v3', 'mongol_app_declension_quizzes_v4', 'mongol_app_declension_quizzes_v5'].forEach(k => {
         try { localStorage.removeItem(k); } catch (_) {}
       });
-      ['mongol_app_grammar_quizzes_v1', 'mongol_app_grammar_quizzes_v2', 'mongol_app_grammar_quizzes_v3', 'mongol_app_grammar_quizzes_v4'].forEach(k => {
+      ['mongol_app_grammar_quizzes_v1', 'mongol_app_grammar_quizzes_v2', 'mongol_app_grammar_quizzes_v3', 'mongol_app_grammar_quizzes_v4', 'mongol_app_grammar_quizzes_v5'].forEach(k => {
         try { localStorage.removeItem(k); } catch (_) {}
       });
       ['mongol_app_typing_sentences_v1'].forEach(k => {

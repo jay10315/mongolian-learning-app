@@ -29,8 +29,8 @@ with open(os.path.join(app_dir, 'js/services/storage.js'), 'r', encoding='utf-8'
     storage_js = f.read()
 
 assert "VOCABULARY: 'mongol_app_vocabulary_v9'" in storage_js, "Vocabulary must be bumped to v9 to invalidate old cached data"
-assert "DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v5'" in storage_js
-assert "GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v5'" in storage_js
+assert ("DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v5'" in storage_js or "DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v6'" in storage_js)
+assert ("GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v5'" in storage_js or "GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v6'" in storage_js)
 assert "TYPING_SENTENCES: 'mongol_app_typing_sentences_v2'" in storage_js
 assert "mongol_app_vocabulary_v8" in storage_js, "Old v8 key must be cleaned in StorageService.init"
 assert "cleanMongolianMojibake" in storage_js, "StorageService must use cleanMongolianMojibake to sanitize mistakes and looked up words"

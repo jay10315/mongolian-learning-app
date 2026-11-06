@@ -68,7 +68,8 @@ tests = [
     'test_number_word_display.py',
     'test_reorder_flicker_fix.py',
     'test_vocabulary_unification_and_synonyms.py',
-    'test_eradicate_katakana_mojibake.py'
+    'test_eradicate_katakana_mojibake.py',
+    'test_perfect_100_points.py'
 ]
 
 for t in tests:

@@ -39,6 +39,7 @@ export class InterviewMasterComponent {
   static typingIsCorrect = false;
   static typingShowHint = false;
   static typingCompleted = {};
+  static typingMistakes = [];
 
   static render(container, onNavigate) {
     this.container = container;
@@ -479,6 +480,30 @@ export class InterviewMasterComponent {
           <p class="text-xs sm:text-sm text-emerald-100 max-w-lg mx-auto leading-relaxed">
             面接官の質問とお題だけを見て、全 ${totalSentences} 文のモンゴル語を自力で打ち切りました！頭と指に文章が深く定着しています。
           </p>
+          ${(this.typingMistakes && this.typingMistakes.length > 0) ? `
+            <div class="p-4 bg-white/95 dark:bg-slate-900/90 rounded-2xl border border-rose-300 text-left space-y-3 text-slate-800 dark:text-slate-200">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-rose-700 flex items-center gap-1.5">
+                  <span>🔥</span> タイピングで間違えた文 (${this.typingMistakes.length}件)
+                </span>
+                <span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full">間違いノートに保存済</span>
+              </div>
+              <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                ${this.typingMistakes.map(m => `
+                  <div class="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200 text-xs space-y-1">
+                    <div class="font-bold text-slate-700">🇯🇵 ${m.ja}</div>
+                    <div class="text-emerald-700 font-bold cyrillic-text">正解: ${m.mn}</div>
+                    <div class="text-rose-600">入力: <span class="line-through">${m.user}</span></div>
+                    ${m.note ? `<div class="text-[10px] text-slate-500">💡 ${m.note}</div>` : ''}
+                  </div>
+                `).join('')}
+              </div>
+              <button type="button" id="btn-goto-mistakes-from-interview" class="w-full py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                <span>🔥 間違いノートで復習する →</span>
+              </button>
+            </div>
+          ` : ''}
+
           <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
             <button
               type="button"
@@ -865,6 +890,7 @@ export class InterviewMasterComponent {
           this.typingHasAnswered = false;
           this.typingIsCorrect = false;
           this.typingShowHint = false;
+          this.typingMistakes = [];
           this.render(container, this.onNavigate);
         }
       });
@@ -1107,6 +1133,38 @@ export class InterviewMasterComponent {
         this.onNavigate('roleplay');
       });
     }
+
+    const restartTypingBtn = container.querySelector('#btn-restart-typing-drill');
+    if (restartTypingBtn) {
+      restartTypingBtn.addEventListener('click', () => {
+        this.typingSentenceIndex = 0;
+        this.typingUserInput = '';
+        this.typingHasAnswered = false;
+        this.typingIsCorrect = false;
+        this.typingShowHint = false;
+        this.typingMistakes = [];
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    const gotoStep4Btn = container.querySelector('#btn-goto-step4-speech');
+    if (gotoStep4Btn) {
+      gotoStep4Btn.addEventListener('click', () => {
+        this.currentStep = 4;
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    const gotoMistakesInterviewBtn = container.querySelector('#btn-goto-mistakes-from-interview');
+    if (gotoMistakesInterviewBtn) {
+      gotoMistakesInterviewBtn.addEventListener('click', () => {
+        if (typeof ReviewNotebookComponent !== 'undefined') {
+          ReviewNotebookComponent.state.view = 'list';
+          ReviewNotebookComponent.state.filterType = 'all';
+        }
+        if (this.onNavigate) this.onNavigate('review');
+      });
+    }
   }
 
   static handleTypingSubmit(topic) {
@@ -1156,6 +1214,13 @@ export class InterviewMasterComponent {
           explanation: `${correctText}（${currentSentence.ja}）。${currentSentence.note || ''}`
         });
       } catch (_) {}
+      if (!this.typingMistakes) this.typingMistakes = [];
+      this.typingMistakes.push({
+        ja: currentSentence.ja,
+        mn: correctText,
+        user: userText || '(未回答)',
+        note: currentSentence.note
+      });
     }
 
     this.render(this.container, this.onNavigate);

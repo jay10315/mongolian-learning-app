@@ -749,6 +749,25 @@ export class PronunciationTestComponent {
     this.state.sessionScore = (this.state.sessionScore || 0) + (score >= 90 ? 100 : (score >= 75 ? 75 : 30));
     this.state.sessionXp = (this.state.sessionXp || 0) + feedback.xpGained;
 
+    // 苦手克服ノートへの自動記録（75点未満の発音不合格時）
+    if (!isCorrect && this.state.currentItem) {
+      try {
+        const item = this.state.currentItem;
+        StorageService.recordMistake({
+          type: 'pronunciation',
+          category: item.category || '発音特訓',
+          question: `【発音特訓】${item.mongolian}（${item.japanese || ''}）`,
+          prompt: item.mongolian,
+          correctAnswer: item.mongolian,
+          userAnswer: transcript || '(発音ミス)',
+          explanation: `目標: ${item.mongolian}（${item.japanese || ''}）。発音ポイント: ${item.hint || item.phoneticGuide || '口の形とアクセントを意識しましょう。'} (判定スコア: ${score}点)`,
+          wrongCount: 1
+        });
+      } catch (err) {
+        console.warn('Pronunciation recordMistake error:', err);
+      }
+    }
+
     this.state.results.push({
       item: this.state.currentItem,
       score: score,
@@ -854,6 +873,20 @@ export class PronunciationTestComponent {
           sessionResult: sessionRes
         })}
 
+        <!-- 間違いノート自動保存通知バナー ＆ 直行ボタン -->
+        ${this.state.results.some(r => r.score < 75) ? `
+          <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs text-left">
+            <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5">
+              <span class="text-base">🔥</span>
+              <span>合格点に届かなかった <strong>${this.state.results.filter(r => r.score < 75).length}</strong> 単語を「間違いノート」に自動保存しました</span>
+            </div>
+            <button type="button" id="btn-goto-mistakes-from-pron" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+              <span>間違いノートで特訓</span>
+              <span>→</span>
+            </button>
+          </div>
+        ` : ''}
+
         <!-- 発音平均スコアカード -->
         <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm text-center space-y-3">
           <div class="flex items-center justify-between text-xs text-slate-500 font-bold px-2">
@@ -924,6 +957,14 @@ export class PronunciationTestComponent {
 
     container.querySelector('#btn-pron-home')?.addEventListener('click', () => {
       if (this.onNavigate) this.onNavigate('home');
+    });
+
+    container.querySelector('#btn-goto-mistakes-from-pron')?.addEventListener('click', () => {
+      if (typeof ReviewNotebookComponent !== 'undefined') {
+        ReviewNotebookComponent.state.view = 'list';
+        ReviewNotebookComponent.state.filterType = 'all';
+      }
+      if (this.onNavigate) this.onNavigate('review');
     });
 
     container.querySelectorAll('.btn-play-list-item').forEach(btn => {

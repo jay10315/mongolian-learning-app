@@ -482,8 +482,7 @@ export class TypingTestComponent {
                       <div class="text-xs font-bold text-emerald-800">
                         🇯🇵 ${s.textJa}
                       </div>
-                      ${s.romaji ? `<div class="text-[11px] text-slate-400 font-mono">💡 ${s.romaji}</div>` : ''}
-                      ${s.explanation ? `<div class="text-[11px] text-slate-500">📝 ${s.explanation}</div>` : ''}
+                                            ${s.explanation ? `<div class="text-[11px] text-slate-500">📝 ${s.explanation}</div>` : ''}
                     </div>
 
                     <div class="flex items-center gap-1 shrink-0">
