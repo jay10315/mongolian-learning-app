@@ -4,6 +4,7 @@ import { SpeechService } from '../services/speech.js';
 import { StorageService } from '../services/storage.js';
 import { GamificationService } from '../services/gamification.js';
 import { interviewTopics } from '../data/interviewTopics.js';
+import { isFuzzyMatch, SoundEffects } from '../utils/helpers.js';
 
 export class InterviewMasterComponent {
   static currentTopicIndex = 0;
@@ -16,6 +17,14 @@ export class InterviewMasterComponent {
   static isTimerRunning = false;
   static revealedSpeech = false;
   static clozeAnswers = {};
+
+  // タイピングモード用状態（質問・お題だけ見て入力する特訓）
+  static typingSentenceIndex = 0;
+  static typingUserInput = '';
+  static typingHasAnswered = false;
+  static typingIsCorrect = false;
+  static typingShowHint = false;
+  static typingCompleted = {};
 
   static render(container, onNavigate) {
     this.container = container;
@@ -56,7 +65,7 @@ export class InterviewMasterComponent {
               Сүүлийн шалгалт特訓
             </h1>
             <p class="text-sm sm:text-base text-white/90 max-w-2xl leading-relaxed">
-              1〜7の質問についての4分スピーチ ＆ 8〜13の実践対話を完全攻略。「この文章を覚え、さらには言えるようにする」ための3ステップ集中ドリルです。
+              1〜7の質問についての4分スピーチ ＆ 8〜13の実践対話を完全攻略。「この文章を覚え、さらには言えるようにする」ための4ステップ（聴く・穴埋め・質問だけタイピング・4分スピーチ実践）集中ドリルです。
             </p>
 
             <!-- プログレスバー -->
@@ -150,7 +159,7 @@ export class InterviewMasterComponent {
             </div>
           </div>
 
-          <!-- 3つのステップタブ切り替え -->
+          <!-- 4つのステップタブ切り替え（聴く・穴埋め・質問だけタイピング・スピーチ実践） -->
           <div class="flex items-center border-b border-slate-200 mb-6 gap-2 sm:gap-4 overflow-x-auto">
             <button
               type="button"
@@ -168,7 +177,13 @@ export class InterviewMasterComponent {
               type="button"
               data-step="3"
               class="step-tab-btn pb-3 px-2 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${this.currentStep === 3 ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-800'}">
-              <span>⏱️ Step 3: 4分スピーチ実践</span>
+              <span>⌨️ Step 3: 質問だけ見てタイピング</span>
+            </button>
+            <button
+              type="button"
+              data-step="4"
+              class="step-tab-btn pb-3 px-2 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${this.currentStep === 4 ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-800'}">
+              <span>⏱️ Step 4: 4分スピーチ実践</span>
             </button>
           </div>
 
@@ -428,8 +443,252 @@ export class InterviewMasterComponent {
     `;
   }
 
-  // Step 3: 4分スピーチ実践・面接シミュレーション（言えるようにする）
+  // Step 3: 質問だけ見てタイピング暗記特訓（面接官の質問＆お題日本語だけを見て入力）
   static renderStep3(topic) {
+    const completedMap = this.typingCompleted[topic.id] || {};
+    const completedCount = Object.keys(completedMap).length;
+    const totalSentences = topic.sentences.length;
+    const isAllCompleted = this.typingSentenceIndex >= totalSentences;
+
+    // 全文クリア完了画面
+    if (isAllCompleted) {
+      return `
+        <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl text-center space-y-4 animate-bounce-in">
+          <div class="text-6xl mb-1">🎉🏆</div>
+          <h3 class="text-xl sm:text-2xl font-black">質問だけ見てタイピング暗記 達成！</h3>
+          <p class="text-xs sm:text-sm text-emerald-100 max-w-lg mx-auto leading-relaxed">
+            面接官の質問とお題だけを見て、全 ${totalSentences} 文のモンゴル語を自力で打ち切りました！頭と指に文章が深く定着しています。
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
+            <button
+              type="button"
+              id="btn-restart-typing-drill"
+              class="px-5 py-2.5 rounded-xl bg-white text-slate-900 font-bold text-xs shadow-md hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+              🔄 最初からもう一度タイピング練習する
+            </button>
+            <button
+              type="button"
+              id="btn-goto-step4-speech"
+              class="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs shadow-md hover:bg-slate-800 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5">
+              <span>⏱️ Step 4: 4分スピーチ実践へ進む →</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    const currentSentence = topic.sentences[this.typingSentenceIndex];
+
+    return `
+      <div class="space-y-5 animate-fade-in">
+        <!-- 1. 特訓趣旨バナー -->
+        <div class="bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-sky-500/10 border border-teal-300/60 dark:border-teal-700/60 rounded-2xl p-4 flex items-start gap-3">
+          <span class="text-2xl select-none">⌨️</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <h3 class="text-sm font-bold text-teal-950 dark:text-teal-200">
+                質問だけ見てタイピング暗記特訓
+              </h3>
+              <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100/60 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md">
+                進捗: ${completedCount} / ${totalSentences} 文
+              </span>
+            </div>
+            <p class="text-xs text-teal-900/90 dark:text-teal-300/90 leading-relaxed">
+              モンゴル語の答えを隠し、面接官の質問とお題（日本語）だけを見てモンゴル語を入力します。
+            </p>
+          </div>
+        </div>
+
+        <!-- 2. 文セレクター（数字ピル） -->
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="text-xs text-slate-500 dark:text-slate-400 font-medium mr-1">文を選択:</span>
+          ${topic.sentences.map((_, idx) => {
+            const isDone = completedMap[idx] === true;
+            const isCurrent = idx === this.typingSentenceIndex;
+            return `
+              <button
+                type="button"
+                data-typing-sentence-idx="${idx}"
+                class="btn-select-typing-sentence w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center ${isCurrent ? 'bg-emerald-600 text-white shadow-xs scale-105' : (isDone ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200')}">
+                ${isDone && !isCurrent ? '✓' : idx + 1}
+              </button>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- 3. 問題カード（お題と入力エリア） -->
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-5 sm:p-6 shadow-sm space-y-4">
+          <!-- 文のヘッダーとお題 -->
+          <div>
+            <div class="flex items-center justify-between text-xs mb-2">
+              <span class="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 flex items-center justify-center text-[11px] font-extrabold">
+                  ${this.typingSentenceIndex + 1}
+                </span>
+                第 ${this.typingSentenceIndex + 1} 文 / 全 ${totalSentences} 文
+              </span>
+              <button
+                type="button"
+                id="btn-toggle-typing-hint"
+                class="text-xs text-amber-700 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer">
+                <span>${this.typingShowHint ? '🙈 ヒントを隠す' : '💡 ヒントを見る'}</span>
+              </button>
+            </div>
+
+            <!-- お題（日本語のみ） -->
+            <div class="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-700">
+              <div class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
+                🗣️ この質問に答える内容（日本語）:
+              </div>
+              <p class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-relaxed">
+                ${currentSentence.ja}
+              </p>
+            </div>
+
+            <!-- ヒント表示（トグル時） -->
+            ${this.typingShowHint ? `
+              <div class="mt-2.5 p-3 rounded-xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-700/60 text-xs space-y-1 animate-fade-in">
+                <div class="font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1">
+                  <span>💡</span> 暗記のヒント:
+                </div>
+                <div class="text-slate-700 dark:text-slate-300">
+                  ・出だしの言葉: <strong class="cyrillic-text font-bold text-amber-900 dark:text-amber-300">${currentSentence.mn.split(' ')[0]}...</strong>
+                </div>
+                ${currentSentence.clozeToken ? `
+                  <div class="text-slate-700 dark:text-slate-300">
+                    ・キーワード: <strong class="cyrillic-text font-bold text-amber-900 dark:text-amber-300">${currentSentence.clozeToken}</strong> (${currentSentence.clozeHint || ''})
+                  </div>
+                ` : ''}
+                <div class="text-slate-500 dark:text-slate-400 text-[11px]">
+                  ・文字数: 約 ${currentSentence.mn.length} 文字
+                </div>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- タイピング入力ボックス -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <label for="interview-typing-input" class="font-bold text-slate-700 dark:text-slate-300">
+                モンゴル語（キリル文字）で入力:
+              </label>
+              <span class="text-[11px] text-slate-400">Enterキーまたは判定ボタンで確認</span>
+            </div>
+
+            <textarea
+              id="interview-typing-input"
+              rows="2"
+              class="w-full p-3.5 rounded-2xl border-2 ${this.typingHasAnswered ? (this.typingIsCorrect ? 'border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/30 text-emerald-950 dark:text-emerald-100' : 'border-rose-400 bg-rose-50/20 dark:bg-rose-950/30 text-rose-950 dark:text-rose-100') : 'border-slate-300 dark:border-slate-600 focus:border-emerald-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white'} text-base font-bold cyrillic-text focus:outline-none transition-all resize-none shadow-2xs"
+              placeholder="質問・日本語のお題だけを見て、モンゴル語で入力..."
+              ${this.typingHasAnswered && this.typingIsCorrect ? 'disabled' : ''}>${this.typingUserInput}</textarea>
+
+            <!-- 特殊キリル文字バー -->
+            <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
+              <span class="text-[11px] text-slate-400 mr-1">キリル文字入力補助:</span>
+              ${['ө', 'ү', 'ё', 'Ө', 'Ү', 'Ё'].map(char => `
+                <button
+                  type="button"
+                  class="btn-typing-quick-char px-2.5 py-1 bg-slate-100 hover:bg-emerald-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-bold rounded-lg border border-slate-200 dark:border-slate-600 text-xs transition-all active:scale-95 cursor-pointer"
+                  data-char="${char}">
+                  ${char}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- フィードバック表示（回答後） -->
+          ${this.typingHasAnswered ? `
+            ${this.typingIsCorrect ? `
+              <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/60 text-emerald-950 dark:text-emerald-200 animate-fade-in space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="text-sm sm:text-base font-black flex items-center gap-1.5">
+                    <span>🎉</span> 見事正解！正確に頭に入っています！
+                  </div>
+                  <button
+                    type="button"
+                    data-speech-text="${encodeURIComponent(currentSentence.mn)}"
+                    class="play-sentence-btn text-xs px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-emerald-300 text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-1 cursor-pointer">
+                    <span>🔊 発音を聴く</span>
+                  </button>
+                </div>
+                <div class="text-sm sm:text-base font-extrabold cyrillic-text text-emerald-800 dark:text-emerald-300">
+                  ${currentSentence.mn}
+                </div>
+                ${currentSentence.explanation ? `
+                  <div class="text-xs text-slate-600 dark:text-slate-300 pt-1.5 border-t border-emerald-200 dark:border-emerald-800">
+                    💡 ${currentSentence.explanation}
+                  </div>
+                ` : ''}
+              </div>
+            ` : `
+              <div class="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-700/60 text-rose-950 dark:text-rose-200 animate-fade-in space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="text-sm sm:text-base font-black flex items-center gap-1.5">
+                    <span>❌</span> おしい！正解を確認しましょう
+                  </div>
+                  <button
+                    type="button"
+                    data-speech-text="${encodeURIComponent(currentSentence.mn)}"
+                    class="play-sentence-btn text-xs px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-rose-300 text-rose-700 dark:text-rose-300 font-bold flex items-center gap-1 cursor-pointer">
+                    <span>🔊 正解発音を聴く</span>
+                  </button>
+                </div>
+                <div class="text-xs space-y-1">
+                  <div>正解: <strong class="correct-answer-text font-black text-sm cyrillic-text text-emerald-700 dark:text-emerald-300">${currentSentence.mn}</strong></div>
+                  <div>あなたの入力: <span class="line-through text-rose-700 dark:text-rose-400 font-semibold">${this.typingUserInput || '（空欄）'}</span></div>
+                </div>
+                ${currentSentence.explanation ? `
+                  <div class="text-xs text-slate-600 dark:text-slate-300 pt-1.5 border-t border-rose-200 dark:border-rose-800">
+                    💡 ${currentSentence.explanation}
+                  </div>
+                ` : ''}
+              </div>
+            `}
+          ` : ''}
+
+          <!-- アクションボタン -->
+          <div>
+            ${!this.typingHasAnswered ? `
+              <button
+                type="button"
+                id="btn-submit-interview-typing"
+                class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-md transition-all active:scale-98 text-sm flex items-center justify-center gap-1.5 cursor-pointer">
+                <span>判定する（Enter）</span>
+              </button>
+            ` : `
+              ${this.typingIsCorrect ? `
+                <button
+                  type="button"
+                  id="btn-next-interview-typing"
+                  class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-md transition-all active:scale-98 text-sm flex items-center justify-center gap-1.5 cursor-pointer">
+                  <span>${this.typingSentenceIndex + 1 < totalSentences ? '次の文へ進む（Enter） →' : '全問クリア！結果を見る 🎉'}</span>
+                </button>
+              ` : `
+                <div class="flex gap-2">
+                  <button
+                    type="button"
+                    id="btn-retry-interview-typing"
+                    class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl shadow-xs transition-all active:scale-98 text-xs cursor-pointer">
+                    🔄 もう一度打つ
+                  </button>
+                  <button
+                    type="button"
+                    id="btn-next-interview-typing"
+                    class="flex-1 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-2xl shadow-xs transition-all active:scale-98 text-xs cursor-pointer">
+                    ${this.typingSentenceIndex + 1 < totalSentences ? '次の文へ進む →' : '結果を見る 🎉'}
+                  </button>
+                </div>
+              `}
+            `}
+          </div>
+
+        </div>
+      </div>
+    `;
+  }
+
+  // Step 4: 4分スピーチ実践・面接シミュレーション（言えるようにする）
+  static renderStep4(topic) {
     const isRunning = this.isTimerRunning;
     const minutes = Math.floor(this.timerSeconds / 60);
     const seconds = this.timerSeconds % 60;
@@ -562,6 +821,8 @@ export class InterviewMasterComponent {
         return this.renderStep2(topic);
       case 3:
         return this.renderStep3(topic);
+      case 4:
+        return this.renderStep4(topic);
       default:
         return this.renderStep1(topic);
     }
@@ -579,6 +840,11 @@ export class InterviewMasterComponent {
           this.currentTopicIndex = idx;
           this.revealedSpeech = false;
           this.stopTimer();
+          this.typingSentenceIndex = 0;
+          this.typingUserInput = '';
+          this.typingHasAnswered = false;
+          this.typingIsCorrect = false;
+          this.typingShowHint = false;
           this.render(container, this.onNavigate);
         }
       });
@@ -773,9 +1039,13 @@ export class InterviewMasterComponent {
 
     // 外部リンク
     const gotoTyping = container.querySelector('#goto-typing-btn');
-    if (gotoTyping && this.onNavigate) {
+    if (gotoTyping) {
       gotoTyping.addEventListener('click', () => {
-        this.onNavigate('typing_test');
+        this.currentStep = 3;
+        this.typingSentenceIndex = 0;
+        this.typingUserInput = '';
+        this.typingHasAnswered = false;
+        this.render(container, this.onNavigate);
       });
     }
 
@@ -785,6 +1055,57 @@ export class InterviewMasterComponent {
         this.onNavigate('roleplay');
       });
     }
+  }
+
+  static handleTypingSubmit(topic) {
+    const currentSentence = topic.sentences[this.typingSentenceIndex];
+    if (!currentSentence) return;
+
+    const userText = (this.typingUserInput || '').trim();
+    const correctText = currentSentence.mn.trim();
+
+    // 句読点・記号・空白無視の柔軟なマッチング判定
+    const clean = (s) => (s || '').toLowerCase().replace(/[.,!?！？。、\s\-_'"]/g, '').trim();
+    const isCorrect = isFuzzyMatch(userText, correctText) || (clean(userText) === clean(correctText));
+
+    this.typingHasAnswered = true;
+    this.typingIsCorrect = isCorrect;
+
+    if (isCorrect) {
+      if (!this.typingCompleted[topic.id]) {
+        this.typingCompleted[topic.id] = {};
+      }
+      this.typingCompleted[topic.id][this.typingSentenceIndex] = true;
+
+      // 正解音 & 音声読み上げ & XP加算
+      try {
+        if (typeof SoundEffects !== 'undefined' && typeof SoundEffects.playCorrect === 'function') {
+          SoundEffects.playCorrect();
+        }
+      } catch (_) {}
+      SpeechService.speak(correctText);
+
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(10);
+      }
+    } else {
+      try {
+        if (typeof SoundEffects !== 'undefined' && typeof SoundEffects.playWrong === 'function') {
+          SoundEffects.playWrong();
+        }
+      } catch (_) {}
+    }
+
+    this.render(this.container, this.onNavigate);
+  }
+
+  static handleTypingNext(topic) {
+    this.typingSentenceIndex++;
+    this.typingUserInput = '';
+    this.typingHasAnswered = false;
+    this.typingIsCorrect = false;
+    this.typingShowHint = false;
+    this.render(this.container, this.onNavigate);
   }
 
   static startTimer() {
