@@ -44,7 +44,8 @@ tests = [
     'test_pdf_grammar_supplement.py',
     'test_textbook_comprehensive_integration.py',
     'test_interview_master_feature.py',
-    'test_genre_vocab_and_mode.py'
+    'test_genre_vocab_and_mode.py',
+    'test_cross_device_sync.py'
 ]
 
 for t in tests:

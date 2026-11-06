@@ -4,7 +4,7 @@ import { SyncService } from '../services/sync.js';
 
 export class AuthModal {
   static modalContainer = null;
-  static currentTab = 'login'; // 'login' | 'register' | 'recovery' | 'profile'
+  static currentTab = 'login'; // 'login' | 'register' | 'sync' | 'recovery' | 'profile'
   static onAuthChanged = null;
 
   static show(onAuthChanged) {
@@ -71,9 +71,14 @@ export class AuthModal {
           新規登録
         </button>
         <button type="button" class="tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold text-center border-b-2 transition-colors ${
+          this.currentTab === 'sync' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'
+        }" data-tab="sync">
+          📲 端末同期
+        </button>
+        <button type="button" class="tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold text-center border-b-2 transition-colors ${
           this.currentTab === 'recovery' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-700'
         }" data-tab="recovery">
-          パスワード復旧
+          復旧
         </button>
       </div>
 
@@ -82,7 +87,68 @@ export class AuthModal {
 
       ${this.currentTab === 'login' ? this.renderLoginForm() : ''}
       ${this.currentTab === 'register' ? this.renderRegisterForm() : ''}
+      ${this.currentTab === 'sync' ? this.renderSyncView() : ''}
       ${this.currentTab === 'recovery' ? this.renderRecoveryForm() : ''}
+    `;
+  }
+
+  static renderSyncView() {
+    const user = AuthService.getCurrentUser();
+    return `
+      <div class="space-y-4">
+        <div class="p-3 bg-gradient-to-r from-indigo-50 to-emerald-50 border border-indigo-200 rounded-2xl text-xs text-indigo-950 space-y-1.5">
+          <div class="font-extrabold flex items-center gap-1.5 text-indigo-900">
+            <span>📲</span>
+            <span>端末間データ同期（PC ↔ スマホ ↔ タブレット）</span>
+          </div>
+          <p class="text-[11px] text-slate-600 leading-relaxed">
+            PCで学習したアカウントと進捗（XP・レベル・間違いノート・お気に入り）を、この端末に即座に引き継ぎます。
+          </p>
+        </div>
+
+        <!-- 方法1: 同期コード / URL貼り付け -->
+        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5">
+          <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+            <span>📋 同期コード または 同期URL を貼り付け:</span>
+            <span class="text-[10px] text-slate-400">PC側でコピーしたコード</span>
+          </label>
+          <textarea id="input-sync-code" rows="3" placeholder="PC画面の「端末同期」でコピーした同期URL（http://...login_token=...）または同期コードをここに貼り付けてください" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden font-mono"></textarea>
+          <button type="button" id="btn-execute-sync-code" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-md transition-all active:scale-98 flex items-center justify-center gap-1.5">
+            <span>🚀</span>
+            <span>データを同期してログインする</span>
+          </button>
+        </div>
+
+        <!-- 方法2: バックアップJSONファイルの読込 -->
+        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+          <div class="text-xs font-bold text-slate-800 flex items-center justify-between">
+            <span>📥 バックアップファイル（JSON）から復元:</span>
+          </div>
+          <p class="text-[11px] text-slate-500">
+            PCからAirDrop、Googleドライブ、メール等で送ったバックアップファイルを選択します。
+          </p>
+          <label class="w-full py-2 px-3 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center">
+            <span>📁 ファイルを選択して復元 (.json)</span>
+            <input type="file" id="input-import-backup-file" accept=".json,application/json" class="hidden">
+          </label>
+        </div>
+
+        ${user ? `
+          <!-- 現在のデータを書き出す（エクスポート） -->
+          <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+            <span class="text-slate-500 font-medium">この端末のデータを保存:</span>
+            <button type="button" id="btn-export-current-backup" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg font-bold text-xs transition-all flex items-center gap-1">
+              <span>💾 バックアップ保存</span>
+            </button>
+          </div>
+        ` : ''}
+
+        <div class="text-center pt-1">
+          <button type="button" class="tab-link text-xs text-slate-500 hover:text-slate-800 font-bold" data-tab="login">
+            ← ユーザー名とパスワードでログインに戻る
+          </button>
+        </div>
+      </div>
     `;
   }
 
@@ -107,14 +173,21 @@ export class AuthModal {
             </div>
           </div>
         ` : `
-          <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-xs text-indigo-900 space-y-1">
-            <div class="font-bold flex items-center gap-1">
-              <span>📱</span>
-              <span>タブレットやスマホからご利用の場合</span>
+          <div class="p-3 bg-gradient-to-r from-indigo-50 to-sky-50 border border-indigo-200 rounded-xl text-xs text-indigo-950 space-y-2">
+            <div class="font-bold flex items-center justify-between">
+              <span class="flex items-center gap-1.5">
+                <span>📲</span>
+                <span>PCのデータと同期する場合</span>
+              </span>
+              <span class="text-[10px] bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full font-bold">1秒連携</span>
             </div>
             <p class="text-[11px] text-indigo-800 leading-relaxed">
-              PC画面右上の「📱 タブレット連携」のQRコードをカメラで読み取ると、パスワード入力なしで自動ログインできます！もちろん下記からユーザー名とパスワードを入力してログインすることも可能です。
+              PC画面右上の「📲 端末同期」のQRコードをカメラで読み取るか、同期URLを貼り付けるとパスワード入力不要ですべての学習履歴を引き継げます。
             </p>
+            <button type="button" class="tab-link w-full py-1.5 px-3 bg-white hover:bg-indigo-100 text-indigo-700 border border-indigo-300 rounded-lg text-xs font-bold transition-all text-center flex items-center justify-center gap-1" data-tab="sync">
+              <span>📋</span>
+              <span>同期コード・URLを貼り付けて同期する →</span>
+            </button>
           </div>
         `}
 
@@ -390,6 +463,72 @@ export class AuthModal {
       });
     });
 
+    // --- 同期タブ内のイベント ---
+    const executeSyncBtn = this.modalContainer.querySelector('#btn-execute-sync-code');
+    if (executeSyncBtn) {
+      executeSyncBtn.addEventListener('click', async () => {
+        const val = (this.modalContainer.querySelector('#input-sync-code') || {}).value;
+        if (!val || !val.trim()) {
+          alert('同期コードまたは同期URLを貼り付けてください。');
+          return;
+        }
+        executeSyncBtn.disabled = true;
+        executeSyncBtn.textContent = '同期・復元中...';
+        const res = AuthService.importBackupData(val.trim());
+        if (res.success) {
+          AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
+          SyncService.triggerSync();
+          this.close();
+          if (this.onAuthChanged) this.onAuthChanged(res.user);
+          setTimeout(() => window.location.reload(), 300);
+        } else {
+          executeSyncBtn.disabled = false;
+          executeSyncBtn.textContent = 'データを同期してログインする';
+          alert('同期に失敗しました: ' + (res.error || '無効なコードです'));
+        }
+      });
+    }
+
+    const fileInput = this.modalContainer.querySelector('#input-import-backup-file');
+    if (fileInput) {
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const content = evt.target.result;
+          const res = AuthService.importBackupData(content);
+          if (res.success) {
+            AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
+            SyncService.triggerSync();
+            this.close();
+            if (this.onAuthChanged) this.onAuthChanged(res.user);
+            setTimeout(() => window.location.reload(), 300);
+          } else {
+            alert('復元に失敗しました: ' + res.error);
+          }
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    const exportBtn = this.modalContainer.querySelector('#btn-export-current-backup');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        const jsonStr = AuthService.exportBackupData();
+        if (!jsonStr) return;
+        const user = AuthService.getCurrentUser();
+        const uname = user ? user.username : 'user';
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mongol_learning_backup_${uname}_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
     // ユーザー名入力欄の自動正規化（全角英数→半角、全角スペース除去など）
     ['#input-login-username', '#input-reg-username', '#input-rec-username'].forEach(selector => {
       const input = this.modalContainer.querySelector(selector);
@@ -424,19 +563,94 @@ export class AuthModal {
           submitBtn.disabled = false;
           submitBtn.textContent = 'ログインする';
           if (res.code === 'USER_NOT_FOUND' || res.code === 'NO_USERS_ON_DEVICE') {
-            this.showAlert(res.error, 'error', {
-              label: `👉 「${res.inputUsername || u.trim()}」を新規登録する`,
-              callback: () => {
-                this.currentTab = 'register';
-                this.render();
-                const regInput = this.modalContainer.querySelector('#input-reg-username');
-                if (regInput) {
-                  regInput.value = res.inputUsername || u.trim();
-                  const pwdInput = this.modalContainer.querySelector('#input-reg-password');
-                  if (pwdInput) pwdInput.focus();
-                }
+            const alertEl = this.modalContainer.querySelector('#auth-alert-area');
+            if (alertEl) {
+              alertEl.className = 'mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl text-xs text-rose-900 space-y-2.5';
+              alertEl.innerHTML = `
+                <div class="font-black text-rose-800 flex items-center gap-1.5">
+                  <span>⚠️</span>
+                  <span>この端末に「${u}」のアカウントがありません</span>
+                </div>
+                <p class="text-[11px] text-rose-700 leading-relaxed">
+                  PCで作成したアカウントと学習データ（XP・ペンギン・間違いノート等）を引き継ぐには、下記のいずれかの方法をお選びください：
+                </p>
+                <div class="grid grid-cols-1 gap-1.5 pt-1">
+                  <button type="button" id="btn-sync-from-pc" class="w-full py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-xs">
+                    <span>📲</span>
+                    <span>PCからデータを同期する（QR / 同期コード）</span>
+                  </button>
+                  <button type="button" id="btn-retry-server-fetch" class="w-full py-2 px-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
+                    <span>🔄</span>
+                    <span>サーバー（PC）からアカウントを再検索</span>
+                  </button>
+                  <button type="button" id="btn-quick-create-from-login" class="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
+                    <span>👉</span>
+                    <span>この端末で「${res.inputUsername || u.trim()}」を新規登録する</span>
+                  </button>
+                </div>
+              `;
+              alertEl.classList.remove('hidden');
+
+              const syncBtn = alertEl.querySelector('#btn-sync-from-pc');
+              if (syncBtn) {
+                syncBtn.addEventListener('click', () => {
+                  this.currentTab = 'sync';
+                  this.render();
+                });
               }
-            });
+
+              const retryBtn = alertEl.querySelector('#btn-retry-server-fetch');
+              if (retryBtn) {
+                retryBtn.addEventListener('click', async () => {
+                  retryBtn.disabled = true;
+                  retryBtn.innerHTML = '<span>⏳</span><span>サーバー検索中...</span>';
+                  try {
+                    const serverUsers = await AuthService.fetchServerAccounts();
+                    const cleanU = AuthService.normalizeUsername(u);
+                    const foundInAccounts = serverUsers.find(x => AuthService.normalizeUsername(x.username) === cleanU);
+                    const syncData = await AuthService.fetchServerUserData(cleanU);
+                    if (foundInAccounts || (syncData && syncData.account)) {
+                      if (foundInAccounts) AuthService.mergeServerUsers([foundInAccounts]);
+                      if (syncData && syncData.account) AuthService.mergeServerUsers([syncData.account]);
+                      alertEl.className = 'mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 space-y-1';
+                      alertEl.innerHTML = `
+                        <div class="font-bold flex items-center gap-1">
+                          <span>✅</span>
+                          <span>PCサーバー上にアカウント「${u}」が見つかりました！</span>
+                        </div>
+                        <p class="text-[11px] text-emerald-800">
+                          パスワードを入力してそのまま「ログインする」を押してください。学習進捗も自動同期されます。
+                        </p>
+                      `;
+                    } else {
+                      alert('PCのWebサーバー（http://<PCのIP>:5173）に接続できませんでした。PC側で「📲 端末同期」を開き、QRコードをカメラで読み取るか、同期URLをコピーして貼り付けてください。');
+                      retryBtn.disabled = false;
+                      retryBtn.innerHTML = '<span>🔄</span><span>サーバー（PC）からアカウントを再検索</span>';
+                    }
+                  } catch (err) {
+                    alert('検索エラー: ' + err.message);
+                    retryBtn.disabled = false;
+                    retryBtn.innerHTML = '<span>🔄</span><span>サーバー（PC）からアカウントを再検索</span>';
+                  }
+                });
+              }
+
+              const createBtn = alertEl.querySelector('#btn-quick-create-from-login');
+              if (createBtn) {
+                createBtn.addEventListener('click', () => {
+                  this.currentTab = 'register';
+                  this.render();
+                  const regInput = this.modalContainer.querySelector('#input-reg-username');
+                  if (regInput) {
+                    regInput.value = res.inputUsername || u.trim();
+                    const pwdInput = this.modalContainer.querySelector('#input-reg-password');
+                    if (pwdInput) pwdInput.focus();
+                  }
+                });
+              }
+            } else {
+              this.showAlert(res.error, 'error');
+            }
           } else if (res.code === 'PASSWORD_MISMATCH') {
             this.showAlert(res.error, 'error', {
               label: '🔑 復旧コードでパスワードを再設定する',

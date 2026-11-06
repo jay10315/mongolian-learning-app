@@ -150,6 +150,13 @@ export class SyncService {
     const config = this.getConfig();
     const user = AuthService.getCurrentUser();
 
+    // 1. ローカルWebサーバー（LAN内）へ常に自動バックグラウンド同期
+    try {
+      if (user && navigator.onLine && typeof AuthService.syncAllToServer === 'function') {
+        AuthService.syncAllToServer(user.username);
+      }
+    } catch (_) {}
+
     if (!config || !user || !navigator.onLine) {
       this.updateStatus();
       return;

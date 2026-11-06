@@ -214,7 +214,7 @@ export class AuthService {
     let users = this.getLocalUsers();
     let user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
 
-    // 端末内に該当アカウントが存在しない場合、Webサーバー（LAN内）からアカウント一覧の自動同期を試みる
+    // 端末内に該当アカウントが存在しない場合、Webサーバー（LAN内）からアカウント一覧および同期データを自動検索
     if (!user) {
       try {
         const serverUsers = await this.fetchServerAccounts();
@@ -224,6 +224,18 @@ export class AuthService {
           user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
         }
       } catch (_) {}
+
+      // アカウント一覧にまだない場合でも、サーバーのsync storeから直接取得を試みる
+      if (!user) {
+        try {
+          const syncData = await this.fetchServerUserData(cleanUsername);
+          if (syncData && syncData.account) {
+            this.mergeServerUsers([syncData.account]);
+            users = this.getLocalUsers();
+            user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
+          }
+        } catch (_) {}
+      }
     }
 
     // 端末内に保存されているアカウントが1件もない場合
@@ -260,7 +272,18 @@ export class AuthService {
     this.saveLocalUsers(users);
 
     const session = this.setSession(user);
-    this.syncUserToServer(user);
+    
+    // サーバー上の最新学習データをローカルへ反映
+    try {
+      const serverSync = await this.fetchServerUserData(cleanUsername);
+      if (serverSync && serverSync.storage) {
+        this.restoreStorageSnapshot(serverSync.storage);
+      } else {
+        // サーバー側にデータがまだなければ現在のローカルデータをサーバーへ同期
+        this.syncAllToServer(cleanUsername);
+      }
+    } catch (_) {}
+
     return { success: true, user: session };
   }
 
@@ -324,13 +347,13 @@ export class AuthService {
     };
   }
 
-  // --- サーバー（LAN）連携アカウント同期 ---
+  // --- サーバー（LAN）連携アカウント＆学習データ完全同期 ---
 
   static async fetchServerAccounts() {
     if (typeof window === 'undefined' || !window.fetch) return [];
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
       const res = await fetch('/api/accounts', {
         method: 'GET',
         headers: { 'Accept': 'application/json' },
@@ -344,15 +367,77 @@ export class AuthService {
     return [];
   }
 
+  static async fetchServerUserData(username) {
+    if (typeof window === 'undefined' || !window.fetch || !username) return null;
+    try {
+      const clean = this.normalizeUsername(username);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const res = await fetch(`/api/sync/all?username=${encodeURIComponent(clean)}`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const data = await res.json();
+        return (data && (data.username || data.account)) ? data : null;
+      }
+    } catch (_) {}
+    return null;
+  }
+
   static async syncUserToServer(user) {
     if (typeof window === 'undefined' || !window.fetch || !user) return;
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
       await fetch('/api/accounts/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+    } catch (_) {}
+
+    // アカウント情報だけでなく全学習データも同時にサーバーに永続化
+    this.syncAllToServer(user.username);
+  }
+
+  static async syncAllToServer(username = null) {
+    if (typeof window === 'undefined' || !window.fetch) return;
+    const target = username || (this.getCurrentUser() ? this.getCurrentUser().username : null);
+    if (!target) return;
+    const clean = this.normalizeUsername(target);
+    const users = this.getLocalUsers();
+    const fullUser = users.find(u => this.normalizeUsername(u.username) === clean);
+
+    const payload = {
+      username: clean,
+      account: fullUser || null,
+      storage: {
+        gameStats: localStorage.getItem('mongol_app_game_stats_v1'),
+        mistakes: localStorage.getItem('mongol_app_mistakes_v1'),
+        wordProgress: localStorage.getItem('mongol_app_word_progress_v1'),
+        lookedUpWords: localStorage.getItem('mongol_app_looked_up_words_v1'),
+        history: localStorage.getItem('mongol_app_history_v1'),
+        dailyStats: localStorage.getItem('mongol_app_daily_stats_v1'),
+        settings: localStorage.getItem('mongol_app_settings_v1'),
+        customTyping: localStorage.getItem('mongol_app_custom_typing_sentences_v1'),
+        sunglasses: localStorage.getItem('mongol_app_penguin_sunglasses_v1'),
+        theme: localStorage.getItem('mongol_app_theme_mode_v1')
+      },
+      syncedAt: new Date().toISOString()
+    };
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+      await fetch('/api/sync/all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
         signal: controller.signal
       });
       clearTimeout(timeoutId);
@@ -399,16 +484,29 @@ export class AuthService {
     let mistakesData = null;
     let lookedUpWordsData = null;
     let wordProgressData = null;
+    let storageSnapshot = {};
     try {
       mascotData = localStorage.getItem('mongol_app_penguin_mascot_v1');
-      gamificationData = localStorage.getItem('mongol_app_gamification_v2');
+      gamificationData = localStorage.getItem('mongol_app_game_stats_v1') || localStorage.getItem('mongol_app_gamification_v2');
       mistakesData = localStorage.getItem('mongol_app_mistakes_v1');
       lookedUpWordsData = localStorage.getItem('mongol_app_looked_up_words_v1');
       wordProgressData = localStorage.getItem('mongol_app_word_progress_v1');
+      storageSnapshot = {
+        gameStats: localStorage.getItem('mongol_app_game_stats_v1'),
+        mistakes: mistakesData,
+        wordProgress: wordProgressData,
+        lookedUpWords: lookedUpWordsData,
+        history: localStorage.getItem('mongol_app_history_v1'),
+        dailyStats: localStorage.getItem('mongol_app_daily_stats_v1'),
+        settings: localStorage.getItem('mongol_app_settings_v1'),
+        customTyping: localStorage.getItem('mongol_app_custom_typing_sentences_v1'),
+        sunglasses: localStorage.getItem('mongol_app_penguin_sunglasses_v1'),
+        theme: localStorage.getItem('mongol_app_theme_mode_v1')
+      };
     } catch (_) {}
 
     const payload = {
-      v: 1,
+      v: 2,
       u: {
         id: fullUser.id,
         username: fullUser.username,
@@ -424,6 +522,7 @@ export class AuthService {
       m: mistakesData ? JSON.parse(mistakesData) : null,
       l: lookedUpWordsData ? JSON.parse(lookedUpWordsData) : null,
       w: wordProgressData ? JSON.parse(wordProgressData) : null,
+      storage: storageSnapshot,
       t: Date.now()
     };
 
@@ -457,6 +556,141 @@ export class AuthService {
   /**
    * ワンクリックログインURLのトークンを解析してアカウントを登録・自動ログイン
    */
+    /**
+   * 学習データスナップショットを安全にLocalStorageへ反映
+   */
+  static restoreStorageSnapshot(storage) {
+    if (!storage || typeof storage !== 'object') return;
+    try {
+      if (storage.gameStats) {
+        const cur = JSON.parse(localStorage.getItem('mongol_app_game_stats_v1') || '{}');
+        const inc = typeof storage.gameStats === 'string' ? JSON.parse(storage.gameStats) : storage.gameStats;
+        if (!cur.totalXp || (inc.totalXp && inc.totalXp >= cur.totalXp)) {
+          localStorage.setItem('mongol_app_game_stats_v1', JSON.stringify(inc));
+        }
+      }
+      if (storage.mistakes) {
+        const inc = typeof storage.mistakes === 'string' ? JSON.parse(storage.mistakes) : storage.mistakes;
+        if (Array.isArray(inc)) {
+          const cur = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
+          inc.forEach(m => {
+            const idx = cur.findIndex(x => x.id === m.id || (x.question === m.question && x.correctAnswer === m.correctAnswer));
+            if (idx >= 0) cur[idx] = { ...cur[idx], ...m };
+            else cur.push(m);
+          });
+          localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(cur));
+        }
+      }
+      if (storage.wordProgress) {
+        const inc = typeof storage.wordProgress === 'string' ? JSON.parse(storage.wordProgress) : storage.wordProgress;
+        if (inc && typeof inc === 'object') {
+          const cur = JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}');
+          Object.assign(cur, inc);
+          localStorage.setItem('mongol_app_word_progress_v1', JSON.stringify(cur));
+        }
+      }
+      if (storage.lookedUpWords) {
+        const inc = typeof storage.lookedUpWords === 'string' ? JSON.parse(storage.lookedUpWords) : storage.lookedUpWords;
+        if (Array.isArray(inc)) {
+          const cur = JSON.parse(localStorage.getItem('mongol_app_looked_up_words_v1') || '[]');
+          inc.forEach(w => {
+            const cleanKey = (w.dictForm || w.rawWord || '').trim().toLowerCase();
+            const idx = cur.findIndex(x => (x.dictForm || x.rawWord || '').trim().toLowerCase() === cleanKey);
+            if (idx >= 0) cur[idx] = { ...cur[idx], ...w };
+            else cur.push(w);
+          });
+          localStorage.setItem('mongol_app_looked_up_words_v1', JSON.stringify(cur));
+        }
+      }
+      if (storage.dailyStats) {
+        const inc = typeof storage.dailyStats === 'string' ? JSON.parse(storage.dailyStats) : storage.dailyStats;
+        if (inc) localStorage.setItem('mongol_app_daily_stats_v1', JSON.stringify(inc));
+      }
+      if (storage.settings) {
+        const inc = typeof storage.settings === 'string' ? JSON.parse(storage.settings) : storage.settings;
+        if (inc) localStorage.setItem('mongol_app_settings_v1', JSON.stringify(inc));
+      }
+      if (storage.sunglasses) {
+        localStorage.setItem('mongol_app_penguin_sunglasses_v1', String(storage.sunglasses));
+      }
+      if (storage.theme) {
+        localStorage.setItem('mongol_app_theme_mode_v1', String(storage.theme));
+      }
+    } catch (e) {
+      console.warn('[AuthService] restoreStorageSnapshot error:', e);
+    }
+  }
+
+  /**
+   * 学習データ・アカウントのバックアップJSON生成（ファイルダウンロード用）
+   */
+  static exportBackupData(user = null) {
+    const targetUser = user || this.getCurrentUser();
+    if (!targetUser) return null;
+    const clean = this.normalizeUsername(targetUser.username);
+    const users = this.getLocalUsers();
+    const fullUser = users.find(u => this.normalizeUsername(u.username) === clean) || targetUser;
+
+    return JSON.stringify({
+      version: 2,
+      exportedAt: new Date().toISOString(),
+      account: fullUser,
+      storage: {
+        gameStats: localStorage.getItem('mongol_app_game_stats_v1'),
+        mistakes: localStorage.getItem('mongol_app_mistakes_v1'),
+        wordProgress: localStorage.getItem('mongol_app_word_progress_v1'),
+        lookedUpWords: localStorage.getItem('mongol_app_looked_up_words_v1'),
+        history: localStorage.getItem('mongol_app_history_v1'),
+        dailyStats: localStorage.getItem('mongol_app_daily_stats_v1'),
+        settings: localStorage.getItem('mongol_app_settings_v1'),
+        customTyping: localStorage.getItem('mongol_app_custom_typing_sentences_v1'),
+        sunglasses: localStorage.getItem('mongol_app_penguin_sunglasses_v1'),
+        theme: localStorage.getItem('mongol_app_theme_mode_v1')
+      }
+    }, null, 2);
+  }
+
+  /**
+   * バックアップJSONまたは同期コードの読み込み・復元
+   */
+  static importBackupData(rawText) {
+    if (!rawText || typeof rawText !== 'string') {
+      return { success: false, error: 'データが空です。' };
+    }
+    const trimmed = rawText.trim();
+    // 1. URL または login_token 形式の場合
+    if (trimmed.includes('login_token=') || (!trimmed.startsWith('{') && trimmed.length > 50)) {
+      let token = trimmed;
+      if (token.includes('login_token=')) {
+        try {
+          const u = new URL(token);
+          token = u.searchParams.get('login_token') || token;
+        } catch (_) {
+          const m = token.match(/login_token=([^&\s]+)/);
+          if (m) token = m[1];
+        }
+      }
+      return this.processMagicLoginToken(token);
+    }
+
+    // 2. JSON バックアップ形式の場合
+    try {
+      const data = JSON.parse(trimmed);
+      if (!data || !data.account || !data.account.username) {
+        return { success: false, error: 'バックアップデータに有効なアカウント情報が含まれていません。' };
+      }
+      const u = data.account;
+      this.mergeServerUsers([u]);
+      const session = this.setSession(u);
+      if (data.storage) {
+        this.restoreStorageSnapshot(data.storage);
+      }
+      return { success: true, user: session };
+    } catch (e) {
+      return { success: false, error: 'バックアップデータの解析に失敗しました: ' + e.message };
+    }
+  }
+
   static processMagicLoginToken(token) {
     if (!token) return { success: false, error: 'Empty token' };
     try {
@@ -551,6 +785,11 @@ export class AuthService {
           });
           localStorage.setItem('mongol_app_looked_up_words_v1', JSON.stringify(curLookedUp));
         } catch (_) {}
+      }
+
+      // 完全スナップショットがある場合の復元
+      if (payload.storage) {
+        this.restoreStorageSnapshot(payload.storage);
       }
 
       // SRS復習進捗（振り返るべき単語）の引き継ぎ・マージ

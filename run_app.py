@@ -19,6 +19,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 PORT = 5173
 ACCOUNTS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data_accounts.json')
+SYNC_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data_sync_store.json')
 CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'audio_cache')
 PHRASES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'audio_phrases.json')
 DEFAULT_VOICE = 'mn-MN-YesuiNeural'
@@ -60,6 +61,23 @@ def load_accounts():
     except Exception:
         return []
 
+def load_sync_store():
+    if not os.path.exists(SYNC_FILE):
+        return {}
+    try:
+        with open(SYNC_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+def save_sync_store(store):
+    try:
+        with open(SYNC_FILE, 'w', encoding='utf-8') as f:
+            json.dump(store, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error saving sync store: {e}")
+
 def save_accounts(accounts):
     try:
         with open(ACCOUNTS_FILE, 'w', encoding='utf-8') as f:
@@ -99,6 +117,35 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == '/api/server_info':
+            info = {
+                'status': 'ok',
+                'local_ip': get_local_ip(),
+                'port': PORT,
+                'accounts_count': len(load_accounts()),
+                'has_sync_data': os.path.exists(SYNC_FILE)
+            }
+            body = json.dumps(info, ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
+        if parsed.path == '/api/sync/all':
+            qs = urllib.parse.parse_qs(parsed.query)
+            uname = normalize_u(qs.get('username', [''])[0])
+            store = load_sync_store()
+            user_data = store.get(uname, {})
+            body = json.dumps(user_data, ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
         if parsed.path == '/api/accounts':
             accounts = load_accounts()
             body = json.dumps(accounts, ensure_ascii=False).encode('utf-8')
@@ -204,6 +251,43 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == '/api/sync/all':
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                post_data = self.rfile.read(content_length)
+                payload = json.loads(post_data.decode('utf-8'))
+                uname = normalize_u(payload.get('username', ''))
+                if uname:
+                    store = load_sync_store()
+                    store[uname] = payload
+                    save_sync_store(store)
+
+                    # Also save account credential to accounts file if present
+                    if payload.get('account'):
+                        acc = payload['account']
+                        accounts = load_accounts()
+                        idx = next((i for i, a in enumerate(accounts) if normalize_u(a.get('username')) == uname), -1)
+                        if idx >= 0:
+                            accounts[idx].update(acc)
+                        else:
+                            accounts.append(acc)
+                        save_accounts(accounts)
+
+                resp = json.dumps({'status': 'ok', 'username': uname}).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(resp)))
+                self.end_headers()
+                self.wfile.write(resp)
+            except Exception as e:
+                self.send_response(500)
+                err_resp = json.dumps({'status': 'error', 'message': str(e)}).encode('utf-8')
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(err_resp)))
+                self.end_headers()
+                self.wfile.write(err_resp)
+            return
+
         if parsed.path == '/api/accounts/sync':
             try:
                 content_length = int(self.headers.get('Content-Length', 0))

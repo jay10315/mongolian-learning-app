@@ -415,9 +415,19 @@ export class Navbar {
             <div class="flex items-center gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200">
               <input type="text" id="tablet-connect-url-input" value="${targetUrl}" readonly class="w-full bg-transparent text-xs sm:text-sm font-black text-indigo-700 text-center select-all focus:outline-hidden">
               <button type="button" id="btn-copy-tablet-url" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shrink-0 transition-all active:scale-95">
-                コピー
+                URLコピー
               </button>
             </div>
+            ${magicToken ? `
+              <div class="flex items-center justify-between gap-2 pt-1">
+                <button type="button" id="btn-copy-tablet-token-only" class="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all" data-token="${magicToken}">
+                  📋 同期コードのみコピー
+                </button>
+                <button type="button" id="btn-download-tablet-backup" class="flex-1 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-bold transition-all">
+                  💾 バックアップ保存 (.json)
+                </button>
+              </div>
+            ` : ''}
           </div>
         </div>
 
