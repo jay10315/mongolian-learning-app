@@ -1,5 +1,6 @@
 // スペリングゲームコンポーネント（水色オーシャン・レーザー魚キャッチアクション）
 // お魚の中に和訳が書かれて上から降ってくる！落ち切る前にスペルを入力してレーザーで打ち落とすとペンギンが食べる！
+// ※打鍵ごとの全画面再描画を完全撤廃し、インプレース部分更新によりチカチカ・点滅を100%防止
 
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
@@ -214,7 +215,6 @@ export class SpellingGameComponent {
     const fishEl = this.container?.querySelector('#falling-fish-box');
     const barEl = this.container?.querySelector('#fall-progress-bar');
     if (fishEl) {
-      // 画面上部 8% から下部 68% まで徐々に下降
       const topPos = 8 + (this.state.fallProgress * 0.60);
       fishEl.style.top = `${topPos}%`;
     }
@@ -222,17 +222,17 @@ export class SpellingGameComponent {
       const remainPct = Math.max(0, 100 - this.state.fallProgress);
       barEl.style.width = `${remainPct}%`;
       if (remainPct < 25) {
-        barEl.className = 'h-full bg-red-500 transition-all duration-75';
+        barEl.className = 'h-full bg-red-500 transition-none';
       } else if (remainPct < 50) {
-        barEl.className = 'h-full bg-amber-400 transition-all duration-75';
+        barEl.className = 'h-full bg-amber-400 transition-none';
       } else {
-        barEl.className = 'h-full bg-emerald-400 transition-all duration-75';
+        barEl.className = 'h-full bg-emerald-400 transition-none';
       }
     }
   }
 
   // ==========================================
-  // UIレンダリング（水色オーシャン・レーザー演出）
+  // UIレンダリング（全画面再描画：問題切替時やモード切替時のみ）
   // ==========================================
   static renderUI() {
     if (!this.container) return;
@@ -245,8 +245,9 @@ export class SpellingGameComponent {
     const isArrange = mode === 'tile_arrange';
     const currentLetters = isArrange ? placedLetters.map(p => p.char) : typedLetters;
 
+    // チカチカ防止：最外層の animate-fade-in を完全撤廃
     this.container.innerHTML = `
-      <div class="animate-fade-in max-w-4xl mx-auto px-3 sm:px-4 py-4 space-y-4">
+      <div class="max-w-4xl mx-auto px-3 sm:px-4 py-4 space-y-4">
         
         <!-- ナビゲーション・ヘッダーバー -->
         <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
@@ -264,12 +265,12 @@ export class SpellingGameComponent {
 
           <!-- モード切り替えピル -->
           <div class="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-bold">
-            <button type="button" id="btn-mode-arrange" class="px-3 py-1.5 rounded-lg transition-all ${
+            <button type="button" id="btn-mode-arrange" class="px-3 py-1.5 rounded-lg ${
               isArrange ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }">
               🔤 候補タイルあり（タップ / 打鍵）
             </button>
-            <button type="button" id="btn-mode-free" class="px-3 py-1.5 rounded-lg transition-all ${
+            <button type="button" id="btn-mode-free" class="px-3 py-1.5 rounded-lg ${
               !isArrange ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }">
               ⌨️ 候補なし自力入力
@@ -278,7 +279,7 @@ export class SpellingGameComponent {
 
           <!-- スコア・ご飯ステータス -->
           <div class="flex items-center gap-2 text-xs">
-            <div class="flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-full font-black">
+            <div id="spelling-score-box" class="flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-full font-black">
               <span>⚡</span>
               <span>${score} pt</span>
               ${combo >= 2 ? `<span class="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded-full text-[10px] font-bold">${combo}コンボ</span>` : ''}
@@ -291,7 +292,7 @@ export class SpellingGameComponent {
           </div>
         </div>
 
-        <!-- 水色オーシャン・ゲームステージ（月を完全撤廃し、上から降る魚を撃ち落とす！） -->
+        <!-- 水色オーシャン・ゲームステージ -->
         <div class="relative bg-gradient-to-b from-sky-400 via-cyan-500 to-blue-600 rounded-3xl p-4 sm:p-7 border-2 border-sky-300 shadow-xl overflow-hidden min-h-[520px] text-slate-900 flex flex-col justify-between select-none">
           
           <!-- 水中の気泡エフェクト（CSSドット） -->
@@ -304,26 +305,25 @@ export class SpellingGameComponent {
           <div class="relative z-10 w-full max-w-md mx-auto bg-black/25 backdrop-blur-xs rounded-full p-1 border border-white/40 shadow-xs mb-2">
             <div class="flex items-center justify-between text-[11px] font-black text-white px-2 mb-0.5">
               <span class="flex items-center gap-1">⏱️ 落下ゲージ: 落ち切る前に撃ち落とそう！</span>
-              <span>${Math.max(0, Math.ceil(this.state.fallDurationSec * (1 - this.state.fallProgress / 100)))} 秒</span>
+              <span id="fall-seconds-text">${Math.max(0, Math.ceil(this.state.fallDurationSec * (1 - this.state.fallProgress / 100)))} 秒</span>
             </div>
             <div class="w-full bg-white/20 h-2.5 rounded-full overflow-hidden">
-              <div id="fall-progress-bar" class="h-full bg-emerald-400 transition-all duration-75" style="width: ${Math.max(0, 100 - this.state.fallProgress)}%;"></div>
+              <div id="fall-progress-bar" class="h-full bg-emerald-400 transition-none" style="width: ${Math.max(0, 100 - this.state.fallProgress)}%;"></div>
             </div>
           </div>
 
           <!-- レーザー光線エフェクト（正解時に下から魚へビシューン！） -->
           ${isLaserShooting ? `
-            <div class="laser-beam absolute left-1/2 bottom-24 -translate-x-1/2 w-3 sm:w-4 bg-gradient-to-t from-cyan-200 via-white to-amber-300 rounded-full shadow-[0_0_25px_#ffffff] z-30 pointer-events-none transition-all duration-300" style="height: 60%;"></div>
+            <div class="laser-beam absolute left-1/2 bottom-24 -translate-x-1/2 w-3 sm:w-4 bg-gradient-to-t from-cyan-200 via-white to-amber-300 rounded-full shadow-[0_0_25px_#ffffff] z-30 pointer-events-none transition-none" style="height: 60%;"></div>
           ` : ''}
 
           <!-- 上から降ってくるお魚カプセル（魚の中に和訳！！） -->
-          <div id="falling-fish-box" class="absolute left-1/2 -translate-x-1/2 z-20 transition-all duration-75 flex flex-col items-center" style="top: ${8 + (this.state.fallProgress * 0.60)}%;">
+          <div id="falling-fish-box" class="absolute left-1/2 -translate-x-1/2 z-20 transition-none flex flex-col items-center" style="top: ${8 + (this.state.fallProgress * 0.60)}%;">
             
-            <div class="relative flex items-center justify-center filter drop-shadow-xl transition-transform duration-200 ${isFishHit ? 'scale-125 rotate-12' : ''} ${isFishCaught ? 'scale-0 translate-y-32 opacity-0' : ''}">
+            <div class="relative flex items-center justify-center filter drop-shadow-xl ${isFishHit ? 'scale-125 rotate-12' : ''} ${isFishCaught ? 'scale-0 translate-y-32 opacity-0' : ''}">
               
               <!-- お魚ボディ（和訳内蔵） -->
               <div class="relative bg-gradient-to-r from-amber-300 via-orange-400 to-amber-400 text-slate-950 px-5 sm:px-7 py-3 rounded-full border-2 border-white shadow-2xl flex items-center gap-3">
-                <!-- 尾びれ -->
                 <div class="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 w-0 h-0 border-y-8 border-y-transparent border-r-12 border-r-orange-400"></div>
                 
                 <span class="text-2xl sm:text-3xl">🐟</span>
@@ -344,7 +344,7 @@ export class SpellingGameComponent {
                 </div>
 
                 <!-- 音声ボタン -->
-                <button type="button" id="btn-audio-prompt" class="p-1.5 bg-white/80 hover:bg-white text-orange-950 rounded-full transition-all shadow-xs" title="発音を聴く">
+                <button type="button" id="btn-audio-prompt" class="p-1.5 bg-white/80 hover:bg-white text-orange-950 rounded-full shadow-xs" title="発音を聴く">
                   🔊
                 </button>
               </div>
@@ -373,23 +373,23 @@ export class SpellingGameComponent {
                 <span>🎯 スペルを入力してレーザーで打ち落とそう！</span>
               </div>
 
-              <!-- 文字スロット -->
-              <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 min-h-[58px]">
+              <!-- 文字スロット（DOM部分更新対応） -->
+              <div id="spelling-slots-container" class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 min-h-[58px]">
                 ${targetLetters.map((expectedChar, idx) => {
                   const placed = currentLetters[idx];
                   const hasChar = !!placed;
                   
                   let slotColor = 'bg-white/20 border-white/40 text-white';
                   if (hasChar) {
-                    slotColor = 'bg-gradient-to-b from-amber-300 to-yellow-400 border-yellow-200 text-slate-950 font-black shadow-md scale-105';
+                    slotColor = 'bg-gradient-to-b from-amber-300 to-yellow-400 border-yellow-200 text-slate-950 font-black shadow-md';
                   }
 
                   return `
-                    <div class="spelling-slot relative w-10 h-12 sm:w-12 sm:h-14 rounded-xl border-2 flex items-center justify-center text-xl sm:text-2xl font-mono transition-all ${slotColor} ${
+                    <div class="spelling-slot relative w-10 h-12 sm:w-12 sm:h-14 rounded-xl border-2 flex items-center justify-center text-xl sm:text-2xl font-mono ${slotColor} ${
                       isArrange && hasChar ? 'cursor-pointer hover:bg-rose-400 hover:text-white' : ''
                     }" data-index="${idx}" title="${isArrange && hasChar ? 'タップして取り消す' : ''}">
                       <span>${placed || ''}</span>
-                      ${!hasChar ? `<div class="absolute bottom-1 w-4 h-0.5 bg-white/40 rounded-full"></div>` : ''}
+                      <div class="slot-underline absolute bottom-1 w-4 h-0.5 bg-white/40 rounded-full" style="display: ${hasChar ? 'none' : 'block'};"></div>
                     </div>
                   `;
                 }).join('')}
@@ -400,15 +400,15 @@ export class SpellingGameComponent {
                 <div class="pt-2 border-t border-white/20 space-y-2.5">
                   <div class="text-xs font-bold text-sky-100 flex items-center justify-between px-1">
                     <span>✨ 文字タイルをタップ（またはキーボード打鍵）:</span>
-                    <span class="text-[11px] text-white/80">${candidateTiles.filter(t => !t.isUsed).length} 文字残り</span>
+                    <span id="tiles-remaining-count" class="text-[11px] text-white/80">${candidateTiles.filter(t => !t.isUsed).length} 文字残り</span>
                   </div>
 
                   <!-- 候補タイル群 -->
-                  <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 min-h-[50px]">
+                  <div id="candidate-tiles-container" class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 min-h-[50px]">
                     ${candidateTiles.map(tile => `
-                      <button type="button" class="candidate-tile w-10 h-11 sm:w-11 sm:h-12 rounded-xl text-lg sm:text-xl font-black font-mono transition-all border-2 ${
+                      <button type="button" class="candidate-tile w-10 h-11 sm:w-11 sm:h-12 rounded-xl text-lg sm:text-xl font-black font-mono border-2 ${
                         tile.isUsed 
-                          ? 'bg-black/30 border-transparent text-white/20 cursor-not-allowed scale-90' 
+                          ? 'bg-black/30 border-transparent text-white/20 cursor-not-allowed' 
                           : 'bg-amber-400 hover:bg-amber-300 active:scale-95 border-amber-200 text-slate-950 shadow-md'
                       }" data-tile-id="${tile.id}" data-char="${tile.char}" ${tile.isUsed ? 'disabled' : ''}>
                         ${tile.char}
@@ -418,16 +418,16 @@ export class SpellingGameComponent {
 
                   <!-- サブボタン群 -->
                   <div class="flex items-center justify-center gap-2 pt-1">
-                    <button type="button" id="btn-backspace" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/30 transition-all flex items-center gap-1">
+                    <button type="button" id="btn-backspace" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/30 flex items-center gap-1">
                       <span>⌫</span> 1文字戻す
                     </button>
-                    <button type="button" id="btn-reset-slots" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/30 transition-all flex items-center gap-1">
+                    <button type="button" id="btn-reset-slots" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/30 flex items-center gap-1">
                       <span>🔄</span> リセット
                     </button>
-                    <button type="button" id="btn-shuffle-tiles" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/30 transition-all flex items-center gap-1">
+                    <button type="button" id="btn-shuffle-tiles" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/30 flex items-center gap-1">
                       <span>🔀</span> シャッフル
                     </button>
-                    <button type="button" id="btn-hint" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 text-xs font-black shadow-xs transition-all flex items-center gap-1">
+                    <button type="button" id="btn-hint" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 text-xs font-black shadow-xs flex items-center gap-1">
                       <span>💡</span> ヒント (1文字開く)
                     </button>
                   </div>
@@ -440,7 +440,7 @@ export class SpellingGameComponent {
                   </div>
                   <div class="flex flex-wrap justify-center gap-1 max-w-lg mx-auto">
                     ${SPECIAL_CYRILLIC_BAR.map(c => `
-                      <button type="button" class="btn-cyr-key px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white font-mono font-bold text-sm rounded-lg border border-white/30 transition-all" data-char="${c}">
+                      <button type="button" class="btn-cyr-key px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white font-mono font-bold text-sm rounded-lg border border-white/30" data-char="${c}">
                         ${c}
                       </button>
                     `).join('')}
@@ -462,10 +462,10 @@ export class SpellingGameComponent {
                 <span class="flex items-center gap-1">
                   <span>🧭</span> ペンギンの満腹度
                 </span>
-                <span class="text-amber-300 font-mono text-sm">${fullness * 20}% (${fullness}/5匹)</span>
+                <span id="penguin-fullness-text" class="text-amber-300 font-mono text-sm">${fullness * 20}% (${fullness}/5匹)</span>
               </div>
               <div class="w-full bg-white/20 h-3 rounded-full overflow-hidden p-0.5 border border-white/30">
-                <div class="bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-300 h-full rounded-full transition-all duration-500" style="width: ${fullness * 20}%"></div>
+                <div id="penguin-fullness-bar" class="bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-300 h-full rounded-full transition-all duration-300" style="width: ${fullness * 20}%"></div>
               </div>
               <p class="text-[10px] text-white/70">
                 5匹食べると【満腹フィーバー】突入！ボーナス +50 XP 獲得！
@@ -475,7 +475,7 @@ export class SpellingGameComponent {
             <!-- ペンギンマスコットのアニメーションとメッセージ -->
             <div class="flex items-center gap-3 w-full sm:w-1/2 justify-center sm:justify-end">
               <div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
-                <div class="transform transition-transform duration-300 ${isFishCaught ? 'scale-125' : ''}">
+                <div id="penguin-svg-wrapper" class="${isFishCaught ? 'scale-125' : ''}">
                   ${PenguinMascot.renderSVG(mascotMood, 54)}
                 </div>
                 ${isFishCaught ? `
@@ -483,7 +483,7 @@ export class SpellingGameComponent {
                 ` : ''}
               </div>
               <div class="text-left">
-                <div class="text-xs font-bold text-amber-200 leading-snug">
+                <div id="penguin-mascot-msg" class="text-xs font-bold text-amber-200 leading-snug">
                   ${mascotMessage}
                 </div>
                 <div class="text-[10px] text-sky-200/80 mt-0.5">
@@ -498,6 +498,58 @@ export class SpellingGameComponent {
 
     this.bindEvents();
     this.bindKeyboardInput();
+  }
+
+  // ==========================================
+  // チカチカゼロ：スロットとタイルのインプレース部分更新
+  // ==========================================
+  static updateSlotsAndTilesOnly() {
+    if (!this.container) return;
+    const { placedLetters, typedLetters, candidateTiles, mode, targetLetters } = this.state;
+    const isArrange = mode === 'tile_arrange';
+    const currentLetters = isArrange ? placedLetters.map(p => p.char) : typedLetters;
+
+    // 1. スロット文字と外観の部分更新
+    const slots = this.container.querySelectorAll('.spelling-slot');
+    slots.forEach((slot, idx) => {
+      const char = currentLetters[idx] || '';
+      const span = slot.querySelector('span');
+      if (span) span.textContent = char;
+
+      const underline = slot.querySelector('.slot-underline');
+      if (char) {
+        slot.className = `spelling-slot relative w-10 h-12 sm:w-12 sm:h-14 rounded-xl border-2 flex items-center justify-center text-xl sm:text-2xl font-mono bg-gradient-to-b from-amber-300 to-yellow-400 border-yellow-200 text-slate-950 font-black shadow-md ${
+          isArrange ? 'cursor-pointer hover:bg-rose-400 hover:text-white' : ''
+        }`;
+        if (underline) underline.style.display = 'none';
+      } else {
+        slot.className = 'spelling-slot relative w-10 h-12 sm:w-12 sm:h-14 rounded-xl border-2 flex items-center justify-center text-xl sm:text-2xl font-mono bg-white/20 border-white/40 text-white';
+        if (underline) underline.style.display = 'block';
+      }
+    });
+
+    // 2. 候補タイルの使用状態の部分更新
+    if (isArrange) {
+      const tileBtns = this.container.querySelectorAll('.candidate-tile');
+      tileBtns.forEach(btn => {
+        const tileId = btn.dataset.tileId;
+        const tileData = candidateTiles.find(t => t.id === tileId);
+        if (tileData) {
+          if (tileData.isUsed) {
+            btn.disabled = true;
+            btn.className = 'candidate-tile w-10 h-11 sm:w-11 sm:h-12 rounded-xl text-lg sm:text-xl font-black font-mono border-2 bg-black/30 border-transparent text-white/20 cursor-not-allowed';
+          } else {
+            btn.disabled = false;
+            btn.className = 'candidate-tile w-10 h-11 sm:w-11 sm:h-12 rounded-xl text-lg sm:text-xl font-black font-mono border-2 bg-amber-400 hover:bg-amber-300 active:scale-95 border-amber-200 text-slate-950 shadow-md';
+          }
+        }
+      });
+
+      const remainEl = this.container.querySelector('#tiles-remaining-count');
+      if (remainEl) {
+        remainEl.textContent = `${candidateTiles.filter(t => !t.isUsed).length} 文字残り`;
+      }
+    }
   }
 
   // ==========================================
@@ -614,7 +666,7 @@ export class SpellingGameComponent {
       btnFreeBackspace.addEventListener('click', () => {
         if (this.state.typedLetters.length > 0) {
           this.state.typedLetters.pop();
-          this.renderUI();
+          this.updateSlotsAndTilesOnly();
         }
       });
     }
@@ -638,7 +690,7 @@ export class SpellingGameComponent {
         } else {
           if (this.state.typedLetters.length > 0) {
             this.state.typedLetters.pop();
-            this.renderUI();
+            this.updateSlotsAndTilesOnly();
           }
         }
         return;
@@ -800,7 +852,7 @@ export class SpellingGameComponent {
   }
 
   // ==========================================
-  // タイル操作と回答判定
+  // タイル操作と回答判定（部分更新でチカチカゼロ）
   // ==========================================
   static onTileClicked(tileId, char) {
     if (this.state.hasAnswered) return;
@@ -815,7 +867,8 @@ export class SpellingGameComponent {
       SoundEffects.playTile();
     } catch (_) {}
 
-    this.renderUI();
+    // チカチカ防止：スロットとタイルのみを部分更新
+    this.updateSlotsAndTilesOnly();
 
     if (this.state.placedLetters.length === this.state.targetLetters.length) {
       this.checkArrangeAnswer();
@@ -831,7 +884,7 @@ export class SpellingGameComponent {
       const tile = this.state.candidateTiles.find(t => t.id === removed.tileId);
       if (tile) tile.isUsed = false;
     }
-    this.renderUI();
+    this.updateSlotsAndTilesOnly();
   }
 
   static popLastPlacedTile() {
@@ -841,13 +894,13 @@ export class SpellingGameComponent {
       const tile = this.state.candidateTiles.find(t => t.id === removed.tileId);
       if (tile) tile.isUsed = false;
     }
-    this.renderUI();
+    this.updateSlotsAndTilesOnly();
   }
 
   static clearPlacedTiles() {
     this.state.placedLetters = [];
     this.state.candidateTiles.forEach(t => t.isUsed = false);
-    this.renderUI();
+    this.updateSlotsAndTilesOnly();
   }
 
   static applyHint() {
@@ -883,7 +936,7 @@ export class SpellingGameComponent {
     try {
       SoundEffects.playTile();
     } catch (_) {}
-    this.renderUI();
+    this.updateSlotsAndTilesOnly();
 
     if (this.state.typedLetters.length === this.state.targetLetters.length) {
       this.verifyFreeTypeAnswer();
@@ -999,7 +1052,11 @@ export class SpellingGameComponent {
     try {
       SoundEffects.playWrong();
     } catch (_) {}
-    this.renderUI();
+    
+    const msgEl = this.container?.querySelector('#penguin-mascot-msg');
+    if (msgEl) msgEl.textContent = this.state.mascotMessage;
+    const svgEl = this.container?.querySelector('#penguin-svg-wrapper');
+    if (svgEl) svgEl.innerHTML = PenguinMascot.renderSVG('sad', 54);
 
     setTimeout(() => {
       if (this.state.isMistake && this.state.placedLetters.length > 0) {
@@ -1065,7 +1122,7 @@ export class SpellingGameComponent {
     const accuracy = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
 
     this.container.innerHTML = `
-      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <div class="max-w-2xl mx-auto px-4 py-8 space-y-6">
         <div class="bg-white rounded-3xl border-2 border-sky-300 p-6 sm:p-8 shadow-xl text-center space-y-5">
           
           <div class="space-y-2">
