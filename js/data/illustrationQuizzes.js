@@ -58,6 +58,7 @@ export const initialIllustrationQuizzes = [
   {
     "id": "vq_tsai",
     "mongolian": "цай",
+    "acceptableAnswers": ["цай", "сүүтэй цай", "сүүтэйцай"],
     "dictForm": "цай",
     "japanese": "お茶（スーテイ・ツァイ／ミルクティー）",
     "pronunciation": "ツァイ",

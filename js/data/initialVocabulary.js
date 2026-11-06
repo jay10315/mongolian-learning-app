@@ -11089,6 +11089,7 @@ export const initialVocabulary = [
   {
     "id": "v_gen_622",
     "mongolian": "цай",
+    "acceptableAnswers": ["цай", "сүүтэй цай", "сүүтэйцай"],
     "japanese": "お茶、スーテーツァイ",
     "pronunciation": "ツァイ",
     "root": "",

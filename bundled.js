@@ -294,6 +294,14 @@ function isWordAnswerMatch(userAnswer, item, mode) {
   }
 
   if (mode === 'ja_to_mn') {
+    // 0. acceptableAnswers が定義されている場合
+    if (item.acceptableAnswers && Array.isArray(item.acceptableAnswers)) {
+      for (const ans of item.acceptableAnswers) {
+        const aClean = ans.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+        if (u === aClean) return true;
+      }
+    }
+
     // 非動詞のキリル文字入力（括弧不要）
     const dClean = details.dictForm.toLowerCase().replace(/[.,!?。、！？\s]/g, '');
     if (u === dClean) return true;
@@ -308,6 +316,24 @@ function isWordAnswerMatch(userAnswer, item, mode) {
       if (u === withN) return true;
     }
 
+    // ----------------------------------------------------
+    // 文化・日常語の同義語・別表記の柔軟判定
+    // ----------------------------------------------------
+    // 1. お茶（スーテーツァイ / ミルクティー）:
+    //    モンゴル文化では「お茶(цай)」は伝統ミルクティー「сүүтэй цай」を指すため完全相互許容
+    const jaLower = (item.japanese || '').toLowerCase();
+    const isTeaQuestion = dClean === 'цай' || rawClean === 'цай' || dClean === 'сүүтэйцай' || 
+                          jaLower.includes('お茶') || jaLower.includes('ツァイ') || jaLower.includes('ミルクティー');
+    if (isTeaQuestion) {
+      if (u === 'цай' || u === 'сүүтэйцай' || u === 'сүүтэй') return true;
+    }
+
+    // 2. 挨拶・御礼の柔軟表現
+    if (dClean === 'баярлалаа' && (u === 'ихбаярлалаа' || u === 'талархлаа')) return true;
+    if (dClean === 'сайнбайнауу' && (u === 'сайнуу' || u === 'сайнбайна')) return true;
+    if (dClean === 'сайнуу' && (u === 'сайнбайнауウ' || u === 'сайнбайна')) return true;
+    if (dClean === 'баяртай' && (u === 'дараауулзъя' || u === 'маргаашуулзъя')) return true;
+
     return false;
   }
 
@@ -315,7 +341,15 @@ function isWordAnswerMatch(userAnswer, item, mode) {
     // 日本語訳判定
     const uClean = u.replace(/\s+/g, '');
     const targets = item.japanese.toLowerCase().split(/[/／,、()（）]/).map(s => s.trim().replace(/\s+/g, '')).filter(Boolean);
-    return targets.some(t => uClean.includes(t) || t.includes(uClean));
+    if (targets.some(t => uClean.includes(t) || t.includes(uClean))) return true;
+
+    if (item.acceptableAnswers && Array.isArray(item.acceptableAnswers)) {
+      for (const ans of item.acceptableAnswers) {
+        const aClean = ans.toLowerCase().replace(/[.,!?。、！？\s]/g, '');
+        if (uClean.includes(aClean) || aClean.includes(uClean)) return true;
+      }
+    }
+    return false;
   }
 
   return false;
@@ -11985,6 +12019,7 @@ const initialVocabulary = [
   {
     "id": "v_gen_622",
     "mongolian": "цай",
+    "acceptableAnswers": ["цай", "сүүтэй цай", "сүүтэйцай"],
     "japanese": "お茶、スーテーツァイ",
     "pronunciation": "ツァイ",
     "root": "",
@@ -18377,6 +18412,7 @@ const initialIllustrationQuizzes = [
   {
     "id": "vq_tsai",
     "mongolian": "цай",
+    "acceptableAnswers": ["цай", "сүүтэй цай", "сүүтэйцай"],
     "dictForm": "цай",
     "japanese": "お茶（スーテイ・ツァイ／ミルクティー）",
     "pronunciation": "ツァイ",
