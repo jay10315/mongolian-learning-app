@@ -75,6 +75,17 @@ export class PenguinMascot {
   /**
    * ペンギンキャラクターのSVGを生成（成長段階・レベル・連続日数・表情に対応）
    */
+  /**
+   * エイリアス: renderSVG / renderSvg
+   */
+  static renderSVG(optionsOrMood = 'idle', size = 80) {
+    return this.getSvg(optionsOrMood, size);
+  }
+
+  static renderSvg(optionsOrMood = 'idle', size = 80) {
+    return this.getSvg(optionsOrMood, size);
+  }
+
   static getSvg(optionsOrMood = 'idle', size = 80) {
     let mood = 'idle';
     let level = 1;

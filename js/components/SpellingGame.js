@@ -476,7 +476,7 @@ export class SpellingGameComponent {
             <div class="flex items-center gap-3 w-full sm:w-1/2 justify-center sm:justify-end">
               <div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
                 <div id="penguin-svg-wrapper" class="${isFishCaught ? 'scale-125' : ''}">
-                  ${PenguinMascot.renderSVG(mascotMood, 54)}
+                  ${PenguinMascot.getSvg(mascotMood, 54)}
                 </div>
                 ${isFishCaught ? `
                   <div class="absolute -top-3 -right-2 text-lg">😋🐟</div>
@@ -1056,7 +1056,7 @@ export class SpellingGameComponent {
     const msgEl = this.container?.querySelector('#penguin-mascot-msg');
     if (msgEl) msgEl.textContent = this.state.mascotMessage;
     const svgEl = this.container?.querySelector('#penguin-svg-wrapper');
-    if (svgEl) svgEl.innerHTML = PenguinMascot.renderSVG('sad', 54);
+    if (svgEl) svgEl.innerHTML = PenguinMascot.getSvg('sad', 54);
 
     setTimeout(() => {
       if (this.state.isMistake && this.state.placedLetters.length > 0) {
@@ -1154,7 +1154,7 @@ export class SpellingGameComponent {
           <!-- マスコットコメント -->
           <div class="bg-gradient-to-r from-sky-100 to-cyan-100 rounded-2xl p-4 flex items-center gap-4 text-left border border-sky-200">
             <div class="w-16 h-16 shrink-0 flex items-center justify-center">
-              ${PenguinMascot.renderSVG(accuracy >= 80 ? 'celebrate' : 'happy', 60)}
+              ${PenguinMascot.getSvg(accuracy >= 80 ? 'celebrate' : 'happy', 60)}
             </div>
             <div>
               <div class="text-xs font-black text-sky-900">

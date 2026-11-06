@@ -30,7 +30,15 @@ def test_spelling_game():
     assert "renderUI()" in comp_content, "Must render UI immediately"
     print("  [OK] SpellingGameComponent implementation verified")
 
-    # 2. Check bundled.js
+    # 2. Check PenguinMascot has both getSvg and renderSVG alias to avoid runtime errors
+    pm_path = os.path.join(base_dir, 'js', 'components', 'PenguinMascot.js')
+    with open(pm_path, 'r', encoding='utf-8') as f:
+        pm_content = f.read()
+    assert 'static renderSVG' in pm_content, "PenguinMascot must define renderSVG alias"
+    assert 'static getSvg' in pm_content, "PenguinMascot must define getSvg"
+    print("  [OK] PenguinMascot defines both getSvg and renderSVG")
+
+    # 3. Check bundled.js
     bundled_path = os.path.join(base_dir, 'bundled.js')
     with open(bundled_path, 'r', encoding='utf-8') as f:
         bundled = f.read()
@@ -39,9 +47,10 @@ def test_spelling_game():
     assert 'case \'spelling_game\':' in bundled, "Missing case 'spelling_game' in bundled.js"
     assert 'playMunch' in bundled, "Missing playMunch sound effect in bundled.js"
     assert 'playTile' in bundled, "Missing playTile sound effect in bundled.js"
-    print("  [OK] bundled.js contains SpellingGameComponent and sound effects")
+    assert 'renderSVG' in bundled, "Missing renderSVG in bundled.js"
+    print("  [OK] bundled.js contains SpellingGameComponent, renderSVG, and sound effects")
 
-    # 3. Check index.html
+    # 4. Check index.html
     html_path = os.path.join(base_dir, 'index.html')
     with open(html_path, 'r', encoding='utf-8') as f:
         html = f.read()
