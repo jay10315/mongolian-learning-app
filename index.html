@@ -289,6 +289,110 @@ body.theme-dark select {
   border-color: #475569 !important;
 }
 
+
+/* ========================================================
+   ナイトモード・ダークテーマ用 フィードバック＆解答表示 最適化
+   （正解の白文字潰れ防止、不正解・正解カードの目に優しいダークトーン化）
+   ======================================================== */
+
+/* 正解テキストの視認性向上（白文字潰れを徹底防止し、鮮やかで視認性の高いエメラルド/シアンで表示） */
+body.theme-dark .correct-answer-text,
+body.theme-forest .correct-answer-text,
+body.theme-ocean .correct-answer-text,
+body.theme-dark .text-emerald-800.cyrillic-text,
+body.theme-dark .text-emerald-700.cyrillic-text,
+body.theme-dark .text-emerald-900.cyrillic-text,
+body.theme-dark span.cyrillic-text.text-slate-900,
+body.theme-forest span.cyrillic-text.text-slate-900,
+body.theme-ocean span.cyrillic-text.text-slate-900 {
+  color: #34d399 !important; /* 鮮やかなエメラルドグリーン（夜間でもくっきり視認） */
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.3) !important;
+  font-weight: 800 !important;
+}
+
+body.theme-dark .text-amber-800.cyrillic-text,
+body.theme-dark .text-amber-900.cyrillic-text,
+body.theme-forest .text-amber-800.cyrillic-text,
+body.theme-ocean .text-amber-800.cyrillic-text {
+  color: #fbbf24 !important; /* 鮮やかなアンバーゴールド */
+  font-weight: 800 !important;
+}
+
+body.theme-dark .text-sky-800.cyrillic-text,
+body.theme-dark .text-sky-900.cyrillic-text,
+body.theme-forest .text-sky-800.cyrillic-text,
+body.theme-ocean .text-sky-800.cyrillic-text {
+  color: #38bdf8 !important; /* 鮮やかなシアンブルー */
+  font-weight: 800 !important;
+}
+
+/* 不正解・克服未完了カード（明るいピンクから深みのあるダークローズへ） */
+body.theme-dark [class*="bg-rose-50"],
+body.theme-dark .bg-rose-50,
+body.theme-dark .bg-rose-50\/90,
+body.theme-dark .bg-rose-50\/80,
+body.theme-dark .bg-rose-100,
+body.theme-dark [class*="bg-red-50"] {
+  background-color: #24141d !important;
+  border-color: rgba(244, 63, 94, 0.45) !important;
+  color: #ffe4e6 !important;
+}
+
+body.theme-dark [class*="text-rose-950"],
+body.theme-dark [class*="text-rose-900"] {
+  color: #fda4af !important;
+}
+
+body.theme-dark [class*="text-rose-700"],
+body.theme-dark [class*="text-rose-800"] {
+  color: #fb7185 !important;
+}
+
+/* 正解・克服完了カード（明るい薄緑から深みのあるダークエメラルドへ） */
+body.theme-dark [class*="bg-emerald-50"],
+body.theme-dark .bg-emerald-50,
+body.theme-dark .bg-emerald-50\/90,
+body.theme-dark .bg-emerald-50\/80,
+body.theme-dark .bg-emerald-100,
+body.theme-dark [class*="bg-teal-50"] {
+  background-color: #0d281e !important;
+  border-color: rgba(16, 185, 129, 0.45) !important;
+  color: #d1fae5 !important;
+}
+
+body.theme-dark [class*="text-emerald-950"],
+body.theme-dark [class*="text-emerald-900"] {
+  color: #6ee7b7 !important;
+}
+
+body.theme-dark [class*="text-emerald-700"] {
+  color: #34d399 !important;
+}
+
+/* 解説ボックス・インナーホワイトボックス（白背景＆白文字の重なりを完全解消） */
+body.theme-dark [class*="bg-white/"],
+body.theme-dark .bg-white\/90,
+body.theme-dark .bg-white\/95,
+body.theme-dark .bg-white\/80 {
+  background-color: rgba(15, 23, 42, 0.9) !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+/* 警告・アンバー枠 */
+body.theme-dark [class*="bg-amber-50"],
+body.theme-dark .bg-amber-50,
+body.theme-dark .bg-amber-100 {
+  background-color: #2a1b0a !important;
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  color: #fef3c7 !important;
+}
+
+body.theme-dark [class*="text-amber-900"],
+body.theme-dark [class*="text-amber-800"] {
+  color: #fde68a !important;
+}
+
 /* 🌿 草原グリーン（深緑ダーク） */
 body.theme-forest {
   background-color: #064e3b !important;
@@ -826,7 +930,7 @@ function renderGrammarExplanationHTML({
       <!-- 1. 正解表示 -->
       <div class="flex items-center flex-wrap gap-2">
         <span class="text-slate-500 font-medium">正解: </span>
-        <span class="font-extrabold text-base cyrillic-text text-emerald-800">${correctAnswer}</span>
+        <span class="font-extrabold text-base cyrillic-text text-emerald-800 correct-answer-text">${correctAnswer}</span>
         ${pron && isPronunciationCautionWord(item || { mongolian: correctAnswer, pronunciation: pron }) ? `<span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md text-xs font-bold border border-amber-200 ml-1">⚠️ 読み注意: ${pron}</span>` : ''}
       </div>
 
@@ -70811,7 +70915,7 @@ class ReviewNotebookComponent {
                   <div class="space-y-2 text-xs sm:text-sm">
                     <div>
                       <span class="text-slate-500 font-medium">正解: </span>
-                      <span class="font-extrabold text-base cyrillic-text text-slate-900">${item.correctAnswer}</span>
+                      <span class="font-extrabold text-base cyrillic-text text-emerald-700 correct-answer-text">${item.correctAnswer}</span>
                     </div>
 
                     ${!this.state.isCorrect && this.state.userAnswer ? `
@@ -71045,7 +71149,7 @@ class ReviewNotebookComponent {
                         <span class="font-bold text-slate-900 text-xs sm:text-sm">${r.parsed ? r.parsed.promptText : (r.item.question || '')}</span>
                       </div>
                       <div class="text-slate-700 font-medium">
-                        正解: <span class="font-bold text-emerald-800 cyrillic-text">${r.correctAnswer}</span>
+                        正解: <span class="font-bold text-emerald-800 cyrillic-text correct-answer-text">${r.correctAnswer}</span>
                       </div>
                       ${!r.isCorrect ? `
                         <div class="text-slate-500">

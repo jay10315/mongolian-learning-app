@@ -450,7 +450,7 @@ export function renderGrammarExplanationHTML({
       <!-- 1. 正解表示 -->
       <div class="flex items-center flex-wrap gap-2">
         <span class="text-slate-500 font-medium">正解: </span>
-        <span class="font-extrabold text-base cyrillic-text text-emerald-800">${correctAnswer}</span>
+        <span class="font-extrabold text-base cyrillic-text text-emerald-800 correct-answer-text">${correctAnswer}</span>
         ${pron && isPronunciationCautionWord(item || { mongolian: correctAnswer, pronunciation: pron }) ? `<span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md text-xs font-bold border border-amber-200 ml-1">⚠️ 読み注意: ${pron}</span>` : ''}
       </div>
 

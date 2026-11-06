@@ -686,7 +686,7 @@ export class ReviewNotebookComponent {
                   <div class="space-y-2 text-xs sm:text-sm">
                     <div>
                       <span class="text-slate-500 font-medium">正解: </span>
-                      <span class="font-extrabold text-base cyrillic-text text-slate-900">${item.correctAnswer}</span>
+                      <span class="font-extrabold text-base cyrillic-text text-emerald-700 correct-answer-text">${item.correctAnswer}</span>
                     </div>
 
                     ${!this.state.isCorrect && this.state.userAnswer ? `
@@ -920,7 +920,7 @@ export class ReviewNotebookComponent {
                         <span class="font-bold text-slate-900 text-xs sm:text-sm">${r.parsed ? r.parsed.promptText : (r.item.question || '')}</span>
                       </div>
                       <div class="text-slate-700 font-medium">
-                        正解: <span class="font-bold text-emerald-800 cyrillic-text">${r.correctAnswer}</span>
+                        正解: <span class="font-bold text-emerald-800 cyrillic-text correct-answer-text">${r.correctAnswer}</span>
                       </div>
                       ${!r.isCorrect ? `
                         <div class="text-slate-500">

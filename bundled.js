@@ -452,7 +452,7 @@ function renderGrammarExplanationHTML({
       <!-- 1. 正解表示 -->
       <div class="flex items-center flex-wrap gap-2">
         <span class="text-slate-500 font-medium">正解: </span>
-        <span class="font-extrabold text-base cyrillic-text text-emerald-800">${correctAnswer}</span>
+        <span class="font-extrabold text-base cyrillic-text text-emerald-800 correct-answer-text">${correctAnswer}</span>
         ${pron && isPronunciationCautionWord(item || { mongolian: correctAnswer, pronunciation: pron }) ? `<span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md text-xs font-bold border border-amber-200 ml-1">⚠️ 読み注意: ${pron}</span>` : ''}
       </div>
 
@@ -70437,7 +70437,7 @@ class ReviewNotebookComponent {
                   <div class="space-y-2 text-xs sm:text-sm">
                     <div>
                       <span class="text-slate-500 font-medium">正解: </span>
-                      <span class="font-extrabold text-base cyrillic-text text-slate-900">${item.correctAnswer}</span>
+                      <span class="font-extrabold text-base cyrillic-text text-emerald-700 correct-answer-text">${item.correctAnswer}</span>
                     </div>
 
                     ${!this.state.isCorrect && this.state.userAnswer ? `
@@ -70671,7 +70671,7 @@ class ReviewNotebookComponent {
                         <span class="font-bold text-slate-900 text-xs sm:text-sm">${r.parsed ? r.parsed.promptText : (r.item.question || '')}</span>
                       </div>
                       <div class="text-slate-700 font-medium">
-                        正解: <span class="font-bold text-emerald-800 cyrillic-text">${r.correctAnswer}</span>
+                        正解: <span class="font-bold text-emerald-800 cyrillic-text correct-answer-text">${r.correctAnswer}</span>
                       </div>
                       ${!r.isCorrect ? `
                         <div class="text-slate-500">
