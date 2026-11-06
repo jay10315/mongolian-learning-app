@@ -48,6 +48,16 @@ class TestHiddenLettersFeature(unittest.TestCase):
 
         self.assertIn('value="hidden_n_g"', content)
         self.assertIn('startWithCategory', content)
+        self.assertIn('if (!this.container) return;', content)
+        self.assertIn('if (this.container) {\n      this.renderTesting();', content)
+
+    def test_reference_guide_bindings(self):
+        ref_path = os.path.join(self.app_dir, 'js', 'components', 'ReferenceGuide.js')
+        with open(ref_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        self.assertIn("querySelector('#btn-ref-start-hidden-test')", content)
+        self.assertIn("querySelectorAll('.btn-ref-subtab')", content)
+        self.assertIn("querySelectorAll('.btn-ref-speak')", content)
 
     def test_bundled_js_and_index_html(self):
         for fname in ['bundled.js', 'index.html']:

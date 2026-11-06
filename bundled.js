@@ -33554,7 +33554,13 @@ class DeclensionTestComponent {
     if (this.state.view === 'settings') {
       this.renderSettings();
     } else if (this.state.view === 'testing') {
-      this.renderTesting();
+      if (!this.state.currentQuiz && this.state.quizzes && this.state.quizzes.length > 0) {
+        this.loadQuiz(this.state.currentIndex || 0);
+      } else if (!this.state.quizzes || !this.state.quizzes.length) {
+        this.startTest();
+      } else {
+        this.renderTesting();
+      }
     } else if (this.state.view === 'result') {
       this.renderResult();
     }
@@ -33563,11 +33569,13 @@ class DeclensionTestComponent {
   static startWithCategory(category = 'hidden_n_g') {
     this.state.settings.category = category;
     this.state.settings.count = 'all';
+    this.state.view = 'testing';
     this.startTest();
   }
 
   // --- 1. 設定画面 ---
   static renderSettings() {
+    if (!this.container) return;
     this.container.innerHTML = `
       <div class="animate-fade-in max-w-xl mx-auto px-4 py-4 space-y-5">
         <div class="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -33706,6 +33714,7 @@ class DeclensionTestComponent {
   }
 
   static loadQuiz(index) {
+    if (!this.state.quizzes || !this.state.quizzes.length) return;
     this.state.currentIndex = index;
     const q = this.state.quizzes[index];
     this.state.currentQuiz = q;
@@ -33714,16 +33723,27 @@ class DeclensionTestComponent {
     this.state.isCorrect = false;
 
     // 選択肢のシャッフル
-    if (q.options) {
+    if (q && q.options) {
       this.state.shuffledOptions = shuffleArray([...q.options]);
     }
 
-    this.renderTesting();
+    if (this.container) {
+      this.renderTesting();
+    }
   }
 
   // --- 3. テスト実行中 ---
   static renderTesting() {
+    if (!this.container) return;
     const q = this.state.currentQuiz;
+    if (!q) {
+      if (this.state.quizzes && this.state.quizzes.length) {
+        this.loadQuiz(this.state.currentIndex || 0);
+      } else {
+        this.renderSettings();
+      }
+      return;
+    }
     const idx = this.state.currentIndex;
     const total = this.state.quizzes.length;
     const progressPercent = Math.round(((idx) / total) * 100);
@@ -34010,6 +34030,7 @@ class DeclensionTestComponent {
 
   // --- 4. 結果画面 ---
   static renderResult() {
+    if (!this.container) return;
     const total = this.state.quizzes.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;
     const wrong = total - correct;
@@ -44309,6 +44330,44 @@ class ReferenceGuideComponent {
           body.classList.add('hidden');
           arrow.style.transform = 'rotate(0deg)';
         }
+      });
+    });
+
+    // 特化テスト開始ボタン
+    const startHiddenTestBtn = container.querySelector('#btn-ref-start-hidden-test');
+    if (startHiddenTestBtn) {
+      startHiddenTestBtn.addEventListener('click', () => {
+        DeclensionTestComponent.startWithCategory('hidden_n_g');
+        if (onNavigate) onNavigate('declension_test');
+      });
+    }
+
+    // 例外リファレンスサブタブ切り替え
+    const subtabs = container.querySelectorAll('.btn-ref-subtab');
+    const panes = container.querySelectorAll('.ref-subtab-pane');
+    subtabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetId = tab.dataset.tab;
+        subtabs.forEach(t => {
+          t.className = 'btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50';
+        });
+        tab.className = 'btn-ref-subtab px-3.5 py-1.5 rounded-lg font-black transition-all bg-indigo-600 text-white shadow-2xs';
+
+        panes.forEach(p => {
+          if (p.id === targetId) {
+            p.classList.remove('hidden');
+          } else {
+            p.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // 発音再生ボタン
+    container.querySelectorAll('.btn-ref-speak').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const word = btn.dataset.word;
+        if (word) SpeechService.speak(word);
       });
     });
 

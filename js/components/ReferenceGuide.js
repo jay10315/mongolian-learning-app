@@ -586,6 +586,44 @@ export class ReferenceGuideComponent {
       });
     });
 
+    // 特化テスト開始ボタン
+    const startHiddenTestBtn = container.querySelector('#btn-ref-start-hidden-test');
+    if (startHiddenTestBtn) {
+      startHiddenTestBtn.addEventListener('click', () => {
+        DeclensionTestComponent.startWithCategory('hidden_n_g');
+        if (onNavigate) onNavigate('declension_test');
+      });
+    }
+
+    // 例外リファレンスサブタブ切り替え
+    const subtabs = container.querySelectorAll('.btn-ref-subtab');
+    const panes = container.querySelectorAll('.ref-subtab-pane');
+    subtabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetId = tab.dataset.tab;
+        subtabs.forEach(t => {
+          t.className = 'btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50';
+        });
+        tab.className = 'btn-ref-subtab px-3.5 py-1.5 rounded-lg font-black transition-all bg-indigo-600 text-white shadow-2xs';
+
+        panes.forEach(p => {
+          if (p.id === targetId) {
+            p.classList.remove('hidden');
+          } else {
+            p.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // 発音再生ボタン
+    container.querySelectorAll('.btn-ref-speak').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const word = btn.dataset.word;
+        if (word) SpeechService.speak(word);
+      });
+    });
+
     // リアルタイム検索
     const searchInput = container.querySelector('#ref-search-input');
     const cards = container.querySelectorAll('.grammar-card');

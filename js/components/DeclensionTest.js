@@ -30,7 +30,13 @@ export class DeclensionTestComponent {
     if (this.state.view === 'settings') {
       this.renderSettings();
     } else if (this.state.view === 'testing') {
-      this.renderTesting();
+      if (!this.state.currentQuiz && this.state.quizzes && this.state.quizzes.length > 0) {
+        this.loadQuiz(this.state.currentIndex || 0);
+      } else if (!this.state.quizzes || !this.state.quizzes.length) {
+        this.startTest();
+      } else {
+        this.renderTesting();
+      }
     } else if (this.state.view === 'result') {
       this.renderResult();
     }
@@ -39,11 +45,13 @@ export class DeclensionTestComponent {
   static startWithCategory(category = 'hidden_n_g') {
     this.state.settings.category = category;
     this.state.settings.count = 'all';
+    this.state.view = 'testing';
     this.startTest();
   }
 
   // --- 1. 設定画面 ---
   static renderSettings() {
+    if (!this.container) return;
     this.container.innerHTML = `
       <div class="animate-fade-in max-w-xl mx-auto px-4 py-4 space-y-5">
         <div class="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -182,6 +190,7 @@ export class DeclensionTestComponent {
   }
 
   static loadQuiz(index) {
+    if (!this.state.quizzes || !this.state.quizzes.length) return;
     this.state.currentIndex = index;
     const q = this.state.quizzes[index];
     this.state.currentQuiz = q;
@@ -190,16 +199,27 @@ export class DeclensionTestComponent {
     this.state.isCorrect = false;
 
     // 選択肢のシャッフル
-    if (q.options) {
+    if (q && q.options) {
       this.state.shuffledOptions = shuffleArray([...q.options]);
     }
 
-    this.renderTesting();
+    if (this.container) {
+      this.renderTesting();
+    }
   }
 
   // --- 3. テスト実行中 ---
   static renderTesting() {
+    if (!this.container) return;
     const q = this.state.currentQuiz;
+    if (!q) {
+      if (this.state.quizzes && this.state.quizzes.length) {
+        this.loadQuiz(this.state.currentIndex || 0);
+      } else {
+        this.renderSettings();
+      }
+      return;
+    }
     const idx = this.state.currentIndex;
     const total = this.state.quizzes.length;
     const progressPercent = Math.round(((idx) / total) * 100);
@@ -486,6 +506,7 @@ export class DeclensionTestComponent {
 
   // --- 4. 結果画面 ---
   static renderResult() {
+    if (!this.container) return;
     const total = this.state.quizzes.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;
     const wrong = total - correct;
