@@ -27,7 +27,7 @@ export class TypingTestComponent {
     startTime: null,
     endTime: null,
     sentenceFinished: false,
-    showRomaji: true,
+    showRomaji: false,
     stats: null,
     searchLookupKeyword: '',
     pendingBuffer: '',
@@ -257,21 +257,6 @@ export class TypingTestComponent {
             </button>
           </div>
         `}
-
-        <!-- オプション設定 -->
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3 text-xs">
-          <div class="font-bold text-slate-700 flex items-center gap-1.5">
-            <span>⚙️</span> 入力アシスト設定
-          </div>
-          
-          <label class="flex items-center justify-between cursor-pointer p-2 rounded-xl hover:bg-slate-50 transition-colors">
-            <div>
-              <div class="font-bold text-slate-800">💡 ローマ字・発音ヒントの表示</div>
-              <div class="text-[11px] text-slate-500">キリル文字の下に対応する読み方ヒントを表示します</div>
-            </div>
-            <input type="checkbox" id="chk-show-romaji" ${this.state.showRomaji ? 'checked' : ''} class="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 cursor-pointer" />
-          </label>
-        </div>
 
         <!-- 開始ボタン -->
         <div class="pt-2">
@@ -826,14 +811,6 @@ export class TypingTestComponent {
               </div>
             </div>
           `)}
-
-          <!-- ローマ字・発音ヒント -->
-          ${this.state.showRomaji && sentence.romaji ? `
-            <div class="text-xs text-slate-400 font-medium tracking-wide flex items-center gap-1 border-t border-slate-100 pt-2">
-              <span class="text-teal-600 font-bold">💡 読み:</span>
-              <span class="font-mono text-slate-600">${sentence.romaji}</span>
-            </div>
-          ` : ''}
 
         </div>
 

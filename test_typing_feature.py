@@ -99,6 +99,10 @@ assert "saveLookedUpWord" in comp_content, "Must save tapped words to looked up 
 assert "findWordInDictionary" in comp_content, "Must look up word meaning & grammar structure"
 assert "badge-typing-lookup" in comp_content, "Must show looked up words badge count"
 
+# User requirement: "読みはいらない" - Romaji reading spoiler must NOT be displayed
+assert "💡 読み:" not in comp_content, "TypingTest must not display romaji reading hint in test view"
+assert "showRomaji: false" in comp_content, "showRomaji must default to false"
+
 print("[4] Verifying App & Navigation Integration...")
 with open('js/app.js', 'r', encoding='utf-8') as f:
     app_content = f.read()
