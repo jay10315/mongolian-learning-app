@@ -47,7 +47,8 @@ tests = [
     'test_genre_vocab_and_mode.py',
     'test_cross_device_sync.py',
     'test_etymology_master.py',
-    'test_pronunciation_caution_display.py'
+    'test_pronunciation_caution_display.py',
+    'test_railway_sugoroku_feature.py'
 ]
 
 for t in tests:

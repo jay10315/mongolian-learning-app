@@ -781,22 +781,22 @@ export class HomeComponent {
               </div>
             </div>
 
-            <!-- ペンギン探検隊（モンゴル名所めぐり旅） -->
+            <!-- ペンギン探検隊（モンゴル縦断鉄道すごろく＆全土探検） -->
             <div class="bg-gradient-to-br from-cyan-600/15 via-sky-500/10 to-blue-600/15 rounded-xl p-5 border-2 border-cyan-600 hover:border-cyan-700 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="expedition">
               <div>
                 <div class="flex items-center justify-between mb-3">
                   <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
-                    🗺️
+                    🚂
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-cyan-700 text-white shadow-2xs">
-                    新モード ⚡ XP連動冒険
+                    🚂 縦断鉄道すごろく旅
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-cyan-800 transition-colors flex items-center gap-1.5">
-                  ペンギン探検隊（モンゴル全土地図めぐり）
+                  ペンギン探検隊（鉄道すごろく＆全土地図）
                 </h4>
                 <p class="text-xs text-slate-600 mt-1">
-                  全21アイマグ＋首都特別市の全22地域を完全収録！学習XPで地図に色がついていき、タップで各地域の詳細解説やお土産バッジを楽しめます！
+                  モンゴル縦断鉄道1,110kmをすごろくで旅しよう！間違えるたびに後退するサバイバル探検＆全22地域の名所図鑑！
                 </p>
               </div>
               <div class="mt-4 pt-3 border-t border-cyan-200/60 flex items-center justify-between text-xs font-black text-cyan-800">

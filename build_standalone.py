@@ -23,6 +23,7 @@ files_order = [
     'js/data/cultureData.js',
     'js/data/wordFamilyData.js',
     'js/data/expeditionData.js',
+    'js/data/railwayData.js',
     'js/data/suffixRuleData.js',
     'js/data/etymologySuffixData.js',
     'js/data/interviewTopics.js',

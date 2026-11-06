@@ -33628,6 +33628,623 @@ const expeditionDestinations = [
 ];
 
 
+// === js/data/railwayData.js ===
+// モンゴル縦断鉄道（スフバートル〜ザミンウード 1,110km）すごろく旅データ
+const railwayStations = [
+  {
+    index: 0,
+    id: 'sukhbaatar_st',
+    nameMn: 'Сүхбаатар өртөө',
+    nameJa: 'スフバートル駅',
+    regionJa: 'セレンゲ県（ロシア国境・始発駅）',
+    km: 0,
+    icon: '🏛️',
+    stamp: '🚩 スフバートル国境駅印',
+    badgeColor: '#0284c7',
+    desc: 'モンゴル縦断鉄道の北の玄関口。セレンゲ川の清流と針葉樹林に抱かれたロシア国境の歴史ある始発駅。'
+  },
+  {
+    index: 1,
+    id: 'darkhan_st',
+    nameMn: 'Дархан өртөө',
+    nameJa: 'ダルハン駅',
+    regionJa: 'ダルハン・オール県（第3の都市・製鉄都市）',
+    km: 125,
+    icon: '🏭',
+    stamp: '🛠️ ダルハン製鉄所駅印',
+    badgeColor: '#0d9488',
+    desc: 'モンゴル第3の近代都市。巨大な製鉄所と活気あふれる大学が集まる工業と学術の中心地。'
+  },
+  {
+    index: 2,
+    id: 'dzuunkharaa_st',
+    nameMn: 'Зүүнхараа өртөө',
+    nameJa: 'ズーンハラー駅',
+    regionJa: 'セレンゲ県（ハラー川林業・農業の街）',
+    km: 240,
+    icon: '🌲',
+    stamp: '🌲 ハラー川木立駅印',
+    badgeColor: '#16a34a',
+    desc: 'ハラー川の豊かな自然に恵まれた林業・製粉の街。爽やかな松林の風が車窓を吹き抜ける。'
+  },
+  {
+    index: 3,
+    id: 'baruunkharaa_st',
+    nameMn: 'Баруунхараа өртөө',
+    nameJa: 'バルーンハラー駅',
+    regionJa: 'セレンゲ県（黄金の大穀倉地帯）',
+    km: 310,
+    icon: '🌾',
+    stamp: '🌾 黄金の麦穂駅印',
+    badgeColor: '#ca8a04',
+    desc: '見渡す限りの広大な小麦畑が広がるモンゴルの大穀倉地帯。秋には大地一面が黄金色に輝く。'
+  },
+  {
+    index: 4,
+    id: 'ulaanbaatar_st',
+    nameMn: 'Улаанбаатар өртөө',
+    nameJa: 'ウランバートル中央駅',
+    regionJa: '首都ウランバートル（旅の大拠点）',
+    km: 410,
+    icon: '🏙️',
+    stamp: '🚂 UB中央駅ゴールド印',
+    badgeColor: '#e11d48',
+    desc: 'モンゴル最大の鉄道ターミナル。国際列車や全国からの旅客が行き交う活気と熱気に満ちた大拠点！'
+  },
+  {
+    index: 5,
+    id: 'bagakhangai_st',
+    nameMn: 'Багахангай өртөө',
+    nameJa: 'バガハンガイ駅',
+    regionJa: 'ウランバートル郊外（鉱山鉄道分岐点）',
+    km: 520,
+    icon: '🔀',
+    stamp: '⛏️ バガヌール分岐駅印',
+    badgeColor: '#9333ea',
+    desc: '露天掘りのバガヌール炭鉱へと延びる支線の分岐駅。ここから徐々にゴビ砂漠の気配が漂い始める。'
+  },
+  {
+    index: 6,
+    id: 'choir_st',
+    nameMn: 'Чойр өртөө',
+    nameJa: 'チョイル駅',
+    regionJa: 'ゴビスンベル県（広大な乾燥ステップ）',
+    km: 650,
+    icon: '🦅',
+    stamp: '🦅 ステップの蒼鷹駅印',
+    badgeColor: '#4f46e5',
+    desc: '果てしないステップ草原と乾燥地帯の境界駅。駅前広場には巨大な宇宙飛行士モニュメントがそびえ立つ。'
+  },
+  {
+    index: 7,
+    id: 'sainshand_st',
+    nameMn: 'Сайншанд өртөө',
+    nameJa: 'サインシャンド駅',
+    regionJa: 'ドルノゴビ県（東ゴビ・シャンバラの聖地）',
+    km: 880,
+    icon: '🐫',
+    stamp: '🐪 シャンバラ聖地駅印',
+    badgeColor: '#ea580c',
+    desc: '東ゴビ砂漠のオアシス都市。詩人高僧ダンザンラブジャーの聖地シャンバラエネルギーに満ちた神秘の街。'
+  },
+  {
+    index: 8,
+    id: 'orgon_st',
+    nameMn: 'Өргөн өртөө',
+    nameJa: 'オルゴン駅',
+    regionJa: 'ドルノゴビ県（蛍石鉱山とゴビの荒野）',
+    km: 990,
+    icon: '💎',
+    stamp: '💎 蛍石クリスタル駅印',
+    badgeColor: '#0891b2',
+    desc: '青白く輝く蛍石が採掘される荒野の駅。地平線の彼方まで広がる赤茶けた大地と低木の風景が圧巻。'
+  },
+  {
+    index: 9,
+    id: 'zamiinuud_st',
+    nameMn: 'Замын-Үүд өртөө',
+    nameJa: 'ザミンウード終着駅',
+    regionJa: 'ドルノゴビ県（中国国境・全線走破のゴール！）',
+    km: 1110,
+    icon: '🏆',
+    stamp: '👑 縦断鉄道走破王印',
+    badgeColor: '#b45309',
+    desc: 'モンゴル縦断鉄道1,110kmの感動の終着駅！中国エレンホトとの国境交易で24時間熱気あふれるシルクロードの要所。'
+  }
+];
+
+const railwayIncidents = [
+  {
+    icon: '🐑',
+    title: '羊の大群が線路を横断！',
+    desc: '草原から500頭の羊が線路に侵入！急ブレーキをかけて安全確保のため手前の駅までバックしました！'
+  },
+  {
+    icon: '🌪️',
+    title: '猛烈なゴビの砂嵐（ウラガン）！',
+    desc: '突然の強風と砂嵐で視界ゼロ！安全運行のため、汽笛を鳴らしながら手前の駅へ引き返しました！'
+  },
+  {
+    icon: '🔧',
+    title: '機関車の蒸気圧が急上昇！',
+    desc: 'ボイラー点検の警報が鳴り響く！大事をとって手前の駅の車庫まで後退してメンテナンス！'
+  },
+  {
+    icon: '🐎',
+    title: '野生馬の群れと接触回避！',
+    desc: '疾走する馬たちが線路の真横に接近！急停止し、馬が通り過ぎるのを待って手前の駅へ後退！'
+  },
+  {
+    icon: '❄️',
+    title: 'セレンゲ川沿いで線路が凍結！',
+    desc: '夜間の冷え込みでレールがカチコチに凍結！除雪と安全確認のため手前の駅へバック退避！'
+  },
+  {
+    icon: '🐫',
+    title: 'フタコブラクダが線路で日向ぼっこ！',
+    desc: 'のんびり座り込んだラクダがびくとも動かない！汽笛を鳴らしつつ手前の駅まで後退しました！'
+  },
+  {
+    icon: '🥛',
+    title: '遊牧民のゲルから大歓迎の合図！',
+    desc: '「馬乳酒を飲んでいけ！」と手を振る遊牧民につられ停車！気づけば手前の駅まで戻っていました！'
+  }
+];
+
+const railwayQuestions = [
+  {
+    id: 'rq_1',
+    category: '鉄道・交通',
+    prompt: 'モンゴル語で「列車・電車」は？',
+    wordMn: 'галт тэрэг',
+    choices: ['галт тэрэг', 'нисэх онгоц', 'машин', 'завь'],
+    correctIdx: 0,
+    explanation: 'гал（火）＋ тэрэг（車）＝蒸気機関車に由来する言葉です。',
+    caution: null
+  },
+  {
+    id: 'rq_2',
+    category: '鉄道・交通',
+    prompt: 'モンゴル語で「鉄道」は？',
+    wordMn: 'төмөр зам',
+    choices: ['шороон зам', 'төмөр зам', 'усан зам', 'агаарын зам'],
+    correctIdx: 1,
+    explanation: 'төмөр（鉄）＋ зам（道）＝鉄の道（鉄道）です。',
+    caution: null
+  },
+  {
+    id: 'rq_3',
+    category: '駅・施設',
+    prompt: 'モンゴル語で「駅・宿駅」を表す伝統的な言葉は？',
+    wordMn: 'өртөө',
+    choices: ['буудал', 'өртөө', 'нисэх буудал', 'боомт'],
+    correctIdx: 1,
+    explanation: 'モンゴル帝国時代の駅伝制度「モリン・オルトー」に由来する言葉です。',
+    caution: null
+  },
+  {
+    id: 'rq_4',
+    category: '駅・施設',
+    prompt: 'モンゴル語で「停留所・駅」は？',
+    wordMn: 'буудал',
+    choices: ['буудал', 'зочид буудал', 'сургууль', 'эмнэлэг'],
+    correctIdx: 0,
+    explanation: 'буух（降りる）＋ -дал（場所を表す接尾辞）＝降りる場所です。',
+    caution: null
+  },
+  {
+    id: 'rq_5',
+    category: '乗車券',
+    prompt: 'モンゴル語で「切符・チケット」は？',
+    wordMn: 'тасалбар',
+    choices: ['мөнгө', 'ном', 'тасалбар', 'зураг'],
+    correctIdx: 2,
+    explanation: 'таслах（切り離す・もぎる）＋ -бар ＝ もぎる券・切符です。',
+    caution: null
+  },
+  {
+    id: 'rq_6',
+    category: '車内',
+    prompt: 'モンゴル語で「座席・席」は？',
+    wordMn: 'суудал',
+    choices: ['ширээ', 'суудал', 'ор', 'хаалга'],
+    correctIdx: 1,
+    explanation: 'суух（座る）＋ -дал ＝ 座る場所（座席）です。',
+    caution: null
+  },
+  {
+    id: 'rq_7',
+    category: '車内',
+    prompt: 'モンゴル語で「客車・車両」を表す言葉は？',
+    wordMn: 'вагон',
+    choices: ['мотор', 'вагон', 'дугуй', 'дээвэр'],
+    correctIdx: 1,
+    explanation: 'ロシア語由来の外来語で、列車の客車・貨車を指します。',
+    caution: null
+  },
+  {
+    id: 'rq_8',
+    category: '旅の動詞',
+    prompt: '「旅に出る・出発する」を意味する表現は？',
+    wordMn: 'замд гарах',
+    choices: ['гэртээ харих', 'замд гарах', 'буудалд очих', 'хоол идэх'],
+    correctIdx: 1,
+    explanation: 'замд（道に）＋ гарах（出る）＝旅路に出発する、という意味です。',
+    caution: null
+  },
+  {
+    id: 'rq_9',
+    category: '旅の動詞',
+    prompt: 'モンゴル語で「（目的地に）到着する・達する」は？',
+    wordMn: 'хүрэх',
+    choices: ['явахаа болих', 'буух', 'хүрэх', 'алхах'],
+    correctIdx: 2,
+    explanation: 'хүрэх は「到達する、行き着く」を表す基本動詞です。',
+    caution: null
+  },
+  {
+    id: 'rq_10',
+    category: '旅の動詞',
+    prompt: '列車が「発車する・動き出す」は？',
+    wordMn: 'хөдлөх',
+    choices: ['зогсох', 'хөдлөх', 'эвдрэх', 'шатах'],
+    correctIdx: 1,
+    explanation: 'хөдлөх は「動く、動き出す、発車する」を表します。',
+    caution: null
+  },
+  {
+    id: 'rq_11',
+    category: '人・乗客',
+    prompt: 'モンゴル語で「乗客・旅客」は？',
+    wordMn: 'зорчигч',
+    choices: ['жолооч', 'сурагч', 'малчин', 'зорчигч'],
+    correctIdx: 3,
+    explanation: 'зорчих（旅する・行き交う）＋ -гч（人）＝旅客・乗客です。',
+    caution: null
+  },
+  {
+    id: 'rq_12',
+    category: '旅のトラブル',
+    prompt: '「（列車に）乗り遅れる・遅刻する」を表す動詞は？',
+    wordMn: 'хоцрох',
+    choices: ['хурдлах', 'хоцрох', 'түрүүлэх', 'амжих'],
+    correctIdx: 1,
+    explanation: 'хоцрох は「遅れる、取り残される」を意味します。',
+    caution: null
+  },
+  {
+    id: 'rq_13',
+    category: '手荷物',
+    prompt: 'モンゴル語で「荷物・手荷物」は？',
+    wordMn: 'ачаа',
+    choices: ['бэлэг', 'ачаа', 'хувцас', 'хоол'],
+    correctIdx: 1,
+    explanation: 'ачаа は荷物・貨物を指し、手荷物は「ачаа тээш」とも言います。',
+    caution: null
+  },
+  {
+    id: 'rq_14',
+    category: '方角',
+    prompt: 'スフバートル駅がある「北」を意味するモンゴル語は？',
+    wordMn: 'хойд',
+    choices: ['өмнөд', 'хойд', 'баруун', 'зүүн'],
+    correctIdx: 1,
+    explanation: 'хойд（北）、өмнөд（南）、баруун（西）、зүүн（東）です。',
+    caution: null
+  },
+  {
+    id: 'rq_15',
+    category: '方角',
+    prompt: 'ザミンウード駅がある「南」を意味するモンゴル語は？',
+    wordMn: 'өмнөд',
+    choices: ['өмнөд', 'хойд', 'баруун', 'зүүн'],
+    correctIdx: 0,
+    explanation: 'өмнөд は「南」を意味します（ゴビ砂漠はモンゴル南部に位置）。',
+    caution: null
+  },
+  {
+    id: 'rq_16',
+    category: '国境',
+    prompt: 'モンゴル語で「国境・境界」は？',
+    wordMn: 'хил',
+    choices: ['гол', 'хил', 'уул', 'нуур'],
+    correctIdx: 1,
+    explanation: 'хил は国境を意味し、国境警備隊は хилчин と呼ばれます。',
+    caution: null
+  },
+  {
+    id: 'rq_17',
+    category: '自然・地形',
+    prompt: 'セレンゲ川などの「川・河川」を表す言葉は？',
+    wordMn: 'гол',
+    choices: ['нуур', 'говь', 'гол', 'тал'],
+    correctIdx: 2,
+    explanation: 'гол は川、大河は мөрөн と呼びます。',
+    caution: null
+  },
+  {
+    id: 'rq_18',
+    category: '自然・地形',
+    prompt: 'モンゴル語で「砂漠・乾燥低木地帯」は？',
+    wordMn: 'говь',
+    choices: ['ой', 'хөвч', 'говь', 'мөс'],
+    correctIdx: 2,
+    explanation: 'Говь（ゴビ）はモンゴル南部に広がる独特の乾燥ステップ・砂漠です。',
+    caution: null
+  },
+  {
+    id: 'rq_19',
+    category: '自然・地形',
+    prompt: 'モンゴルを象徴する広大な「草原・平野」は？',
+    wordMn: 'тал',
+    choices: ['тал', 'уул', 'жалга', 'хад'],
+    correctIdx: 0,
+    explanation: 'тал は広大な草原・平原を表します。',
+    caution: null
+  },
+  {
+    id: 'rq_20',
+    category: '機関車',
+    prompt: 'モンゴル語で「蒸気機関車」は？',
+    wordMn: 'уурын тэрэг',
+    choices: ['цахилгаан тэрэг', 'уурын тэрэг', 'морин тэрэг', 'үхэр тэрэг'],
+    correctIdx: 1,
+    explanation: 'уур（蒸気）＋ -ын（の）＋ тэрэг（車）＝蒸気機関車です。',
+    caution: null
+  },
+  {
+    id: 'rq_21',
+    category: '旅行会話',
+    prompt: '旅立つ人にかける挨拶「良い旅を！」は？',
+    wordMn: 'Сайхан аялаарай!',
+    choices: ['Баяртай!', 'Сайхан аялаарай!', 'Сайн байна уу?', 'Өглөөний мэнд!'],
+    correctIdx: 1,
+    explanation: 'сайхан（素晴らしい）＋ аялах（旅する）＋ -аарай（丁寧な勧誘・祈願）です。',
+    caution: null
+  },
+  {
+    id: 'rq_22',
+    category: '切符売り場',
+    prompt: '駅の「切符売り場（窓口）」を表す言葉は？',
+    wordMn: 'тасалбар түгээгүүр',
+    choices: ['мөнгө солих газар', 'тасалбар түгээгүүр', 'ачаа хадгалах газар', 'цайны газар'],
+    correctIdx: 1,
+    explanation: 'тасалбар（切符）＋ түгээх（配る・販売する）＋ -гүүр（場所・装置）です。',
+    caution: null
+  },
+  {
+    id: 'rq_23',
+    category: '旅行会話',
+    prompt: '「何時に発車しますか？」を意味するモンゴル語は？',
+    wordMn: 'Хэдэн цагт хөдлөх вэ?',
+    choices: ['Хаана очих вэ?', 'Хэдэн цагт хөдлөх вэ?', 'Энэ хэд вэ?', 'Та хэн бэ?'],
+    correctIdx: 1,
+    explanation: 'хэдэн цагт（何時に）＋ хөдлөх（発車する）＋ вэ（疑問助詞）です。',
+    caution: null
+  },
+  {
+    id: 'rq_24',
+    category: '旅行会話',
+    prompt: '「この列車はどこ行きですか？」は？',
+    wordMn: 'Энэ галт тэрэг хаашаа явах вэ?',
+    choices: ['Энэ хэний цүнх бэ?', 'Энэ галт тэрэг хаашаа явах вэ?', 'Та хаанаас ирсэн бэ?', 'Ямар хоол байна вэ?'],
+    correctIdx: 1,
+    explanation: 'энэ галт тэрэг（この列車は）＋ хаашаа（どこへ）＋ явах вэ（行きますか）です。',
+    caution: null
+  },
+  {
+    id: 'rq_25',
+    category: '旅の言葉',
+    prompt: 'モンゴル語で「目的地・到着地」は？',
+    wordMn: 'хүрэх газар',
+    choices: ['явах зам', 'хүрэх газар', 'эхлэх цэг', 'зогсох газар'],
+    correctIdx: 1,
+    explanation: 'хүрэх（達する・着く）＋ газар（場所）＝目的地です。',
+    caution: null
+  },
+  {
+    id: 'rq_26',
+    category: '車窓',
+    prompt: '列車の旅の醍醐味である「窓」を表すモンゴル語は？',
+    wordMn: 'цонх',
+    choices: ['хаалга', 'цонх', 'дээвэр', 'шал'],
+    correctIdx: 1,
+    explanation: 'цонх は窓を意味します。',
+    caution: null
+  },
+  {
+    id: 'rq_27',
+    category: '車内',
+    prompt: '列車の「ドア・扉」は？',
+    wordMn: 'хаалга',
+    choices: ['хаалга', 'ор', 'ширээ', 'цонх'],
+    correctIdx: 0,
+    explanation: 'хаалга は扉・出入口を意味します。',
+    caution: null
+  },
+  {
+    id: 'rq_28',
+    category: '速度',
+    prompt: '急行列車のように「速い」を表す形容詞は？',
+    wordMn: 'хурдан',
+    choices: ['удаан', 'хурдан', 'хүйтэн', 'дулаан'],
+    correctIdx: 1,
+    explanation: 'хурдан は速い、удаан は遅い・ゆっくり、です。',
+    caution: null
+  },
+  {
+    id: 'rq_29',
+    category: '速度',
+    prompt: 'のんびり旅のように「遅い・ゆっくり」を表す形容詞は？',
+    wordMn: 'удаан',
+    choices: ['хурдан', 'удаан', 'богино', 'урт'],
+    correctIdx: 1,
+    explanation: 'удаан は遅い・時間をかける様子を表します。',
+    caution: null
+  },
+  {
+    id: 'rq_30',
+    category: '動物・線路',
+    prompt: '線路によく現れる「羊」はモンゴル語で？',
+    wordMn: 'хонь',
+    choices: ['ямаа', 'хонь', 'үхэр', 'нохой'],
+    correctIdx: 1,
+    explanation: 'хонь（羊）はモンゴル五畜の代表格です。',
+    caution: null
+  },
+  {
+    id: 'rq_31',
+    category: '動物・線路',
+    prompt: 'モンゴルの象徴である「馬」は？',
+    wordMn: 'морь',
+    choices: ['тэмээ', 'сарлаг', 'морь', 'чоно'],
+    correctIdx: 2,
+    explanation: 'морь は馬を表します（※読み注意: モリ）。',
+    caution: 'モリ'
+  },
+  {
+    id: 'rq_32',
+    category: '動物・ゴビ',
+    prompt: 'ゴビ砂漠の砂漠地帯で出会う「ラクダ」は？',
+    wordMn: 'тэмээ',
+    choices: ['заан', 'баавгай', 'тэмээ', 'буга'],
+    correctIdx: 2,
+    explanation: 'тэмээ はフタコブラクダを指します。',
+    caution: null
+  },
+  {
+    id: 'rq_33',
+    category: '安全運行',
+    prompt: '旅の基本である「安全な」を意味する言葉は？',
+    wordMn: 'аюулгүй',
+    choices: ['аюултай', 'аюулгүй', 'аймшигтай', 'хэцүү'],
+    correctIdx: 1,
+    explanation: 'аюул（危険）＋ -гүй（のない）＝安全な、無事故の、です。',
+    caution: null
+  },
+  {
+    id: 'rq_34',
+    category: '鉄道職員',
+    prompt: '列車の「車掌・改札係」を表す言葉は？',
+    wordMn: 'шалгагч',
+    choices: ['тогооч', 'шалгагч', 'эмч', 'багш'],
+    correctIdx: 1,
+    explanation: 'шалгах（検査する・改札する）＋ -гч（人）＝検札員・車掌です。',
+    caution: null
+  },
+  {
+    id: 'rq_35',
+    category: '道中',
+    prompt: '「旅の途中・道中」を表す表現は？',
+    wordMn: 'зам зуур',
+    choices: ['гэртээ', 'зам зуур', 'хотод', 'буудалд'],
+    correctIdx: 1,
+    explanation: 'зам（道）＋ зуур（〜の間・途中）＝道中で、という意味です。',
+    caution: null
+  },
+  {
+    id: 'rq_36',
+    category: '食堂車',
+    prompt: '列車内の「食堂・カフェ」を表す言葉は？',
+    wordMn: 'цайны газар',
+    choices: ['дэлгүүр', 'цайны газар', 'номын сан', 'банк'],
+    correctIdx: 1,
+    explanation: 'цай（お茶）＋ -ны（の）＋ газар（場所）＝喫茶・食堂です。',
+    caution: null
+  },
+  {
+    id: 'rq_37',
+    category: '夜行列車',
+    prompt: 'モンゴル語で「夜行列車」は？',
+    wordMn: 'шөнийн галт тэрэг',
+    choices: ['өдрийн галт тэрэг', 'шөнийн галт тэрэг', 'хурдан галт тэрэг', 'ачааны галт тэрэг'],
+    correctIdx: 1,
+    explanation: 'шөнө（夜）＋ -ийн（の）＋ галт тэрэг（列車）＝夜行列車です。',
+    caution: null
+  },
+  {
+    id: 'rq_38',
+    category: '終着駅',
+    prompt: 'ザミンウードのような「終着駅・終点」は？',
+    wordMn: 'эцсийн буудал',
+    choices: ['эхний буудал', 'эцсийн буудал', 'дунд буудал', 'жижиг буудал'],
+    correctIdx: 1,
+    explanation: 'эцсийн（最後の・究極の）＋ буудал（駅・停留所）＝終着駅です。',
+    caution: null
+  },
+  {
+    id: 'rq_39',
+    category: '引き返す',
+    prompt: '間違えたときに列車が「戻る・引き返す」動詞は？',
+    wordMn: 'буцах',
+    choices: ['явах', 'нисэх', 'гүйх', 'буцах'],
+    correctIdx: 3,
+    explanation: 'буцах は「戻る、帰る、引き返す」を意味する重要動詞です。',
+    caution: null
+  },
+  {
+    id: 'rq_40',
+    category: 'ダルハン駅の知識',
+    prompt: 'モンゴル第3の都市ダルハン（Дархан）の名前の本来の意味は？',
+    wordMn: 'дархан',
+    choices: ['鍛冶職人・聖域', '商人', '遊牧民', '武士'],
+    correctIdx: 0,
+    explanation: 'дархан は古代から「名匠、鍛冶職人、免税された神聖な特権地」を意味します。',
+    caution: null
+  },
+  {
+    id: 'rq_41',
+    category: 'サインシャンド駅の知識',
+    prompt: '東ゴビの要所「サインシャンド（Сайншанд）」の шанд の意味は？',
+    wordMn: 'шанд',
+    choices: ['砂漠の小さな泉・水場', '高い山', '深い森', '広い川'],
+    correctIdx: 0,
+    explanation: 'шанд はゴビ砂漠の浅い砂地に湧く「小さなオアシスの泉」を意味します。',
+    caution: null
+  },
+  {
+    id: 'rq_42',
+    category: 'ザミンウード駅の知識',
+    prompt: '終着駅「ザミンウード（Замын-Үүд）」の名前の意味は？',
+    wordMn: 'Замын-Үүд',
+    choices: ['道の門・街道の玄関口', '鉄の終点', '砂漠の果て', '南の川'],
+    correctIdx: 0,
+    explanation: 'зам（道）＋ -ын（の）＋ үүд（扉・門）＝「道の門（シルクロードの玄関口）」です。',
+    caution: null
+  },
+  {
+    id: 'rq_43',
+    category: '感謝の挨拶',
+    prompt: '車掌さんや駅員さんに言う「ありがとう」は？',
+    wordMn: 'Баярлалаа',
+    choices: ['Уучлаарай', 'Баярлалаа', 'Зүгээр', 'Тийм'],
+    correctIdx: 1,
+    explanation: 'баярлалаа は「感謝します・ありがとう」の代表的表現です（※読み注意: バイルラー）。',
+    caution: 'バイルラー'
+  },
+  {
+    id: 'rq_44',
+    category: '線路の距離',
+    prompt: 'モンゴル縦断鉄道（スフバートル〜ザミンウード）の総延長は約何km？',
+    wordMn: '1,110 km',
+    choices: ['500 km', '800 km', '1,110 km', '2,500 km'],
+    correctIdx: 2,
+    explanation: 'ロシア国境から中国国境まで、モンゴルを南北に貫く全線で約1,110kmあります。',
+    caution: null
+  },
+  {
+    id: 'rq_45',
+    category: '旅行会話',
+    prompt: '「切符を1枚ください」を意味するモンゴル語は？',
+    wordMn: 'Нэг тасалбар өгөөч',
+    choices: ['Нэг тасалбар өгөөч', 'Цай уумаар байна', 'Улаанбаатар хаана байна?', 'Цаг хэд болж байна?'],
+    correctIdx: 0,
+    explanation: 'нэг（1つの）＋ тасалбар（切符）＋ өгөөч（ください）です。',
+    caution: null
+  }
+];
+
+
 // === js/data/suffixRuleData.js ===
 // モンゴル語 助詞・語尾使い分けルールマスターデータ
 // 与位格（-д/-т: г,р,сの法則）、疑問詞文末（бэ/вэ: н,м,в,лの法則）、Yes/No疑問（уу/үү）、対格、属格、否定詞完全対応
@@ -44580,22 +45197,22 @@ class HomeComponent {
               </div>
             </div>
 
-            <!-- ペンギン探検隊（モンゴル名所めぐり旅） -->
+            <!-- ペンギン探検隊（モンゴル縦断鉄道すごろく＆全土探検） -->
             <div class="bg-gradient-to-br from-cyan-600/15 via-sky-500/10 to-blue-600/15 rounded-xl p-5 border-2 border-cyan-600 hover:border-cyan-700 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="expedition">
               <div>
                 <div class="flex items-center justify-between mb-3">
                   <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
-                    🗺️
+                    🚂
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-cyan-700 text-white shadow-2xs">
-                    新モード ⚡ XP連動冒険
+                    🚂 縦断鉄道すごろく旅
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-cyan-800 transition-colors flex items-center gap-1.5">
-                  ペンギン探検隊（モンゴル全土地図めぐり）
+                  ペンギン探検隊（鉄道すごろく＆全土地図）
                 </h4>
                 <p class="text-xs text-slate-600 mt-1">
-                  全21アイマグ＋首都特別市の全22地域を完全収録！学習XPで地図に色がついていき、タップで各地域の詳細解説やお土産バッジを楽しめます！
+                  モンゴル縦断鉄道1,110kmをすごろくで旅しよう！間違えるたびに後退するサバイバル探検＆全22地域の名所図鑑！
                 </p>
               </div>
               <div class="mt-4 pt-3 border-t border-cyan-200/60 flex items-center justify-between text-xs font-black text-cyan-800">
@@ -57656,7 +58273,8 @@ class WordFamilyComponent {
 
 
 // === js/components/PenguinExpedition.js ===
-// ペンギン探検隊（モンゴル全22地域・全21アイマグ＋首都特別市 名所めぐり旅）コンポーネント
+// ペンギン探検隊（モンゴル縦断鉄道すごろく旅 ＆ 全22地域名所図鑑）コンポーネント
+
 
 
 
@@ -57664,22 +58282,653 @@ class WordFamilyComponent {
 
 class PenguinExpeditionComponent {
   static state = {
+    activeTab: 'railway', // 'railway' (すごろくサバイバル旅) | 'map' (全22地域図鑑)
     selectedDestination: null,
     currentFilter: 'all', // 'all', 'unlocked', 'locked', 'capital', 'north', 'west', 'central', 'gobi', 'east'
-    hoveredRegionId: null
+    hoveredRegionId: null,
+
+    // 🚂 モンゴル縦断鉄道すごろく状態
+    railway: {
+      stationIdx: 0, // 0 to 9 (0: スフバートル, 9: ザミンウード)
+      tickets: 3,    // 乗車チケット（残機: 最大3）
+      maxTickets: 3,
+      combo: 0,
+      maxCombo: 0,
+      totalCorrect: 0,
+      totalMistakes: 0,
+      totalKm: 0,
+      isGoal: false,
+      isGameOver: false,
+      lastAction: null, // 'correct' | 'wrong' | null
+      advanceSteps: 1,
+      retreatSteps: 0,
+      incident: null,
+      stamps: ['sukhbaatar_st'],
+      currentQ: null,
+      hasAnswered: false,
+      selectedChoiceIdx: null,
+      usedQIds: []
+    }
   };
+
+  static initRailwayGame(reset = false) {
+    if (!this.state.railway || reset) {
+      this.state.railway = {
+        stationIdx: 0,
+        tickets: 3,
+        maxTickets: 3,
+        combo: 0,
+        maxCombo: 0,
+        totalCorrect: 0,
+        totalMistakes: 0,
+        totalKm: 0,
+        isGoal: false,
+        isGameOver: false,
+        lastAction: null,
+        advanceSteps: 1,
+        retreatSteps: 0,
+        incident: null,
+        stamps: ['sukhbaatar_st'],
+        currentQ: null,
+        hasAnswered: false,
+        selectedChoiceIdx: null,
+        usedQIds: []
+      };
+    }
+    this.pickNextQuestion();
+  }
+
+  static pickNextQuestion() {
+    const rw = this.state.railway;
+    let available = railwayQuestions.filter(q => !rw.usedQIds.includes(q.id));
+    if (available.length === 0) {
+      rw.usedQIds = [];
+      available = [...railwayQuestions];
+    }
+    const randIdx = Math.floor(Math.random() * available.length);
+    const selected = available[randIdx];
+    rw.usedQIds.push(selected.id);
+    rw.currentQ = selected;
+    rw.hasAnswered = false;
+    rw.selectedChoiceIdx = null;
+    rw.lastAction = null;
+    rw.incident = null;
+  }
+
+  static handleRailwayAnswer(choiceIdx) {
+    const rw = this.state.railway;
+    if (rw.hasAnswered || rw.isGoal || rw.isGameOver || !rw.currentQ) return;
+
+    rw.hasAnswered = true;
+    rw.selectedChoiceIdx = choiceIdx;
+    const isCorrect = choiceIdx === rw.currentQ.correctIdx;
+
+    if (isCorrect) {
+      try { SoundEffects.playCorrect(); } catch (e) {}
+      rw.combo++;
+      if (rw.combo > rw.maxCombo) rw.maxCombo = rw.combo;
+      rw.totalCorrect++;
+      rw.lastAction = 'correct';
+
+      // 3連勝以上でスチームブースト（2駅前進！）
+      rw.advanceSteps = rw.combo >= 3 ? 2 : 1;
+      rw.retreatSteps = 0;
+
+      const nextStationIdx = Math.min(9, rw.stationIdx + rw.advanceSteps);
+      rw.stationIdx = nextStationIdx;
+      const currentStation = railwayStations[rw.stationIdx];
+      rw.totalKm = currentStation.km;
+
+      if (!rw.stamps.includes(currentStation.id)) {
+        rw.stamps.push(currentStation.id);
+      }
+
+      // XP付与
+      try {
+        if (typeof GamificationService.addXp === 'function') {
+          GamificationService.addXp(20, 'ペンギン鉄道駅進出');
+        } else if (typeof GamificationService.addXP === 'function') {
+          GamificationService.addXP(20, 'ペンギン鉄道駅進出');
+        }
+      } catch (e) {}
+
+      // ゴール判定（第10駅 ザミンウード 1,110km 到着）
+      if (rw.stationIdx >= 9) {
+        rw.isGoal = true;
+        try {
+          if (typeof GamificationService.addXp === 'function') {
+            GamificationService.addXp(300, 'モンゴル縦断鉄道1,110km全線走破');
+          } else if (typeof GamificationService.addXP === 'function') {
+            GamificationService.addXP(300, 'モンゴル縦断鉄道1,110km全線走破');
+          }
+        } catch (e) {}
+      }
+    } else {
+      try { SoundEffects.playWrong(); } catch (e) {}
+      rw.combo = 0;
+      rw.totalMistakes++;
+      rw.lastAction = 'wrong';
+      rw.tickets = Math.max(0, rw.tickets - 1);
+
+      // ★重要要件: 「間違えるたびに戻る」（1駅後退！）
+      if (rw.stationIdx > 0) {
+        rw.stationIdx -= 1;
+        rw.retreatSteps = 1;
+      } else {
+        rw.retreatSteps = 0; // 始発駅未満には戻らない
+      }
+      const currentStation = railwayStations[rw.stationIdx];
+      rw.totalKm = currentStation.km;
+
+      // ランダムトラブル事件の発生
+      const randInc = railwayIncidents[Math.floor(Math.random() * railwayIncidents.length)];
+      rw.incident = randInc;
+
+      // ゲームオーバー判定（チケット0枚）
+      if (rw.tickets <= 0) {
+        rw.isGameOver = true;
+      }
+    }
+
+    this.render(this.container, this.onNavigate);
+  }
+
+  static nextRailwayTurn() {
+    const rw = this.state.railway;
+    if (rw.isGoal || rw.isGameOver) return;
+    this.pickNextQuestion();
+    this.render(this.container, this.onNavigate);
+  }
 
   static render(container, onNavigate) {
     this.container = container;
     this.onNavigate = onNavigate;
+
+    if (!this.state.railway || !this.state.railway.currentQ) {
+      this.initRailwayGame(false);
+    }
+
     const profile = GamificationService.getProfile();
     const currentXp = profile.totalXp;
 
+    this.container.innerHTML = `
+      <div class="animate-fadeIn space-y-6 max-w-6xl mx-auto pb-12 font-sans">
+        <!-- 最上部ヘッダー ＆ モード切替タブ -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-5 rounded-2xl shadow-xs border border-slate-200">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-3xl">🚂</span>
+              <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                ペンギン鉄道・モンゴル縦断すごろく探検
+              </h2>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+              北のロシア国境（スフバートル）から南の中国国境（ザミンウード）まで全1,110kmを走破せよ！
+            </p>
+          </div>
+
+          <!-- モード切替タブ -->
+          <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200 self-start md:self-auto">
+            <button type="button" class="tab-mode-btn px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+              this.state.activeTab === 'railway'
+                ? 'bg-amber-500 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }" data-tab="railway">
+              <span>🚂</span>
+              <span>鉄道すごろく（サバイバル旅）</span>
+            </button>
+            <button type="button" class="tab-mode-btn px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+              this.state.activeTab === 'map'
+                ? 'bg-cyan-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }" data-tab="map">
+              <span>🗺️</span>
+              <span>モンゴル全土探検地図（全22地域図鑑）</span>
+            </button>
+          </div>
+        </div>
+
+        ${this.state.activeTab === 'railway' ? this.renderRailwayUI(currentXp) : this.renderMapUI(currentXp)}
+      </div>
+    `;
+
+    this.bindEvents();
+  }
+
+  // 🚂 鉄道すごろくUIの描画
+  static renderRailwayUI(currentXp) {
+    const rw = this.state.railway;
+    const currentStation = railwayStations[rw.stationIdx];
+    const progressPercent = Math.min(100, Math.round((currentStation.km / 1110) * 100));
+
+    return `
+      <!-- サバイバルHUDステータスバー -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white p-4 rounded-2xl shadow-md border border-slate-800">
+        <!-- チケット（残機） -->
+        <div class="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/10 flex flex-col justify-between">
+          <div class="text-[11px] font-bold text-slate-300">乗車チケット（残機）</div>
+          <div class="text-lg font-black mt-1 flex items-center gap-1">
+            ${Array(rw.maxTickets).fill(0).map((_, i) => `
+              <span class="${i < rw.tickets ? 'text-amber-400 animate-pulse' : 'opacity-25 grayscale'} text-xl">🎫</span>
+            `).join('')}
+            <span class="text-xs font-mono ml-1 text-slate-300">(${rw.tickets}/${rw.maxTickets})</span>
+          </div>
+          <div class="text-[10px] text-amber-200/80 font-bold mt-1">※間違えると1駅後退＆1枚減</div>
+        </div>
+
+        <!-- 走破距離 -->
+        <div class="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/10 flex flex-col justify-between">
+          <div class="text-[11px] font-bold text-slate-300">走破距離メーター</div>
+          <div class="text-xl font-black font-mono text-cyan-300 mt-0.5">
+            ${currentStation.km} <span class="text-xs text-white/70">/ 1,110 km</span>
+          </div>
+          <div class="w-full bg-white/20 h-1.5 rounded-full overflow-hidden mt-1.5">
+            <div class="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+          </div>
+        </div>
+
+        <!-- コンボストリーク -->
+        <div class="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/10 flex flex-col justify-between">
+          <div class="text-[11px] font-bold text-slate-300">連続正解コンボ</div>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="text-xl font-black font-mono text-amber-300">${rw.combo}</span>
+            <span class="text-xs text-amber-200 font-bold">連続正解</span>
+            ${rw.combo >= 3 ? `<span class="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black animate-bounce">🔥 BOOST!</span>` : ''}
+          </div>
+          <div class="text-[10px] text-slate-300 font-bold mt-1">
+            ${rw.combo >= 3 ? '🔥 2駅一気に超特急前進中！' : '3連続正解で一気に2駅前進！'}
+          </div>
+        </div>
+
+        <!-- 獲得スタンプ -->
+        <div class="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/10 flex flex-col justify-between">
+          <div class="text-[11px] font-bold text-slate-300">駅スタンプ収集</div>
+          <div class="text-xl font-black font-mono text-emerald-300 mt-0.5">
+            ${rw.stamps.length} <span class="text-xs text-white/70">/ 10 駅</span>
+          </div>
+          <div class="text-[10px] text-emerald-200/90 font-bold mt-1">
+            最高記録: ${rw.maxCombo} コンボ
+          </div>
+        </div>
+      </div>
+
+      <!-- すごろく線路ボード（10駅レールウェイマップ） -->
+      <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🛤️</span>
+            <h3 class="text-sm sm:text-base font-black text-slate-900">
+              モンゴル縦断鉄道路線図（全10駅すごろく）
+            </h3>
+          </div>
+          <span class="text-xs font-bold text-slate-500">
+            現在地: <strong class="text-sky-700 cyrillic-text font-black">${currentStation.nameMn}</strong>（第${rw.stationIdx + 1}駅）
+          </span>
+        </div>
+
+        <!-- 線路ステーションスクロールビュー -->
+        <div class="overflow-x-auto pb-4 pt-2">
+          <div class="min-w-[880px] flex items-center justify-between relative px-6 py-4 bg-slate-50 rounded-2xl border border-slate-200">
+            <!-- 鉄道の線路ベースライン -->
+            <div class="absolute left-10 right-10 top-1/2 -translate-y-1/2 h-3 bg-slate-300 rounded-full border-y border-slate-400 z-0">
+              <div class="h-full bg-gradient-to-r from-amber-500 via-sky-500 to-emerald-500 rounded-full transition-all duration-700" style="width: ${progressPercent}%"></div>
+            </div>
+
+            ${railwayStations.map((st, idx) => {
+              const isCurrent = idx === rw.stationIdx;
+              const isVisited = rw.stamps.includes(st.id);
+
+              return `
+                <div class="relative z-10 flex flex-col items-center group cursor-pointer transition-all ${isCurrent ? 'scale-110' : ''}" style="width: 76px;">
+                  <!-- 現在位置のペンギン機関車マーカー -->
+                  ${isCurrent ? `
+                    <div class="absolute -top-11 flex flex-col items-center animate-bounce z-20">
+                      <span class="text-2xl filter drop-shadow-md">🚂🐧</span>
+                      <span class="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-amber-500 text-white shadow-xs whitespace-nowrap">
+                        現在地
+                      </span>
+                    </div>
+                  ` : ''}
+
+                  <!-- 駅ノードサークル -->
+                  <div class="w-11 h-11 rounded-full flex items-center justify-center text-lg shadow-sm border-2 transition-all ${
+                    isCurrent
+                      ? 'bg-amber-400 border-amber-600 ring-4 ring-amber-300 text-slate-950 scale-105'
+                      : isVisited
+                        ? 'bg-emerald-500 border-emerald-600 text-white'
+                        : 'bg-white border-slate-300 text-slate-400'
+                  }">
+                    ${isVisited && !isCurrent ? '✅' : st.icon}
+                  </div>
+
+                  <!-- 駅名 ＆ キロ数 -->
+                  <div class="text-center mt-2 space-y-0.5">
+                    <div class="text-[11px] font-black cyrillic-text leading-tight ${isCurrent ? 'text-amber-950 font-black' : isVisited ? 'text-emerald-950' : 'text-slate-400'}">
+                      ${st.nameMn.replace(' өртөө', '')}
+                    </div>
+                    <div class="text-[10px] font-bold ${isCurrent ? 'text-amber-700' : 'text-slate-500'}">
+                      ${st.nameJa.replace('駅', '')}
+                    </div>
+                    <div class="text-[9px] font-mono text-slate-400">
+                      ${st.km}km
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- チャレンジクイズ ＆ ゲーム進行エリア -->
+      ${rw.isGoal ? this.renderGoalVictoryUI() : rw.isGameOver ? this.renderGameOverUI() : this.renderChallengeUI(currentStation)}
+    `;
+  }
+
+  // 🎯 駅チャレンジクイズの描画
+  static renderChallengeUI(currentStation) {
+    const rw = this.state.railway;
+    const q = rw.currentQ;
+    if (!q) return '';
+
+    return `
+      <div class="bg-white rounded-2xl border-2 border-sky-600 shadow-md p-5 sm:p-7 space-y-6">
+        <!-- 現在停車中の駅バナー -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-slate-200">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${currentStation.icon}</span>
+              <div>
+                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-200">
+                  第 ${currentStation.index + 1} 駅 停車中
+                </span>
+                <h3 class="text-lg sm:text-xl font-black text-slate-900 cyrillic-text mt-0.5">
+                  ${currentStation.nameMn} <span class="text-sm font-bold text-slate-600">（${currentStation.nameJa}）</span>
+                </h3>
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              📍 ${currentStation.regionJa} ｜ ${currentStation.desc}
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2 self-start sm:self-auto">
+            <span class="text-xs font-bold text-slate-500">駅スタンプ:</span>
+            <span class="text-xs font-black px-2.5 py-1 rounded-xl bg-amber-50 text-amber-900 border border-amber-200 flex items-center gap-1 shadow-2xs">
+              ${currentStation.stamp}
+            </span>
+          </div>
+        </div>
+
+        <!-- クイズ出題エリア -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-sky-700 bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-200">
+              🏷️ ${q.category} 出発試練
+            </span>
+            <span class="text-xs font-bold text-slate-400">
+              正解で次駅へ進行 ｜ 不正解で<strong>1駅後退</strong>
+            </span>
+          </div>
+
+          <div class="bg-gradient-to-br from-slate-50 to-sky-50/50 p-6 rounded-2xl border border-slate-200 text-center space-y-3">
+            <div class="text-xs sm:text-sm font-bold text-slate-600">
+              【問題】${q.prompt}
+            </div>
+
+            <!-- 単語・フレーズの強調表示 ＆ 音声ボタン -->
+            <div class="flex items-center justify-center gap-3 pt-1">
+              <span class="text-2xl sm:text-3xl font-black cyrillic-text text-slate-900 tracking-wide">
+                ${q.wordMn}
+              </span>
+              <button type="button" class="btn-play-audio p-2 rounded-xl bg-white hover:bg-sky-50 border border-slate-200 text-sky-600 shadow-2xs transition-all active:scale-95 cursor-pointer" data-text="${q.wordMn}" title="音声を聴く">
+                🔊
+              </button>
+            </div>
+
+            ${q.caution ? `
+              <div class="text-xs font-bold text-amber-700 bg-amber-50 inline-block px-3 py-1 rounded-full border border-amber-200">
+                ⚠️ 発音注意: [${q.caution}]
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- 4択選択ボタン群 -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            ${q.choices.map((choice, idx) => {
+              let btnClass = 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800 hover:border-sky-400';
+              let badge = '';
+
+              if (rw.hasAnswered) {
+                if (idx === q.correctIdx) {
+                  btnClass = 'bg-emerald-500 border-emerald-600 text-white font-black shadow-md ring-4 ring-emerald-300';
+                  badge = '<span class="text-xs ml-1">✔ 正解</span>';
+                } else if (idx === rw.selectedChoiceIdx) {
+                  btnClass = 'bg-rose-500 border-rose-600 text-white font-black shadow-md ring-4 ring-rose-300';
+                  badge = '<span class="text-xs ml-1">✖ 不正解</span>';
+                } else {
+                  btnClass = 'bg-slate-100 border-slate-200 text-slate-400 opacity-60';
+                }
+              }
+
+              return `
+                <button type="button" class="btn-railway-choice p-4 rounded-xl border-2 transition-all active:scale-98 flex items-center justify-between text-left shadow-xs cursor-pointer ${btnClass}" data-choice-idx="${idx}" ${rw.hasAnswered ? 'disabled' : ''}>
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-6 h-6 rounded-lg bg-black/10 flex items-center justify-center text-xs font-mono font-bold">
+                      ${idx + 1}
+                    </span>
+                    <span class="text-base font-bold cyrillic-text">${choice}</span>
+                  </div>
+                  ${badge}
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- 判定フィードバック ＆ 次へのアクションボタン -->
+        ${rw.hasAnswered ? `
+          <div class="pt-4 border-t border-slate-200 animate-fadeIn">
+            ${rw.lastAction === 'correct' ? `
+              <!-- 正解フィードバック -->
+              <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-emerald-800 font-black text-base sm:text-lg">
+                    <span>🎉</span>
+                    <span>正解！素晴らしい判断です！</span>
+                  </div>
+                  <span class="text-xs font-black px-2.5 py-1 rounded-full bg-emerald-600 text-white">
+                    +20 XP
+                  </span>
+                </div>
+                <p class="text-xs sm:text-sm text-emerald-900 leading-relaxed">
+                  ${q.explanation}
+                </p>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
+                  <div class="text-xs font-black text-emerald-700 flex items-center gap-1.5">
+                    <span>🚂💨</span>
+                    <span>
+                      ${rw.advanceSteps === 2 ? '🔥 3連勝スチームブースト発動！一気に2駅前進しました！' : '安全確認完了！次の駅へ1駅前進しました！'}
+                    </span>
+                  </div>
+                  <button type="button" id="btn-railway-next" class="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+                    <span>次の駅へ出発進行！</span>
+                    <span>🚂💨</span>
+                  </button>
+                </div>
+              </div>
+            ` : `
+              <!-- 不正解（間違えるたびに戻る！）フィードバック -->
+              <div class="bg-rose-50 border-2 border-rose-300 p-5 rounded-2xl space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-rose-800 font-black text-base sm:text-lg">
+                    <span>⚠️</span>
+                    <span>残念！不正解…</span>
+                  </div>
+                  <span class="text-xs font-black px-2.5 py-1 rounded-full bg-rose-600 text-white">
+                    チケット -1 🎫
+                  </span>
+                </div>
+
+                <div class="text-xs sm:text-sm text-rose-900 leading-relaxed">
+                  正解は: <strong class="font-black text-rose-950 cyrillic-text">【${q.choices[q.correctIdx]}】</strong><br>
+                  ${q.explanation}
+                </div>
+
+                <!-- 面白トラブル事件バナー -->
+                ${rw.incident ? `
+                  <div class="bg-white/80 p-3.5 rounded-xl border border-rose-200 flex items-start gap-3">
+                    <span class="text-2xl">${rw.incident.icon}</span>
+                    <div class="space-y-0.5">
+                      <div class="text-xs font-black text-rose-950">${rw.incident.title}</div>
+                      <div class="text-[11px] text-rose-800 leading-snug">${rw.incident.desc}</div>
+                    </div>
+                  </div>
+                ` : ''}
+
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
+                  <div class="text-xs font-black text-rose-700 flex items-center gap-1.5">
+                    <span>🔙</span>
+                    <span>
+                      ${rw.retreatSteps > 0 ? `【緊急バック】手前の第 ${rw.stationIdx + 1} 駅（${railwayStations[rw.stationIdx].nameJa}）へ1駅後退しました！` : '始発駅のためこれ以上は後退しません。次こそ安全運行を！'}
+                    </span>
+                  </div>
+                  <button type="button" id="btn-railway-next" class="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-700 hover:to-amber-700 text-white font-black shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+                    <span>手前の駅へ緊急退避</span>
+                    <span>⚠️</span>
+                  </button>
+                </div>
+              </div>
+            `}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  // 🏆 全線走破ゴール画面の描画
+  static renderGoalVictoryUI() {
+    const rw = this.state.railway;
+
+    return `
+      <div class="bg-gradient-to-br from-amber-500 via-yellow-400 to-amber-600 p-1 rounded-3xl shadow-xl animate-fadeIn">
+        <div class="bg-white p-6 sm:p-10 rounded-[22px] text-center space-y-6">
+          <div class="w-20 h-20 mx-auto rounded-3xl bg-amber-100 text-amber-600 flex items-center justify-center text-4xl shadow-inner animate-bounce">
+            🏆
+          </div>
+
+          <div class="space-y-2">
+            <span class="text-xs font-black tracking-widest text-amber-600 uppercase bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              1,110 km 完全走破達成！
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-black text-slate-900">
+              モンゴル縦断鉄道 走破マスター！
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto leading-relaxed">
+              北のロシア国境・スフバートル駅から、首都ウランバートルを抜け、南の中国国境・ザミンウード駅まで全1,110kmを駆け抜けました！
+            </p>
+          </div>
+
+          <!-- 走破リザルトカード -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="text-[11px] font-bold text-slate-400">総走破距離</div>
+              <div class="text-lg font-black text-slate-800 font-mono">1,110 km</div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="text-[11px] font-bold text-slate-400">正解数</div>
+              <div class="text-lg font-black text-emerald-600 font-mono">${rw.totalCorrect} 回</div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="text-[11px] font-bold text-slate-400">ミス（後退）</div>
+              <div class="text-lg font-black text-rose-600 font-mono">${rw.totalMistakes} 回</div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="text-[11px] font-bold text-slate-400">獲得XPボーナス</div>
+              <div class="text-lg font-black text-amber-600 font-mono">+300 XP</div>
+            </div>
+          </div>
+
+          <!-- 全駅スタンプ手帳 -->
+          <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 text-left space-y-2">
+            <div class="text-xs font-black text-amber-900 flex items-center gap-1.5">
+              <span>📖</span> 全10駅 記念スタンプ手帳コンプリート！
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
+              ${railwayStations.map(st => `
+                <div class="p-2 bg-white rounded-xl border border-amber-200 text-center space-y-1">
+                  <div class="text-lg">${st.icon}</div>
+                  <div class="text-[10px] font-bold text-slate-700 leading-tight">${st.nameJa.replace('駅', '')}</div>
+                  <div class="text-[9px] font-mono text-emerald-600 font-bold">STAMP OK</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- 再挑戦ボタン群 -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button type="button" id="btn-railway-restart" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-slate-950 font-black shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer">
+              🔄 もう一度旅に出る（始発から再挑戦）
+            </button>
+            <button type="button" class="tab-mode-btn w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black transition-all active:scale-95 cursor-pointer" data-tab="map">
+              🗺️ モンゴル全22地域図鑑を見る
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ⚠️ ゲームオーバー画面の描画
+  static renderGameOverUI() {
+    const rw = this.state.railway;
+    const st = railwayStations[rw.stationIdx];
+
+    return `
+      <div class="bg-rose-50 border-2 border-rose-300 p-6 sm:p-10 rounded-3xl text-center space-y-6 animate-fadeIn">
+        <div class="w-20 h-20 mx-auto rounded-3xl bg-rose-100 text-rose-600 flex items-center justify-center text-4xl shadow-inner">
+          🛑
+        </div>
+
+        <div class="space-y-2">
+          <span class="text-xs font-black tracking-widest text-rose-600 uppercase bg-rose-100 px-3 py-1 rounded-full border border-rose-300">
+            運行休止（ゲームオーバー）
+          </span>
+          <h3 class="text-2xl sm:text-3xl font-black text-slate-900">
+            乗車チケットがなくなりました！
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+            第 ${rw.stationIdx + 1} 駅（${st.nameJa} / ${st.km} km地点）で運転ストップ！<br>
+            間違えるたびに前の駅へ戻される過酷な旅路。準備を整えてリベンジしよう！
+          </p>
+        </div>
+
+        <div class="flex items-center justify-center gap-4 max-w-md mx-auto p-4 bg-white rounded-2xl border border-rose-200 text-left">
+          <div class="text-3xl">🎫</div>
+          <div class="space-y-0.5">
+            <div class="text-xs font-bold text-slate-700">最終到達記録</div>
+            <div class="text-sm font-black text-rose-950">
+              第 ${rw.stationIdx + 1} 駅: ${st.nameMn} (${st.km} km)
+            </div>
+            <div class="text-[11px] text-slate-500">
+              正解数: ${rw.totalCorrect}回 ｜ 獲得スタンプ: ${rw.stamps.length}個
+            </div>
+          </div>
+        </div>
+
+        <button type="button" id="btn-railway-restart" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-700 hover:to-amber-700 text-white font-black shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer">
+          🔄 始発駅（スフバートル）から再挑戦する！
+        </button>
+      </div>
+    `;
+  }
+
+  // 🗺️ モンゴル全22地域探検地図 ＆ 図鑑UI（既存マップとテスト要件を100%保持）
+  static renderMapUI(currentXp) {
     const totalCount = expeditionDestinations.length;
     const unlockedCount = expeditionDestinations.filter(d => currentXp >= d.requiredXp).length;
     const progressPercent = Math.min(100, Math.round((unlockedCount / totalCount) * 100));
 
-    // フィルタリング処理
     const filteredDestinations = expeditionDestinations.filter(d => {
       const isUnlocked = currentXp >= d.requiredXp;
       if (this.state.currentFilter === 'unlocked') return isUnlocked;
@@ -57690,82 +58939,67 @@ class PenguinExpeditionComponent {
       return true;
     });
 
-    this.container.innerHTML = `
-      <div class="animate-fade-in max-w-5xl mx-auto px-3 sm:px-4 py-4 space-y-6">
-        
-        <!-- ヘッダー -->
-        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-          <div class="flex items-center gap-2.5">
-            <span class="text-2xl p-2 rounded-xl bg-gradient-to-tr from-sky-500 to-emerald-500 text-white shadow-xs">🗺️</span>
-            <div>
-              <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <span>ペンギン探検隊（モンゴル全土 名所めぐり）</span>
-                <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold hidden sm:inline-block">全22地域</span>
-              </h2>
-              <p class="text-xs text-slate-500">学習XPを貯めると地図に色がつき、全21アイマグと首都を制覇できます！</p>
+    return `
+      <!-- XP進捗＆開拓ステータスバナー -->
+      <div class="bg-gradient-to-r from-cyan-600 via-sky-600 to-blue-700 text-white p-6 rounded-2xl shadow-md space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-black uppercase tracking-wider bg-white/20 px-2.5 py-0.5 rounded-full">
+                EXPEDITION MAP
+              </span>
+              <span class="text-xs font-bold text-cyan-100">
+                MONGOLIA EXPEDITION MAP
+              </span>
             </div>
-          </div>
-          <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all cursor-pointer">
-            ✕ ホームへ
-          </button>
-        </div>
-
-        <!-- 旅の進捗ステータスバナー -->
-        <div class="bg-gradient-to-r from-sky-600 via-teal-600 to-emerald-600 rounded-3xl p-5 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
-          <div class="flex items-center gap-3.5 w-full md:w-auto">
-            <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl shadow-xs flex-shrink-0">
-              🐧
-            </div>
-            <div class="flex-1">
-              <div class="text-xs font-bold text-sky-100 flex items-center gap-2">
-                <span>探検隊の冒険記録</span>
-                <span class="bg-white/20 px-2 py-0.2 rounded-full text-[10px] font-black">${progressPercent}% 制覇</span>
-              </div>
-              <h3 class="text-lg font-black leading-tight mt-0.5">
-                全22地域中 <span class="text-amber-300 text-2xl">${unlockedCount}</span> ヶ所を開拓！
-              </h3>
-              <!-- プログレスバー -->
-              <div class="w-full bg-black/25 rounded-full h-2.5 mt-2 overflow-hidden border border-white/20">
-                <div class="bg-gradient-to-r from-amber-300 via-emerald-300 to-teal-200 h-full rounded-full transition-all duration-700 shadow-sm" style="width: ${progressPercent}%;"></div>
-              </div>
-            </div>
+            <h3 class="text-xl sm:text-2xl font-black mt-1">
+              モンゴル全22地域・名所制覇マップ
+            </h3>
+            <p class="text-xs sm:text-sm text-cyan-100 mt-0.5">
+              学習でXPを獲得するごとに、モンゴルの21アイマグ（県）＋首都特別市の新天地が開拓されます！
+            </p>
           </div>
 
-          <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-            <div class="bg-black/20 backdrop-blur-xs px-4 py-2.5 rounded-2xl border border-white/20 text-right">
-              <div class="text-[11px] text-sky-100 font-bold">現在の累計XP</div>
-              <strong class="text-amber-300 text-base font-black">${currentXp.toLocaleString()} XP ⚡</strong>
+          <div class="bg-white/10 backdrop-blur-xs px-4 py-3 rounded-xl border border-white/20 text-center min-w-[140px]">
+            <div class="text-[11px] font-bold text-cyan-100">開拓済み地域</div>
+            <div class="text-2xl font-black font-mono">
+              ${unlockedCount} <span class="text-xs font-normal">/ ${totalCount}</span>
             </div>
+            <div class="text-[10px] text-cyan-200 mt-0.5">${progressPercent}% 開拓</div>
           </div>
         </div>
 
-        <!-- 🗺️ インタラクティブ・モンゴル全土地図セクション -->
-        <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-            <div>
-              <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
-                <span>🎨 モンゴル探検インタラクティブ地図</span>
-                <span class="text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold">タップで解説表示</span>
-              </h3>
-              <p class="text-[11px] text-slate-500">開拓した地域は色が鮮やかに点灯します。地図上のどの地域もタップして詳細解説を読めます。</p>
-            </div>
-            
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-600">
-              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block"></span> 開拓済み</span>
-              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-slate-300 border border-slate-400 border-dashed inline-block"></span> 未開拓（未到達）</span>
-            </div>
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-bold text-cyan-100">
+            <span>全土制覇進捗</span>
+            <span>現在: ${currentXp.toLocaleString()} XP</span>
           </div>
-
-          <!-- SVG地図描画エリア -->
-          <div class="relative w-full rounded-2xl bg-gradient-to-b from-sky-50/60 via-slate-50/40 to-amber-50/40 border border-slate-200/80 p-2 sm:p-4 overflow-hidden">
-            ${this.renderSvgMap(currentXp)}
-            
-            <!-- マウスホバー用フローティングツールチップ -->
-            <div id="map-tooltip" class="absolute pointer-events-none hidden bg-slate-900/90 text-white text-xs px-3 py-1.5 rounded-xl shadow-lg border border-slate-700 backdrop-blur-xs z-20"></div>
+          <div class="w-full bg-black/20 h-2.5 rounded-full overflow-hidden p-0.5">
+            <div class="bg-gradient-to-r from-amber-300 to-yellow-400 h-full rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
           </div>
         </div>
+      </div>
 
-        <!-- フィルタータブバー -->
+      <!-- インタラクティブSVGモンゴル地図カード -->
+      <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🗺️</span>
+            <h3 class="text-sm sm:text-base font-black text-slate-900">
+              モンゴル全土インタラクティブ地図（タップで名所カード閲覧）
+            </h3>
+          </div>
+          <span class="text-xs text-slate-500 font-bold">
+            ${this.state.hoveredRegionId ? `選択中: ${expeditionDestinations.find(d => d.id === this.state.hoveredRegionId)?.nameJa || ''}` : '地域をタップして詳細解説を見る'}
+          </span>
+        </div>
+
+        <div class="relative bg-slate-900 rounded-xl overflow-hidden p-2 sm:p-4 border border-slate-800">
+          ${this.renderSvgMap(currentXp)}
+        </div>
+      </div>
+
+      <!-- フィルタータブバー -->
         <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
           <button type="button" data-filter="all" class="filter-tab-btn px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
             this.state.currentFilter === 'all' ? 'bg-slate-800 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -57873,12 +59107,9 @@ class PenguinExpeditionComponent {
           }).join('')}
         </div>
 
-        <!-- 名所記念カード・解説モーダル（選択時） -->
-        ${this.state.selectedDestination ? this.renderModalHTML(this.state.selectedDestination) : ''}
-      </div>
+      <!-- 名所記念カード・解説モーダル（選択時） -->
+      ${this.state.selectedDestination ? this.renderModalHTML(this.state.selectedDestination) : ''}
     `;
-
-    this.bindEvents();
   }
 
   // SVG地図のHTML生成
@@ -58073,7 +59304,6 @@ class PenguinExpeditionComponent {
       });
     }
   }
-
   static openRegionModal(id) {
     const dest = expeditionDestinations.find(d => d.id === id);
     if (dest) {
@@ -58189,6 +59419,117 @@ class PenguinExpeditionComponent {
         </div>
       </div>
     `;
+  }
+
+  // イベントリスナーのバインド
+  static bindEvents() {
+    if (!this.container) return;
+
+    // タブ切替（鉄道すごろく ⇔ 地図図鑑）
+    this.container.querySelectorAll('.tab-mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        if (tab && tab !== this.state.activeTab) {
+          this.state.activeTab = tab;
+          this.render(this.container, this.onNavigate);
+        }
+      });
+    });
+
+    // 鉄道すごろく: 選択肢タップ
+    this.container.querySelectorAll('.btn-railway-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.choiceIdx, 10);
+        this.handleRailwayAnswer(idx);
+      });
+    });
+
+    // 鉄道すごろく: 次の駅へ進む / 緊急退避ボタン
+    const nextBtn = this.container.querySelector('#btn-railway-next');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        this.nextRailwayTurn();
+      });
+    }
+
+    // 鉄道すごろく: 再挑戦・リスタート
+    const restartBtn = this.container.querySelector('#btn-railway-restart');
+    if (restartBtn) {
+      restartBtn.addEventListener('click', () => {
+        this.initRailwayGame(true);
+        this.render(this.container, this.onNavigate);
+      });
+    }
+
+    // 音声再生ボタン
+    this.container.querySelectorAll('.btn-play-audio').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const text = btn.dataset.text;
+        if (text) {
+          SpeechService.speak(text);
+        }
+      });
+    });
+
+    // 地図フィルターボタン
+    this.container.querySelectorAll('.filter-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.currentFilter = btn.getAttribute('data-filter');
+        this.render(this.container, this.onNavigate);
+      });
+    });
+
+    // 地域カードクリック ➔ モーダル展開
+    this.container.querySelectorAll('.dest-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const regionId = card.getAttribute('data-id');
+        const dest = expeditionDestinations.find(d => d.id === regionId);
+        if (dest) {
+          this.openRegionModal(dest);
+        }
+      });
+    });
+
+    // SVGマップ上の地域グループクリック
+    this.container.querySelectorAll('.svg-region-group').forEach(group => {
+      group.addEventListener('click', () => {
+        const regionId = group.dataset.regionId;
+        const dest = expeditionDestinations.find(d => d.id === regionId);
+        if (dest) {
+          this.openRegionModal(dest);
+        }
+      });
+
+      group.addEventListener('mouseenter', () => {
+        this.state.hoveredRegionId = group.dataset.regionId;
+        group.classList.add('opacity-80', 'filter', 'drop-shadow-lg');
+      });
+
+      group.addEventListener('mouseleave', () => {
+        this.state.hoveredRegionId = null;
+        group.classList.remove('opacity-80', 'filter', 'drop-shadow-lg');
+      });
+    });
+
+    // モーダル閉じるボタン
+    const modalCloseBtn = this.container.querySelector('#btn-close-modal');
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener('click', () => {
+        this.state.selectedDestination = null;
+        this.render(this.container, this.onNavigate);
+      });
+    }
+
+    const modalBackdrop = this.container.querySelector('#modal-backdrop');
+    if (modalBackdrop) {
+      modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) {
+          this.state.selectedDestination = null;
+          this.render(this.container, this.onNavigate);
+        }
+      });
+    }
   }
 }
 
