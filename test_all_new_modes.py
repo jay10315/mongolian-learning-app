@@ -100,6 +100,11 @@ def test_new_modes():
     assert 'window.SoundEffects = SoundEffects;' in html, "Missing window.SoundEffects assignment"
     print("  [OK] SoundEffects Proxy and fallback are active and globally exported")
 
+    # 7. Check Shadowing & Dictation sentence binding safety
+    assert 'const typingSentences = initialTypingSentences;' in bundled, "typingSentences not defined in bundled.js"
+    assert 's.mongolian || s.textMn' in bundled, "Missing fallback normalization for textMn in ShadowingDictationComponent"
+    print("  [OK] Shadowing & Dictation sentences and fallback normalization verified")
+
     print("All new mode tests passed successfully!")
 
 if __name__ == '__main__':

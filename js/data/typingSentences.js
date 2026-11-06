@@ -376,3 +376,6 @@ export const initialTypingSentences = [
     }
   }
 ];
+
+export const typingSentences = initialTypingSentences;
+

@@ -1,9 +1,10 @@
 // シャドーイング ＆ ディクテーション（聞き取り書き取り）コンポーネント
-import { typingSentences } from '../data/typingSentences.js';
+import { initialTypingSentences, typingSentences } from '../data/typingSentences.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
 import { SoundEffects, SPECIAL_CYRILLIC_BAR } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
+import { StorageService } from '../services/storage.js';
 
 export class ShadowingDictationComponent {
   static state = {
@@ -21,12 +22,34 @@ export class ShadowingDictationComponent {
     this.container = container;
     this.onNavigate = onNavigate;
 
-    if (!this.state.currentSentence) {
-      this.state.sentences = [...typingSentences];
+    if (!this.state.currentSentence || !this.state.sentences.length) {
+      let rawList = [];
+      try {
+        if (typeof StorageService !== 'undefined' && StorageService.getTypingSentences) {
+          rawList = StorageService.getTypingSentences();
+        }
+      } catch (e) {
+        console.warn('StorageService error in Shadowing:', e);
+      }
+      if (!rawList || !rawList.length) {
+        if (typeof typingSentences !== 'undefined' && typingSentences.length) {
+          rawList = typingSentences;
+        } else if (typeof initialTypingSentences !== 'undefined' && initialTypingSentences.length) {
+          rawList = initialTypingSentences;
+        }
+      }
+      this.state.sentences = (rawList || []).map(s => ({
+        ...s,
+        mongolian: s.mongolian || s.textMn || '',
+        japanese: s.japanese || s.textJa || '',
+        pronunciation: s.pronunciation || s.romaji || ''
+      }));
       this.loadSentence(0);
     }
 
-    const s = this.state.currentSentence;
+    const s = this.state.currentSentence || { mongolian: '', japanese: '' };
+    const textMn = s.mongolian || s.textMn || '';
+    const textJa = s.japanese || s.textJa || '';
     const idx = this.state.currentIndex;
     const total = this.state.sentences.length;
 
@@ -80,7 +103,7 @@ export class ShadowingDictationComponent {
           <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-center">
             <div class="text-[11px] font-bold text-slate-400 mb-0.5">日本語訳</div>
             <div class="text-sm sm:text-base font-bold text-slate-800">
-              ${s.japanese}
+              ${textJa}
             </div>
           </div>
 
@@ -88,7 +111,7 @@ export class ShadowingDictationComponent {
             <!-- シャドーイングモード: テキスト表示と音読プロンプト -->
             <div class="p-5 rounded-2xl bg-purple-50/50 border border-purple-200 text-center space-y-3">
               <div class="text-lg sm:text-xl font-black text-slate-900 cyrillic-text">
-                ${s.mongolian}
+                ${textMn}
               </div>
               <div class="text-xs text-purple-800 font-medium">
                 💡 音声のすぐ後ろにピッタリくっついて、リズムとイントネーションを真似しながら声に出してみましょう！
@@ -124,7 +147,7 @@ export class ShadowingDictationComponent {
                 <span class="text-xs text-slate-400 font-mono">正解の文：</span>
               </div>
               <div class="text-base font-black text-slate-900 cyrillic-text">
-                ${s.mongolian}
+                ${textMn}
               </div>
             </div>
           ` : ''}
@@ -159,11 +182,11 @@ export class ShadowingDictationComponent {
     });
 
     this.container.querySelector('#btn-play-normal').addEventListener('click', () => {
-      SpeechService.speak(s.mongolian);
+      SpeechService.speak(textMn);
     });
 
     this.container.querySelector('#btn-play-slow').addEventListener('click', () => {
-      SpeechService.speakSlow(s.mongolian);
+      SpeechService.speakSlow(textMn);
     });
 
     // キリル特有文字クリック
@@ -190,7 +213,7 @@ export class ShadowingDictationComponent {
     if (checkBtn) {
       checkBtn.addEventListener('click', () => {
         const cleanA = (this.state.userInput || '').trim().toLowerCase().replace(/[.,!?:;«»"'\s]/g, '');
-        const cleanB = (s.mongolian || '').trim().toLowerCase().replace(/[.,!?:;«»"'\s]/g, '');
+        const cleanB = (textMn || '').trim().toLowerCase().replace(/[.,!?:;«»"'\s]/g, '');
         
         let matches = 0;
         const maxLen = Math.max(cleanA.length, cleanB.length);
@@ -223,8 +246,9 @@ export class ShadowingDictationComponent {
   }
 
   static loadSentence(index) {
-    this.state.currentIndex = index;
-    this.state.currentSentence = this.state.sentences[index];
+    if (!this.state.sentences || !this.state.sentences.length) return;
+    this.state.currentIndex = (index + this.state.sentences.length) % this.state.sentences.length;
+    this.state.currentSentence = this.state.sentences[this.state.currentIndex];
     this.state.userInput = '';
     this.state.isChecked = false;
     this.state.accuracy = 0;
