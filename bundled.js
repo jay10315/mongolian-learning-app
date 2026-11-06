@@ -21840,98 +21840,579 @@ const wordFamilyData = {
 
 
 // === js/data/expeditionData.js ===
-// ペンギン探検隊（モンゴル名所めぐり旅・コレクション）データ
+// ペンギン探検隊（モンゴル全22地域・全21アイマグ＋首都特別市 名所めぐり旅）データ
 const expeditionDestinations = [
   {
     id: "ulaanbaatar",
-    nameMn: "Улаанбаатар",
-    nameJa: "ウランバートル（スフバートル広場）",
+    nameMn: "Улаанбаатар хот",
+    nameJa: "ウランバートル特別市",
+    capitalMn: "Нийслэл хот",
+    capitalJa: "首都",
+    zone: "capital",
+    zoneJa: "首都特別市",
     requiredXp: 0,
-    requiredCorrect: 0,
     badgeIcon: "🏛️",
-    postcardColor: "from-sky-500 to-indigo-600",
-    description: "モンゴル国の首都。中心のスフバートル広場には革命の英雄像とチンギス・ハーン像が堂々と佇んでいます。",
+    color: "#e11d48", // Rose Red
+    postcardColor: "from-rose-600 via-red-600 to-amber-600",
+    description: "モンゴル国の政治・経済・文化の中心地。人口の約半分が集まる活気ある近代都市でありながら、チベット仏教の総本山ガンダン寺やボグド・ハーン宮殿博物館など豊かな歴史が息づいています。",
+    attractions: [
+      "スフバートル広場（チンギス・ハーン像）",
+      "ガンダン寺（巨大開眼観音菩薩像）",
+      "ザイサン・トルゴイ（市内一望の丘）",
+      "ボグド・ハーン宮殿博物館"
+    ],
+    specialties: ["伝統蒸し餃子ボーズ", "揚げ餃子ホーショール", "最高級カシミヤ製品"],
     highlightMn: "Нийслэл Улаанбаатар хот",
     souvenir: "首都の記念バッジ 🎖️",
-    funFact: "世界で最も平均気温が低い首都として知られていますが、夏は爽やかでカフェや博物館巡りが楽しめます。"
+    funFact: "「赤い英雄」を意味するウランバートルは、世界で最も平均気温が低い首都ですが、年間約260日以上が快晴という「青空の国」を象徴する大都市です。",
+    polygonPoints: [[565, 220], [595, 220], [595, 245], [565, 245]],
+    center: { x: 580, y: 232 }
   },
   {
-    id: "terelj",
-    nameMn: "Тэрэлж",
-    nameJa: "テレルジ国立公園（亀石と奇岩大草原）",
-    requiredXp: 150,
-    requiredCorrect: 15,
+    id: "tov",
+    nameMn: "Төв аймаг",
+    nameJa: "トゥブ県",
+    capitalMn: "Зуунмод хот",
+    capitalJa: "ズーンモド市",
+    zone: "central",
+    zoneJa: "中央部",
+    requiredXp: 50,
     badgeIcon: "🐢",
+    color: "#059669", // Emerald
     postcardColor: "from-emerald-600 to-teal-700",
-    description: "ウランバートル近郊の大自然。有名な「亀石（Мэлхий хад）」や高原の花畑、ゲルキャンプが広がります。",
-    highlightMn: "Мэлхий хад ба байгалийн цогцолборт газар",
-    souvenir: "亀石のミニチュア彫刻 🗿",
-    funFact: "何億年もの風化でできた巨大な亀石は、頭から甲羅まで本物の亀そっくりで、旅の安全を守るパワースポットです。"
+    description: "首都ウランバートルを取り囲む緑豊かな大草原。巨大な奇岩がそびえるテレルジ国立公園や、銀色に輝く世界最大のチンギス・ハーン騎馬像（ツォンジン・ボルドグ）など、世界中の旅人を魅了する名所が集まります。",
+    attractions: [
+      "テレルジ国立公園（有名な亀石 Мэлхий хад）",
+      "チンギス・ハーン巨大騎馬像（ツォンジン・ボルドグ）",
+      "マンズシル寺院跡（ボグド・ハーン山南麓）",
+      "フスタイ国立公園（野生馬タヒの保護区）"
+    ],
+    specialties: ["新鮮な馬乳酒（アイラグ）", "乳製品アーロール", "乗馬トレッキング"],
+    highlightMn: "Төв сайхан нутаг",
+    souvenir: "亀石のミニチュア彫刻 🐢",
+    funFact: "ツォンジン・ボルドグのチンギス・ハーン騎馬像は高さ40メートル！馬のたてがみ部分までエレベーターで登り、馬の頭の上から大草原を見渡せます。",
+    polygonPoints: [[520, 240], [540, 170], [610, 170], [630, 220], [620, 290], [550, 290]],
+    center: { x: 550, y: 255 }
   },
   {
-    id: "tsonjin_boldog",
-    nameMn: "Чингис хааны морьт хөшөө",
-    nameJa: "チンギス・ハーン巨大騎馬像（ツォンジン・ボルドグ）",
-    requiredXp: 350,
-    requiredCorrect: 35,
-    badgeIcon: "🐎",
-    postcardColor: "from-amber-500 to-orange-600",
-    description: "大草原に突如現れる、高さ40メートルの銀色に輝く世界最大のチンギス・ハーン騎馬像。",
-    highlightMn: "Дэлхийн хамгийн том морьт хөшөө",
-    souvenir: "黄金の馬頭琴キーホルダー 🎻",
-    funFact: "馬のたてがみ部分までエレベーターで登ることができ、馬の頭の上から見渡す果てしない大草原のパノラマは圧巻です！"
+    id: "darkhan_uul",
+    nameMn: "Дархан-Уул аймаг",
+    nameJa: "ダルハン・オール県",
+    capitalMn: "Дархан хот",
+    capitalJa: "ダルハン市",
+    zone: "north",
+    zoneJa: "北部",
+    requiredXp: 100,
+    badgeIcon: "🪷",
+    color: "#2563eb", // Royal Blue
+    postcardColor: "from-blue-600 to-indigo-700",
+    description: "モンゴル第2の都市ダルハンを擁する県。「鍛冶屋の山」を意味し、美しい並木道や学術都市としての落ち着きを持つ近代的な街です。友好の鉄仏像（Буддагийн хөшөө）が丘の上から街を見守っています。",
+    attractions: [
+      "友好の鉄仏像（黄金の座仏）",
+      "ダルハン民族歴史博物館",
+      "子ども鉄道公園",
+      "ハラハ河の自然遊歩道"
+    ],
+    specialties: ["ダルハン製革製品", "手作り鉄工芸品", "羊毛フェルトスリッパ"],
+    highlightMn: "Найрамдлын Дархан хот",
+    souvenir: "友好の鉄仏ミニレプリカ 🪷",
+    funFact: "1960年代に旧ソ連や東欧諸国の技術支援によって建設された国際色豊かな計画都市で、「友情の街（Найрамдал）」と呼ばれています。",
+    polygonPoints: [[550, 130], [580, 130], [580, 160], [550, 160]],
+    center: { x: 565, y: 145 }
   },
   {
-    id: "kharkhorin",
-    nameMn: "Хархорин",
-    nameJa: "カラコルム（古都とエルデネ・ゾー寺院）",
-    requiredXp: 600,
-    requiredCorrect: 60,
+    id: "orkhon",
+    nameMn: "Орхон аймаг",
+    nameJa: "オルホン県",
+    capitalMn: "Эрдэнэт хот",
+    capitalJa: "エルデネット市",
+    zone: "north",
+    zoneJa: "北部",
+    requiredXp: 150,
+    badgeIcon: "🧶",
+    color: "#4f46e5", // Indigo
+    postcardColor: "from-indigo-600 to-purple-700",
+    description: "モンゴル第3の都市エルデネットを中心とする県。アジア有数の規模を誇るエルデネット銅・モリブデン鉱山と、国際的評価の高い「エルデネット絨毯（хивс）」の生産地として世界にその名を知られています。",
+    attractions: [
+      "エルデネット大鉱山展望台",
+      "エルデネット絨毯工場見学",
+      "友情の丘展望台",
+      "鉱物博物館"
+    ],
+    specialties: ["エルデネット高級羊毛絨毯", "銅細工工芸品", "地元産ベリージャム"],
+    highlightMn: "Эрдэнэсийн хот Эрдэнэт",
+    souvenir: "エルデネット絨毯のミニコースター 🧶",
+    funFact: "エルデネットの絨毯工場では、モンゴル産の純粋な羊毛100%を使用した最高密度のオリエンタルカーペットが織り上げられており、日本でも高級品として愛好されています。",
+    polygonPoints: [[490, 160], [520, 160], [520, 190], [490, 190]],
+    center: { x: 505, y: 175 }
+  },
+  {
+    id: "bulgan",
+    nameMn: "Булган аймаг",
+    nameJa: "ブルガン県",
+    capitalMn: "Булган хот",
+    capitalJa: "ブルガン市",
+    zone: "north",
+    zoneJa: "北部",
+    requiredXp: 220,
+    badgeIcon: "🥛",
+    color: "#16a34a", // Green
+    postcardColor: "from-emerald-600 via-green-600 to-lime-600",
+    description: "モンゴル全土で「もっともアイラグ（馬乳酒）が旨い地」として絶賛される県。豊かな森林と緑の丘陵が広がり、古代遊牧民が築いた美しい鹿石群（Буган хөшөө）や歴史遺産が数多く眠っています。",
+    attractions: [
+      "サイハン・ソムの伝統馬乳酒産地",
+      "ウーシュギーン・ウブル鹿石群",
+      "ウラグ・トルゴイ自然保護区",
+      "バイガル・オーラ山林"
+    ],
+    specialties: ["極上サイハン馬乳酒（アイラグ）", "発酵乳ウルム", "天然蜂蜜"],
+    highlightMn: "Айргийн өлгий Булган нутаг",
+    souvenir: "黄金の馬乳酒ひしゃく 🥛",
+    funFact: "ブルガンの馬乳酒は草原のハーブの香りが溶け込み、微炭酸で爽やかな酸味があります。夏になると大統領から一般家庭までブルガンのアイラグを取り寄せます。",
+    polygonPoints: [[430, 180], [450, 110], [510, 120], [530, 160], [520, 240], [460, 230]],
+    center: { x: 465, y: 160 }
+  },
+  {
+    id: "selenge",
+    nameMn: "Сэлэнгэ аймаг",
+    nameJa: "セレンゲ県",
+    capitalMn: "Сүхбаатар хот",
+    capitalJa: "スフバートル市",
+    zone: "north",
+    zoneJa: "北部",
+    requiredXp: 300,
+    badgeIcon: "⛩️",
+    color: "#0d9488", // Teal
+    postcardColor: "from-teal-600 to-cyan-700",
+    description: "ロシア国境のバイカル湖へと注ぐ大河セレンゲ川が潤す、モンゴル屈指の穀倉地帯。木造仏教建築の最高傑作と名高いアマルバヤスガラント寺院（Амарбаясгалант хийд）が静かに佇んでいます。",
+    attractions: [
+      "アマルバヤスガラント寺院（木造仏教建築の傑作）",
+      "大河セレンゲ川とオルホン川の合流点",
+      "母の木（Ээж мод・聖地パワースポット）",
+      "トジン・ナルス松林保護区"
+    ],
+    specialties: ["セレンゲ産小麦・ハチミツ", "焼き立てナン・パン", "野生ベリー酒"],
+    highlightMn: "Сэлэнгэ мөрний хөвөө",
+    souvenir: "アマルバヤスガラントの木彫り仏塔 ⛩️",
+    funFact: "アマルバヤスガラント寺院は釘を一本も使わずに木材の組み合わせだけで建てられた驚異の建築で、激動の歴史をくぐり抜けて創建当時の姿を保っています。",
+    polygonPoints: [[510, 120], [560, 70], [620, 90], [610, 170], [540, 170], [530, 160]],
+    center: { x: 545, y: 105 }
+  },
+  {
+    id: "arkhangai",
+    nameMn: "Архангай аймаг",
+    nameJa: "アルハンガイ県",
+    capitalMn: "Цэцэрлэг хот",
+    capitalJa: "ツェツェルレグ市",
+    zone: "central",
+    zoneJa: "中央部",
+    requiredXp: 380,
+    badgeIcon: "🪨",
+    color: "#10b981", // Emerald light
+    postcardColor: "from-emerald-500 via-teal-600 to-sky-700",
+    description: "「モンゴルのスイス」と称賛される風光明媚な高原地帯。草原に突如現れる神秘の巨石タイハル・チュルー、火山活動が生み出した美しいテルヒーン・ツァガーン湖やホルゴ死火山、天然温泉ツェンヘルが点在します。",
+    attractions: [
+      "タイハル・チュルー（高さ16mの伝説の巨石）",
+      "テルヒーン・ツァガーン湖（白い湖）",
+      "ホルゴ死火山（噴火口トレッキング）",
+      "ツェンヘル硫黄温泉（草原の露天風呂）"
+    ],
+    specialties: ["ヤクのミルクのチーズ（ビャスラグラ）", "濃厚バター", "温泉たまご"],
+    highlightMn: "Монголын үзэсгэлэнт Швейцарь",
+    souvenir: "タイハル巨石の奇岩ペンダント 🪨",
+    funFact: "タイハル・チュルーの岩肌には、数千年前の古代突厥文字（突厥碑文）からモンゴル文字、チベット文字まで、歴代の旅人が刻んだ貴重な文字が残されています。",
+    polygonPoints: [[340, 190], [430, 180], [460, 230], [440, 290], [370, 280], [340, 220]],
+    center: { x: 397, y: 232 }
+  },
+  {
+    id: "ovorkhangai",
+    nameMn: "Өвөрхангай аймаг",
+    nameJa: "ウブルハンガイ県",
+    capitalMn: "Арвайхээр хот",
+    capitalJa: "アルバイヘール市",
+    zone: "central",
+    zoneJa: "中央部",
+    requiredXp: 460,
     badgeIcon: "🕌",
-    postcardColor: "from-purple-600 to-pink-700",
-    description: "かつて世界を制覇したモンゴル帝国の首都。108の仏塔に囲まれた最古の仏教寺院エルデネ・ゾーが残ります。",
-    highlightMn: "Эртний Монгол улсын нийслэл",
+    color: "#9333ea", // Purple
+    postcardColor: "from-purple-600 via-pink-600 to-rose-700",
+    description: "世界遺産「オルホン渓谷の文化的景観」を擁するモンゴル史の核心。13世紀にモンゴル帝国の首都として栄えた古都カラコルム（Хархорин）と、108の白塔に囲まれた最古の仏教寺院エルデネ・ゾーが誇り高く鎮座します。",
+    attractions: [
+      "カラコルム古都遺跡（世界遺産オルホン渓谷）",
+      "エルデネ・ゾー寺院（108仏塔と亀石）",
+      "ウラーン・ツツガラン（豪快なオルホンの大滝）",
+      "トゥブフン寺院（ザナバザル瞑想の山頂寺）"
+    ],
+    specialties: ["カラコルムの陶器工芸", "馬頭琴の手作り彫刻", "アルバイヘール乾草"],
+    highlightMn: "Их Монгол улсын эртний нийслэл",
     souvenir: "108仏塔の記念お守り 📿",
-    funFact: "エルデネ・ゾーの境内には石造りの巨大な亀の台座があり、カラコルムの町の四方を守っていたと言われています。"
+    funFact: "カラコルムの町の四方には巨大な石彫りの亀が置かれており、水害を防ぎ帝国の繁栄を永遠に支える守護獣として崇められていました。",
+    polygonPoints: [[460, 230], [520, 240], [530, 310], [500, 370], [450, 370], [440, 290]],
+    center: { x: 483, y: 302 }
   },
   {
     id: "khuvsgul",
-    nameMn: "Хөвсгөл нуур",
-    nameJa: "フブスグル湖（アジアのスイス・青い真珠）",
-    requiredXp: 1000,
-    requiredCorrect: 100,
+    nameMn: "Хөвсгөл аймаг",
+    nameJa: "フブスグル県",
+    capitalMn: "Мөрөн хот",
+    capitalJa: "ムルン市",
+    zone: "north",
+    zoneJa: "北部",
+    requiredXp: 550,
     badgeIcon: "🌊",
-    postcardColor: "from-cyan-500 to-blue-700",
-    description: "ロシア国境近くに広がる、モンゴル最大の淡水湖。クリスタルブルーに輝く透明度は世界屈指。",
-    highlightMn: "Монголын хөх сувд",
+    color: "#0284c7", // Sky Blue
+    postcardColor: "from-cyan-500 via-sky-600 to-blue-800",
+    description: "「アジアのスイス」「モンゴルの青い真珠」と讃えられるフブスグル湖を抱く県。底まで透き通るクリスタルブルーの淡水湖、タイガの深い森林、トナカイを飼いながら移動生活を送る神秘の民ツァータン族が暮らします。",
+    attractions: [
+      "フブスグル湖（世界有数の透明度を誇る巨大淡水湖）",
+      "ツァータン族のタイガ遊牧キャンプ（トナカイの民）",
+      "ウーシュギーン・ウブルの鹿石（ムルン近郊）",
+      "冬のアイスフェスティバル（湖上氷上祭）"
+    ],
+    specialties: ["フブスグルの天然スモークフィッシュ", "トナカイの角細工", "松の実（サマル）"],
+    highlightMn: "Монголын хөх сувд Хөвсгөл",
     souvenir: "青い真珠のしずくボトル 💧",
-    funFact: "冬は湖全体が1メートル以上の厚い氷に覆われ、氷上を馬そりや車が走る「アイスフェスティバル」が開催されます。"
+    funFact: "フブスグル湖の水はそのまま飲めるほどピュア！冬になると湖全体が厚さ1メートル以上の透き通った氷に覆われ、巨大トラックや馬そりが氷の上を走ります。",
+    polygonPoints: [[330, 110], [370, 40], [420, 40], [450, 110], [430, 180], [340, 190]],
+    center: { x: 390, y: 112 }
   },
   {
-    id: "gobi",
-    nameMn: "Говь цөл",
-    nameJa: "南ゴビ砂漠（恐竜の化石と鳴く砂丘）",
-    requiredXp: 1500,
-    requiredCorrect: 150,
+    id: "dundgovi",
+    nameMn: "Дундговь аймаг",
+    nameJa: "ドンドゴビ県",
+    capitalMn: "Мандалговь хот",
+    capitalJa: "マンダルゴビ市",
+    zone: "gobi",
+    zoneJa: "ゴビ・南部",
+    requiredXp: 650,
+    badgeIcon: "🏜️",
+    color: "#d97706", // Amber
+    postcardColor: "from-amber-500 via-orange-600 to-yellow-600",
+    description: "ゴビ砂漠の中央に位置し、古代の海底が隆起してできた「ツァガーン・スブラガ（白い仏塔）」の大断崖が圧巻。モンゴルの伝統長唄「オルティンドー」の名手を数多く輩出してきた歌と芸術の故郷でもあります。",
+    attractions: [
+      "ツァガーン・スブラガ（白い仏塔・色彩豊かな大断崖）",
+      "バガ・ガズリーン・チュルー（花崗岩の奇岩迷宮）",
+      "スミーン・ホフ・ブルド（オアシス湖と古寺院跡）",
+      "オンギ寺院跡"
+    ],
+    specialties: ["ラクダの毛（キャメルウール）ソックス", "乾燥肉ボルツ", "岩塩クラフト"],
+    highlightMn: "Уртын дууны өлгий нутаг",
+    souvenir: "白い仏塔の地層ストーン 🏜️",
+    funFact: "ツァガーン・スブラガは高さ約60メートル、長さ400メートルにわたる古代海底の断崖！赤・紫・白の地層が夕陽に照らされると、まるで燃える寺院のように輝きます。",
+    polygonPoints: [[500, 370], [530, 310], [550, 290], [620, 290], [630, 370], [610, 390], [530, 370]],
+    center: { x: 573, y: 337 }
+  },
+  {
+    id: "omnogovi",
+    nameMn: "Өмнөговь аймаг",
+    nameJa: "ウムヌゴビ県",
+    capitalMn: "Даланзадгад хот",
+    capitalJa: "ダランザドガド市",
+    zone: "gobi",
+    zoneJa: "ゴビ・南部",
+    requiredXp: 750,
     badgeIcon: "🐪",
-    postcardColor: "from-amber-600 to-yellow-700",
-    description: "世界で初めて恐竜の卵の化石が発見されたバヤンザグ（燃える崖）と、風で歌う巨大砂丘ホンゴル砂丘。",
-    highlightMn: "Хонгорын элс ба үлэг гүрвэлийн өлгий",
-    souvenir: "二コブラクダのぬいぐるみ 🐫",
-    funFact: "風が吹くとパイプオルガンのように鳴り響く「ホンゴル砂丘」と、星空の美しさは息を呑むほどです。"
+    color: "#b45309", // Desert Ochre
+    postcardColor: "from-amber-600 via-orange-700 to-yellow-800",
+    description: "南ゴビ砂漠のハイライトを凝縮した県。世界で初めて恐竜の卵化石が発見された「バヤンザグ（燃える崖）」、風が吹くと歌うように鳴く大砂丘「ホンゴル砂丘」、真夏でも底に氷が残る渓谷「ヨリーン・アム」が広がります。",
+    attractions: [
+      "バヤンザグ（燃える崖・恐竜化石発掘の聖地）",
+      "ホンゴル砂丘（歌う砂丘・高さ約300mの砂山）",
+      "ヨリーン・アム（鷲の谷・真夏も氷が残る奇跡の峡谷）",
+      "ゴビ・グルワンサイハン国立公園"
+    ],
+    specialties: ["二コブラクダの乳製品（ホロート）", "キャメルカシミヤ", "恐竜の化石レプリカ"],
+    highlightMn: "Үлэг гүрвэлийн өлгий Говь",
+    souvenir: "二コブラクダの木彫りマスコット 🐪",
+    funFact: "1920年代にアメリカのロイ・チャップマン・アンドリュース探検隊がバヤンザグで恐竜の卵化石を発見し、映画『インディ・ジョーンズ』のモデルになったと言われています。",
+    polygonPoints: [[430, 460], [450, 370], [500, 370], [530, 370], [610, 390], [610, 480], [530, 500]],
+    center: { x: 523, y: 420 }
   },
   {
-    id: "altai",
-    nameMn: "Алтай таван богд",
-    nameJa: "アルタイ山脈・タワンボグド（最高峰と鷹匠）",
-    requiredXp: 2200,
-    requiredCorrect: 220,
+    id: "bayankhongor",
+    nameMn: "Баянхонгор аймаг",
+    nameJa: "バヤンホンゴル県",
+    capitalMn: "Баянхонгор хот",
+    capitalJa: "バヤンホンゴル市",
+    zone: "central",
+    zoneJa: "中央部・南部",
+    requiredXp: 860,
+    badgeIcon: "🦕",
+    color: "#ca8a04", // Gold Yellow
+    postcardColor: "from-yellow-600 via-amber-600 to-stone-700",
+    description: "北のハンガイ山脈の高山地帯から南のゴビ砂漠まで、多様な自然環境がひとつの県に凝縮。万年雪のイフ・ボグド山、塩湖オログ湖、旧石器時代の居住跡ツァガーン・アグイ（白い洞窟）など古代ロマンにあふれます。",
+    attractions: [
+      "イフ・ボグド山（ゴビ・アルタイ山脈の主峰）",
+      "オログ湖（砂漠の中に広がる神秘のオアシス湖）",
+      "ツァガーン・アグイ（白い洞窟・人類最古の居住遺跡）",
+      "シャガルジュート温泉（数十種類の薬効泉）"
+    ],
+    specialties: ["シャガルジュート温泉水", "最高級山羊カシミヤ", "天日干しアーロール"],
+    highlightMn: "Хангай Говь хосолсон нутаг",
+    souvenir: "恐竜の足跡アンモナイト化石 🦕",
+    funFact: "バヤンホンゴル南部では白亜紀の大型恐竜や古代哺乳類の全身骨格が数多く発見されており、化石の宝庫として古生物学者たちを熱狂させています。",
+    polygonPoints: [[370, 280], [440, 290], [450, 370], [430, 460], [350, 450], [340, 330]],
+    center: { x: 397, y: 363 }
+  },
+  {
+    id: "govi_altai",
+    nameMn: "Говь-Алтай аймаг",
+    nameJa: "ゴビ・アルタイ県",
+    capitalMn: "Алтай хот",
+    capitalJa: "アルタイ市",
+    zone: "west",
+    zoneJa: "西部",
+    requiredXp: 980,
+    badgeIcon: "🐻",
+    color: "#78350f", // Warm Brown
+    postcardColor: "from-stone-700 via-amber-800 to-slate-900",
+    description: "アルタイ山脈の険しい岩峰とゴビ砂漠の砂礫地帯が織りなす大秘境。地球上でこの地だけに数十頭しか生息しない奇跡の絶滅危惧種「ゴビ熊（マザーライ）」の故郷であり、母なる聖山エエイジ・ハイルハンが聳えます。",
+    attractions: [
+      "エエイジ・ハイルハン山（奇岩と9つの天然水壺）",
+      "大ゴビ厳正保護区（ゴビ熊マザーライの聖域）",
+      "タイシル水力発電所ダム湖（スツ・ヌール）",
+      "アルタイの雪山パノラマ"
+    ],
+    specialties: ["ゴビ熊マザーライ保護グッズ", "薬用ハーブティー", "アルタイ産岩塩"],
+    highlightMn: "Мазаалайн өлгий Говь-Алтай",
+    souvenir: "幻のゴビ熊マザーライの人形 🐻",
+    funFact: "ゴビ熊マザーライ（Mazaalai）は世界で唯一の「砂漠に生きるクマ」。厳しい砂漠環境に適応し、主にルバーブの根や野草、昆虫を食べて生き抜く孤高の野生動物です。",
+    polygonPoints: [[230, 260], [290, 270], [340, 330], [320, 430], [220, 420], [220, 370]],
+    center: { x: 270, y: 347 }
+  },
+  {
+    id: "zavkhan",
+    nameMn: "Завхан аймаг",
+    nameJa: "ザブハン県",
+    capitalMn: "Улиастай хот",
+    capitalJa: "ウリアスタイ市",
+    zone: "west",
+    zoneJa: "西部",
+    requiredXp: 1100,
+    badgeIcon: "🏔️",
+    color: "#0891b2", // Cyan / Mountain Blue
+    postcardColor: "from-cyan-600 via-sky-700 to-indigo-900",
+    description: "白銀の万年雪を戴く崇高な聖山オトゴンテンゲル（4,021m）の地。砂丘の真下から透き通る湧水が川となって流れ出る「ムハルト川」や、エメラルドに輝く黒湖（ハル・ヌール）など、奇跡的な絶景が息づいています。",
+    attractions: [
+      "聖山オトゴンテンゲル（ハンガイ山脈の最高峰・国家神聖山）",
+      "ムハルト川（砂丘から湧き出す清流）",
+      "黒湖（ハル・ヌール・砂漠と湖のコントラスト）",
+      "ボラグ・トルゴイ砂丘"
+    ],
+    specialties: ["オトゴンテンゲルの湧水ミネラルウォーター", "ヤク肉ジャーキー", "松根彫刻"],
+    highlightMn: "Очирваань бурханы орон Завхан",
+    souvenir: "聖山オトゴンテンゲルの青氷石 🏔️",
+    funFact: "オトゴンテンゲル山はモンゴル仏教の守護神「金剛手菩薩（オチルワーニ）」の鎮座地として国家礼拝されており、山頂の雪は真夏でも決して溶けることがありません。",
+    polygonPoints: [[250, 90], [330, 110], [340, 220], [290, 270], [230, 260], [190, 190], [260, 180]],
+    center: { x: 270, y: 189 }
+  },
+  {
+    id: "khovd",
+    nameMn: "Ховд аймаг",
+    nameJa: "ホブド県",
+    capitalMn: "Ховд хот",
+    capitalJa: "ホブド市",
+    zone: "west",
+    zoneJa: "西部",
+    requiredXp: 1220,
+    badgeIcon: "🎻",
+    color: "#475569", // Slate
+    postcardColor: "from-slate-600 via-teal-700 to-sky-900",
+    description: "17以上の多様な部族・民族が共生する西モンゴルの文化の中心。喉を震わせて2つの音を同時に奏でる世界無形文化遺産「ホーミー」の発祥地であり、無数の渡り鳥が羽を休めるハル・ウス湖の湿地帯が広がります。",
+    attractions: [
+      "ハル・ウス湖国立公園（黒水湖・野鳥のサンクチュアリ）",
+      "チャンドマニ・ソム（伝統ホーミー発祥の聖地）",
+      "ホイド・ツェンヘル洞窟（旧石器時代の壁画洞窟）",
+      "バヤン・ズルフの鹿石群"
+    ],
+    specialties: ["ホブド名産スイカ（タルバス）", "本場のトプショール（弦楽器）", "干し魚"],
+    highlightMn: "Хөөмийн өлгий Ховд нутаг",
+    souvenir: "伝統のホーミー馬頭琴 🎻",
+    funFact: "ホブド県チャンドマニ・ソムの人々は、赤ん坊の頃から風の音や家畜の鳴き声、小川のせせらぎを真似てホーミーを練習し、世界的な歌い手を多数生み出してきました。",
+    polygonPoints: [[110, 310], [130, 240], [190, 190], [230, 260], [220, 370], [140, 390]],
+    center: { x: 170, y: 293 }
+  },
+  {
+    id: "uvs",
+    nameMn: "Увс аймаг",
+    nameJa: "オブス県",
+    capitalMn: "Улаангом хот",
+    capitalJa: "ウーランゴム市",
+    zone: "west",
+    zoneJa: "西部",
+    requiredXp: 1350,
+    badgeIcon: "🫐",
+    color: "#0284c7", // Sky
+    postcardColor: "from-sky-600 via-blue-700 to-indigo-900",
+    description: "ユネスコ世界自然遺産「オブス・ヌール盆地」を擁する県。海のように広大なモンゴル最大の塩湖オブス湖と、冬にはマイナス50度を超える厳しい気候が生んだスーパーフルーツ「チャツァルガン（シーベリー）」の故郷です。",
+    attractions: [
+      "オブス湖（世界自然遺産・モンゴル最大の塩水湖）",
+      "ヘツゥー・ハド（湖畔に突き出た奇岩の絶壁）",
+      "ハルヒラー・トゥルゲン山脈（双子氷河峰）",
+      "ウーランゴム歴史博物館"
+    ],
+    specialties: ["100%純正チャツァルガンジュース", "チャツァルガン化粧品", "上質天然岩塩（ジャムツ・ダウス）"],
+    highlightMn: "Увс нуурын ай сав нутаг",
+    souvenir: "黄金のチャツァルガンオイル 🫐",
+    funFact: "オブス県特産の天然岩塩「ジャムツ・ダウス」は、何億年も前の古代海水が結晶化したもので、まろやかな塩味と豊富なミネラルでモンゴル料理に欠かせません。",
+    polygonPoints: [[140, 160], [170, 80], [250, 90], [260, 180], [190, 190]],
+    center: { x: 202, y: 140 }
+  },
+  {
+    id: "bayan_olgii",
+    nameMn: "Баян-Өлгий аймаг",
+    nameJa: "バヤン・ウルギー県",
+    capitalMn: "Өлгий хот",
+    capitalJa: "ウルギー市",
+    zone: "west",
+    zoneJa: "西部（最西部）",
+    requiredXp: 1500,
     badgeIcon: "🦅",
-    postcardColor: "from-slate-700 to-stone-900",
-    description: "モンゴル最高峰（4,374m）。カザフ族の伝統であるイヌワシを使った鷹匠（Бүргэдчин）が暮らす神秘の山岳地帯。",
-    highlightMn: "Монгол улсын ноён оргил",
-    souvenir: "イヌワシの羽のブローチ 🪶",
-    funFact: "毎年秋には鷹匠たちが伝統衣装と馬を従えて集まる「ゴールデン・イーグル・フェスティバル」が開かれます。"
+    color: "#334155", // Slate Dark
+    postcardColor: "from-stone-800 via-slate-800 to-zinc-950",
+    description: "モンゴル最西端、ロシア・中国と国境を接するアルタイ山脈の最高峰タワン・ボグド（4,374m）がそびえる地。住民の大部分をカザフ族が占め、イヌワシを腕に乗せて馬で雪山を駆ける伝統の鷹匠（ベルクッチ）文化が色濃く残ります。",
+    attractions: [
+      "アルタイ・タワン・ボグド国立公園（モンゴル最高峰）",
+      "ポタニン氷河（国内最長の巨大氷河）",
+      "ゴールデン・イーグル・フェスティバル（鷹匠祭り）",
+      "トルボ湖とカザフ伝統刺繍ゲル"
+    ],
+    specialties: ["カザフ伝統の手刺繍フェルト壁掛け（トゥスキーズ）", "イヌワシの羽細工", "馬肉燻製カズィ"],
+    highlightMn: "Монгол улсын ноён оргил Алтай",
+    souvenir: "イヌワシの羽飾りブローチ 🦅",
+    funFact: "鷹匠たちは野生のイヌワシのヒナを育て、家族のように絆を結んで狩りを行い、約10年経つと大空へと返して野生の自由を贈るという美しい敬意の文化を持っています。",
+    polygonPoints: [[30, 210], [80, 150], [140, 160], [130, 240], [110, 310], [50, 300]],
+    center: { x: 90, y: 228 }
+  },
+  {
+    id: "govisumber",
+    nameMn: "Говьсүмбэр аймаг",
+    nameJa: "ゴビスンベル県",
+    capitalMn: "Чойр хот",
+    capitalJa: "チョイル市",
+    zone: "gobi",
+    zoneJa: "ゴビ・南部",
+    requiredXp: 1650,
+    badgeIcon: "🚂",
+    color: "#64748b", // Slate Grey
+    postcardColor: "from-slate-600 to-stone-800",
+    description: "モンゴル縦断鉄道（ウランバートル〜北京）の中継拠点都市チョイルを中心とする県。大平原の中に突如そびえる聖山チョイリーン・ボグド山には、古代の岩壁に彫られた巨大な彫刻仏が穏やかに微笑んでいます。",
+    attractions: [
+      "チョイリーン・ボグド山（花崗岩の聖山）",
+      "岩壁彫刻仏ダグワスンダル",
+      "チョイル鉄道駅舎と蒸気機関車モニュメント",
+      "スンベルの広大な草原"
+    ],
+    specialties: ["鉄道旅の駅弁ボーズ", "干し肉のお茶請け", "チョイル銘石クラフト"],
+    highlightMn: "Төмөр замын уулзвар Чойр",
+    souvenir: "大草原鉄道の真鍮チャーム 🚂",
+    funFact: "冷戦時代は旧ソ連軍の巨大な軍事基地が置かれていた歴史があり、現在は鉄道輸送と物流の要衝として新たな発展を遂げています。",
+    polygonPoints: [[615, 275], [645, 275], [645, 305], [615, 305]],
+    center: { x: 630, y: 290 }
+  },
+  {
+    id: "dornogovi",
+    nameMn: "Дорноговь аймаг",
+    nameJa: "ドルノゴビ県",
+    capitalMn: "Сайншанд хот",
+    capitalJa: "サインシャンド市",
+    zone: "gobi",
+    zoneJa: "ゴビ・東南部",
+    requiredXp: 1800,
+    badgeIcon: "🔔",
+    color: "#ea580c", // Orange
+    postcardColor: "from-orange-600 via-amber-600 to-rose-700",
+    description: "19世紀の偉大な詩人・宗教指導者ダンザンラブジャーが開山した仏教聖地ハマル寺院を擁する東ゴビ。地球の宇宙エネルギーがもっとも集中すると言われるパワースポット「シャンバラ・エネルギーセンター」に世界中から巡礼者が訪れます。",
+    attractions: [
+      "ハマル寺院（ダンザンラブジャーの聖地）",
+      "シャンバラ・エネルギーセンター（108の仏塔群）",
+      "願いが叶う黒山（ハル・オーラ）",
+      "サインシャンド・ダンザンラブジャー博物館"
+    ],
+    specialties: ["ハマル寺院の加護お札", "東ゴビ産天然瑪瑙（アゲート）", "ラクダ肉の薫製"],
+    highlightMn: "Энергийн төв Хамрын хийд",
+    souvenir: "シャンバラの祈願ベル 🔔",
+    funFact: "シャンバラ・エネルギーセンターの赤い円の中央に裸足で立つと、大地と宇宙のパワーが身体を駆け巡り、心身の邪気が浄化されると信じられています。",
+    polygonPoints: [[620, 290], [660, 290], [700, 320], [730, 400], [690, 470], [610, 480], [610, 390], [630, 370]],
+    center: { x: 656, y: 376 }
+  },
+  {
+    id: "khentii",
+    nameMn: "Хэнтий аймаг",
+    nameJa: "ヘンティ県",
+    capitalMn: "Чингис хот",
+    capitalJa: "チンギス市",
+    zone: "east",
+    zoneJa: "東部",
+    requiredXp: 1950,
+    badgeIcon: "👑",
+    color: "#7c3aed", // Violet
+    postcardColor: "from-violet-700 via-purple-700 to-indigo-900",
+    description: "偉大なるチンギス・ハーン誕生の地（デリウン・ボルドグ）。ユネスコ世界文化遺産「聖山ブルハン・ハルドゥン」の雄大な山容、ハーンが幼少期を過ごしたオノン川とケルレン川の清流が流れる、モンゴル国家の魂のふるさとです。",
+    attractions: [
+      "聖山ブルハン・ハルドゥン（世界遺産・チンギス・ハーンの聖山）",
+      "デリウン・ボルドグ（チンギス・ハーン生誕の地）",
+      "チンギス・ハーンの巨大像記念公園",
+      "オノン・バルジ国立公園"
+    ],
+    specialties: ["ヘンティ産天然ハチミツ", "オノン川の川魚料理", "チンギス・ハーン記念純銀杯"],
+    highlightMn: "Эзэн Чингис хааны өлгий нутаг",
+    souvenir: "チンギス・ハーンの銀の兜印 👑",
+    funFact: "チンギス・ハーンは敵に追われた際、ブルハン・ハルドゥン山に逃れて命を救われたと伝えられており、「毎朝この山を拝み、子々孫々崇めよ」と遺言を残しました。",
+    polygonPoints: [[610, 170], [660, 110], [710, 130], [730, 210], [700, 270], [630, 220]],
+    center: { x: 673, y: 185 }
+  },
+  {
+    id: "sukhbaatar",
+    nameMn: "Сүхбаатар аймаг",
+    nameJa: "スフバートル県",
+    capitalMn: "Баруун-Урт хот",
+    capitalJa: "バローン・ウルト市",
+    zone: "east",
+    zoneJa: "東部",
+    requiredXp: 2100,
+    badgeIcon: "🌅",
+    color: "#f59e0b", // Gold
+    postcardColor: "from-amber-500 via-orange-600 to-yellow-700",
+    description: "モンゴル人民革命の父ダムディン・スフバートルの名にちなむ東部の県。200以上の死火山が点在し、早朝の日の出が神々しい聖山シリー・ボグド山や、国内最大の玄武岩溶岩洞窟「タリン・アグイ（草原の洞窟）」が横たわります。",
+    attractions: [
+      "シリー・ボグド山（死火山・神秘の日の出の名所）",
+      "タリン・アグイ（草原の地下に広がる氷の溶岩洞窟）",
+      "ガンガ湖（毎年秋に何万羽ものオオハクチョウが集まる湖）",
+      "スフバートル将軍の記念広場"
+    ],
+    specialties: ["ガンガ湖の白鳥グッズ", "極上銀細工（ダルリガンガ銀器）", "草競馬の駿馬"],
+    highlightMn: "Шилийн Богдын нар ургах орон",
+    souvenir: "シリー・ボグドの日の出アミュレット 🌅",
+    funFact: "スフバートル県のダルリガンガ地方は「銀細工の名匠」の里として有名で、伝統的な馬具や嗅ぎタバコ入れ、装飾杯はモンゴル屈指の芸術品と称えられています。",
+    polygonPoints: [[700, 270], [730, 210], [770, 230], [800, 300], [780, 370], [700, 320]],
+    center: { x: 747, y: 283 }
+  },
+  {
+    id: "dornod",
+    nameMn: "Дорнод аймаг",
+    nameJa: "ドルノド県",
+    capitalMn: "Чойбалсан хот",
+    capitalJa: "チョイバルサン市",
+    zone: "east",
+    zoneJa: "東部（最東部）",
+    requiredXp: 2300,
+    badgeIcon: "🦌",
+    color: "#15803d", // Deep Green
+    postcardColor: "from-emerald-700 via-green-800 to-teal-950",
+    description: "モンゴル最東端に位置し、見渡す限り地平線が360度続く大草原「メネンギーン・タラ（Мэнэнгийн тал）」が広がる地。数十万頭もの野生ガゼル（ツェール）の群れが駆け抜け、ハルハ河やブイル湖など豊かな水と歴史の舞台でもあります。",
+    attractions: [
+      "メネンギーン・タラ（世界最大級の果てしない平原）",
+      "ブイル湖（モンゴル東部最大の美しい湖）",
+      "ハルハ河とノモンハン戦争記念碑",
+      "イフ・ブルハンティ（平原に横たわる巨大石仏）"
+    ],
+    specialties: ["ブイル湖のワカサギ・川魚料理", "東部草原の放牧牛ジャーキー", "草原ハーブティー"],
+    highlightMn: "Мэнэнгийн их уудам тал",
+    souvenir: "東部草原ガゼルの銀細工ピン 🦌",
+    funFact: "メネンギーン・タラは山がひとつも見えないほど真っ平らな草原で、地球の丸みを自分の目で水平線のカーブとして体感できる世界でも稀有な場所です。",
+    polygonPoints: [[710, 130], [800, 100], [890, 150], [910, 220], [830, 260], [770, 230], [730, 210]],
+    center: { x: 806, y: 186 }
   }
 ];
 
@@ -30088,10 +30569,10 @@ class HomeComponent {
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-cyan-800 transition-colors flex items-center gap-1.5">
-                  ペンギン探検隊（名所めぐり）
+                  ペンギン探検隊（モンゴル全土地図めぐり）
                 </h4>
                 <p class="text-xs text-slate-600 mt-1">
-                  ウランバートルからフブスグル湖・ゴビ砂漠・アルタイ山脈へ！学習で貯めたXPで名所を巡り、記念絵はがきとお土産を集めよう！
+                  全21アイマグ＋首都特別市の全22地域を完全収録！学習XPで地図に色がついていき、タップで各地域の詳細解説やお土産バッジを楽しめます！
                 </p>
               </div>
               <div class="mt-4 pt-3 border-t border-cyan-200/60 flex items-center justify-between text-xs font-black text-cyan-800">
@@ -42199,8 +42680,7 @@ class WordFamilyComponent {
 
 
 // === js/components/PenguinExpedition.js ===
-// ペンギン探検隊（モンゴル名所めぐり旅・コレクション）コンポーネント
-
+// ペンギン探検隊（モンゴル全22地域・全21アイマグ＋首都特別市 名所めぐり旅）コンポーネント
 
 
 
@@ -42208,7 +42688,9 @@ class WordFamilyComponent {
 
 class PenguinExpeditionComponent {
   static state = {
-    selectedDestination: null
+    selectedDestination: null,
+    currentFilter: 'all', // 'all', 'unlocked', 'locked', 'capital', 'north', 'west', 'central', 'gobi', 'east'
+    hoveredRegionId: null
   };
 
   static render(container, onNavigate) {
@@ -42217,113 +42699,388 @@ class PenguinExpeditionComponent {
     const profile = GamificationService.getProfile();
     const currentXp = profile.totalXp;
 
+    const totalCount = expeditionDestinations.length;
     const unlockedCount = expeditionDestinations.filter(d => currentXp >= d.requiredXp).length;
+    const progressPercent = Math.min(100, Math.round((unlockedCount / totalCount) * 100));
+
+    // フィルタリング処理
+    const filteredDestinations = expeditionDestinations.filter(d => {
+      const isUnlocked = currentXp >= d.requiredXp;
+      if (this.state.currentFilter === 'unlocked') return isUnlocked;
+      if (this.state.currentFilter === 'locked') return !isUnlocked;
+      if (['capital', 'north', 'west', 'central', 'gobi', 'east'].includes(this.state.currentFilter)) {
+        return d.zone === this.state.currentFilter;
+      }
+      return true;
+    });
 
     this.container.innerHTML = `
-      <div class="animate-fade-in max-w-4xl mx-auto px-4 py-4 space-y-5">
+      <div class="animate-fade-in max-w-5xl mx-auto px-3 sm:px-4 py-4 space-y-6">
+        
         <!-- ヘッダー -->
         <div class="flex items-center justify-between border-b border-slate-200 pb-3">
           <div class="flex items-center gap-2.5">
             <span class="text-2xl p-2 rounded-xl bg-gradient-to-tr from-sky-500 to-emerald-500 text-white shadow-xs">🗺️</span>
             <div>
-              <h2 class="text-lg font-bold text-slate-800">ペンギン探検隊（モンゴル名所めぐり）</h2>
-              <p class="text-xs text-slate-500">学習XPを貯めてモンゴルの絶景と名所を旅しよう！</p>
+              <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <span>ペンギン探検隊（モンゴル全土 名所めぐり）</span>
+                <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold hidden sm:inline-block">全22地域</span>
+              </h2>
+              <p class="text-xs text-slate-500">学習XPを貯めると地図に色がつき、全21アイマグと首都を制覇できます！</p>
             </div>
           </div>
-          <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
+          <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all cursor-pointer">
             ✕ ホームへ
           </button>
         </div>
 
-        <!-- 旅の進捗ステータス -->
-        <div class="bg-gradient-to-r from-sky-600 to-indigo-600 rounded-3xl p-5 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div class="flex items-center gap-3">
-            <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl shadow-xs">
+        <!-- 旅の進捗ステータスバナー -->
+        <div class="bg-gradient-to-r from-sky-600 via-teal-600 to-emerald-600 rounded-3xl p-5 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3.5 w-full md:w-auto">
+            <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl shadow-xs flex-shrink-0">
               🐧
             </div>
-            <div>
-              <div class="text-xs font-bold text-sky-200">探検隊の冒険記録</div>
-              <h3 class="text-lg font-black">
-                7大名所中 <span class="text-amber-300 text-xl">${unlockedCount}</span> ヶ所を開拓！
+            <div class="flex-1">
+              <div class="text-xs font-bold text-sky-100 flex items-center gap-2">
+                <span>探検隊の冒険記録</span>
+                <span class="bg-white/20 px-2 py-0.2 rounded-full text-[10px] font-black">${progressPercent}% 制覇</span>
+              </div>
+              <h3 class="text-lg font-black leading-tight mt-0.5">
+                全22地域中 <span class="text-amber-300 text-2xl">${unlockedCount}</span> ヶ所を開拓！
               </h3>
+              <!-- プログレスバー -->
+              <div class="w-full bg-black/25 rounded-full h-2.5 mt-2 overflow-hidden border border-white/20">
+                <div class="bg-gradient-to-r from-amber-300 via-emerald-300 to-teal-200 h-full rounded-full transition-all duration-700 shadow-sm" style="width: ${progressPercent}%;"></div>
+              </div>
             </div>
           </div>
-          <div class="text-right sm:text-left bg-black/20 backdrop-blur-xs px-4 py-2 rounded-2xl border border-white/20 text-xs">
-            <span class="text-sky-200">現在の累計XP：</span>
-            <strong class="text-amber-300 text-sm font-black">${currentXp.toLocaleString()} XP</strong>
+
+          <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+            <div class="bg-black/20 backdrop-blur-xs px-4 py-2.5 rounded-2xl border border-white/20 text-right">
+              <div class="text-[11px] text-sky-100 font-bold">現在の累計XP</div>
+              <strong class="text-amber-300 text-base font-black">${currentXp.toLocaleString()} XP ⚡</strong>
+            </div>
           </div>
         </div>
 
-        <!-- 名所グリッド一覧 -->
+        <!-- 🗺️ インタラクティブ・モンゴル全土地図セクション -->
+        <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+                <span>🎨 モンゴル探検インタラクティブ地図</span>
+                <span class="text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold">タップで解説表示</span>
+              </h3>
+              <p class="text-[11px] text-slate-500">開拓した地域は色が鮮やかに点灯します。地図上のどの地域もタップして詳細解説を読めます。</p>
+            </div>
+            
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-600">
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block"></span> 開拓済み</span>
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-slate-300 border border-slate-400 border-dashed inline-block"></span> 未開拓（未到達）</span>
+            </div>
+          </div>
+
+          <!-- SVG地図描画エリア -->
+          <div class="relative w-full rounded-2xl bg-gradient-to-b from-sky-50/60 via-slate-50/40 to-amber-50/40 border border-slate-200/80 p-2 sm:p-4 overflow-hidden">
+            ${this.renderSvgMap(currentXp)}
+            
+            <!-- マウスホバー用フローティングツールチップ -->
+            <div id="map-tooltip" class="absolute pointer-events-none hidden bg-slate-900/90 text-white text-xs px-3 py-1.5 rounded-xl shadow-lg border border-slate-700 backdrop-blur-xs z-20"></div>
+          </div>
+        </div>
+
+        <!-- フィルタータブバー -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
+          <button type="button" data-filter="all" class="filter-tab-btn px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+            this.state.currentFilter === 'all' ? 'bg-slate-800 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }">
+            すべて (22)
+          </button>
+          <button type="button" data-filter="unlocked" class="filter-tab-btn px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+            this.state.currentFilter === 'unlocked' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+          }">
+            開拓済み (${unlockedCount})
+          </button>
+          <button type="button" data-filter="locked" class="filter-tab-btn px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+            this.state.currentFilter === 'locked' ? 'bg-slate-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }">
+            未開拓 (${totalCount - unlockedCount})
+          </button>
+          <div class="h-4 w-px bg-slate-300 mx-1"></div>
+          <button type="button" data-filter="capital" class="filter-tab-btn px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+            this.state.currentFilter === 'capital' ? 'bg-rose-600 text-white shadow-xs' : 'bg-rose-50 text-rose-800 hover:bg-rose-100'
+          }">
+            首都特別市
+          </button>
+          <button type="button" data-filter="north" class="filter-tab-btn px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+            this.state.currentFilter === 'north' ? 'bg-teal-600 text-white shadow-xs' : 'bg-teal-50 text-teal-800 hover:bg-teal-100'
+          }">
+            北部
+          </button>
+          <button type="button" data-filter="west" class="filter-tab-btn px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+            this.state.currentFilter === 'west' ? 'bg-cyan-600 text-white shadow-xs' : 'bg-cyan-50 text-cyan-800 hover:bg-cyan-100'
+          }">
+            西部
+          </button>
+          <button type="button" data-filter="central" class="filter-tab-btn px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+            this.state.currentFilter === 'central' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+          }">
+            中央部
+          </button>
+          <button type="button" data-filter="gobi" class="filter-tab-btn px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+            this.state.currentFilter === 'gobi' ? 'bg-amber-600 text-white shadow-xs' : 'bg-amber-50 text-amber-800 hover:bg-amber-100'
+          }">
+            ゴビ・南部
+          </button>
+          <button type="button" data-filter="east" class="filter-tab-btn px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+            this.state.currentFilter === 'east' ? 'bg-purple-600 text-white shadow-xs' : 'bg-purple-50 text-purple-800 hover:bg-purple-100'
+          }">
+            東部
+          </button>
+        </div>
+
+        <!-- 地域カード一覧グリッド -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-          ${expeditionDestinations.map((dest, i) => {
+          ${filteredDestinations.map((dest, i) => {
             const isUnlocked = currentXp >= dest.requiredXp;
-            const remainingXp = dest.requiredXp - currentXp;
+            const remainingXp = Math.max(0, dest.requiredXp - currentXp);
 
             return `
-              <div class="dest-card rounded-2xl p-5 border-2 transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${
+              <div class="dest-card rounded-2xl p-4 sm:p-5 border-2 transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between hover:scale-[1.01] shadow-2xs ${
                 isUnlocked 
-                  ? 'bg-white border-sky-300 hover:border-sky-500 hover:shadow-md' 
-                  : 'bg-slate-50 border-slate-200 opacity-75'
+                  ? 'bg-white border-emerald-300 hover:border-emerald-500 hover:shadow-md' 
+                  : 'bg-slate-50 border-slate-200 hover:border-slate-300 opacity-85'
               }" data-id="${dest.id}">
                 <div>
-                  <div class="flex items-center justify-between mb-3">
-                    <span class="text-3xl">${dest.badgeIcon}</span>
-                    <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${
-                      isUnlocked 
-                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' 
-                        : 'bg-slate-200 text-slate-600'
-                    }">
-                      ${isUnlocked ? '開拓済み 🚩' : `あと ${remainingXp} XP 🔒`}
-                    </span>
+                  <div class="flex items-center justify-between mb-2.5">
+                    <div class="flex items-center gap-2">
+                      <span class="text-3xl p-1 rounded-xl shadow-2xs" style="background-color: ${isUnlocked ? dest.color + '22' : '#f1f5f9'};">
+                        ${dest.badgeIcon}
+                      </span>
+                      <div>
+                        <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${
+                          isUnlocked 
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' 
+                            : 'bg-slate-200 text-slate-600'
+                        }">
+                          ${isUnlocked ? '開拓済み 🚩' : `あと ${remainingXp} XP 🔒`}
+                        </span>
+                        <div class="text-[10px] text-slate-400 font-bold">${dest.zoneJa}</div>
+                      </div>
+                    </div>
+                    <span class="text-[11px] font-mono font-bold text-slate-400">#${i + 1}</span>
                   </div>
 
-                  <div class="space-y-1">
-                    <div class="text-xs font-bold text-slate-400 font-mono">Stage ${i + 1}</div>
-                    <h4 class="text-base font-black text-slate-900 cyrillic-text">
-                      ${dest.nameMn}
+                  <div class="space-y-0.5">
+                    <h4 class="text-base font-black text-slate-900 cyrillic-text flex items-center gap-1.5">
+                      <span>${dest.nameMn}</span>
                     </h4>
                     <div class="text-xs font-bold text-slate-700">
                       ${dest.nameJa}
                     </div>
+                    <div class="text-[11px] text-slate-500">
+                      県都: <strong>${dest.capitalMn} (${dest.capitalJa})</strong>
+                    </div>
                   </div>
 
-                  <p class="text-xs text-slate-500 mt-2 leading-relaxed line-clamp-2">
+                  <p class="text-xs text-slate-600 mt-2 leading-relaxed line-clamp-2">
                     ${dest.description}
                   </p>
                 </div>
 
-                <div class="mt-4 pt-3 border-t ${isUnlocked ? 'border-sky-100 text-sky-700' : 'border-slate-200 text-slate-400'} flex items-center justify-between text-xs font-bold">
-                  <span>${isUnlocked ? '名所記念カードを見る 📸' : '未到達'}</span>
-                  <span>${isUnlocked ? '→' : '🔒'}</span>
+                <div class="mt-4 pt-3 border-t ${isUnlocked ? 'border-emerald-100 text-emerald-700' : 'border-slate-200 text-slate-500'} flex items-center justify-between text-xs font-bold">
+                  <span>${isUnlocked ? '記念カード・解説を見る 📸' : '詳細解説を見る 📖'}</span>
+                  <span>→</span>
                 </div>
               </div>
             `;
           }).join('')}
         </div>
 
-        <!-- 名所記念カードモーダル（選択時） -->
+        <!-- 名所記念カード・解説モーダル（選択時） -->
         ${this.state.selectedDestination ? this.renderModalHTML(this.state.selectedDestination) : ''}
       </div>
     `;
 
-    this.container.querySelector('#btn-back-home').addEventListener('click', () => {
-      if (this.onNavigate) this.onNavigate('home');
-    });
+    this.bindEvents();
+  }
 
-    this.container.querySelectorAll('.dest-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const id = card.dataset.id;
-        const dest = expeditionDestinations.find(d => d.id === id);
-        if (dest) {
-          this.state.selectedDestination = dest;
-          SoundEffects.playCorrect();
-          this.render(this.container, this.onNavigate);
-        }
+  // SVG地図のHTML生成
+  static renderSvgMap(currentXp) {
+    return `
+      <svg viewBox="0 0 960 520" class="w-full h-auto max-h-[500px] select-none font-sans" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="map-glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        <!-- 背景デコレーション（山脈・方位記号） -->
+        <g opacity="0.3">
+          <!-- コンパス方位記号 -->
+          <g transform="translate(870, 70)">
+            <circle cx="0" cy="0" r="28" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,3" />
+            <path d="M 0 -24 L 6 0 L 0 -6 L -6 0 Z" fill="#059669" />
+            <path d="M 0 24 L 6 0 L 0 6 L -6 0 Z" fill="#64748b" />
+            <text x="0" y="-30" font-size="11" font-weight="bold" fill="#059669" text-anchor="middle">N</text>
+            <text x="32" y="4" font-size="9" font-weight="bold" fill="#64748b" text-anchor="start">E</text>
+            <text x="0" y="38" font-size="9" font-weight="bold" fill="#64748b" text-anchor="middle">S</text>
+            <text x="-32" y="4" font-size="9" font-weight="bold" fill="#64748b" text-anchor="end">W</text>
+          </g>
+          <!-- モンゴル国境輪郭装飾 -->
+          <text x="50" y="480" font-size="12" font-weight="bold" fill="#64748b" letter-spacing="2">MONGOLIA EXPEDITION MAP</text>
+          <text x="50" y="496" font-size="10" fill="#94a3b8">21 Aimags & Capital Municipality</text>
+        </g>
+
+        <!-- 22地域のポリゴンとラベル描画 -->
+        ${expeditionDestinations.map(dest => {
+          const isUnlocked = currentXp >= dest.requiredXp;
+          const pointsStr = dest.polygonPoints.map(pt => pt.join(',')).join(' ');
+          const cx = dest.center.x;
+          const cy = dest.center.y;
+          const shortName = dest.nameMn.replace(' аймаг', '').replace(' хот', '');
+
+          const fillColor = isUnlocked ? dest.color : '#cbd5e1';
+          const fillOpacity = isUnlocked ? '0.88' : '0.45';
+          const strokeColor = isUnlocked ? '#ffffff' : '#94a3b8';
+          const strokeWidth = isUnlocked ? '2.5' : '1.5';
+          const strokeDash = isUnlocked ? 'none' : '4,3';
+
+          return `
+            <g class="svg-region-group cursor-pointer group" data-region-id="${dest.id}">
+              <!-- 地域ポリゴン -->
+              <polygon 
+                points="${pointsStr}" 
+                fill="${fillColor}" 
+                fill-opacity="${fillOpacity}" 
+                stroke="${strokeColor}" 
+                stroke-width="${strokeWidth}" 
+                stroke-dasharray="${strokeDash}" 
+                stroke-linejoin="round"
+                class="transition-all duration-300 group-hover:brightness-110 group-hover:stroke-amber-400 group-hover:stroke-[3.5]"
+              />
+
+              <!-- 地域バッジピン（中心点） -->
+              <g transform="translate(${cx}, ${cy})">
+                <!-- ピン背景円 -->
+                <circle 
+                  cx="0" 
+                  cy="0" 
+                  r="${dest.id === 'ulaanbaatar' ? 14 : 12}" 
+                  fill="${isUnlocked ? '#ffffff' : '#f1f5f9'}" 
+                  stroke="${isUnlocked ? dest.color : '#94a3b8'}" 
+                  stroke-width="${isUnlocked ? '2' : '1.5'}" 
+                  filter="drop-shadow(0px 2px 3px rgba(0,0,0,0.25))"
+                  class="transition-transform group-hover:scale-125"
+                />
+
+                <!-- アイコン (未開拓時は鍵アイコン) -->
+                <text 
+                  x="0" 
+                  y="${dest.id === 'ulaanbaatar' ? 4 : 4}" 
+                  font-size="${dest.id === 'ulaanbaatar' ? 13 : 11}" 
+                  text-anchor="middle"
+                  class="pointer-events-none select-none"
+                >
+                  ${isUnlocked ? dest.badgeIcon : '🔒'}
+                </text>
+
+                <!-- 地名ラベル（キリル文字） -->
+                <text 
+                  x="0" 
+                  y="${dest.id === 'ulaanbaatar' ? -18 : (dest.id === 'tov' ? 22 : -16)}" 
+                  font-size="${dest.id === 'ulaanbaatar' ? 11 : 9.5}" 
+                  font-weight="bold" 
+                  fill="${isUnlocked ? '#0f172a' : '#475569'}" 
+                  text-anchor="middle"
+                  stroke="#ffffff"
+                  stroke-width="3"
+                  paint-order="stroke fill"
+                  class="pointer-events-none select-none transition-all group-hover:fill-amber-600"
+                >
+                  ${shortName}
+                </text>
+              </g>
+            </g>
+          `;
+        }).join('')}
+      </svg>
+    `;
+  }
+
+  // イベントバインド
+  static bindEvents() {
+    // ホームへ戻る
+    const backBtn = this.container.querySelector('#btn-back-home');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
+        if (this.onNavigate) this.onNavigate('home');
+      });
+    }
+
+    // フィルターボタン
+    this.container.querySelectorAll('.filter-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.currentFilter = btn.getAttribute('data-filter');
+        this.render(this.container, this.onNavigate);
       });
     });
 
-    // モーダルイベント
+    // カードクリックで解説を開く
+    this.container.querySelectorAll('.dest-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.id;
+        this.openRegionModal(id);
+      });
+    });
+
+    // SVG地図の地域クリックで解説を開く
+    this.container.querySelectorAll('.svg-region-group').forEach(group => {
+      const id = group.getAttribute('data-region-id');
+      const dest = expeditionDestinations.find(d => d.id === id);
+
+      group.addEventListener('click', () => {
+        this.openRegionModal(id);
+      });
+
+      // ツールチップ表示
+      group.addEventListener('mouseenter', (e) => {
+        const tooltip = this.container.querySelector('#map-tooltip');
+        if (tooltip && dest) {
+          const profile = GamificationService.getProfile();
+          const isUnlocked = profile.totalXp >= dest.requiredXp;
+          tooltip.innerHTML = `
+            <div class="font-bold flex items-center gap-1.5">
+              <span>${dest.badgeIcon}</span>
+              <span>${dest.nameMn}</span>
+              <span class="text-[10px] text-amber-300">(${dest.nameJa})</span>
+            </div>
+            <div class="text-[10px] text-slate-300 mt-0.5">
+              県都: ${dest.capitalMn} | ${isUnlocked ? '🚩 開拓済み' : `🔒 あと ${Math.max(0, dest.requiredXp - profile.totalXp)} XP`}
+            </div>
+            <div class="text-[9px] text-sky-200 mt-0.5">タップで詳細解説を表示 →</div>
+          `;
+          tooltip.classList.remove('hidden');
+        }
+      });
+
+      group.addEventListener('mousemove', (e) => {
+        const tooltip = this.container.querySelector('#map-tooltip');
+        if (tooltip) {
+          const rect = this.container.getBoundingClientRect();
+          tooltip.style.left = `${e.clientX - rect.left + 12}px`;
+          tooltip.style.top = `${e.clientY - rect.top + 12}px`;
+        }
+      });
+
+      group.addEventListener('mouseleave', () => {
+        const tooltip = this.container.querySelector('#map-tooltip');
+        if (tooltip) tooltip.classList.add('hidden');
+      });
+    });
+
+    // モーダルクローズ
     const closeBtn = this.container.querySelector('#btn-close-exp-modal');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
@@ -42332,63 +43089,127 @@ class PenguinExpeditionComponent {
       });
     }
 
+    // 音声再生
     const modalSpeakBtn = this.container.querySelector('#btn-exp-speak');
-    if (modalSpeakBtn) {
+    if (modalSpeakBtn && this.state.selectedDestination) {
       modalSpeakBtn.addEventListener('click', () => {
         SpeechService.speak(this.state.selectedDestination.nameMn);
       });
     }
   }
 
+  static openRegionModal(id) {
+    const dest = expeditionDestinations.find(d => d.id === id);
+    if (dest) {
+      this.state.selectedDestination = dest;
+      SoundEffects.playCorrect();
+      this.render(this.container, this.onNavigate);
+    }
+  }
+
+  // 詳細解説モーダルのHTML生成
   static renderModalHTML(dest) {
     const profile = GamificationService.getProfile();
     const isUnlocked = profile.totalXp >= dest.requiredXp;
+    const remainingXp = Math.max(0, dest.requiredXp - profile.totalXp);
 
     return `
-      <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
-        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-100 flex flex-col space-y-0">
+      <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-fade-in" id="expedition-modal-overlay">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-100 flex flex-col max-h-[92vh]">
           
           <!-- カード上部バナー -->
-          <div class="bg-gradient-to-r ${dest.postcardColor} p-6 text-white text-center relative">
-            <button type="button" id="btn-close-exp-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white flex items-center justify-center text-sm font-bold transition-all">
+          <div class="bg-gradient-to-r ${dest.postcardColor} p-5 sm:p-6 text-white text-center relative flex-shrink-0">
+            <button type="button" id="btn-close-exp-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white flex items-center justify-center text-sm font-bold transition-all cursor-pointer">
               ✕
             </button>
-            <div class="text-5xl mb-2">${dest.badgeIcon}</div>
-            <div class="text-xs font-bold text-white/80 font-mono tracking-wider">MONGOLIA EXPEDITION POSTCARD</div>
-            <h3 class="text-xl font-black cyrillic-text mt-1">${dest.nameMn}</h3>
-            <div class="text-xs text-white/90 font-medium">${dest.nameJa}</div>
+            <div class="text-4xl sm:text-5xl mb-1.5 filter drop-shadow-md">${dest.badgeIcon}</div>
+            <div class="text-[10px] font-bold text-white/80 font-mono tracking-wider">MONGOLIA EXPEDITION POSTCARD</div>
+            <h3 class="text-xl sm:text-2xl font-black cyrillic-text mt-0.5 leading-tight">${dest.nameMn}</h3>
+            <div class="text-xs text-white/95 font-medium mt-0.5">${dest.nameJa}</div>
+            <div class="mt-2 inline-flex items-center gap-1.5 bg-black/20 px-3 py-0.5 rounded-full text-[11px] font-bold">
+              <span>📍 県都: ${dest.capitalMn} (${dest.capitalJa})</span>
+              <span>•</span>
+              <span>${dest.zoneJa}</span>
+            </div>
           </div>
 
           <!-- カード詳細本文 -->
-          <div class="p-6 space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div class="text-xs font-bold text-slate-500">
-                獲得記念品：<span class="text-slate-900">${dest.souvenir}</span>
-              </div>
-              <button type="button" id="btn-exp-speak" class="px-3 py-1 bg-sky-50 hover:bg-sky-100 text-sky-800 rounded-lg text-xs font-bold flex items-center gap-1 border border-sky-200">
+          <div class="p-5 sm:p-6 space-y-4 overflow-y-auto">
+            
+            <!-- ステータス ＆ 発音ボタン -->
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3 gap-2">
+              <span class="text-xs font-bold ${isUnlocked ? 'text-emerald-700 bg-emerald-50 border border-emerald-200' : 'text-slate-600 bg-slate-100 border border-slate-200'} px-2.5 py-1 rounded-full flex items-center gap-1">
+                ${isUnlocked ? '🚩 開拓済み（バッジ獲得）' : `🔒 未到達（あと ${remainingXp} XP）`}
+              </span>
+              <button type="button" id="btn-exp-speak" class="px-3 py-1 bg-sky-50 hover:bg-sky-100 text-sky-800 rounded-xl text-xs font-bold flex items-center gap-1.5 border border-sky-200 transition-all cursor-pointer shadow-2xs">
                 <span>🔊</span> 発音を聞く
               </button>
             </div>
 
-            <p class="text-xs text-slate-700 leading-relaxed">
-              ${dest.description}
-            </p>
+            <!-- 解説文 -->
+            <div class="space-y-1.5">
+              <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                <span>📜</span> 歴史と自然の解説
+              </h5>
+              <p class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
+                ${dest.description}
+              </p>
+            </div>
 
-            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs text-amber-950 space-y-1">
-              <div class="font-bold flex items-center gap-1 text-amber-900">
+            <!-- 見どころ ＆ 特産品 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <!-- 見どころ -->
+              <div class="bg-sky-50/70 p-3 rounded-2xl border border-sky-200/80 space-y-1.5">
+                <div class="text-xs font-bold text-sky-900 flex items-center gap-1">
+                  <span>🏞️</span> 主な見どころ・名所:
+                </div>
+                <ul class="text-[11px] text-slate-700 space-y-1">
+                  ${dest.attractions ? dest.attractions.map(a => `<li class="flex items-start gap-1"><span class="text-sky-500">•</span><span>${a}</span></li>`).join('') : ''}
+                </ul>
+              </div>
+
+              <!-- 特産品 -->
+              <div class="bg-emerald-50/70 p-3 rounded-2xl border border-emerald-200/80 space-y-1.5">
+                <div class="text-xs font-bold text-emerald-900 flex items-center gap-1">
+                  <span>🎁</span> 特産品・名物・文化:
+                </div>
+                <ul class="text-[11px] text-slate-700 space-y-1">
+                  ${dest.specialties ? dest.specialties.map(s => `<li class="flex items-start gap-1"><span class="text-emerald-500">•</span><span>${s}</span></li>`).join('') : ''}
+                </ul>
+              </div>
+            </div>
+
+            <!-- 探検隊の豆知識（Fun Fact） -->
+            <div class="bg-amber-50 p-3.5 rounded-2xl border border-amber-200 text-xs text-amber-950 space-y-1">
+              <div class="font-bold flex items-center gap-1.5 text-amber-900">
                 <span>💡</span> 探検隊の豆知識（Fun Fact）：
               </div>
-              <p class="leading-relaxed">
+              <p class="leading-relaxed text-[11px] sm:text-xs">
                 ${dest.funFact}
               </p>
             </div>
 
-            <div class="text-center pt-2">
-              <span class="text-[11px] font-bold ${isUnlocked ? 'text-emerald-700 bg-emerald-50' : 'text-slate-500 bg-slate-100'} px-3 py-1 rounded-full">
-                ${isUnlocked ? '🎖️ 開拓バッジ コレクション済み' : `🔒 必要XP: ${dest.requiredXp} XP`}
-              </span>
+            <!-- 獲得記念品 -->
+            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-bold text-slate-400">探検記念品（お土産）</div>
+                <div class="text-xs font-black text-slate-800">${dest.souvenir}</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] font-bold text-slate-400">必要XP</div>
+                <div class="text-xs font-mono font-bold text-emerald-700">${dest.requiredXp} XP</div>
+              </div>
             </div>
+
           </div>
+
+          <!-- モーダルフッター -->
+          <div class="p-3 bg-slate-50 border-t border-slate-100 text-center">
+            <button type="button" onclick="document.getElementById('btn-close-exp-modal').click()" class="w-full py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-all cursor-pointer">
+              探検マップに戻る
+            </button>
+          </div>
+
         </div>
       </div>
     `;

@@ -720,10 +720,10 @@ export class HomeComponent {
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-cyan-800 transition-colors flex items-center gap-1.5">
-                  ペンギン探検隊（名所めぐり）
+                  ペンギン探検隊（モンゴル全土地図めぐり）
                 </h4>
                 <p class="text-xs text-slate-600 mt-1">
-                  ウランバートルからフブスグル湖・ゴビ砂漠・アルタイ山脈へ！学習で貯めたXPで名所を巡り、記念絵はがきとお土産を集めよう！
+                  全21アイマグ＋首都特別市の全22地域を完全収録！学習XPで地図に色がついていき、タップで各地域の詳細解説やお土産バッジを楽しめます！
                 </p>
               </div>
               <div class="mt-4 pt-3 border-t border-cyan-200/60 flex items-center justify-between text-xs font-black text-cyan-800">
