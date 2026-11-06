@@ -86,7 +86,15 @@ export function isFuzzyMatch(userAnswer, correctAnswer) {
       .replace(/y/g, 'у'); // Latin y -> Cyrillic у
   };
 
-  const clean = (s) => normalizeLookalikes(s.trim().toLowerCase())
+  const normalizeNumbers = (str) => {
+    return str
+      .replace(/\b9\b/g, 'есөн')
+      .replace(/\b10\b/g, 'арав')
+      .replace(/\b14-ний\b/g, 'арван дөрөвний')
+      .replace(/\b15-ны\b/g, 'арван тавны');
+  };
+
+  const clean = (s) => normalizeNumbers(normalizeLookalikes(s.trim().toLowerCase()))
     .replace(/[.,!?。、！？\s]/g, '')
     .replace(/[«»"']/g, '');
 

@@ -410,11 +410,59 @@ export class StorageService {
   }
 
   static getGrammarQuizzes() {
+    const sanitize = (list) => {
+      return (list || []).map(q => {
+        let answer = q.answer;
+        let tokens = q.tokens;
+        let acceptableAnswers = q.acceptableAnswers ? [...q.acceptableAnswers] : [];
+
+        // 算用数字からモンゴル語表記（есөн等）への統一
+        if (typeof answer === 'string') {
+          if (answer.includes('9 цагт')) {
+            answer = answer.replace(/9 цагт/g, 'есөн цагт');
+            if (!acceptableAnswers.includes(q.answer)) acceptableAnswers.push(q.answer);
+          }
+          if (answer.includes('10 дугаар сарын 14-ний')) {
+            answer = answer.replace(/10 дугаар сарын 14-ний/g, 'аравдугаар сарын арван дөрөвний');
+            if (!acceptableAnswers.includes(q.answer)) acceptableAnswers.push(q.answer);
+          }
+          if (answer.includes('10 дугаар сарын 15-ны')) {
+            answer = answer.replace(/10 дугаар сарын 15-ны/g, 'аравдугаар сарын арван тавны');
+            if (!acceptableAnswers.includes(q.answer)) acceptableAnswers.push(q.answer);
+          }
+        }
+
+        if (Array.isArray(tokens)) {
+          tokens = tokens.map(t => {
+            if (t === '9') return 'есөн';
+            if (t === '10') return 'арав';
+            if (t === '14-ний') return 'арван дөрөвний';
+            if (t === '15-ны') return 'арван тавны';
+            return t;
+          });
+          if (tokens.includes('арав') && tokens.includes('дугаар')) {
+            const idx = tokens.indexOf('арав');
+            if (tokens[idx + 1] === 'дугаар') {
+              tokens.splice(idx, 2, 'аравдугаар');
+            }
+          }
+        }
+
+        return {
+          ...q,
+          answer,
+          tokens,
+          acceptableAnswers
+        };
+      });
+    };
+
     try {
       const data = localStorage.getItem(STORAGE_KEYS.GRAMMAR_QUIZZES);
-      return data ? JSON.parse(data) : initialGrammarQuizzes;
+      const parsed = data ? JSON.parse(data) : initialGrammarQuizzes;
+      return sanitize(parsed);
     } catch (e) {
-      return initialGrammarQuizzes;
+      return sanitize(initialGrammarQuizzes);
     }
   }
 

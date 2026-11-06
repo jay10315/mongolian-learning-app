@@ -191,7 +191,14 @@ export class GrammarTestComponent {
     this.state.isCorrect = false;
 
     if (q.type === 'reorder') {
-      this.state.availableTokens = shuffleArray([...q.tokens]);
+      const sanitized = (q.tokens || []).map(t => {
+        if (t === '9') return 'есөн';
+        if (t === '10') return 'арав';
+        if (t === '14-ний') return 'арван дөрөвний';
+        if (t === '15-ны') return 'арван тавны';
+        return t;
+      });
+      this.state.availableTokens = shuffleArray([...sanitized]);
       this.state.selectedTokens = [];
     }
 
@@ -272,20 +279,26 @@ export class GrammarTestComponent {
                 <div id="reorder-dropzone" class="min-h-14 p-2.5 bg-slate-50 rounded-xl border-2 border-dashed border-sky-300 flex flex-wrap gap-2 items-center">
                   ${this.state.selectedTokens.length === 0 ? `
                     <span class="text-xs text-slate-400">下の単語をタップしてここに入れます</span>
-                  ` : this.state.selectedTokens.map((token, i) => `
-                    <button type="button" class="btn-remove-token px-3 py-1.5 bg-sky-600 hover:bg-rose-500 text-white font-bold text-sm rounded-lg shadow-xs active:scale-95 transition-all cyrillic-text" data-index="${i}">
-                      ${token} ✕
-                    </button>
-                  `).join('')}
+                  ` : this.state.selectedTokens.map((token, i) => {
+                    const displayToken = (token === '9' ? 'есөн' : token === '10' ? 'арав' : token === '14-ний' ? 'арван дөрөвний' : token === '15-ны' ? 'арван тавны' : token);
+                    return `
+                      <button type="button" class="btn-remove-token px-3 py-1.5 bg-sky-600 hover:bg-rose-500 text-white font-bold text-sm rounded-lg shadow-xs active:scale-95 transition-all cyrillic-text" data-index="${i}">
+                        ${displayToken} ✕
+                      </button>
+                    `;
+                  }).join('')}
                 </div>
 
                 <!-- 選択可能な単語チップ -->
                 <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
-                  ${this.state.availableTokens.map((token, i) => `
-                    <button type="button" class="btn-add-token px-3 py-1.5 bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-800 font-bold text-sm rounded-lg border border-slate-200 active:scale-95 transition-all cyrillic-text" data-index="${i}">
-                      ${token}
-                    </button>
-                  `).join('')}
+                  ${this.state.availableTokens.map((token, i) => {
+                    const displayToken = (token === '9' ? 'есөн' : token === '10' ? 'арав' : token === '14-ний' ? 'арван дөрөвний' : token === '15-ны' ? 'арван тавны' : token);
+                    return `
+                      <button type="button" class="btn-add-token px-3 py-1.5 bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-800 font-bold text-sm rounded-lg border border-slate-200 active:scale-95 transition-all cyrillic-text" data-index="${i}">
+                        ${displayToken}
+                      </button>
+                    `;
+                  }).join('')}
                 </div>
 
                 <button type="button" id="btn-submit-reorder" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm mt-3 ${this.state.selectedTokens.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}">

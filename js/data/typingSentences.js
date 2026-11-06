@@ -975,9 +975,9 @@ export const initialTypingSentences = [
   "level": "初級・基礎",
   "category": "lesson_basics",
   "categoryLabel": "自己紹介・年齢・過去時制",
-  "textMn": "Би 26 настай. Токиогоос ирсэн.",
+  "textMn": "Би хорин зургаан настай. Токиогоос ирсэн.",
   "textJa": "私は26歳です。東京から来ました。",
-  "romaji": "Bi 26 nastai. Tokiogoos irsen.",
+  "romaji": "Bi khorin zurgaan nastai. Tokiogoos irsen.",
   "explanation": "「〜настай（〜歳です）」、奪格「-оос（〜から）」＋動詞過去時制「ирсэн（来ました）」。自己紹介の最重要構文です。",
   "glossary": {
     "настай": {
@@ -1329,9 +1329,9 @@ export const initialTypingSentences = [
   "level": "訓練所・日課",
   "category": "routine_schedule",
   "categoryLabel": "時刻・時間の表現と再帰所有（自分の〜）",
-  "textMn": "8 цаг 45 минутаас 15 цаг хүртэл хичээлтэй байдаг.",
+  "textMn": "Найман цаг дөчин таван минутаас арван таван цаг хүртэл хичээлтэй байдаг.",
   "textJa": "8時45分から15時まで授業があります。",
-  "romaji": "8 tsag 45 minutaas 15 tsag khurtel khicheeltei baidag.",
+  "romaji": "Naiman tsag dochin tavan minutaas arvan tavan tsag khurtel khicheeltei baidag.",
   "explanation": "時間的起点「-аас」と終点「хүртэл（〜まで）」の組み合わせ。「хичээлтэй байдаг（授業がある）」。",
   "glossary": {
     "минутаас": {
@@ -1503,9 +1503,9 @@ export const initialTypingSentences = [
   "level": "出張・移動",
   "category": "travel_logistics",
   "categoryLabel": "序数詞・日付・手段（造格）",
-  "textMn": "Галт тэргээр 12 цаг гаруй явна шүү.",
+  "textMn": "Галт тэргээр арван хоёр цаг гаруй явна шүү.",
   "textJa": "列車で12時間以上かかりますよ。",
-  "romaji": "Galt tergeer 12 tsag garui yavna shuu.",
+  "romaji": "Galt tergeer arvan khoyor tsag garui yavna shuu.",
   "explanation": "交通手段の造格「галт тэргээр（列車で）」＋数量の超過「гаруй（〜以上、あまり）」。",
   "glossary": {
     "галт тэргээр": {
@@ -1527,9 +1527,9 @@ export const initialTypingSentences = [
   "level": "出張・移動",
   "category": "travel_logistics",
   "categoryLabel": "序数詞・日付・手段（造格）",
-  "textMn": "7-р сарын 11-д Наадам эхэлнэ, уулзацгаая.",
+  "textMn": "Долдугаар сарын арван нэгэнд Наадам эхэлнэ, уулзацгаая.",
   "textJa": "7月11日にナーダム祭りが始まります。みんなで会いましょう。",
-  "romaji": "7-r saryn 11-d Naadam ekhelne, uulzatsgaaya.",
+  "romaji": "Doldugaar saryn arvan negend Naadam ekhelne, uulzatsgaaya.",
   "explanation": "日付「7-р сарын 11-д（7月11日に）」＋全員の意思勧誘「уулзацгаая（みんなで会いましょう: -цгаа⁴＋-я）」。",
   "glossary": {
     "Наадам": {
@@ -1557,9 +1557,9 @@ export const initialTypingSentences = [
   "level": "移動・手配",
   "category": "travel_logistics",
   "categoryLabel": "願望（-маар байна）と許可・禁止",
-  "textMn": "Зуунмод хот хүртэл явах 1 тасалбар авмаар байна.",
+  "textMn": "Зуунмод хот хүртэл явах нэг тасалбар авмаар байна.",
   "textJa": "ゾーンモド市まで行く切符を1枚買いたいです。",
-  "romaji": "Zuunmod khot khurtel yavakh 1 tasalbar avmaar baina.",
+  "romaji": "Zuunmod khot khurtel yavakh neg tasalbar avmaar baina.",
   "explanation": "願望の表現「-маар байна（〜したい）」: 「авмаар байна（買いたいです、取りたいです）」。",
   "glossary": {
     "Зуунмод": {
@@ -1617,9 +1617,9 @@ export const initialTypingSentences = [
   "level": "宿泊・ホテル",
   "category": "travel_logistics",
   "categoryLabel": "仮定（-вал）と義務（-хгүй бол болохгүй）",
-  "textMn": "Нэг хоновол, 45000 төгрөг. Паспортоо үзүүлнэ үү.",
+  "textMn": "Нэг хоновол, дөчин таван мянган төгрөг. Паспортоо үзүүлнэ үү.",
   "textJa": "一泊するなら45,000トゥグルグです。パスポートをお見せください。",
-  "romaji": "Neg khonovol, 45000 togrog. Pasportoo uzuulne uu.",
+  "romaji": "Neg khonovol, dochin tavan myangan togrog. Pasportoo uzuulne uu.",
   "explanation": "仮定形「-вол（〜するなら）」＋丁寧な依頼「-нэ үү（〜してください）」。",
   "glossary": {
     "хоновол": {
@@ -1899,9 +1899,9 @@ export const initialTypingSentences = [
   "level": "食事・食堂",
   "category": "shopping_dining",
   "categoryLabel": "レストラン注文・過去終止形・様態（шиг）",
-  "textMn": "Би 5 бууз авна. Төмсний салат нэг тавгийг авъя.",
+  "textMn": "Би таван бууз авна. Төмсний салат нэг тавгийг авъя.",
   "textJa": "ボーズを5個ください。ポテトサラダを一皿ください。",
-  "romaji": "Bi 5 buuz avna. Tomsnii salat neg tavgiig avya.",
+  "romaji": "Bi tavan buuz avna. Tomsnii salat neg tavgiig avya.",
   "explanation": "レストランでの注文「〜 авна / авъя（〜をください）」、助数詞「нэг таваг（一皿）」の対格「тавгийг」。",
   "glossary": {
     "бууз": {
@@ -1960,9 +1960,9 @@ export const initialTypingSentences = [
   "level": "口述試験対策",
   "category": "interview_prep",
   "categoryLabel": "口述試験: 自己紹介（Өөрийнхөө тухай）",
-  "textMn": "Намайг Кахо гэдэг. Би 22 настай. Би Японоос ирсэн.",
+  "textMn": "Намайг Кахо гэдэг. Би хорин хоёр настай. Би Японоос ирсэн.",
   "textJa": "私の名前はカホです。22歳です。日本から来ました。",
-  "romaji": "Namaig Kaho gedeg. Bi 22 nastai. Bi Yaponoos irsen.",
+  "romaji": "Namaig Kaho gedeg. Bi khorin khoyor nastai. Bi Yaponoos irsen.",
   "explanation": "口頭試験・面接の冒頭で名乗る最重要フレーズ。「Намайг 〜 гэдэг」「22 настай」「Японоос ирсэн」。",
   "glossary": {
     "намайг": {
@@ -2080,9 +2080,9 @@ export const initialTypingSentences = [
   "level": "口述試験対策",
   "category": "interview_prep",
   "categoryLabel": "口述試験: 訓練所生活（Нихонмацү）",
-  "textMn": "Өдөр бүр өглөө зургаан цаг хагасд босдог. 8 цаг 45 минутад хичээл эхэлдэг.",
+  "textMn": "Өдөр бүр өглөө зургаан цаг хагасд босдог. Найман цаг дөчин таван минутад хичээл эхэлдэг.",
   "textJa": "毎朝6時半に起きます。8時45分に授業が始まります。",
-  "romaji": "Odor bur ogloo zurgaan tsag khagasd bosdog. 8 tsag 45 minutad khicheel ekheldeg.",
+  "romaji": "Odor bur ogloo zurgaan tsag khagasd bosdog. Naiman tsag dochin tavan minutad khicheel ekheldeg.",
   "explanation": "訓練所の一日の時間割を述べる習慣動詞文。「босдог（起きる）」「эхэлдэг（始まる）」。",
   "glossary": {
     "босдог": {
@@ -2308,9 +2308,9 @@ export const initialTypingSentences = [
   "level": "口述試験対策",
   "category": "interview_prep",
   "categoryLabel": "口述試験: レストラン注文（Ресторанд）",
-  "textMn": "5 бууз, нэг таваг нийслэл салат авъя. Сүүтэй цай ууна.",
+  "textMn": "Таван бууз, нэг таваг нийслэл салат авъя. Сүүтэй цай ууна.",
   "textJa": "ボーズを5個、首都サラダを一皿ください。ミルクティーを飲みます。",
-  "romaji": "5 buuz, neg tavag niislel salat avya. Suutei tsai uuna.",
+  "romaji": "Tavan buuz, neg tavag niislel salat avya. Suutei tsai uuna.",
   "explanation": "レストランでの注文。「нийслэл салат（ポテトサラダ）」「сүүтэй цай（ミルクティー）」。",
   "glossary": {
     "нийслэл": {

@@ -789,7 +789,15 @@ function isFuzzyMatch(userAnswer, correctAnswer) {
       .replace(/y/g, 'у'); // Latin y -> Cyrillic у
   };
 
-  const clean = (s) => normalizeLookalikes(s.trim().toLowerCase())
+  const normalizeNumbers = (str) => {
+    return str
+      .replace(/\b9\b/g, 'есөн')
+      .replace(/\b10\b/g, 'арав')
+      .replace(/\b14-ний\b/g, 'арван дөрөвний')
+      .replace(/\b15-ны\b/g, 'арван тавны');
+  };
+
+  const clean = (s) => normalizeNumbers(normalizeLookalikes(s.trim().toLowerCase()))
     .replace(/[.,!?。、！？\s]/g, '')
     .replace(/[«»"']/g, '');
 
@@ -30079,11 +30087,11 @@ const initialGrammar = [
     "forKids": "「なんじなんぷん！」って時間をぴったり教える言葉だよ！",
     "examples": {
       "affirmative": {
-        "mn": "Хичээл 9 цагт эхэлнэ.",
+        "mn": "Хичээл есөн цагт эхэлнэ.",
         "ja": "授業は9時に始まります。"
       },
       "negative": {
-        "mn": "Хичээл 9 цагт эхлэхгүй.",
+        "mn": "Хичээл есөн цагт эхлэхгүй.",
         "ja": "授業は9時に始まりません。"
       },
       "interrogative": {
@@ -30091,7 +30099,7 @@ const initialGrammar = [
         "ja": "授業は何時に始まりますか？"
       }
     },
-    "exampleMn": "Хичээл 9 цагт эхэлнэ.",
+    "exampleMn": "Хичээл есөн цагт эхэлнэ.",
     "exampleJa": "授業は9時に始まります。"
   },
   {
@@ -30475,11 +30483,11 @@ const initialGrammar = [
     "forKids": "カレンダーの「なんねん・なんがつ・なんニチ！」をいう言葉だよ！",
     "examples": {
       "affirmative": {
-        "mn": "Өнөөдөр 10 дугаар сарын 14-ний өдөр.",
+        "mn": "Өнөөдөр аравдугаар сарын арван дөрөвний өдөр.",
         "ja": "今日は10月14日です。"
       },
       "negative": {
-        "mn": "Өнөөдөр 10 дугаар сарын 15-ны өдөр биш.",
+        "mn": "Өнөөдөр аравдугаар сарын арван тавны өдөр биш.",
         "ja": "今日は10月15日ではありません。"
       },
       "interrogative": {
@@ -30487,7 +30495,7 @@ const initialGrammar = [
         "ja": "今日は何の日ですか？"
       }
     },
-    "exampleMn": "Өнөөдөр 10 дугаар сарын 14-ний өдөр.",
+    "exampleMn": "Өнөөдөр аравдугаар сарын арван дөрөвний өдөр.",
     "exampleJa": "今日は10月14日です。"
   },
   {
@@ -32433,19 +32441,23 @@ const initialGrammarQuizzes = [
     "lessonGroup": "第21項目: 時間/時刻（Цаг хугацаа хэлэх）",
     "type": "reorder",
     "question": "【時間/時刻（Цаг хугацаа хэлэх）】\n「授業は9時に始まります。」をモンゴル語で表しなさい。",
-    "answer": "Хичээл 9 цагт эхэлнэ.",
+    "answer": "Хичээл есөн цагт эхэлнэ.",
     "acceptableAnswers": [
+      "Хичээл есөн цагт эхэлнэ.",
+      "Хичээл есөн цагт эхэлнэ",
+      "Хичээл ес цагт эхэлнэ.",
+      "Хичээл ес цагт эхэлнэ",
       "Хичээл 9 цагт эхэлнэ.",
       "Хичээл 9 цагт эхэлнэ"
     ],
     "tokens": [
       "Хичээл",
-      "9",
+      "есөн",
       "цагт",
       "эхэлнэ"
     ],
     "category": "時間/時刻（Цаг хугацаа хэлэх）",
-    "explanation": "時刻（〜時〜分）や所要時間・時期を表す数量表現構造。。\n💡 解説: 「なんじなんぷん！」って時間をぴったり教える言葉だよ！",
+    "explanation": "時刻（〜時〜分）を表す表現。9時は「есөн цаг」または「ес цаг」、9時には「есөн цагт」となります。\n💡 解説: 「なんじなんぷん！」って時間をぴったり教える言葉だよ！",
     "hint": "キーフレーズ: эхэлнэ."
   },
   {
@@ -32454,13 +32466,17 @@ const initialGrammarQuizzes = [
     "lessonGroup": "第21項目: 時間/時刻（Цаг хугацаа хэлэх）",
     "type": "translation",
     "question": "【時間/時刻（Цаг хугацаа хэлэх）】\n「授業は9時に始まりません。」に合うモンゴル語文を作りなさい。",
-    "answer": "Хичээл 9 цагт эхлэхгүй.",
+    "answer": "Хичээл есөн цагт эхлэхгүй.",
     "acceptableAnswers": [
+      "Хичээл есөн цагт эхлэхгүй.",
+      "Хичээл есөн цагт эхлэхгүй",
+      "Хичээл ес цагт эхлэхгүй.",
+      "Хичээл ес цагт эхлэхгүй",
       "Хичээл 9 цагт эхлэхгүй.",
       "Хичээл 9 цагт эхлэхгүй"
     ],
     "category": "時間/時刻（Цаг хугацаа хэлэх）",
-    "explanation": "否定表現のポイント: 時刻を表すときは 与位格 -д/-т をつけて「5時に（5 цагт）」と表現します。",
+    "explanation": "否定表現のポイント: 時刻を表すときは 与位格 -д/-т をつけて「9時に（есөн цагт）」と表現します。",
     "hint": "文末・否定語に注目: эхлэхгүй."
   },
   {
@@ -32894,21 +32910,22 @@ const initialGrammarQuizzes = [
     "lessonGroup": "第30項目: 日付（Он, сар өдөр хэлэх）",
     "type": "reorder",
     "question": "【日付（Он, сар өдөр хэлэх）】\n「今日は10月14日です。」をモンゴル語で表しなさい。",
-    "answer": "Өнөөдөр 10 дугаар сарын 14-ний өдөр.",
+    "answer": "Өнөөдөр аравдугаар сарын арван дөрөвний өдөр.",
     "acceptableAnswers": [
+      "Өнөөдөр аравдугаар сарын арван дөрөвний өдөр.",
+      "Өнөөдөр аравдугаар сарын арван дөрөвний өдөр",
       "Өнөөдөр 10 дугаар сарын 14-ний өдөр.",
       "Өнөөдөр 10 дугаар сарын 14-ний өдөр"
     ],
     "tokens": [
       "Өнөөдөр",
-      "10",
-      "дугаар",
+      "аравдугаар",
       "сарын",
-      "14-ний",
+      "арван дөрөвний",
       "өдөр"
     ],
     "category": "日付（Он, сар өдөр хэлэх）",
-    "explanation": "年月日・曜日を表す構造（〜年〜月〜日：он, сар, өдөр）。。\n💡 解説: カレンダーの「なんねん・なんがつ・なんニチ！」をいう言葉だよ！",
+    "explanation": "年月日・曜日を表す構造。10月は「аравдугаар сар」、14日は「арван дөрөвний өдөр」になります。\n💡 解説: カレンダーの「なんねん・なんがつ・なんニチ！」をいう言葉だよ！",
     "hint": "キーフレーズ: өдөр."
   },
   {
@@ -32917,13 +32934,15 @@ const initialGrammarQuizzes = [
     "lessonGroup": "第30項目: 日付（Он, сар өдөр хэлэх）",
     "type": "translation",
     "question": "【日付（Он, сар өдөр хэлэх）】\n「今日は10月15日ではありません。」に合うモンゴル語文を作りなさい。",
-    "answer": "Өнөөдөр 10 дугаар сарын 15-ны өдөр биш.",
+    "answer": "Өнөөдөр аравдугаар сарын арван тавны өдөр биш.",
     "acceptableAnswers": [
+      "Өнөөдөр аравдугаар сарын арван тавны өдөр биш.",
+      "Өнөөдөр аравдугаар сарын арван тавны өдөр биш",
       "Өнөөдөр 10 дугаар сарын 15-ны өдөр биш.",
       "Өнөөдөр 10 дугаар сарын 15-ны өдөр биш"
     ],
     "category": "日付（Он, сар өдөр хэлэх）",
-    "explanation": "否定表現のポイント: 「〜年〜月〜日」の順で並べます。日は序数詞（-дугаар/-дүгээр）または通常の基数詞＋өдөрを使います。",
+    "explanation": "否定表現のポイント: 「〜年〜月〜日」の順で並べます。10月は「аравдугаар сар」、15日は「арван тавны өдөр」になります。",
     "hint": "文末・否定語に注目: биш."
   },
   {
@@ -37028,9 +37047,9 @@ const initialTypingSentences = [
   "level": "初級・基礎",
   "category": "lesson_basics",
   "categoryLabel": "自己紹介・年齢・過去時制",
-  "textMn": "Би 26 настай. Токиогоос ирсэн.",
+  "textMn": "Би хорин зургаан настай. Токиогоос ирсэн.",
   "textJa": "私は26歳です。東京から来ました。",
-  "romaji": "Bi 26 nastai. Tokiogoos irsen.",
+  "romaji": "Bi khorin zurgaan nastai. Tokiogoos irsen.",
   "explanation": "「〜настай（〜歳です）」、奪格「-оос（〜から）」＋動詞過去時制「ирсэн（来ました）」。自己紹介の最重要構文です。",
   "glossary": {
     "настай": {
@@ -37382,9 +37401,9 @@ const initialTypingSentences = [
   "level": "訓練所・日課",
   "category": "routine_schedule",
   "categoryLabel": "時刻・時間の表現と再帰所有（自分の〜）",
-  "textMn": "8 цаг 45 минутаас 15 цаг хүртэл хичээлтэй байдаг.",
+  "textMn": "Найман цаг дөчин таван минутаас арван таван цаг хүртэл хичээлтэй байдаг.",
   "textJa": "8時45分から15時まで授業があります。",
-  "romaji": "8 tsag 45 minutaas 15 tsag khurtel khicheeltei baidag.",
+  "romaji": "Naiman tsag dochin tavan minutaas arvan tavan tsag khurtel khicheeltei baidag.",
   "explanation": "時間的起点「-аас」と終点「хүртэл（〜まで）」の組み合わせ。「хичээлтэй байдаг（授業がある）」。",
   "glossary": {
     "минутаас": {
@@ -37556,9 +37575,9 @@ const initialTypingSentences = [
   "level": "出張・移動",
   "category": "travel_logistics",
   "categoryLabel": "序数詞・日付・手段（造格）",
-  "textMn": "Галт тэргээр 12 цаг гаруй явна шүү.",
+  "textMn": "Галт тэргээр арван хоёр цаг гаруй явна шүү.",
   "textJa": "列車で12時間以上かかりますよ。",
-  "romaji": "Galt tergeer 12 tsag garui yavna shuu.",
+  "romaji": "Galt tergeer arvan khoyor tsag garui yavna shuu.",
   "explanation": "交通手段の造格「галт тэргээр（列車で）」＋数量の超過「гаруй（〜以上、あまり）」。",
   "glossary": {
     "галт тэргээр": {
@@ -37580,9 +37599,9 @@ const initialTypingSentences = [
   "level": "出張・移動",
   "category": "travel_logistics",
   "categoryLabel": "序数詞・日付・手段（造格）",
-  "textMn": "7-р сарын 11-д Наадам эхэлнэ, уулзацгаая.",
+  "textMn": "Долдугаар сарын арван нэгэнд Наадам эхэлнэ, уулзацгаая.",
   "textJa": "7月11日にナーダム祭りが始まります。みんなで会いましょう。",
-  "romaji": "7-r saryn 11-d Naadam ekhelne, uulzatsgaaya.",
+  "romaji": "Doldugaar saryn arvan negend Naadam ekhelne, uulzatsgaaya.",
   "explanation": "日付「7-р сарын 11-д（7月11日に）」＋全員の意思勧誘「уулзацгаая（みんなで会いましょう: -цгаа⁴＋-я）」。",
   "glossary": {
     "Наадам": {
@@ -37610,9 +37629,9 @@ const initialTypingSentences = [
   "level": "移動・手配",
   "category": "travel_logistics",
   "categoryLabel": "願望（-маар байна）と許可・禁止",
-  "textMn": "Зуунмод хот хүртэл явах 1 тасалбар авмаар байна.",
+  "textMn": "Зуунмод хот хүртэл явах нэг тасалбар авмаар байна.",
   "textJa": "ゾーンモド市まで行く切符を1枚買いたいです。",
-  "romaji": "Zuunmod khot khurtel yavakh 1 tasalbar avmaar baina.",
+  "romaji": "Zuunmod khot khurtel yavakh neg tasalbar avmaar baina.",
   "explanation": "願望の表現「-маар байна（〜したい）」: 「авмаар байна（買いたいです、取りたいです）」。",
   "glossary": {
     "Зуунмод": {
@@ -37670,9 +37689,9 @@ const initialTypingSentences = [
   "level": "宿泊・ホテル",
   "category": "travel_logistics",
   "categoryLabel": "仮定（-вал）と義務（-хгүй бол болохгүй）",
-  "textMn": "Нэг хоновол, 45000 төгрөг. Паспортоо үзүүлнэ үү.",
+  "textMn": "Нэг хоновол, дөчин таван мянган төгрөг. Паспортоо үзүүлнэ үү.",
   "textJa": "一泊するなら45,000トゥグルグです。パスポートをお見せください。",
-  "romaji": "Neg khonovol, 45000 togrog. Pasportoo uzuulne uu.",
+  "romaji": "Neg khonovol, dochin tavan myangan togrog. Pasportoo uzuulne uu.",
   "explanation": "仮定形「-вол（〜するなら）」＋丁寧な依頼「-нэ үү（〜してください）」。",
   "glossary": {
     "хоновол": {
@@ -37952,9 +37971,9 @@ const initialTypingSentences = [
   "level": "食事・食堂",
   "category": "shopping_dining",
   "categoryLabel": "レストラン注文・過去終止形・様態（шиг）",
-  "textMn": "Би 5 бууз авна. Төмсний салат нэг тавгийг авъя.",
+  "textMn": "Би таван бууз авна. Төмсний салат нэг тавгийг авъя.",
   "textJa": "ボーズを5個ください。ポテトサラダを一皿ください。",
-  "romaji": "Bi 5 buuz avna. Tomsnii salat neg tavgiig avya.",
+  "romaji": "Bi tavan buuz avna. Tomsnii salat neg tavgiig avya.",
   "explanation": "レストランでの注文「〜 авна / авъя（〜をください）」、助数詞「нэг таваг（一皿）」の対格「тавгийг」。",
   "glossary": {
     "бууз": {
@@ -38013,9 +38032,9 @@ const initialTypingSentences = [
   "level": "口述試験対策",
   "category": "interview_prep",
   "categoryLabel": "口述試験: 自己紹介（Өөрийнхөө тухай）",
-  "textMn": "Намайг Кахо гэдэг. Би 22 настай. Би Японоос ирсэн.",
+  "textMn": "Намайг Кахо гэдэг. Би хорин хоёр настай. Би Японоос ирсэн.",
   "textJa": "私の名前はカホです。22歳です。日本から来ました。",
-  "romaji": "Namaig Kaho gedeg. Bi 22 nastai. Bi Yaponoos irsen.",
+  "romaji": "Namaig Kaho gedeg. Bi khorin khoyor nastai. Bi Yaponoos irsen.",
   "explanation": "口頭試験・面接の冒頭で名乗る最重要フレーズ。「Намайг 〜 гэдэг」「22 настай」「Японоос ирсэн」。",
   "glossary": {
     "намайг": {
@@ -38133,9 +38152,9 @@ const initialTypingSentences = [
   "level": "口述試験対策",
   "category": "interview_prep",
   "categoryLabel": "口述試験: 訓練所生活（Нихонмацү）",
-  "textMn": "Өдөр бүр өглөө зургаан цаг хагасд босдог. 8 цаг 45 минутад хичээл эхэлдэг.",
+  "textMn": "Өдөр бүр өглөө зургаан цаг хагасд босдог. Найман цаг дөчин таван минутад хичээл эхэлдэг.",
   "textJa": "毎朝6時半に起きます。8時45分に授業が始まります。",
-  "romaji": "Odor bur ogloo zurgaan tsag khagasd bosdog. 8 tsag 45 minutad khicheel ekheldeg.",
+  "romaji": "Odor bur ogloo zurgaan tsag khagasd bosdog. Naiman tsag dochin tavan minutad khicheel ekheldeg.",
   "explanation": "訓練所の一日の時間割を述べる習慣動詞文。「босдог（起きる）」「эхэлдэг（始まる）」。",
   "glossary": {
     "босдог": {
@@ -38361,9 +38380,9 @@ const initialTypingSentences = [
   "level": "口述試験対策",
   "category": "interview_prep",
   "categoryLabel": "口述試験: レストラン注文（Ресторанд）",
-  "textMn": "5 бууз, нэг таваг нийслэл салат авъя. Сүүтэй цай ууна.",
+  "textMn": "Таван бууз, нэг таваг нийслэл салат авъя. Сүүтэй цай ууна.",
   "textJa": "ボーズを5個、首都サラダを一皿ください。ミルクティーを飲みます。",
-  "romaji": "5 buuz, neg tavag niislel salat avya. Suutei tsai uuna.",
+  "romaji": "Tavan buuz, neg tavag niislel salat avya. Suutei tsai uuna.",
   "explanation": "レストランでの注文。「нийслэл салат（ポテトサラダ）」「сүүтэй цай（ミルクティー）」。",
   "glossary": {
     "нийслэл": {
@@ -49022,11 +49041,59 @@ class StorageService {
   }
 
   static getGrammarQuizzes() {
+    const sanitize = (list) => {
+      return (list || []).map(q => {
+        let answer = q.answer;
+        let tokens = q.tokens;
+        let acceptableAnswers = q.acceptableAnswers ? [...q.acceptableAnswers] : [];
+
+        // 算用数字からモンゴル語表記（есөн等）への統一
+        if (typeof answer === 'string') {
+          if (answer.includes('9 цагт')) {
+            answer = answer.replace(/9 цагт/g, 'есөн цагт');
+            if (!acceptableAnswers.includes(q.answer)) acceptableAnswers.push(q.answer);
+          }
+          if (answer.includes('10 дугаар сарын 14-ний')) {
+            answer = answer.replace(/10 дугаар сарын 14-ний/g, 'аравдугаар сарын арван дөрөвний');
+            if (!acceptableAnswers.includes(q.answer)) acceptableAnswers.push(q.answer);
+          }
+          if (answer.includes('10 дугаар сарын 15-ны')) {
+            answer = answer.replace(/10 дугаар сарын 15-ны/g, 'аравдугаар сарын арван тавны');
+            if (!acceptableAnswers.includes(q.answer)) acceptableAnswers.push(q.answer);
+          }
+        }
+
+        if (Array.isArray(tokens)) {
+          tokens = tokens.map(t => {
+            if (t === '9') return 'есөн';
+            if (t === '10') return 'арав';
+            if (t === '14-ний') return 'арван дөрөвний';
+            if (t === '15-ны') return 'арван тавны';
+            return t;
+          });
+          if (tokens.includes('арав') && tokens.includes('дугаар')) {
+            const idx = tokens.indexOf('арав');
+            if (tokens[idx + 1] === 'дугаар') {
+              tokens.splice(idx, 2, 'аравдугаар');
+            }
+          }
+        }
+
+        return {
+          ...q,
+          answer,
+          tokens,
+          acceptableAnswers
+        };
+      });
+    };
+
     try {
       const data = localStorage.getItem(STORAGE_KEYS.GRAMMAR_QUIZZES);
-      return data ? JSON.parse(data) : initialGrammarQuizzes;
+      const parsed = data ? JSON.parse(data) : initialGrammarQuizzes;
+      return sanitize(parsed);
     } catch (e) {
-      return initialGrammarQuizzes;
+      return sanitize(initialGrammarQuizzes);
     }
   }
 
@@ -59596,7 +59663,14 @@ class GrammarTestComponent {
     this.state.isCorrect = false;
 
     if (q.type === 'reorder') {
-      this.state.availableTokens = shuffleArray([...q.tokens]);
+      const sanitized = (q.tokens || []).map(t => {
+        if (t === '9') return 'есөн';
+        if (t === '10') return 'арав';
+        if (t === '14-ний') return 'арван дөрөвний';
+        if (t === '15-ны') return 'арван тавны';
+        return t;
+      });
+      this.state.availableTokens = shuffleArray([...sanitized]);
       this.state.selectedTokens = [];
     }
 
@@ -59677,20 +59751,26 @@ class GrammarTestComponent {
                 <div id="reorder-dropzone" class="min-h-14 p-2.5 bg-slate-50 rounded-xl border-2 border-dashed border-sky-300 flex flex-wrap gap-2 items-center">
                   ${this.state.selectedTokens.length === 0 ? `
                     <span class="text-xs text-slate-400">下の単語をタップしてここに入れます</span>
-                  ` : this.state.selectedTokens.map((token, i) => `
-                    <button type="button" class="btn-remove-token px-3 py-1.5 bg-sky-600 hover:bg-rose-500 text-white font-bold text-sm rounded-lg shadow-xs active:scale-95 transition-all cyrillic-text" data-index="${i}">
-                      ${token} ✕
-                    </button>
-                  `).join('')}
+                  ` : this.state.selectedTokens.map((token, i) => {
+                    const displayToken = (token === '9' ? 'есөн' : token === '10' ? 'арав' : token === '14-ний' ? 'арван дөрөвний' : token === '15-ны' ? 'арван тавны' : token);
+                    return `
+                      <button type="button" class="btn-remove-token px-3 py-1.5 bg-sky-600 hover:bg-rose-500 text-white font-bold text-sm rounded-lg shadow-xs active:scale-95 transition-all cyrillic-text" data-index="${i}">
+                        ${displayToken} ✕
+                      </button>
+                    `;
+                  }).join('')}
                 </div>
 
                 <!-- 選択可能な単語チップ -->
                 <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
-                  ${this.state.availableTokens.map((token, i) => `
-                    <button type="button" class="btn-add-token px-3 py-1.5 bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-800 font-bold text-sm rounded-lg border border-slate-200 active:scale-95 transition-all cyrillic-text" data-index="${i}">
-                      ${token}
-                    </button>
-                  `).join('')}
+                  ${this.state.availableTokens.map((token, i) => {
+                    const displayToken = (token === '9' ? 'есөн' : token === '10' ? 'арав' : token === '14-ний' ? 'арван дөрөвний' : token === '15-ны' ? 'арван тавны' : token);
+                    return `
+                      <button type="button" class="btn-add-token px-3 py-1.5 bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-800 font-bold text-sm rounded-lg border border-slate-200 active:scale-95 transition-all cyrillic-text" data-index="${i}">
+                        ${displayToken}
+                      </button>
+                    `;
+                  }).join('')}
                 </div>
 
                 <button type="button" id="btn-submit-reorder" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm mt-3 ${this.state.selectedTokens.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}">
