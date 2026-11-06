@@ -59,7 +59,8 @@ tests = [
     'test_word_illustrations_feature.py',
     'test_choice_explanations_feature.py',
     'test_similar_words_distinctions_feature.py',
-    'test_declension_mojibake_fix.py'
+    'test_declension_mojibake_fix.py',
+    'test_all_mistakes_unified_recording.py'
 ]
 
 for t in tests:

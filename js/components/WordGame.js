@@ -1931,6 +1931,41 @@ export class WordGameComponent {
         choices: this.state.choices ? [...this.state.choices] : null
       });
 
+      // 自動で間違いノートに永続記録
+      try {
+        if (genre === 'grammar') {
+          StorageService.recordMistake({
+            question: `【文法ゲーム】${q.question}`,
+            userAnswer: userText || '(選択肢の誤答)',
+            correctAnswer: correctDisplay,
+            type: 'grammar',
+            category: q.category || q.lessonGroup || '文法ゲーム',
+            explanation: q.explanation || `正解: ${q.answer}`
+          });
+        } else if (genre === 'visual') {
+          StorageService.recordMistake({
+            question: `【イラスト】${q.japanese}`,
+            userAnswer: userText || '(選択肢の誤答)',
+            correctAnswer: correctDisplay,
+            type: 'word',
+            category: q.category || 'イラスト単語',
+            explanation: `${q.japanese} = ${q.dictForm || q.mongolian} [${q.pronunciation || ''}]。${q.hint || ''}`
+          });
+        } else {
+          const d = getWordGrammarDetails(q);
+          StorageService.recordMistake({
+            question: `【単語ゲーム】${d.dictForm || q.mongolian} の意味`,
+            userAnswer: userText || '(選択肢の誤答)',
+            correctAnswer: correctDisplay,
+            type: 'word',
+            category: q.category || '単語ゲーム',
+            explanation: `正解: ${q.japanese} (辞書形: ${d.dictForm || q.mongolian}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
+          });
+        }
+      } catch (e) {
+        console.warn('WordGame recordMistake error:', e);
+      }
+
       // モード別ペナルティ
       if (this.state.mode === 'survival') {
         this.state.lives--;

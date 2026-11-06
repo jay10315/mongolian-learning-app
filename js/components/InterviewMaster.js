@@ -1094,6 +1094,16 @@ export class InterviewMasterComponent {
           SoundEffects.playWrong();
         }
       } catch (_) {}
+      try {
+        StorageService.recordMistake({
+          question: `【口述試験タイピング: ${topic.title}】${currentSentence.ja}`,
+          userAnswer: userText || '(未回答)',
+          correctAnswer: correctText,
+          type: 'typing',
+          category: topic.title || '口述試験',
+          explanation: `${correctText}（${currentSentence.ja}）。${currentSentence.note || ''}`
+        });
+      } catch (_) {}
     }
 
     this.render(this.container, this.onNavigate);

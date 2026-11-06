@@ -48608,7 +48608,7 @@ class StorageService {
                 });
               }
 
-              if (matched) {
+              if (matched && (!m.type || m.type === 'word')) {
                 const isV = matched.isVerb === true || (matched.pos && matched.pos.includes('動詞'));
                 const df = matched.dictForm || matched.mongolian;
                 const rt = matched.root || df;
@@ -56982,6 +56982,41 @@ class WordGameComponent {
         choices: this.state.choices ? [...this.state.choices] : null
       });
 
+      // 自動で間違いノートに永続記録
+      try {
+        if (genre === 'grammar') {
+          StorageService.recordMistake({
+            question: `【文法ゲーム】${q.question}`,
+            userAnswer: userText || '(選択肢の誤答)',
+            correctAnswer: correctDisplay,
+            type: 'grammar',
+            category: q.category || q.lessonGroup || '文法ゲーム',
+            explanation: q.explanation || `正解: ${q.answer}`
+          });
+        } else if (genre === 'visual') {
+          StorageService.recordMistake({
+            question: `【イラスト】${q.japanese}`,
+            userAnswer: userText || '(選択肢の誤答)',
+            correctAnswer: correctDisplay,
+            type: 'word',
+            category: q.category || 'イラスト単語',
+            explanation: `${q.japanese} = ${q.dictForm || q.mongolian} [${q.pronunciation || ''}]。${q.hint || ''}`
+          });
+        } else {
+          const d = getWordGrammarDetails(q);
+          StorageService.recordMistake({
+            question: `【単語ゲーム】${d.dictForm || q.mongolian} の意味`,
+            userAnswer: userText || '(選択肢の誤答)',
+            correctAnswer: correctDisplay,
+            type: 'word',
+            category: q.category || '単語ゲーム',
+            explanation: `正解: ${q.japanese} (辞書形: ${d.dictForm || q.mongolian}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
+          });
+        }
+      } catch (e) {
+        console.warn('WordGame recordMistake error:', e);
+      }
+
       // モード別ペナルティ
       if (this.state.mode === 'survival') {
         this.state.lives--;
@@ -62069,8 +62104,23 @@ class ReadingTestComponent {
 
     let correctCount = 0;
     p.questions.forEach((q, idx) => {
-      if (this.state.userAnswers[idx] === q.answer) {
+      const userAnsIdx = this.state.userAnswers[idx];
+      const isCorrect = userAnsIdx === q.answer;
+      if (isCorrect) {
         correctCount++;
+      } else {
+        const userOptText = (userAnsIdx !== undefined && q.options && q.options[userAnsIdx]) ? q.options[userAnsIdx] : '(未回答)';
+        const correctOptText = (q.options && q.options[q.answer]) ? q.options[q.answer] : `選択肢 ${q.answer + 1}`;
+        try {
+          StorageService.recordMistake({
+            question: `【読解: ${p.titleMn || p.titleJa}】${q.question}`,
+            userAnswer: userOptText,
+            correctAnswer: correctOptText,
+            type: 'reading',
+            category: p.titleJa || '読解',
+            explanation: `${q.explanation || ''} (本文: ${p.titleMn || ''} - ${p.titleJa || ''})`
+          });
+        } catch (_) {}
       }
     });
 
@@ -66406,6 +66456,16 @@ class InterviewMasterComponent {
           SoundEffects.playWrong();
         }
       } catch (_) {}
+      try {
+        StorageService.recordMistake({
+          question: `【口述試験タイピング: ${topic.title}】${currentSentence.ja}`,
+          userAnswer: userText || '(未回答)',
+          correctAnswer: correctText,
+          type: 'typing',
+          category: topic.title || '口述試験',
+          explanation: `${correctText}（${currentSentence.ja}）。${currentSentence.note || ''}`
+        });
+      } catch (_) {}
     }
 
     this.render(this.container, this.onNavigate);
@@ -66450,6 +66510,7 @@ if (typeof window !== 'undefined') {
 
 // === js/components/NumberMasterTest.js ===
 // 数字・金額・時刻・日付スピードマスターコンポーネント
+
 
 
 
@@ -66676,6 +66737,16 @@ class NumberMasterComponent {
             SoundEffects.playCorrect();
           } else {
             SoundEffects.playWrong();
+            try {
+              StorageService.recordMistake({
+                question: `【数字特訓】${q.prompt}`,
+                userAnswer: val || '(未回答)',
+                correctAnswer: q.answer,
+                type: 'word',
+                category: '数字・数詞',
+                explanation: `${q.prompt} → ${q.answer} (${q.reading || ''})。${q.explanation || ''}`
+              });
+            } catch (_) {}
           }
           this.state.results.push({ quiz: q, userAns: val, isOk });
           this.renderTesting();
@@ -67066,6 +67137,7 @@ class ShadowingDictationComponent {
 
 
 
+
 class CultureComponent {
   static state = {
     tab: 'proverbs', // 'proverbs' | 'riddles'
@@ -67151,6 +67223,16 @@ class CultureComponent {
     }
         } else {
           SoundEffects.playWrong();
+          try {
+            StorageService.recordMistake({
+              question: `【なぞなぞ・文化】${currentRiddle.riddleMn}（${currentRiddle.riddleJa}）`,
+              userAnswer: val || '(未回答)',
+              correctAnswer: currentRiddle.answer,
+              type: 'culture',
+              category: '文化・なぞなぞ',
+              explanation: `${currentRiddle.answer}（${currentRiddle.answerJa}）。${currentRiddle.explanation || ''}`
+            });
+          } catch (_) {}
         }
         this.render(this.container, this.onNavigate);
       });
@@ -67280,6 +67362,7 @@ class CultureComponent {
 
 // === js/components/WordFamilyQuiz.js ===
 // 類義語・対義語・語根ファミリー 総合ゲーム＆学習コンポーネント
+
 
 
 
@@ -67850,6 +67933,18 @@ class WordFamilyComponent {
     } else {
       SoundEffects.playWrong();
       synonymGame.streak = 0;
+      try {
+        const targetQ = synonymGame.currentQ;
+        const correctWord = targetQ.correctWord || (targetQ.options && targetQ.options[targetQ.correctIndex]);
+        StorageService.recordMistake({
+          question: `【類義語】${targetQ.targetWordJa ? `${targetQ.targetWordJa}（${targetQ.targetWord}）の類義語` : `${targetQ.targetWord} の類義語`}`,
+          userAnswer: chosenWord || '(未選択)',
+          correctAnswer: correctWord,
+          type: 'word_family',
+          category: '類義語・語根',
+          explanation: targetQ.explanation || ''
+        });
+      } catch (_) {}
     }
 
     this.renderMain();
@@ -68024,6 +68119,17 @@ class WordFamilyComponent {
     }
     } else {
       SoundEffects.playWrong();
+      try {
+        const curQuiz = familyGame.currentQuiz;
+        StorageService.recordMistake({
+          question: `【語根派生】${curQuiz.root} + [接尾辞] → 「${curQuiz.meaningJa}」`,
+          userAnswer: suffix || '(未選択)',
+          correctAnswer: curQuiz.correctSuffix,
+          type: 'word_family',
+          category: '語根・派生語',
+          explanation: `${curQuiz.root} + ${curQuiz.correctSuffix} = ${curQuiz.targetWord}（${curQuiz.meaningJa}）。${curQuiz.explanation || ''}`
+        });
+      } catch (_) {}
     }
 
     this.renderMain();
@@ -68348,6 +68454,7 @@ class WordFamilyComponent {
 
 
 
+
 class PenguinExpeditionComponent {
   static state = {
     activeTab: 'railway', // 'railway' (すごろくサバイバル旅) | 'map' (全22地域図鑑)
@@ -68476,6 +68583,19 @@ class PenguinExpeditionComponent {
       rw.combo = 0;
       rw.totalMistakes++;
       rw.lastAction = 'wrong';
+      try {
+        const q = rw.currentQ;
+        if (q) {
+          StorageService.recordMistake({
+            question: `【鉄道クイズ】${q.prompt}`,
+            userAnswer: (q.choices && q.choices[choiceIdx]) ? q.choices[choiceIdx].text : '(未回答)',
+            correctAnswer: (q.choices && q.choices[q.correctIdx]) ? q.choices[q.correctIdx].text : '',
+            type: 'culture',
+            category: 'ペンギン探検鉄道',
+            explanation: q.explanation || ''
+          });
+        }
+      } catch (_) {}
       rw.tickets = Math.max(0, rw.tickets - 1);
 
       // ★重要要件: 「間違えるたびに戻る」（1駅後退！）
@@ -70212,6 +70332,7 @@ class SuffixRuleDojoComponent {
 
 
 
+
 class EtymologyMasterComponent {
   static container = null;
   static onNavigate = null;
@@ -70823,6 +70944,16 @@ class EtymologyMasterComponent {
     } else {
       SoundEffects.playWrong();
       qState.streak = 0;
+      try {
+        StorageService.recordMistake({
+          question: `【語源・成り立ち】${currentQ.question}`,
+          userAnswer: (currentQ.options && currentQ.options[choiceIdx]) ? currentQ.options[choiceIdx] : '(未回答)',
+          correctAnswer: (currentQ.options && currentQ.options[currentQ.answer]) ? currentQ.options[currentQ.answer] : '',
+          type: 'word_family',
+          category: '語源・成り立ち',
+          explanation: currentQ.explanation || ''
+        });
+      } catch (_) {}
     }
 
     const contentDiv = this.container.querySelector('#etymology-tab-content');
@@ -71738,6 +71869,23 @@ class GenreWordMasterComponent {
       } catch (_) {}
 
       this.state.mistakes.push(this.state.currentQuestion);
+
+      try {
+        const curQ = this.state.currentQuestion;
+        const genre = this.getGenreById(this.state.selectedGenreId) || {};
+        const isMnToJa = this.state.questionType === 'mn_to_ja';
+        const userWord = chosen ? chosen.word : null;
+        StorageService.recordMistake({
+          question: `【ジャンル: ${genre.titleJa || '単語'}】${isMnToJa ? curQ.mongolian : curQ.japanese}`,
+          userAnswer: userWord ? (isMnToJa ? userWord.japanese : userWord.mongolian) : '(未選択)',
+          correctAnswer: isMnToJa ? curQ.japanese : (curQ.dictForm || curQ.mongolian),
+          type: 'word',
+          category: genre.titleJa || 'ジャンル単語',
+          explanation: `${curQ.mongolian} = ${curQ.japanese}。${curQ.note || curQ.derivation || ''}`
+        });
+      } catch (err) {
+        console.warn('Genre mistake recording error:', err);
+      }
     }
 
     if (!this.state.gameResults) this.state.gameResults = [];
@@ -73016,6 +73164,23 @@ class SpellingGameComponent {
       SoundEffects.playWrong();
     } catch (_) {}
 
+    if (this.state.currentWord) {
+      const w = this.state.currentWord;
+      const userText = this.state.mode === 'tile_arrange'
+        ? (this.state.placedLetters || []).map(l => l.char).join('')
+        : (this.state.typedLetters || []).join('');
+      try {
+        StorageService.recordMistake({
+          question: `【スペリング】${w.japanese}`,
+          userAnswer: userText || '(時間切れ)',
+          correctAnswer: w.dictForm || w.mongolian,
+          type: 'word',
+          category: 'スペリング',
+          explanation: `${w.japanese} = ${w.dictForm || w.mongolian}`
+        });
+      } catch (_) {}
+    }
+
     this.state.answeredLog.push({
       word: this.state.currentWord,
       isCorrect: false,
@@ -73607,6 +73772,16 @@ class ReviewNotebookComponent {
     const totalActive = activeMistakes + activeLookedUp + activeDue;
     const totalResolved = unified.all.filter(m => m.resolved).length;
 
+    const countActiveByType = (t) => unified.mistakes.filter(m => !m.resolved && m.type === t).length;
+    const activeGrammar = countActiveByType('grammar');
+    const activeDeclension = countActiveByType('declension');
+    const activeWord = countActiveByType('word');
+    const activeReading = countActiveByType('reading');
+    const activeListening = countActiveByType('listening');
+    const activeWordFamily = countActiveByType('word_family');
+    const activeCulture = countActiveByType('culture');
+    const activeTyping = countActiveByType('typing');
+
     const currentFilterActive = filtered.filter(m => !m.resolved).length;
 
     this.container.innerHTML = `
@@ -73679,10 +73854,14 @@ class ReviewNotebookComponent {
               { id: 'mistake', label: `🔥 間違い (${activeMistakes})` },
               { id: 'looked_up', label: `📌 調べた単語 (${activeLookedUp})` },
               { id: 'due_review', label: `⏰ 要復習 (${activeDue})` },
-              { id: 'word', label: '単語' },
-              { id: 'grammar', label: '文法' },
-              { id: 'declension', label: '格変化・活用' },
-              { id: 'listening', label: 'リスニング' }
+              { id: 'grammar', label: `文法 (${activeGrammar})` },
+              { id: 'declension', label: `格変化・活用 (${activeDeclension})` },
+              { id: 'word', label: `単語 (${activeWord})` },
+              { id: 'reading', label: `読解 (${activeReading})` },
+              { id: 'listening', label: 'リスニング' },
+              { id: 'word_family', label: `類義語・語根 (${activeWordFamily})` },
+              { id: 'culture', label: `文化 (${activeCulture})` },
+              { id: 'typing', label: `タイピング (${activeTyping})` }
             ].map(f => `
               <button type="button" class="btn-filter-type px-2.5 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap cursor-pointer ${
                 this.state.filterType === f.id ? 'bg-slate-800 text-white' : 'text-slate-600 hover:bg-slate-100'
@@ -73750,7 +73929,7 @@ class ReviewNotebookComponent {
 
                 <!-- 問題文（イラスト付き・答えの漏洩を防止） -->
                 <div class="flex items-center gap-2.5">
-                  ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML({ mongolian: m.correctAnswer, japanese: m.japanese || parsed.promptText }, { size: 'sm' }) : ''}
+                  ${(!parsed.isExplicitNonWord && typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML({ mongolian: m.correctAnswer, japanese: m.japanese || parsed.promptText }, { size: 'sm' }) : ''}
                   <div class="text-sm font-bold text-slate-800 dark:text-white cyrillic-text flex items-center gap-1.5 flex-wrap">
                     <span class="text-xs px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold">${parsed.displayPrefix}</span>
                     <span>${parsed.promptText}</span>
@@ -73771,7 +73950,7 @@ class ReviewNotebookComponent {
                     </div>
                   `}
                   <div class="p-2 bg-emerald-50/80 rounded-lg text-emerald-950">
-                    <span class="text-slate-400 text-[10px] block">正しい解答（見出し語）:</span>
+                    <span class="text-slate-400 text-[10px] block">${parsed.isExplicitNonWord ? '正解:' : '正しい解答（見出し語）:'}</span>
                     <span class="font-bold cyrillic-text text-emerald-800">${m.correctAnswer}</span>
                   </div>
                 </div>
@@ -73979,8 +74158,10 @@ class ReviewNotebookComponent {
     let displayPrefix = '';
     let promptText = '';
 
-    // 単語マスターとマッチした場合、常にクリーンな見出し情報から出題を構成（過去の破損データを全自動補正）
-    if (matchedWord) {
+    const isExplicitNonWord = item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review';
+
+    // 単語マスターとマッチした場合、常にクリーンな見出し情報から出題を構成（ただし明示的に文法・格変化・読解などの非単語問題の場合は問題文を優先）
+    if (matchedWord && !isExplicitNonWord) {
       if (isCyrillicAns) {
         displayPrefix = '【単語】';
         promptText = matchedWord.japanese;
@@ -73989,7 +74170,7 @@ class ReviewNotebookComponent {
         promptText = details.dictForm || matchedWord.mongolian;
       }
     } else {
-      // 単語マスター以外の問題（文法・格変化等）の場合
+      // 単語マスター以外の問題（文法・格変化・読解・リスニング等）の場合
       if (/⇄|⇆|↔|<->|->/.test(cleanRawQ)) {
         const parts = cleanRawQ.split(/⇄|⇆|↔|<->|->/);
         let sideA = parts[0].trim();
@@ -74007,9 +74188,8 @@ class ReviewNotebookComponent {
         const hasCyrB = /[\u0400-\u04FF]/.test(sideB);
 
         if (hasCyrA && hasCyrB) {
-          // 両辺キリル文字（例: хоолоор дайл(ах) ⇄ хоолоор дайл(ах)）の場合は単語マスター逆引きで日本語意味を出題
           const w = allWords.find(x => cleanKey(x.mongolian) === cleanKey(sideA) || cleanKey(x.dictForm) === cleanKey(sideA) || cleanKey(x.root) === cleanKey(sideA));
-          if (w) {
+          if (w && !isExplicitNonWord) {
             matchedWord = w;
             promptText = w.japanese;
             displayPrefix = '【単語】';
@@ -74027,7 +74207,17 @@ class ReviewNotebookComponent {
           displayPrefix = prefixMatch[1];
           promptText = prefixMatch[2].trim();
         } else {
-          displayPrefix = item.type === 'grammar' ? '【文法】' : (item.type === 'declension' ? '【活用・変化】' : '【問題】');
+          const typePrefixMap = {
+            grammar: '【文法】',
+            declension: '【格変化・活用】',
+            reading: '【読解】',
+            listening: '【リスニング】',
+            word_family: '【類義語・語根】',
+            culture: '【文化】',
+            typing: '【タイピング】',
+            word: '【単語】'
+          };
+          displayPrefix = typePrefixMap[item.type] || '【問題】';
           promptText = cleanRawQ;
         }
       }
@@ -74055,18 +74245,44 @@ class ReviewNotebookComponent {
     let subHint = "";
     let placeholder = "";
 
-    if (isCyrillicAns) {
-      if (isV) {
-        categoryLabel = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
-        subHint = `【動詞】活用の土台となる【語幹】を入力（例: ${details.dictForm} の語幹「${details.root}」、語尾-ахや括弧は不要）`;
-        placeholder = "語幹（または辞書形）をキリル文字で入力...";
+    if (isExplicitNonWord) {
+      if (item.type === 'grammar') {
+        categoryLabel = "空欄に入る適切な文法・語尾をキリル文字で入力してください";
+        subHint = item.category ? `【文法項目: ${item.category}】` : '';
+        placeholder = "キリル文字で入力...";
       } else if (item.type === 'declension') {
         categoryLabel = "指定の格変化・活用形をキリル文字で入力してください";
         subHint = item.category ? `【対象: ${item.category}】` : '';
         placeholder = "キリル文字で入力...";
-      } else if (item.type === 'grammar') {
-        categoryLabel = "空欄に入る適切なキリル文字を入力してください";
+      } else if (item.type === 'reading') {
+        categoryLabel = "読解問題の正しい解答を入力してください";
+        subHint = item.category ? `【本文: ${item.category}】` : '';
+        placeholder = isCyrillicAns ? "キリル文字で入力..." : "日本語で解答を入力...";
+      } else if (item.type === 'listening') {
+        categoryLabel = "聞き取った正しい語句または内容を入力してください";
+        subHint = item.category ? `【リスニング: ${item.category}】` : '';
+        placeholder = isCyrillicAns ? "キリル文字で入力..." : "解答を入力...";
+      } else if (item.type === 'word_family') {
+        categoryLabel = "適切な類義語または接尾辞・派生語を入力してください";
+        subHint = item.category ? `【区分: ${item.category}】` : '';
         placeholder = "キリル文字で入力...";
+      } else if (item.type === 'culture') {
+        categoryLabel = "ことわざ・なぞなぞ・文化知識の正解を入力してください";
+        subHint = item.category ? `【文化: ${item.category}】` : '';
+        placeholder = isCyrillicAns ? "キリル文字で入力..." : "日本語で入力...";
+      } else if (item.type === 'typing') {
+        categoryLabel = "指定のモンゴル語文章をタイピング入力してください";
+        subHint = item.category ? `【タイピング: ${item.category}】` : '';
+        placeholder = "キリル文字で入力...";
+      } else {
+        categoryLabel = "問題の正解を入力してください";
+        placeholder = isCyrillicAns ? "キリル文字で入力..." : "日本語で入力...";
+      }
+    } else if (isCyrillicAns) {
+      if (isV) {
+        categoryLabel = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
+        subHint = `【動詞】活用の土台となる【語幹】を入力（例: ${details.dictForm} の語幹「${details.root}」、語尾-ахや括弧は不要）`;
+        placeholder = "語幹（または辞書形）をキリル文字で入力...";
       } else {
         categoryLabel = "日本語に合うモンゴル語（キリル文字）を入力してください";
         subHint = (matchedWord && matchedWord.pos) ? `【品詞: ${matchedWord.pos}】` : '';
@@ -74077,7 +74293,6 @@ class ReviewNotebookComponent {
       subHint = (matchedWord && typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(matchedWord) && matchedWord.pronunciation) ? `⚠️ 読み注意: ${matchedWord.pronunciation}` : '';
       placeholder = "日本語で意味を入力...";
     }
-
     return {
       displayPrefix,
       promptText,
@@ -74087,7 +74302,8 @@ class ReviewNotebookComponent {
       placeholder,
       matchedWord,
       details,
-      isVerb: isV
+      isVerb: isV,
+      isExplicitNonWord
     };
   }
 
@@ -74173,7 +74389,8 @@ class ReviewNotebookComponent {
               </div>
 
               ${(() => {
-                const matchedWord = parsed.matchedWord;
+                const isExplicitNonWord = item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review';
+                const matchedWord = (!isExplicitNonWord) ? parsed.matchedWord : null;
 
                 // 単語情報がある場合：動詞・名詞・複合語問わず詳細解説＆成り立ちHTMLを完全展開
                 if (matchedWord) {
@@ -74313,11 +74530,29 @@ class ReviewNotebookComponent {
   static checkReviewAnswer(val) {
     const item = this.state.currentTestItem;
     const parsed = this.parseReviewItem(item);
-    const matchedWord = parsed.matchedWord;
+    const isExplicitNonWord = item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review';
+    const matchedWord = (!isExplicitNonWord) ? parsed.matchedWord : null;
 
     let isCorrect = false;
 
-    if (matchedWord) {
+    if (isExplicitNonWord) {
+      // 文法・格変化・読解・リスニング・文化等の判定
+      if (item.acceptableAnswers && Array.isArray(item.acceptableAnswers)) {
+        isCorrect = item.acceptableAnswers.some(ans => isFuzzyMatch(val, ans));
+      }
+      if (!isCorrect) {
+        isCorrect = isFuzzyMatch(val, item.correctAnswer);
+      }
+      // 選択肢番号 (例: 1, 2) または選択肢テキスト部分一致対応
+      if (!isCorrect && item.correctAnswer) {
+        const numMatch = item.correctAnswer.match(/^\s*(\d+)[\.\)]\s*(.*)/);
+        if (numMatch) {
+          if (val.trim() === numMatch[1] || isFuzzyMatch(val, numMatch[2])) {
+            isCorrect = true;
+          }
+        }
+      }
+    } else if (matchedWord) {
       // 単語判定（語幹、辞書形、マルチワード動詞、隠れ-н、揺らぎ吸収）
       isCorrect = isWordAnswerMatch(val, matchedWord, parsed.isVerb ? 'root_input' : (parsed.isCyrillicAnswer ? 'ja_to_mn' : 'mn_to_ja'));
       if (!isCorrect && parsed.isVerb) {

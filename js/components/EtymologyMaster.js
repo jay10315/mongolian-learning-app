@@ -1,6 +1,7 @@
 // 語源・神接尾辞マスターコンポーネント
 // 語根と接尾辞のレゴブロック構造を理解し、語彙を体系的に倍増させる特訓モジュール
 
+import { StorageService } from '../services/storage.js';
 import { etymologyCategories, etymologyCards, etymologyQuizzes } from '../data/etymologySuffixData.js';
 import { SpeechService } from '../services/speech.js';
 import { SoundEffects, shuffleArray } from '../utils/helpers.js';
@@ -617,6 +618,16 @@ export class EtymologyMasterComponent {
     } else {
       SoundEffects.playWrong();
       qState.streak = 0;
+      try {
+        StorageService.recordMistake({
+          question: `【語源・成り立ち】${currentQ.question}`,
+          userAnswer: (currentQ.options && currentQ.options[choiceIdx]) ? currentQ.options[choiceIdx] : '(未回答)',
+          correctAnswer: (currentQ.options && currentQ.options[currentQ.answer]) ? currentQ.options[currentQ.answer] : '',
+          type: 'word_family',
+          category: '語源・成り立ち',
+          explanation: currentQ.explanation || ''
+        });
+      } catch (_) {}
     }
 
     const contentDiv = this.container.querySelector('#etymology-tab-content');

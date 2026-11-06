@@ -1,4 +1,5 @@
 // ペンギン探検隊（モンゴル縦断鉄道すごろく旅 ＆ 全22地域名所図鑑）コンポーネント
+import { StorageService } from '../services/storage.js';
 import { expeditionDestinations } from '../data/expeditionData.js';
 import { railwayStations, railwayIncidents, railwayQuestions } from '../data/railwayData.js';
 import { GamificationService } from '../services/gamification.js';
@@ -133,6 +134,19 @@ export class PenguinExpeditionComponent {
       rw.combo = 0;
       rw.totalMistakes++;
       rw.lastAction = 'wrong';
+      try {
+        const q = rw.currentQ;
+        if (q) {
+          StorageService.recordMistake({
+            question: `【鉄道クイズ】${q.prompt}`,
+            userAnswer: (q.choices && q.choices[choiceIdx]) ? q.choices[choiceIdx].text : '(未回答)',
+            correctAnswer: (q.choices && q.choices[q.correctIdx]) ? q.choices[q.correctIdx].text : '',
+            type: 'culture',
+            category: 'ペンギン探検鉄道',
+            explanation: q.explanation || ''
+          });
+        }
+      } catch (_) {}
       rw.tickets = Math.max(0, rw.tickets - 1);
 
       // ★重要要件: 「間違えるたびに戻る」（1駅後退！）

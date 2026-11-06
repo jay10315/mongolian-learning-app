@@ -1,4 +1,5 @@
 // モンゴル文化・ことわざ（Зүйр үг）＆ 伝統なぞなぞ（Оньсого）コンポーネント
+import { StorageService } from '../services/storage.js';
 import { cultureData } from '../data/cultureData.js';
 import { SpeechService } from '../services/speech.js';
 import { SoundEffects } from '../utils/helpers.js';
@@ -89,6 +90,16 @@ export class CultureComponent {
     }
         } else {
           SoundEffects.playWrong();
+          try {
+            StorageService.recordMistake({
+              question: `【なぞなぞ・文化】${currentRiddle.riddleMn}（${currentRiddle.riddleJa}）`,
+              userAnswer: val || '(未回答)',
+              correctAnswer: currentRiddle.answer,
+              type: 'culture',
+              category: '文化・なぞなぞ',
+              explanation: `${currentRiddle.answer}（${currentRiddle.answerJa}）。${currentRiddle.explanation || ''}`
+            });
+          } catch (_) {}
         }
         this.render(this.container, this.onNavigate);
       });

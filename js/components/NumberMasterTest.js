@@ -1,4 +1,5 @@
 // 数字・金額・時刻・日付スピードマスターコンポーネント
+import { StorageService } from '../services/storage.js';
 import { numberQuizzes } from '../data/numberQuizData.js';
 import { SpeechService } from '../services/speech.js';
 import { SoundEffects, shuffleArray } from '../utils/helpers.js';
@@ -225,6 +226,16 @@ export class NumberMasterComponent {
             SoundEffects.playCorrect();
           } else {
             SoundEffects.playWrong();
+            try {
+              StorageService.recordMistake({
+                question: `【数字特訓】${q.prompt}`,
+                userAnswer: val || '(未回答)',
+                correctAnswer: q.answer,
+                type: 'word',
+                category: '数字・数詞',
+                explanation: `${q.prompt} → ${q.answer} (${q.reading || ''})。${q.explanation || ''}`
+              });
+            } catch (_) {}
           }
           this.state.results.push({ quiz: q, userAns: val, isOk });
           this.renderTesting();

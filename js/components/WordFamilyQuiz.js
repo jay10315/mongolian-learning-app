@@ -1,4 +1,5 @@
 // 類義語・対義語・語根ファミリー 総合ゲーム＆学習コンポーネント
+import { StorageService } from '../services/storage.js';
 import { wordFamilyData } from '../data/wordFamilyData.js';
 import { SpeechService } from '../services/speech.js';
 import { SoundEffects, shuffleArray } from '../utils/helpers.js';
@@ -569,6 +570,18 @@ export class WordFamilyComponent {
     } else {
       SoundEffects.playWrong();
       synonymGame.streak = 0;
+      try {
+        const targetQ = synonymGame.currentQ;
+        const correctWord = targetQ.correctWord || (targetQ.options && targetQ.options[targetQ.correctIndex]);
+        StorageService.recordMistake({
+          question: `【類義語】${targetQ.targetWordJa ? `${targetQ.targetWordJa}（${targetQ.targetWord}）の類義語` : `${targetQ.targetWord} の類義語`}`,
+          userAnswer: chosenWord || '(未選択)',
+          correctAnswer: correctWord,
+          type: 'word_family',
+          category: '類義語・語根',
+          explanation: targetQ.explanation || ''
+        });
+      } catch (_) {}
     }
 
     this.renderMain();
@@ -743,6 +756,17 @@ export class WordFamilyComponent {
     }
     } else {
       SoundEffects.playWrong();
+      try {
+        const curQuiz = familyGame.currentQuiz;
+        StorageService.recordMistake({
+          question: `【語根派生】${curQuiz.root} + [接尾辞] → 「${curQuiz.meaningJa}」`,
+          userAnswer: suffix || '(未選択)',
+          correctAnswer: curQuiz.correctSuffix,
+          type: 'word_family',
+          category: '語根・派生語',
+          explanation: `${curQuiz.root} + ${curQuiz.correctSuffix} = ${curQuiz.targetWord}（${curQuiz.meaningJa}）。${curQuiz.explanation || ''}`
+        });
+      } catch (_) {}
     }
 
     this.renderMain();

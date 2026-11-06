@@ -883,6 +883,23 @@ export class GenreWordMasterComponent {
       } catch (_) {}
 
       this.state.mistakes.push(this.state.currentQuestion);
+
+      try {
+        const curQ = this.state.currentQuestion;
+        const genre = this.getGenreById(this.state.selectedGenreId) || {};
+        const isMnToJa = this.state.questionType === 'mn_to_ja';
+        const userWord = chosen ? chosen.word : null;
+        StorageService.recordMistake({
+          question: `【ジャンル: ${genre.titleJa || '単語'}】${isMnToJa ? curQ.mongolian : curQ.japanese}`,
+          userAnswer: userWord ? (isMnToJa ? userWord.japanese : userWord.mongolian) : '(未選択)',
+          correctAnswer: isMnToJa ? curQ.japanese : (curQ.dictForm || curQ.mongolian),
+          type: 'word',
+          category: genre.titleJa || 'ジャンル単語',
+          explanation: `${curQ.mongolian} = ${curQ.japanese}。${curQ.note || curQ.derivation || ''}`
+        });
+      } catch (err) {
+        console.warn('Genre mistake recording error:', err);
+      }
     }
 
     if (!this.state.gameResults) this.state.gameResults = [];

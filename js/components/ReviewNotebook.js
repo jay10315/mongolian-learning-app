@@ -106,6 +106,16 @@ export class ReviewNotebookComponent {
     const totalActive = activeMistakes + activeLookedUp + activeDue;
     const totalResolved = unified.all.filter(m => m.resolved).length;
 
+    const countActiveByType = (t) => unified.mistakes.filter(m => !m.resolved && m.type === t).length;
+    const activeGrammar = countActiveByType('grammar');
+    const activeDeclension = countActiveByType('declension');
+    const activeWord = countActiveByType('word');
+    const activeReading = countActiveByType('reading');
+    const activeListening = countActiveByType('listening');
+    const activeWordFamily = countActiveByType('word_family');
+    const activeCulture = countActiveByType('culture');
+    const activeTyping = countActiveByType('typing');
+
     const currentFilterActive = filtered.filter(m => !m.resolved).length;
 
     this.container.innerHTML = `
@@ -178,10 +188,14 @@ export class ReviewNotebookComponent {
               { id: 'mistake', label: `🔥 間違い (${activeMistakes})` },
               { id: 'looked_up', label: `📌 調べた単語 (${activeLookedUp})` },
               { id: 'due_review', label: `⏰ 要復習 (${activeDue})` },
-              { id: 'word', label: '単語' },
-              { id: 'grammar', label: '文法' },
-              { id: 'declension', label: '格変化・活用' },
-              { id: 'listening', label: 'リスニング' }
+              { id: 'grammar', label: `文法 (${activeGrammar})` },
+              { id: 'declension', label: `格変化・活用 (${activeDeclension})` },
+              { id: 'word', label: `単語 (${activeWord})` },
+              { id: 'reading', label: `読解 (${activeReading})` },
+              { id: 'listening', label: 'リスニング' },
+              { id: 'word_family', label: `類義語・語根 (${activeWordFamily})` },
+              { id: 'culture', label: `文化 (${activeCulture})` },
+              { id: 'typing', label: `タイピング (${activeTyping})` }
             ].map(f => `
               <button type="button" class="btn-filter-type px-2.5 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap cursor-pointer ${
                 this.state.filterType === f.id ? 'bg-slate-800 text-white' : 'text-slate-600 hover:bg-slate-100'
@@ -249,7 +263,7 @@ export class ReviewNotebookComponent {
 
                 <!-- 問題文（イラスト付き・答えの漏洩を防止） -->
                 <div class="flex items-center gap-2.5">
-                  ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML({ mongolian: m.correctAnswer, japanese: m.japanese || parsed.promptText }, { size: 'sm' }) : ''}
+                  ${(!parsed.isExplicitNonWord && typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML({ mongolian: m.correctAnswer, japanese: m.japanese || parsed.promptText }, { size: 'sm' }) : ''}
                   <div class="text-sm font-bold text-slate-800 dark:text-white cyrillic-text flex items-center gap-1.5 flex-wrap">
                     <span class="text-xs px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold">${parsed.displayPrefix}</span>
                     <span>${parsed.promptText}</span>
@@ -270,7 +284,7 @@ export class ReviewNotebookComponent {
                     </div>
                   `}
                   <div class="p-2 bg-emerald-50/80 rounded-lg text-emerald-950">
-                    <span class="text-slate-400 text-[10px] block">正しい解答（見出し語）:</span>
+                    <span class="text-slate-400 text-[10px] block">${parsed.isExplicitNonWord ? '正解:' : '正しい解答（見出し語）:'}</span>
                     <span class="font-bold cyrillic-text text-emerald-800">${m.correctAnswer}</span>
                   </div>
                 </div>
@@ -478,8 +492,10 @@ export class ReviewNotebookComponent {
     let displayPrefix = '';
     let promptText = '';
 
-    // 単語マスターとマッチした場合、常にクリーンな見出し情報から出題を構成（過去の破損データを全自動補正）
-    if (matchedWord) {
+    const isExplicitNonWord = item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review';
+
+    // 単語マスターとマッチした場合、常にクリーンな見出し情報から出題を構成（ただし明示的に文法・格変化・読解などの非単語問題の場合は問題文を優先）
+    if (matchedWord && !isExplicitNonWord) {
       if (isCyrillicAns) {
         displayPrefix = '【単語】';
         promptText = matchedWord.japanese;
@@ -488,7 +504,7 @@ export class ReviewNotebookComponent {
         promptText = details.dictForm || matchedWord.mongolian;
       }
     } else {
-      // 単語マスター以外の問題（文法・格変化等）の場合
+      // 単語マスター以外の問題（文法・格変化・読解・リスニング等）の場合
       if (/⇄|⇆|↔|<->|->/.test(cleanRawQ)) {
         const parts = cleanRawQ.split(/⇄|⇆|↔|<->|->/);
         let sideA = parts[0].trim();
@@ -506,9 +522,8 @@ export class ReviewNotebookComponent {
         const hasCyrB = /[\u0400-\u04FF]/.test(sideB);
 
         if (hasCyrA && hasCyrB) {
-          // 両辺キリル文字（例: хоолоор дайл(ах) ⇄ хоолоор дайл(ах)）の場合は単語マスター逆引きで日本語意味を出題
           const w = allWords.find(x => cleanKey(x.mongolian) === cleanKey(sideA) || cleanKey(x.dictForm) === cleanKey(sideA) || cleanKey(x.root) === cleanKey(sideA));
-          if (w) {
+          if (w && !isExplicitNonWord) {
             matchedWord = w;
             promptText = w.japanese;
             displayPrefix = '【単語】';
@@ -526,7 +541,17 @@ export class ReviewNotebookComponent {
           displayPrefix = prefixMatch[1];
           promptText = prefixMatch[2].trim();
         } else {
-          displayPrefix = item.type === 'grammar' ? '【文法】' : (item.type === 'declension' ? '【活用・変化】' : '【問題】');
+          const typePrefixMap = {
+            grammar: '【文法】',
+            declension: '【格変化・活用】',
+            reading: '【読解】',
+            listening: '【リスニング】',
+            word_family: '【類義語・語根】',
+            culture: '【文化】',
+            typing: '【タイピング】',
+            word: '【単語】'
+          };
+          displayPrefix = typePrefixMap[item.type] || '【問題】';
           promptText = cleanRawQ;
         }
       }
@@ -554,18 +579,44 @@ export class ReviewNotebookComponent {
     let subHint = "";
     let placeholder = "";
 
-    if (isCyrillicAns) {
-      if (isV) {
-        categoryLabel = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
-        subHint = `【動詞】活用の土台となる【語幹】を入力（例: ${details.dictForm} の語幹「${details.root}」、語尾-ахや括弧は不要）`;
-        placeholder = "語幹（または辞書形）をキリル文字で入力...";
+    if (isExplicitNonWord) {
+      if (item.type === 'grammar') {
+        categoryLabel = "空欄に入る適切な文法・語尾をキリル文字で入力してください";
+        subHint = item.category ? `【文法項目: ${item.category}】` : '';
+        placeholder = "キリル文字で入力...";
       } else if (item.type === 'declension') {
         categoryLabel = "指定の格変化・活用形をキリル文字で入力してください";
         subHint = item.category ? `【対象: ${item.category}】` : '';
         placeholder = "キリル文字で入力...";
-      } else if (item.type === 'grammar') {
-        categoryLabel = "空欄に入る適切なキリル文字を入力してください";
+      } else if (item.type === 'reading') {
+        categoryLabel = "読解問題の正しい解答を入力してください";
+        subHint = item.category ? `【本文: ${item.category}】` : '';
+        placeholder = isCyrillicAns ? "キリル文字で入力..." : "日本語で解答を入力...";
+      } else if (item.type === 'listening') {
+        categoryLabel = "聞き取った正しい語句または内容を入力してください";
+        subHint = item.category ? `【リスニング: ${item.category}】` : '';
+        placeholder = isCyrillicAns ? "キリル文字で入力..." : "解答を入力...";
+      } else if (item.type === 'word_family') {
+        categoryLabel = "適切な類義語または接尾辞・派生語を入力してください";
+        subHint = item.category ? `【区分: ${item.category}】` : '';
         placeholder = "キリル文字で入力...";
+      } else if (item.type === 'culture') {
+        categoryLabel = "ことわざ・なぞなぞ・文化知識の正解を入力してください";
+        subHint = item.category ? `【文化: ${item.category}】` : '';
+        placeholder = isCyrillicAns ? "キリル文字で入力..." : "日本語で入力...";
+      } else if (item.type === 'typing') {
+        categoryLabel = "指定のモンゴル語文章をタイピング入力してください";
+        subHint = item.category ? `【タイピング: ${item.category}】` : '';
+        placeholder = "キリル文字で入力...";
+      } else {
+        categoryLabel = "問題の正解を入力してください";
+        placeholder = isCyrillicAns ? "キリル文字で入力..." : "日本語で入力...";
+      }
+    } else if (isCyrillicAns) {
+      if (isV) {
+        categoryLabel = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
+        subHint = `【動詞】活用の土台となる【語幹】を入力（例: ${details.dictForm} の語幹「${details.root}」、語尾-ахや括弧は不要）`;
+        placeholder = "語幹（または辞書形）をキリル文字で入力...";
       } else {
         categoryLabel = "日本語に合うモンゴル語（キリル文字）を入力してください";
         subHint = (matchedWord && matchedWord.pos) ? `【品詞: ${matchedWord.pos}】` : '';
@@ -576,7 +627,6 @@ export class ReviewNotebookComponent {
       subHint = (matchedWord && typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(matchedWord) && matchedWord.pronunciation) ? `⚠️ 読み注意: ${matchedWord.pronunciation}` : '';
       placeholder = "日本語で意味を入力...";
     }
-
     return {
       displayPrefix,
       promptText,
@@ -586,7 +636,8 @@ export class ReviewNotebookComponent {
       placeholder,
       matchedWord,
       details,
-      isVerb: isV
+      isVerb: isV,
+      isExplicitNonWord
     };
   }
 
@@ -672,7 +723,8 @@ export class ReviewNotebookComponent {
               </div>
 
               ${(() => {
-                const matchedWord = parsed.matchedWord;
+                const isExplicitNonWord = item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review';
+                const matchedWord = (!isExplicitNonWord) ? parsed.matchedWord : null;
 
                 // 単語情報がある場合：動詞・名詞・複合語問わず詳細解説＆成り立ちHTMLを完全展開
                 if (matchedWord) {
@@ -812,11 +864,29 @@ export class ReviewNotebookComponent {
   static checkReviewAnswer(val) {
     const item = this.state.currentTestItem;
     const parsed = this.parseReviewItem(item);
-    const matchedWord = parsed.matchedWord;
+    const isExplicitNonWord = item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review';
+    const matchedWord = (!isExplicitNonWord) ? parsed.matchedWord : null;
 
     let isCorrect = false;
 
-    if (matchedWord) {
+    if (isExplicitNonWord) {
+      // 文法・格変化・読解・リスニング・文化等の判定
+      if (item.acceptableAnswers && Array.isArray(item.acceptableAnswers)) {
+        isCorrect = item.acceptableAnswers.some(ans => isFuzzyMatch(val, ans));
+      }
+      if (!isCorrect) {
+        isCorrect = isFuzzyMatch(val, item.correctAnswer);
+      }
+      // 選択肢番号 (例: 1, 2) または選択肢テキスト部分一致対応
+      if (!isCorrect && item.correctAnswer) {
+        const numMatch = item.correctAnswer.match(/^\s*(\d+)[\.\)]\s*(.*)/);
+        if (numMatch) {
+          if (val.trim() === numMatch[1] || isFuzzyMatch(val, numMatch[2])) {
+            isCorrect = true;
+          }
+        }
+      }
+    } else if (matchedWord) {
       // 単語判定（語幹、辞書形、マルチワード動詞、隠れ-н、揺らぎ吸収）
       isCorrect = isWordAnswerMatch(val, matchedWord, parsed.isVerb ? 'root_input' : (parsed.isCyrillicAnswer ? 'ja_to_mn' : 'mn_to_ja'));
       if (!isCorrect && parsed.isVerb) {

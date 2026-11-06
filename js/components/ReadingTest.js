@@ -588,8 +588,23 @@ export class ReadingTestComponent {
 
     let correctCount = 0;
     p.questions.forEach((q, idx) => {
-      if (this.state.userAnswers[idx] === q.answer) {
+      const userAnsIdx = this.state.userAnswers[idx];
+      const isCorrect = userAnsIdx === q.answer;
+      if (isCorrect) {
         correctCount++;
+      } else {
+        const userOptText = (userAnsIdx !== undefined && q.options && q.options[userAnsIdx]) ? q.options[userAnsIdx] : '(未回答)';
+        const correctOptText = (q.options && q.options[q.answer]) ? q.options[q.answer] : `選択肢 ${q.answer + 1}`;
+        try {
+          StorageService.recordMistake({
+            question: `【読解: ${p.titleMn || p.titleJa}】${q.question}`,
+            userAnswer: userOptText,
+            correctAnswer: correctOptText,
+            type: 'reading',
+            category: p.titleJa || '読解',
+            explanation: `${q.explanation || ''} (本文: ${p.titleMn || ''} - ${p.titleJa || ''})`
+          });
+        } catch (_) {}
       }
     });
 

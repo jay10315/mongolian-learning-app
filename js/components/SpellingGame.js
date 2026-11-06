@@ -1077,6 +1077,23 @@ export class SpellingGameComponent {
       SoundEffects.playWrong();
     } catch (_) {}
 
+    if (this.state.currentWord) {
+      const w = this.state.currentWord;
+      const userText = this.state.mode === 'tile_arrange'
+        ? (this.state.placedLetters || []).map(l => l.char).join('')
+        : (this.state.typedLetters || []).join('');
+      try {
+        StorageService.recordMistake({
+          question: `【スペリング】${w.japanese}`,
+          userAnswer: userText || '(時間切れ)',
+          correctAnswer: w.dictForm || w.mongolian,
+          type: 'word',
+          category: 'スペリング',
+          explanation: `${w.japanese} = ${w.dictForm || w.mongolian}`
+        });
+      } catch (_) {}
+    }
+
     this.state.answeredLog.push({
       word: this.state.currentWord,
       isCorrect: false,

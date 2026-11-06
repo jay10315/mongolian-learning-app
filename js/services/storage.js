@@ -152,7 +152,7 @@ export class StorageService {
                 });
               }
 
-              if (matched) {
+              if (matched && (!m.type || m.type === 'word')) {
                 const isV = matched.isVerb === true || (matched.pos && matched.pos.includes('動詞'));
                 const df = matched.dictForm || matched.mongolian;
                 const rt = matched.root || df;
