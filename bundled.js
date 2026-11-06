@@ -40576,6 +40576,13 @@ class GamificationService {
   }
 
   /**
+   * resetCombo エイリアス（互換性担保）
+   */
+  static resetCombo() {
+    return this.resetSessionCombo();
+  }
+
+  /**
    * 1問回答時の共通ゲーム判定（コンボ加算・獲得スコア/XP計算・ペンギンリアクション）
    */
   static recordAnswer({ isCorrect, testType = 'test' }) {
@@ -49723,7 +49730,15 @@ class ListeningTestComponent {
     this.state.sessionScore = 0;
     this.state.sessionXp = 0;
     this.state.sessionResult = null;
-    GamificationService.resetCombo();
+    try {
+      if (typeof GamificationService !== 'undefined') {
+        if (typeof GamificationService.resetSessionCombo === 'function') {
+          GamificationService.resetSessionCombo();
+        } else if (typeof GamificationService.resetCombo === 'function') {
+          GamificationService.resetCombo();
+        }
+      }
+    } catch (_) {}
 
     this.state.view = 'testing';
     this.loadQuiz(0);

@@ -129,6 +129,13 @@ export class GamificationService {
   }
 
   /**
+   * resetCombo エイリアス（互換性担保）
+   */
+  static resetCombo() {
+    return this.resetSessionCombo();
+  }
+
+  /**
    * 1問回答時の共通ゲーム判定（コンボ加算・獲得スコア/XP計算・ペンギンリアクション）
    */
   static recordAnswer({ isCorrect, testType = 'test' }) {
