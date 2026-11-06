@@ -21101,9 +21101,11 @@ const cultureData = {
 
 
 // === js/data/wordFamilyData.js ===
-// 類義語・対義語・語根ファミリー（派生語）学習データ
+// 類義語・対義語・語根ファミリー 総合マスターデータ
 const wordFamilyData = {
-  // --- 対義語ペア (Эсрэг утга) ---
+  // ========================================================
+  // 1. 対義語（反意語ペア）マスターリスト (32組)
+  // ========================================================
   antonyms: [
     {
       id: "ant_1",
@@ -21111,8 +21113,9 @@ const wordFamilyData = {
       meaningA: "大きい",
       wordB: "жижиг",
       meaningB: "小さい",
-      exampleA: "том байшин (大きな家)",
-      exampleB: "жижиг шувуу (小さな鳥)"
+      exampleA: "том байшин (大きい家)",
+      exampleB: "жижиг нохой (小さい犬)",
+      category: "大きさ・形状"
     },
     {
       id: "ant_2",
@@ -21121,7 +21124,8 @@ const wordFamilyData = {
       wordB: "удаан",
       meaningB: "遅い",
       exampleA: "хурдан морь (速い馬)",
-      exampleB: "удаан явах (ゆっくり歩く)"
+      exampleB: "удаан машин (遅い車)",
+      category: "速度"
     },
     {
       id: "ant_3",
@@ -21130,7 +21134,8 @@ const wordFamilyData = {
       wordB: "хүйтэн",
       meaningB: "冷たい・寒い",
       exampleA: "халуун цай (熱いお茶)",
-      exampleB: "хүйтэн салхи (冷たい風)"
+      exampleB: "хүйтэн ус (冷たい水)",
+      category: "温度・気候"
     },
     {
       id: "ant_4",
@@ -21139,16 +21144,18 @@ const wordFamilyData = {
       wordB: "намхан",
       meaningB: "低い",
       exampleA: "өндөр уул (高い山)",
-      exampleB: "намхан сандал (低い椅子)"
+      exampleB: "намхан байшин (低い建物)",
+      category: "大きさ・形状"
     },
     {
       id: "ant_5",
       wordA: "үнэтэй",
-      meaningA: "高価な・高い",
+      meaningA: "高い・高価な",
       wordB: "хямд",
       meaningB: "安い",
-      exampleA: "үнэтэй машин (高い車)",
-      exampleB: "хямд бараа (安い品物)"
+      exampleA: "үнэтэй дээл (高価なデール)",
+      exampleB: "хямд жимс (安い果物)",
+      category: "価値・価格"
     },
     {
       id: "ant_6",
@@ -21157,7 +21164,8 @@ const wordFamilyData = {
       wordB: "хөнгөн",
       meaningB: "軽い",
       exampleA: "хүнд ачаа (重い荷物)",
-      exampleB: "хөнгөн хувцас (薄着・軽い服)"
+      exampleB: "хөнгөн цүнх (軽いカバン)",
+      category: "重量"
     },
     {
       id: "ant_7",
@@ -21165,85 +21173,663 @@ const wordFamilyData = {
       meaningA: "新しい",
       wordB: "хуучин",
       meaningB: "古い",
-      exampleA: "шинэ жил (新年)",
-      exampleB: "хуучин ном (古本)"
+      exampleA: "шинэ ном (新しい本)",
+      exampleB: "хуучин машин (古い車)",
+      category: "状態"
     },
     {
       id: "ant_8",
       wordA: "баярлах",
       meaningA: "喜ぶ",
-      wordB: "гуних",
+      wordB: "гуниглах",
       meaningB: "悲しむ",
-      exampleA: "их баярлаж байна (とても喜んでいる)",
-      exampleB: "бүү гунь (悲しまないで)"
+      exampleA: "Маш их баярлав. (とても喜んだ)",
+      exampleB: "битгий гунигла (悲しまないで)",
+      category: "感情・動作"
+    },
+    {
+      id: "ant_9",
+      wordA: "урт",
+      meaningA: "長い",
+      wordB: "богино",
+      meaningB: "短い",
+      exampleA: "урт зам (長い道)",
+      exampleB: "богино үс (短い髪)",
+      category: "大きさ・形状"
+    },
+    {
+      id: "ant_10",
+      wordA: "өргөн",
+      meaningA: "広い",
+      wordB: "нарийн",
+      meaningB: "狭い・細い",
+      exampleA: "өргөн гудамж (広い通り)",
+      exampleB: "нарийн зам (細い道)",
+      category: "空間・幅"
+    },
+    {
+      id: "ant_11",
+      wordA: "зузаан",
+      meaningA: "分厚い",
+      wordB: "нимгэн",
+      meaningB: "薄い",
+      exampleA: "зузаан ном (厚い本)",
+      exampleB: "нимгэн цаас (薄い紙)",
+      category: "厚さ"
+    },
+    {
+      id: "ant_12",
+      wordA: "дулаан",
+      meaningA: "暖かい",
+      wordB: "сэрүүн",
+      meaningB: "涼しい",
+      exampleA: "дулаан хувцас (暖かい服)",
+      exampleB: "сэрүүн салхи (涼しい風)",
+      category: "温度・気候"
+    },
+    {
+      id: "ant_13",
+      wordA: "сайн",
+      meaningA: "良い",
+      wordB: "муу",
+      meaningB: "悪い",
+      exampleA: "сайн хүн (良い人)",
+      exampleB: "муу цаг агаар (悪い天気)",
+      category: "評価・性質"
+    },
+    {
+      id: "ant_14",
+      wordA: "цэвэрхэн",
+      meaningA: "綺麗な・清潔な",
+      wordB: "бохир",
+      meaningB: "汚れた",
+      exampleA: "цэвэрхэн өрөө (綺麗な部屋)",
+      exampleB: "бохир гар (汚れた手)",
+      category: "清潔さ"
+    },
+    {
+      id: "ant_15",
+      wordA: "баян",
+      meaningA: "裕福な・富裕な",
+      wordB: "ядуу",
+      meaningB: "貧しい",
+      exampleA: "баян айл (裕福な家庭)",
+      exampleB: "ядуу амьдрал (貧しい暮らし)",
+      category: "社会・経済"
+    },
+    {
+      id: "ant_16",
+      wordA: "хэцүү",
+      meaningA: "難しい・困難な",
+      wordB: "амархан",
+      meaningB: "簡単な・易しい",
+      exampleA: "хэцүү даалгавар (難しい課題)",
+      exampleB: "амархан асуулт (簡単な問題)",
+      category: "難易度"
+    },
+    {
+      id: "ant_17",
+      wordA: "хүчтэй",
+      meaningA: "強い",
+      wordB: "сул",
+      meaningB: "弱い",
+      exampleA: "хүчтэй салхи (強い風)",
+      exampleB: "сул дорой (弱々しい)",
+      category: "力・強さ"
+    },
+    {
+      id: "ant_18",
+      wordA: "зөөлөн",
+      meaningA: "柔らかい",
+      wordB: "хатуу",
+      meaningB: "硬い",
+      exampleA: "зөөлөн ор (柔らかいベッド)",
+      exampleB: "хатуу мод (硬い木)",
+      category: "感触・触感"
+    },
+    {
+      id: "ant_19",
+      wordA: "тод",
+      meaningA: "鮮やかな・明るい",
+      wordB: "бүдэг",
+      meaningB: "薄暗い・かすかな",
+      exampleA: "тод өнгө (鮮やかな色)",
+      exampleB: "бүдэг гэрэл (かすかな光)",
+      category: "視覚・明暗"
+    },
+    {
+      id: "ant_20",
+      wordA: "явах",
+      meaningA: "行く",
+      wordB: "ирэх",
+      meaningB: "来る",
+      exampleA: "сургууль руу явах (学校へ行く)",
+      exampleB: "гэртээ ирэх (家に帰ってくる)",
+      category: "移動・動詞"
+    },
+    {
+      id: "ant_21",
+      wordA: "өгөх",
+      meaningA: "与える・あげる",
+      wordB: "авах",
+      meaningB: "もらう・取る",
+      exampleA: "бэлэг өгөх (プレゼントをあげる)",
+      exampleB: "бэлэг авах (プレゼントをもらう)",
+      category: "授受・動詞"
+    },
+    {
+      id: "ant_22",
+      wordA: "худалдах",
+      meaningA: "売る",
+      wordB: "худалдаж авах",
+      meaningB: "買う",
+      exampleA: "морь худалдах (馬を売る)",
+      exampleB: "талх худалдаж авах (パンを買う)",
+      category: "商業・売買"
+    },
+    {
+      id: "ant_23",
+      wordA: "нээх",
+      meaningA: "開ける",
+      wordB: "хаах",
+      meaningB: "閉める",
+      exampleA: "хаалга нээх (ドアを開ける)",
+      exampleB: "цонх хаах (窓を閉める)",
+      category: "動作"
+    },
+    {
+      id: "ant_24",
+      wordA: "эхлэх",
+      meaningA: "始まる・始める",
+      wordB: "дуусах",
+      meaningB: "終わる・終える",
+      exampleA: "хичээл эхлэх (授業が始まる)",
+      exampleB: "ажил дуусах (仕事が終わる)",
+      category: "時間・開始終了"
+    },
+    {
+      id: "ant_25",
+      wordA: "асуух",
+      meaningA: "尋ねる・質問する",
+      wordB: "хариулах",
+      meaningB: "答える",
+      exampleA: "багшаас асуух (先生に尋ねる)",
+      exampleB: "асуултад хариулах (質問に答える)",
+      category: "会話・発話"
+    },
+    {
+      id: "ant_26",
+      wordA: "орох",
+      meaningA: "入る",
+      wordB: "гарах",
+      meaningB: "出る",
+      exampleA: "гэрт орох (ゲルに入る)",
+      exampleB: "гадагш гарах (外へ出る)",
+      category: "出入・移動"
+    },
+    {
+      id: "ant_27",
+      wordA: "босох",
+      meaningA: "起きる・立つ",
+      wordB: "суух",
+      meaningB: "座る",
+      exampleA: "эрт босох (早起きする)",
+      exampleB: "сандал дээр суух (椅子に座る)",
+      category: "姿勢・動作"
+    },
+    {
+      id: "ant_28",
+      wordA: "инээх",
+      meaningA: "笑う",
+      wordB: "уйлах",
+      meaningB: "泣く",
+      exampleA: "баяртайгаар инээх (嬉しそうに笑う)",
+      exampleB: "чимээгүй уйлах (静かに泣く)",
+      category: "感情・表情"
+    },
+    {
+      id: "ant_29",
+      wordA: "үнэн",
+      meaningA: "真実・本当",
+      wordB: "худал",
+      meaningB: "嘘・偽り",
+      exampleA: "үнэн үг (本当の言葉)",
+      exampleB: "худал ярих (嘘をつく)",
+      category: "真偽"
+    },
+    {
+      id: "ant_30",
+      wordA: "амтат",
+      meaningA: "甘い・美味しい",
+      wordB: "гашуун",
+      meaningB: "苦い",
+      exampleA: "амтат жимс (甘い果物)",
+      exampleB: "гашуун эм (苦い薬)",
+      category: "味覚"
+    },
+    {
+      id: "ant_31",
+      wordA: "тод",
+      meaningA: "はっきりした",
+      wordB: "бүрхэг",
+      meaningB: "曇った・曖昧な",
+      exampleA: "тод дурсамж (鮮明な記憶)",
+      exampleB: "бүрхэг өдөр (曇りの日)",
+      category: "状態・天候"
+    },
+    {
+      id: "ant_32",
+      wordA: "гэрэлтэй",
+      meaningA: "明るい",
+      wordB: "харанхуй",
+      meaningB: "暗い",
+      exampleA: "гэрэлтэй өрөө (明るい部屋)",
+      exampleB: "харанхуй шөнө (暗い夜)",
+      category: "明暗"
     }
   ],
 
-  // --- 類義語ペア (Ойролцоо утга) ---
+  // ========================================================
+  // 2. 類義語（ニュアンス・使い分け）マスターリスト (16組)
+  // ========================================================
   synonyms: [
     {
       id: "syn_1",
-      wordA: "сайхан",
-      meaningA: "良い、美しい",
-      wordB: "гоё",
-      meaningB: "綺麗な、素敵な（口語で多用）",
-      nuance: "сайхан は心や風景、味など広範な「良さ・素晴らしさ」、гоё は見た目の美しさやオシャレさを指します。"
+      title: "「美しい・素晴らしい」の使い分け",
+      words: [
+        { word: "сайхан", meaning: "心地よい美しさ、穏やかで素晴らしい（心・自然・性格）" },
+        { word: "хөөрхөн", meaning: "可愛らしい、愛嬌がある（子ども・動物・小物）" },
+        { word: "гоё", meaning: "華やかで綺麗、おしゃれ、スタイリッシュ（服装・デザイン）" }
+      ],
+      nuance: "сайхан は心や広大な自然の美しさに使い、хөөрхөн は子犬や子どもなど愛くるしいものに使い、гоё は身なりや装飾品のおしゃれさに使います。",
+      question: "広大な大草原や、心の優しい人に出会った時、一番ぴったりの褒め言葉は？",
+      options: ["сайхан", "хөөрхөн", "гоё"],
+      correctIndex: 0,
+      explanation: "雄大な自然や人の内面の美しさ、心地よさには『сайхан』が最適です。"
     },
     {
       id: "syn_2",
-      wordA: "ажил",
-      meaningA: "仕事・用事",
-      wordB: "хөдөлмөр",
-      meaningB: "労働・勤労",
-      nuance: "ажил は日常のタスクや職業、хөдөлмөр は肉体的・精神的な努力を伴う「労働・働き」を表します。"
+      title: "「仕事・労働」の使い分け",
+      words: [
+        { word: "ажил", meaning: "一般的な仕事、作業、タスク、職業" },
+        { word: "хөдөлмөр", meaning: "肉体的・勤労的な労働、骨折り、努力" },
+        { word: "алба", meaning: "公務、官公庁の勤務、課せられた義務" }
+      ],
+      nuance: "日常会話で「仕事に行く」と言う時は ажил を使います。хөдөлмөр は額に汗する労働や努力、алба は公的な職務を指します。",
+      question: "毎朝『会社や職場へ仕事に行ってきます！』と言う時の最も一般的な単語は？",
+      options: ["алба", "ажил", "хөдөлмөр"],
+      correctIndex: 1,
+      explanation: "日常会話で職場や毎日の仕事に行く時は『ажилдаа явах (仕事に行く)』と言います。"
     },
     {
       id: "syn_3",
-      wordA: "үнэн",
-      meaningA: "真実・本当",
-      wordB: "бодит",
-      meaningB: "現実・実際",
-      nuance: "үнэн は「嘘偽りがないこと」、бодит は客観的な「実在・現実」を強調します。"
+      title: "「別れの挨拶（またね）」の使い分け",
+      words: [
+        { word: "баяртай", meaning: "さようなら（最も標準的で誰にでも使える）" },
+        { word: "дараа уулзъя", meaning: "また会いましょう（近いうちにまた会う親しい間柄）" },
+        { word: "маргааш уулзъя", meaning: "また明日会いましょう（翌日会う約束がある時）" }
+      ],
+      nuance: "баяртай はいつでも使える万能の別れの言葉ですが、親しい友達と翌日また学校や職場で会う時は『маргааш уулзъя』『дараа уулзъя』を使うと親密さが増します。",
+      question: "明日学校でまた会うクラスメートに『また明日ね！』と伝えるのに最も自然な表現は？",
+      options: ["маргааш уулзъя", "баяртай", "сайн сууж байгаарай"],
+      correctIndex: 0,
+      explanation: "『маргааш (明日)』＋『уулзъя (会いましょう)』で『また明日ね！』という意味になります。"
+    },
+    {
+      id: "syn_4",
+      title: "「食事・食べ物」の使い分け",
+      words: [
+        { word: "хоол", meaning: "日常の料理、食事全般（温かいメイン料理）" },
+        { word: "идээ", meaning: "もてなしの伝統食、白い食べ物（乳製品）や供物" },
+        { word: "хүнс", meaning: "食料品、食材、ストック食糧（スーパーで買うもの）" }
+      ],
+      nuance: "「お昼ご飯を食べる」は хоол идэх です。идээ は遊牧民が客人に振る舞うアーロールなどの乳製品や正月のもてなしを指し、хүнс は食材・食料品の総称です。",
+      question: "スーパーマーケットで今週分の『食材・食料品』をまとめ買いする時の言葉は？",
+      options: ["хоол", "хүнс", "идээ"],
+      correctIndex: 1,
+      explanation: "食料品・食材そのものは『хүнс』(хүнсний дэлгүүр = 食料品店) と言います。"
+    },
+    {
+      id: "syn_5",
+      title: "「友人・仲間」の使い分け",
+      words: [
+        { word: "найз", meaning: "友達、一般的な友人" },
+        { word: "нөхөр", meaning: "親しい仲間、同志、夫（配偶者）" },
+        { word: "анд", meaning: "固い絆で結ばれた無二の親友（義兄弟の契り）" }
+      ],
+      nuance: "найз は最も一般的な「友達」です。нөхөр は仲間や夫を意味し、анд は歴史的にもチンギス・ハーンとジャムカのように特別な誓いを交わした盟友を指します。",
+      question: "学校や職場で親しくなったごく一般的な『友達』を呼ぶ時の単語は？",
+      options: ["анд", "найз", "нөхөр"],
+      correctIndex: 1,
+      explanation: "日常会話で『友達』を表す標準的な言葉は『найз』です。"
+    },
+    {
+      id: "syn_6",
+      title: "「話す・言う・語る」の使い分け",
+      words: [
+        { word: "хэлэх", meaning: "言う、単発の言葉を発する、伝える" },
+        { word: "ярих", meaning: "話す、会話する、物語る、おしゃべりする" },
+        { word: "өгүүлэх", meaning: "述べる、物語を語り聞かせる（文学的・丁寧）" }
+      ],
+      nuance: "「名前を言う」は нэрээ хэлэх ですが、「モンゴル語で会話する」は монголоор ярих となります。ярих は双方向の会話やおしゃべりに使います。",
+      question: "友達同士でカフェで楽しく『おしゃべりする / 会話する』時の動詞は？",
+      options: ["хэлэх", "ярих", "өгүүлэх"],
+      correctIndex: 1,
+      explanation: "双方向の会話やおしゃべりは『ярих』を使います。"
+    },
+    {
+      id: "syn_7",
+      title: "「知る」の使い分け（知識 vs 面識）",
+      words: [
+        { word: "мэдэх", meaning: "知識・事実として知っている、理解している" },
+        { word: "таних", meaning: "人と面識がある、見知っている、見分ける" }
+      ],
+      nuance: "ニュースや事実は мэдэх で知りますが、「あの人の顔を知っている・友人として知っている」という人に対する面識は таних を使います。",
+      question: "『私はバトさんのことを（人として面識があり）よく知っています』と言う時の動詞は？",
+      options: ["мэднэ", "танина", "санана"],
+      correctIndex: 1,
+      explanation: "人と面識がある時は『таних』(Би Батыг сайн танина) を使います。"
+    },
+    {
+      id: "syn_8",
+      title: "「住まい」の使い分け（建物 vs 我が家）",
+      words: [
+        { word: "гэр", meaning: "我が家、家庭、伝統のゲル（心のよりどころ）" },
+        { word: "байшин", meaning: "建造物、ビル、家屋、コンクリート住宅" }
+      ],
+      nuance: "マンションやアパートに住んでいても「家に帰る」と言う時は гэртээ харих と言います。байшин は純粋に物理的な建造物を指します。",
+      question: "仕事が終わって『自分の愛する我が家に帰る』と言う時に使う単語は？",
+      options: ["байшиндаа харих", "гэртээ харих", "өрөөндөө харих"],
+      correctIndex: 1,
+      explanation: "住居の形式がアパートであっても、家庭・我が家に帰る時は『гэртээ харих』と言います。"
+    },
+    {
+      id: "syn_9",
+      title: "「多い」の使い分け（量・程度 vs 個数）",
+      words: [
+        { word: "их", meaning: "量・程度が多い、大変な、大きな" },
+        { word: "олон", meaning: "数が多い、たくさんの（数えられる人や物）" }
+      ],
+      nuance: "時間や雨、気持ちなど数えられない量は их (их бороо = 大雨, их цаг = たくさんの時間)、羊や人など個数を数えられるものは олон (олон хонь = たくさんの羊) を使います。",
+      question: "草原に『たくさんの羊（数えられる動物）』がいる時に使う形容詞は？",
+      options: ["их хонь", "олон хонь", "том хонь"],
+      correctIndex: 1,
+      explanation: "羊など数えられる名詞の数が多い時は『олон хонь』と言います。"
+    },
+    {
+      id: "syn_10",
+      title: "「少ない」の使い分け（量 vs 個数）",
+      words: [
+        { word: "бага", meaning: "量が少ない、小さい、幼い" },
+        { word: "цөөн", meaning: "数がわずかな、少数の（数えられるもの）" }
+      ],
+      nuance: "水やお金など量は бага ус (少量の水)、参加者や本の冊数など個数が少ない時は цөөн хүн (少数の人) を使います。",
+      question: "会議に集まった『参加者の人数（数えられる人）が少ない』時の表現は？",
+      options: ["бага хүн", "цөөн хүн", "жижиг хүн"],
+      correctIndex: 1,
+      explanation: "人数や冊数など可算名詞の数が少ない時は『цөөн』を使います。"
+    },
+    {
+      id: "syn_11",
+      title: "「考える・思う・思い出す」の使い分け",
+      words: [
+        { word: "бодох", meaning: "頭で考える、思案する、思考する" },
+        { word: "санах", meaning: "思い出す、懐かしむ、故郷を恋しく思う" }
+      ],
+      nuance: "算数の問題を解いたり意見を持つ時は бодох ですが、昔のことや家族を思い出して恋しく思う時は санах を使います（ヌタガ サナハ = 望郷）。",
+      question: "遠く離れた草原の故郷や家族を『恋しく思い出す』時に使う動詞は？",
+      options: ["бодох", "санах", "үзэх"],
+      correctIndex: 1,
+      explanation: "懐かしく思い出す・恋しく思う時は『санах』を使います。"
+    },
+    {
+      id: "syn_12",
+      title: "「速い」の使い分け（スピード vs 迅速さ）",
+      words: [
+        { word: "хурдан", meaning: "走行速度が速い、足が速い（物理的スピード）" },
+        { word: "түргэн", meaning: "迅速な、早急な、テキパキと素早い" }
+      ],
+      nuance: "競走馬や新幹線が速いのは хурдан морь です。救急車や応急手当、急用で急ぐ時は түргэн тусламж (迅速救護/救急車) のように түргэн を使います。",
+      question: "モンゴル語で『救急車』を指す言葉『迅速な救護』に使われる単語は？",
+      options: ["хурдан тусламж", "түргэн тусламж", "их тусламж"],
+      correctIndex: 1,
+      explanation: "緊急の迅速な対応には『түргэн』が使われ、救急車は『түргэн тусламж』と呼ばれます。"
+    },
+    {
+      id: "syn_13",
+      title: "「助ける・支援する」の使い分け",
+      words: [
+        { word: "туслах", meaning: "直接手を貸して手伝う、助ける（荷物を持つ等）" },
+        { word: "дэмжих", meaning: "精神的・経済的に支援する、後押しする、賛同する" }
+      ],
+      nuance: "目の前で困っている人に手を差し伸べる時は туслах です。プロジェクトや方針、友人の夢を応援・支持する時は дэмжих を使います。",
+      question: "重い荷物を持っているおばあさんに『手伝いましょうか？』と声をかける時の動詞は？",
+      options: ["дэмжих үү?", "туслах уу?", "өгөх үү?"],
+      correctIndex: 1,
+      explanation: "直接手を貸す手伝いは『туслах (助ける)』を使います。"
+    },
+    {
+      id: "syn_14",
+      title: "「飲む」の使い分け（日常語 vs 敬意・もてなし）",
+      words: [
+        { word: "уух", meaning: "飲む（日常表現）" },
+        { word: "зооглох", meaning: "召し上がる、お召し上がりになる（もてなし・敬語）" }
+      ],
+      nuance: "ゲルの主人が大切なお客様にスーテイツァイを勧める時は「Цайгаа зооглоорой (お茶をお召し上がりください)」と上品な зооглох を使います。",
+      question: "ゲルを訪れた大切なお客様に『どうぞお茶をお召し上がりください』と丁寧に勧める言葉は？",
+      options: ["Цайгаа уугаарай", "Цайгаа зооглоорой", "Цайгаа аваарай"],
+      correctIndex: 1,
+      explanation: "おもてなしの場で『召し上がる』という敬意を込める時は『зооглох』を使います。"
+    },
+    {
+      id: "syn_15",
+      title: "「正しい・本当」の使い分け",
+      words: [
+        { word: "үнэн", meaning: "真実、嘘偽りのない客観的事実" },
+        { word: "зөв", meaning: "正しい、道徳的・規則に適している、正解" }
+      ],
+      nuance: "「嘘か本当か」は үнэн ですが、「テストの答えが正解か」「人の行いが正しいか」は зөв を使います。",
+      question: "クイズで『あなたの答えは正解です！』と言う時の言葉は？",
+      options: ["Үнэн хариулт", "Зөв хариулт", "Сайн хариулт"],
+      correctIndex: 1,
+      explanation: "正解・的確であることは『зөв (正しい)』を使います。"
+    },
+    {
+      id: "syn_16",
+      title: "「質問する・尋ねる」の使い分け",
+      words: [
+        { word: "асуух", meaning: "尋ねる、質問する、疑問を聞く" },
+        { word: "лавлах", meaning: "確認する、問い合わせる、詳細を念押しする" }
+      ],
+      nuance: "分からないことを質問するのは асуух です。予約の確認や案内所で詳細を確かめる時は лавлах を使います。",
+      question: "分からない単語の意味を先生に『質問する』時の一般的な動詞は？",
+      options: ["лавлах", "асуух", "ярих"],
+      correctIndex: 1,
+      explanation: "疑問を質問することは『асуух』を使います。"
     }
   ],
 
-  // --- 語根ファミリー（同一語根からの派生語ツリー） ---
-  families: [
+  // ========================================================
+  // 3. 語根ファミリー（派生語ツリー）マスターリスト (14語根)
+  // ========================================================
+  wordFamilies: [
     {
+      id: "fam_uz",
+      root: "үз-",
+      meaning: "見る、体験する",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "үзэх", meaning: "見る・観る", suffix: "-эх (動詞原形)", note: "最も基本的な動詞" },
+        { word: "үзэгч", meaning: "観客・視聴者", suffix: "-эгч (動作を行う人)", note: "映画やコンサートの観客" },
+        { word: "үзэсгэлэн", meaning: "展覧会・美しいもの", suffix: "-эсгэлэн (名詞化)", note: "美術展や女性の美称" },
+        { word: "үзэгдэх", meaning: "見える・現れる", suffix: "-эгдэх (受動・可能)", note: "星や山が視界に見えること" },
+        { word: "үзүүлбэр", meaning: "ショー・出し物・演技", suffix: "-үүлбэр (使役名詞)", note: "サーカスや舞台の演目" },
+        { word: "үзэл", meaning: "見解・思想・主義", suffix: "-эл (名詞化)", note: "物事の見方や信念" }
+      ]
+    },
+    {
+      id: "fam_yav",
+      root: "яв-",
+      meaning: "行く、歩む、動く",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "явах", meaning: "行く・歩く", suffix: "-ах (動詞原形)", note: "どこかへ向かう基本動詞" },
+        { word: "явдал", meaning: "出来事・行い・事件", suffix: "-дал (名詞化)", note: "身の回りの事柄や物語" },
+        { word: "явган", meaning: "徒歩・歩行", suffix: "-ган (状態名詞)", note: "車に乗らず歩くこと" },
+        { word: "явагч", meaning: "行く人・歩行者", suffix: "-агч (動作主)", note: "道を行く人" },
+        { word: "явуулах", meaning: "送る・発送する・派遣する", suffix: "-уулах (使役動詞)", note: "手紙や荷物を送ること" }
+      ]
+    },
+    {
+      id: "fam_khi",
+      root: "хий-",
+      meaning: "する、作る、成す",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "хийх", meaning: "する・作る", suffix: "-х (動詞原形)", note: "日常のアクション全般" },
+        { word: "хичээл", meaning: "授業・勉学・努力", suffix: "派生名詞", note: "自らを励んで励行すること" },
+        { word: "хийц", meaning: "細工・作り・仕立て", suffix: "-ц (出来栄え名詞)", note: "革や銀細工の作り" },
+        { word: "хийгдэх", meaning: "行われる・作られる", suffix: "-гдэх (受身動詞)", note: "イベントや製品が作られる" },
+        { word: "хийлгэх", meaning: "させる・作らせる", suffix: "-лгэх (使役動詞)", note: "服を仕立ててもらう時など" }
+      ]
+    },
+    {
+      id: "fam_nom",
       root: "ном",
-      rootMeaning: "本・経典",
-      derivations: [
-        { word: "номын сан", meaning: "図書館 (本＋蔵)" },
-        { word: "номхон", meaning: "おとなしい、従順な (本のように静かな)" },
-        { word: "номтой", meaning: "学問のある、博識な" }
+      meaning: "本、経典、教え",
+      pos: "名詞語幹",
+      derivatives: [
+        { word: "ном", meaning: "本・書籍", suffix: "語幹そのもの", note: "読書の基本" },
+        { word: "номын сан", meaning: "図書館・図書室", suffix: "+ сан (宝庫・集積)", note: "本が集まる場所" },
+        { word: "номын санч", meaning: "司書・図書館員", suffix: "+ ч (職業人)", note: "図書館で働く人" },
+        { word: "номхон", meaning: "おとなしい・従順な", suffix: "-хон (性格形容詞)", note: "教えを守る温和な性質" }
       ]
     },
     {
-      root: "үзэх",
-      rootMeaning: "見る・経験する",
-      derivations: [
-        { word: "үзэсгэлэн", meaning: "展覧会・美しいもの" },
-        { word: "үзэгч", meaning: "観客・視聴者 (-гч = 〜する人)" },
-        { word: "үзэл", meaning: "見解・思想・主義" },
-        { word: "үзүүлэх", meaning: "見せる・示す (使役)" }
-      ]
-    },
-    {
+      id: "fam_ger",
       root: "гэр",
-      rootMeaning: "家・ゲル",
-      derivations: [
-        { word: "гэр бүл", meaning: "家族・家庭" },
-        { word: "гэрлэх", meaning: "結婚する (所帯を持つ)" },
-        { word: "гэрийн даалгавар", meaning: "宿題 (家庭の課題)" }
+      meaning: "家、家庭、住居",
+      pos: "名詞語幹",
+      derivatives: [
+        { word: "гэр", meaning: "ゲル・我が家", suffix: "語幹そのもの", note: "遊牧民の円形天幕" },
+        { word: "гэрлэх", meaning: "結婚する", suffix: "-лэх (動詞化：家庭を持つ)", note: "共に家を築くこと" },
+        { word: "гэр бүл", meaning: "家族・家庭", suffix: "+ бүл (一門・集団)", note: "家庭を共にする家族" },
+        { word: "гэрийн", meaning: "家庭の・室内の", suffix: "-ийн (属格・形容詞化)", note: "家畜や宿題など" },
+        { word: "гэртээ", meaning: "自宅に（自分の家へ）", suffix: "-тээ (与位格再帰)", note: "我が家に帰る" }
       ]
     },
     {
-      root: "хэл",
-      rootMeaning: "舌・言葉・言語",
-      derivations: [
-        { word: "хэлэх", meaning: "言う・話す" },
-        { word: "хэлэлцүүлэг", meaning: "ディスカッション・協議" },
-        { word: "хэлний дүрэм", meaning: "文法 (言語の規則)" }
+      id: "fam_khel",
+      root: "хэл-",
+      meaning: "言葉、言う、舌",
+      pos: "名詞・動詞根",
+      derivatives: [
+        { word: "хэл", meaning: "言語・言葉・舌", suffix: "語幹そのもの", note: "モンゴル語（Монгол хэл）" },
+        { word: "хэлэх", meaning: "言う・告げる", suffix: "-эх (動詞原形)", note: "言葉を発すること" },
+        { word: "хэлэлцүүлэг", meaning: "討論・ディスカッション", suffix: "-элцүүлэг (相互使役名詞)", note: "互いに意見を交わすこと" },
+        { word: "хэлэлцээр", meaning: "協定・合意・条約", suffix: "-элцээр (結果名詞)", note: "話し合いの結果" },
+        { word: "хэлмэрч", meaning: "通訳者", suffix: "-мэрч (専門職業)", note: "異なる言語を仲介する人" }
+      ]
+    },
+    {
+      id: "fam_bich",
+      root: "бич-",
+      meaning: "書く、記す",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "бичих", meaning: "書く・筆記する", suffix: "-их (動詞原形)", note: "文字を記す基本動詞" },
+        { word: "бичиг", meaning: "文字・文書・書類", suffix: "-иг (結果名詞)", note: "モンゴル文字（Монгол бичиг）" },
+        { word: "бичээч", meaning: "書記・タイピスト", suffix: "-ээч (職業人)", note: "文書を記す人" },
+        { word: "бичвэр", meaning: "テキスト・文章・記述", suffix: "-вэр (対象名詞)", note: "書かれた文章データ" },
+        { word: "бичлэг", meaning: "録音・録画・記録", suffix: "-лэг (行為記録)", note: "動画や音声の記録" }
+      ]
+    },
+    {
+      id: "fam_unsh",
+      root: "унш-",
+      meaning: "読む、唱える",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "унших", meaning: "読む・読書する", suffix: "-их (動詞原形)", note: "本や文章を読む" },
+        { word: "уншигч", meaning: "読者", suffix: "-игч (動作を行う人)", note: "本や新聞を読む人" },
+        { word: "уншлага", meaning: "読書・朗読会", suffix: "-лага (行為名詞)", note: "声を出して読むこと" },
+        { word: "уншигдах", meaning: "読まれる", suffix: "-игдах (受動動詞)", note: "広く読まれている名著など" }
+      ]
+    },
+    {
+      id: "fam_med",
+      root: "мэд-",
+      meaning: "知る、感じる、認識する",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "мэдэх", meaning: "知る・理解する", suffix: "-эх (動詞原形)", note: "事実や知識を把握する" },
+        { word: "мэдлэг", meaning: "知識・学識", suffix: "-лэг (蓄積名詞)", note: "学んで得た知識" },
+        { word: "мэдээ", meaning: "知らせ・ニュース・情報", suffix: "-ээ (伝達名詞)", note: "テレビニュースや便り" },
+        { word: "мэдрэмж", meaning: "感覚・フィーリング・第六感", suffix: "-рэмж (情緒名詞)", note: "心で感じる直感" },
+        { word: "мэдэгдэх", meaning: "判明する・通知される", suffix: "-гдэх (受身動詞)", note: "事実が知られること" }
+      ]
+    },
+    {
+      id: "fam_sur",
+      root: "сур-",
+      meaning: "学ぶ、習う、慣れる",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "сурах", meaning: "学ぶ・習得する", suffix: "-ах (動詞原形)", note: "知識や技能を身につける" },
+        { word: "сургууль", meaning: "学校", suffix: "-гууль (施設名詞)", note: "学びの場" },
+        { word: "сурагч", meaning: "児童・生徒（小中高校生）", suffix: "-агч (学ぶ人)", note: "学校で学ぶ子供たち" },
+        { word: "сургалт", meaning: "研修・トレーニング・講習", suffix: "-алт (活動名詞)", note: "企業やスキルの研修" },
+        { word: "сургах", meaning: "教える・訓練する・指導する", suffix: "-гах (使役動詞)", note: "人に教え込むこと" }
+      ]
+    },
+    {
+      id: "fam_am",
+      root: "амь-",
+      meaning: "命、息、生命",
+      pos: "名詞語幹",
+      derivatives: [
+        { word: "амь", meaning: "命・生命", suffix: "語幹そのもの", note: "かけがえのない命" },
+        { word: "амьдрах", meaning: "生きる・生活する・暮らす", suffix: "-драх (動詞化)", note: "日々を暮らすこと" },
+        { word: "амьдрал", meaning: "人生・生活・命の営み", suffix: "-драл (名詞化)", note: "日々の営みや一生" },
+        { word: "амьтан", meaning: "動物・生き物", suffix: "-тан (所有・具備者)", note: "命あるすべての生き物" },
+        { word: "амьсгал", meaning: "息・呼吸", suffix: "-сгал (生理名詞)", note: "深く息を吸う" }
+      ]
+    },
+    {
+      id: "fam_ajil",
+      root: "ажил-",
+      meaning: "仕事、機能、働く",
+      pos: "名詞・動詞根",
+      derivatives: [
+        { word: "ажил", meaning: "仕事・タスク・職業", suffix: "語幹そのもの", note: "日々の務め" },
+        { word: "ажиллах", meaning: "働く・機能する・作動する", suffix: "-лах (動詞化)", note: "会社で働く、機械が動く" },
+        { word: "ажилтан", meaning: "従業員・スタッフ・職員", suffix: "-тан (従事者)", note: "働く人々" },
+        { word: "ажиллагаа", meaning: "活動・オペレーション・作戦", suffix: "-лагаа (大規模行為)", note: "軍事作戦や救助活動" },
+        { word: "ажилгүйдэл", meaning: "失業・無職状態", suffix: "-гүйдэл (否定状態名詞)", note: "仕事がない社会状態" }
+      ]
+    },
+    {
+      id: "fam_av",
+      root: "ав-",
+      meaning: "取る、受け取る、買う",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "авах", meaning: "取る・買う・もらう", suffix: "-ах (動詞原形)", note: "自分のものにする基本動詞" },
+        { word: "авалт", meaning: "受取・取得・買入", suffix: "-алт (行為名詞)", note: "品物を受け取ること" },
+        { word: "авагч", meaning: "受取人・バイヤー", suffix: "-агч (受動・受取人)", note: "荷物を受け取る人" },
+        { word: "авуулах", meaning: "取らせる・買わせる", suffix: "-уулах (使役動詞)", note: "人に買わせること" }
+      ]
+    },
+    {
+      id: "fam_og",
+      root: "өг-",
+      meaning: "与える、渡す、贈る",
+      pos: "動詞語幹",
+      derivatives: [
+        { word: "өгөх", meaning: "あげる・手渡す・贈る", suffix: "-өх (動詞原形)", note: "人に差し出す基本動詞" },
+        { word: "өгөгдөл", meaning: "データ・与件・情報", suffix: "-гдөл (所与名詞)", note: "ITや数学のデータ" },
+        { word: "өгөөж", meaning: "恵み・実り・リターン", suffix: "-өөж (結果名詞)", note: "大地の恵みや投資の成果" },
+        { word: "өгүүлбэр", meaning: "文・センテンス", suffix: "文法用語", note: "意味を伝える文章単位" }
       ]
     }
   ]
@@ -39098,190 +39684,994 @@ class CultureComponent {
 
 
 // === js/components/WordFamilyQuiz.js ===
-// 類義語・対義語・語根ファミリーコンポーネント
+// 類義語・対義語・語根ファミリー 総合ゲーム＆学習コンポーネント
+
 
 
 
 
 
 class WordFamilyComponent {
+  static container = null;
+  static onNavigate = null;
+
   static state = {
-    tab: 'antonyms', // 'antonyms' | 'synonyms' | 'families'
-    quizIndex: 0,
-    selectedAnswer: null,
-    score: 0
+    activeTab: 'game_antonym', // 'game_antonym' | 'game_synonym' | 'game_family' | 'study_cards'
+    
+    // 対義語マッチングゲーム用ステート
+    antonymGame: {
+      pairs: [],
+      cards: [], // { id, pairId, text, subText, isSelected, isMatched }
+      selectedCardId: null,
+      matchedCount: 0,
+      totalPairs: 5,
+      combo: 0,
+      startTime: null,
+      isCleared: false,
+      clearSeconds: 0
+    },
+
+    // 類義語ニュアンスクイズ用ステート
+    synonymGame: {
+      questions: [],
+      currentIndex: 0,
+      currentQ: null,
+      hasAnswered: false,
+      selectedChoiceIndex: null,
+      score: 0,
+      streak: 0,
+      isFinished: false
+    },
+
+    // 語根ファミリービルドクイズ用ステート
+    familyGame: {
+      quizzes: [],
+      currentIndex: 0,
+      currentQuiz: null,
+      hasAnswered: false,
+      selectedSuffix: null,
+      score: 0,
+      isFinished: false
+    },
+
+    // 図鑑・学習用タブステート
+    studyTab: 'antonyms', // 'antonyms' | 'synonyms' | 'families'
+    studyFilter: 'all',
+    searchQuery: ''
   };
 
   static render(container, onNavigate) {
     this.container = container;
     this.onNavigate = onNavigate;
+    this.initGames();
+    this.renderMain();
+  }
+
+  // ==========================================
+  // ゲームの初期化
+  // ==========================================
+  static initGames() {
+    this.initAntonymGame();
+    this.initSynonymGame();
+    this.initFamilyGame();
+  }
+
+  // 1. 対義語マッチングゲーム初期化
+  static initAntonymGame() {
+    const all = wordFamilyData.antonyms;
+    const chosenPairs = shuffleArray([...all]).slice(0, 5); // 1ラウンド5組（10枚）
+    const cards = [];
+
+    chosenPairs.forEach((pair, pIdx) => {
+      // カードA
+      cards.push({
+        id: `c_${pIdx}_A`,
+        pairId: pair.id,
+        text: pair.wordA,
+        subText: pair.meaningA,
+        example: pair.exampleA,
+        isSelected: false,
+        isMatched: false
+      });
+      // カードB
+      cards.push({
+        id: `c_${pIdx}_B`,
+        pairId: pair.id,
+        text: pair.wordB,
+        subText: pair.meaningB,
+        example: pair.exampleB,
+        isSelected: false,
+        isMatched: false
+      });
+    });
+
+    this.state.antonymGame = {
+      pairs: chosenPairs,
+      cards: shuffleArray(cards),
+      selectedCardId: null,
+      matchedCount: 0,
+      totalPairs: chosenPairs.length,
+      combo: 0,
+      startTime: Date.now(),
+      isCleared: false,
+      clearSeconds: 0
+    };
+  }
+
+  // 2. 類義語クイズ初期化
+  static initSynonymGame() {
+    const list = shuffleArray([...wordFamilyData.synonyms]);
+    this.state.synonymGame = {
+      questions: list,
+      currentIndex: 0,
+      currentQ: list[0] || null,
+      hasAnswered: false,
+      selectedChoiceIndex: null,
+      score: 0,
+      streak: 0,
+      isFinished: false
+    };
+  }
+
+  // 3. 語根ファミリービルドクイズ初期化
+  static initFamilyGame() {
+    // 語根ファミリーから派生語クイズプールを作成
+    const quizzes = [];
+    wordFamilyData.wordFamilies.forEach(fam => {
+      fam.derivatives.forEach(drv => {
+        // ダミー接尾辞を他から集める
+        const dummyPool = ['-эх', '-ах', '-эгч', '-агч', '-эсгэлэн', '-дал', '-лэг', '-лт', '-уулах', '-гдэх', '-хон'];
+        const correctSuffix = drv.suffix.split(' ')[0];
+        const dists = dummyPool.filter(s => s !== correctSuffix);
+        const options = shuffleArray([correctSuffix, ...shuffleArray(dists).slice(0, 3)]);
+
+        quizzes.push({
+          family: fam,
+          root: fam.root,
+          rootMeaning: fam.meaning,
+          targetWord: drv.word,
+          targetMeaning: drv.meaning,
+          correctSuffix: correctSuffix,
+          fullSuffixDesc: drv.suffix,
+          note: drv.note,
+          options: options
+        });
+      });
+    });
+
+    const shuffled = shuffleArray(quizzes).slice(0, 8); // 1ラウンド8問
+    this.state.familyGame = {
+      quizzes: shuffled,
+      currentIndex: 0,
+      currentQuiz: shuffled[0] || null,
+      hasAnswered: false,
+      selectedSuffix: null,
+      score: 0,
+      isFinished: false
+    };
+  }
+
+  // ==========================================
+  // メイン画面レンダリング
+  // ==========================================
+  static renderMain() {
+    if (!this.container) return;
+    const { activeTab } = this.state;
 
     this.container.innerHTML = `
-      <div class="animate-fade-in max-w-3xl mx-auto px-4 py-4 space-y-5">
-        <!-- ヘッダー -->
-        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-          <div class="flex items-center gap-2.5">
-            <span class="text-2xl p-2 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-xs">🌳</span>
+      <div class="animate-fade-in max-w-4xl mx-auto px-4 py-4 space-y-4">
+        
+        <!-- ヘッダーバー -->
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <button type="button" id="btn-wf-back" class="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer" title="ホームへ戻る">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+              </svg>
+            </button>
             <div>
-              <h2 class="text-lg font-bold text-slate-800">類義語・対義語・語根ファミリー</h2>
-              <p class="text-xs text-slate-500">1つの語根から芋づる式に語彙を3倍増やすネットワーク学習</p>
+              <h2 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-1.5">
+                <span>🌳</span>
+                <span>類義語・対義語・語根ゲーム</span>
+              </h2>
+              <p class="text-[11px] text-slate-500 font-medium">反対語ペア・ニュアンス使い分け・語根派生パズルで語彙倍増！</p>
             </div>
           </div>
-          <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
-            ✕ ホームへ
-          </button>
+
+          <!-- ナビゲーションタブ（ゲーム3種 ＋ 図鑑） -->
+          <div class="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-bold flex-wrap gap-1">
+            <button type="button" class="tab-btn px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === 'game_antonym' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }" data-tab="game_antonym">
+              ⚡ 対義語マッチ
+            </button>
+            <button type="button" class="tab-btn px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === 'game_synonym' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }" data-tab="game_synonym">
+              🎯 類義語クイズ
+            </button>
+            <button type="button" class="tab-btn px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === 'game_family' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }" data-tab="game_family">
+              🌳 語根ビルド
+            </button>
+            <button type="button" class="tab-btn px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === 'study_cards' ? 'bg-slate-800 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }" data-tab="study_cards">
+              📖 図鑑・一覧
+            </button>
+          </div>
         </div>
 
-        <!-- タブ切り替え -->
-        <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
-          <button type="button" class="btn-wf-tab px-4 py-2 rounded-xl text-xs font-black transition-all ${
-            this.state.tab === 'antonyms' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-          }" data-tab="antonyms">
-            🔄 対義語ペア（Эсрэг утга）
-          </button>
-          <button type="button" class="btn-wf-tab px-4 py-2 rounded-xl text-xs font-black transition-all ${
-            this.state.tab === 'synonyms' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-          }" data-tab="synonyms">
-            🤝 類義語＆ニュアンス（Ойролцоо утга）
-          </button>
-          <button type="button" class="btn-wf-tab px-4 py-2 rounded-xl text-xs font-black transition-all ${
-            this.state.tab === 'families' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-          }" data-tab="families">
-            🌳 語根ツリー（同一語根の派生語）
-          </button>
+        <!-- アクティブコンテンツ領域 -->
+        <div id="wf-content-area">
+          ${this.renderActiveContent()}
         </div>
 
-        ${this.state.tab === 'antonyms' ? this.renderAntonymsHTML() : this.state.tab === 'synonyms' ? this.renderSynonymsHTML() : this.renderFamiliesHTML()}
       </div>
     `;
 
-    this.container.querySelector('#btn-back-home').addEventListener('click', () => {
-      if (this.onNavigate) this.onNavigate('home');
-    });
-
-    this.container.querySelectorAll('.btn-wf-tab').forEach(btn => {
-      btn.addEventListener('click', () => {
-        this.state.tab = btn.dataset.tab;
-        this.render(this.container, this.onNavigate);
-      });
-    });
-
-    this.container.querySelectorAll('.btn-wf-speak').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        SpeechService.speak(btn.dataset.word);
-      });
-    });
+    this.bindMainEvents();
   }
 
-  // 1. 対義語
-  static renderAntonymsHTML() {
-    return `
-      <div class="space-y-3">
-        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs text-emerald-950">
-          💡 対義語（反対の意味の単語）をペアで覚えると、記憶の定着率が2倍以上高まります！
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          ${wordFamilyData.antonyms.map(pair => `
-            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-2.5">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <button type="button" class="btn-wf-speak text-xs text-emerald-600 hover:text-emerald-800" data-word="${pair.wordA}">🔊</button>
-                  <span class="text-base font-black text-slate-900 cyrillic-text">${pair.wordA}</span>
-                  <span class="text-xs text-slate-500">(${pair.meaningA})</span>
-                </div>
-                <span class="text-xs font-bold text-slate-400">⇔</span>
-                <div class="flex items-center gap-2">
-                  <span class="text-base font-black text-slate-900 cyrillic-text">${pair.wordB}</span>
-                  <span class="text-xs text-slate-500">(${pair.meaningB})</span>
-                  <button type="button" class="btn-wf-speak text-xs text-emerald-600 hover:text-emerald-800" data-word="${pair.wordB}">🔊</button>
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 bg-slate-50 p-2 rounded-lg">
-                <div>・${pair.exampleA}</div>
-                <div>・${pair.exampleB}</div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
+  static renderActiveContent() {
+    switch (this.state.activeTab) {
+      case 'game_antonym':
+        return this.renderAntonymGameUI();
+      case 'game_synonym':
+        return this.renderSynonymGameUI();
+      case 'game_family':
+        return this.renderFamilyGameUI();
+      case 'study_cards':
+        return this.renderStudyUI();
+      default:
+        return this.renderAntonymGameUI();
+    }
   }
 
-  // 2. 類義語
-  static renderSynonymsHTML() {
-    return `
-      <div class="space-y-3">
-        <div class="bg-teal-50 p-3 rounded-xl border border-teal-200 text-xs text-teal-950">
-          💡 似た意味の言葉の「微妙なニュアンスの違い」を知ることで、自然で豊かなモンゴル語が話せるようになります。
-        </div>
+  // ==========================================
+  // ゲーム①：対義語スピードマッチング UI ＆ ロジック
+  // ==========================================
+  static renderAntonymGameUI() {
+    const { cards, matchedCount, totalPairs, combo, isCleared, clearSeconds } = this.state.antonymGame;
 
-        <div class="grid grid-cols-1 gap-3">
-          ${wordFamilyData.synonyms.map(syn => `
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
-              <div class="flex flex-wrap items-center gap-4">
-                <div class="flex items-center gap-1.5">
-                  <button type="button" class="btn-wf-speak text-xs text-teal-600 hover:text-teal-800" data-word="${syn.wordA}">🔊</button>
-                  <span class="text-lg font-black text-slate-900 cyrillic-text">${syn.wordA}</span>
-                  <span class="text-xs font-bold text-slate-500">【${syn.meaningA}】</span>
-                </div>
-                <span class="text-xs font-bold text-teal-600">≒ 近い意味 ≒</span>
-                <div class="flex items-center gap-1.5">
-                  <button type="button" class="btn-wf-speak text-xs text-teal-600 hover:text-teal-800" data-word="${syn.wordB}">🔊</button>
-                  <span class="text-lg font-black text-slate-900 cyrillic-text">${syn.wordB}</span>
-                  <span class="text-xs font-bold text-slate-500">【${syn.meaningB}】</span>
-                </div>
-              </div>
-              <div class="p-3 bg-teal-50/50 rounded-xl border border-teal-100 text-xs text-slate-700 leading-relaxed">
-                📌 <strong>使い分けのコツ：</strong> ${syn.nuance}
-              </div>
-            </div>
-          `).join('')}
+    if (isCleared) {
+      return `
+        <div class="bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-6 sm:p-8 text-white text-center shadow-xl space-y-4 animate-scale-up">
+          <div class="flex justify-center transform scale-110">
+            ${PenguinMascot.getSvg({ mood: 'celebrate', size: 100 })}
+          </div>
+          <div class="space-y-1">
+            <span class="text-xs bg-white/20 text-white font-black px-3 py-1 rounded-full uppercase">ALL PAIRS MATCHED!</span>
+            <h3 class="text-2xl sm:text-3xl font-black text-yellow-100">対義語全ペア制覇！！✨</h3>
+            <p class="text-xs text-amber-100">クリアタイム: <span class="font-black text-sm">${clearSeconds} 秒</span> ｜ 獲得: +35 XP</p>
+          </div>
+          <div class="pt-2 flex justify-center gap-3">
+            <button type="button" id="btn-antonym-replay" class="px-6 py-2.5 rounded-xl bg-white text-slate-900 font-black text-sm shadow-md active:scale-95 transition-all">
+              🔄 もう1ラウンド遊ぶ
+            </button>
+          </div>
         </div>
-      </div>
-    `;
-  }
+      `;
+    }
 
-  // 3. 語根ツリー
-  static renderFamiliesHTML() {
     return `
       <div class="space-y-4">
-        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs text-emerald-950">
-          💡 モンゴル語は「語根（根っこの単語）」に接尾辞をくっつけて新しい単語を作る言語です。語根を知れば、初めて見る単語の意味も推測できるようになります！
+        <!-- ゲーム情報バー -->
+        <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-3.5 rounded-2xl border border-amber-200/80 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">⚡</span>
+            <div>
+              <div class="text-xs font-black text-amber-950">対義語スピードマッチング</div>
+              <div class="text-[11px] text-amber-800 font-medium">対になる「反対語カード」を2枚タップして消していこう！</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="px-2.5 py-1 rounded-full bg-white font-black text-amber-900 border border-amber-300 shadow-2xs">
+              残り: ${totalPairs - matchedCount} / ${totalPairs} ペア
+            </span>
+            ${combo >= 2 ? `<span class="px-2 py-0.5 rounded-full bg-amber-500 text-white font-black text-[10px] animate-pulse">${combo} コンボ！</span>` : ''}
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          ${wordFamilyData.families.map(fam => `
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
-              <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                <div class="flex items-center gap-2">
-                  <span class="text-lg">🌱</span>
-                  <div>
-                    <span class="text-xs font-bold text-emerald-700">語根：</span>
-                    <strong class="text-base font-black text-slate-900 cyrillic-text">${fam.root}</strong>
-                  </div>
-                </div>
-                <span class="text-xs font-bold text-slate-500">意味：${fam.rootMeaning}</span>
-              </div>
+        <!-- カードグリッド（10枚） -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3">
+          ${cards.map(card => `
+            <button type="button" class="antonym-card p-3 sm:p-4 rounded-2xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center text-center shadow-xs cursor-pointer min-h-[96px] ${
+              card.isMatched
+                ? 'opacity-0 pointer-events-none scale-75 transition-all duration-500'
+                : card.isSelected
+                  ? 'bg-amber-400 border-amber-500 text-slate-950 shadow-md ring-4 ring-amber-300/50 scale-102'
+                  : 'bg-white hover:bg-amber-50/50 border-slate-200 hover:border-amber-400 text-slate-800'
+            }" data-card-id="${card.id}">
+              <span class="text-base sm:text-lg font-black cyrillic-text leading-tight">${card.text}</span>
+              <span class="text-[11px] font-bold text-slate-500 mt-1">${card.subText}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
 
-              <!-- 派生語リスト -->
-              <div class="space-y-2">
-                ${fam.derivations.map(d => `
-                  <div class="flex items-center justify-between p-2.5 bg-slate-50 hover:bg-emerald-50/40 rounded-xl border border-slate-100 transition-colors">
-                    <div class="flex items-center gap-1.5">
-                      <button type="button" class="btn-wf-speak text-xs text-slate-400 hover:text-emerald-700" data-word="${d.word}">🔊</button>
-                      <span class="font-bold text-sm text-slate-900 cyrillic-text">${d.word}</span>
-                    </div>
-                    <span class="text-xs text-slate-600">${d.meaning}</span>
+  static onAntonymCardClick(cardId) {
+    const { antonymGame } = this.state;
+    if (antonymGame.isCleared) return;
+
+    const clickedCard = antonymGame.cards.find(c => c.id === cardId);
+    if (!clickedCard || clickedCard.isMatched) return;
+
+    // 音声発音
+    SpeechService.speak(clickedCard.text, { rate: 0.9 });
+    SoundEffects.playTile();
+
+    if (!antonymGame.selectedCardId) {
+      // 1枚目選択
+      antonymGame.selectedCardId = cardId;
+      clickedCard.isSelected = true;
+      this.renderMain();
+      return;
+    }
+
+    if (antonymGame.selectedCardId === cardId) {
+      // 同じカードを再タップで選択解除
+      clickedCard.isSelected = false;
+      antonymGame.selectedCardId = null;
+      this.renderMain();
+      return;
+    }
+
+    // 2枚目選択 -> マッチ判定
+    const firstCard = antonymGame.cards.find(c => c.id === antonymGame.selectedCardId);
+    clickedCard.isSelected = true;
+    this.renderMain();
+
+    if (firstCard && firstCard.pairId === clickedCard.pairId) {
+      // 正解！ペア成立
+      SoundEffects.playCorrect();
+      antonymGame.combo++;
+      antonymGame.matchedCount++;
+      GamificationService.addXp(10);
+
+      setTimeout(() => {
+        firstCard.isMatched = true;
+        firstCard.isSelected = false;
+        clickedCard.isMatched = true;
+        clickedCard.isSelected = false;
+        antonymGame.selectedCardId = null;
+
+        if (antonymGame.matchedCount >= antonymGame.totalPairs) {
+          // 全ペアクリア
+          antonymGame.isCleared = true;
+          antonymGame.clearSeconds = Math.round((Date.now() - antonymGame.startTime) / 1000);
+          GamificationService.addXp(35);
+          SoundEffects.playLevelUp();
+        }
+        this.renderMain();
+      }, 350);
+
+    } else {
+      // 不正解
+      SoundEffects.playWrong();
+      antonymGame.combo = 0;
+      setTimeout(() => {
+        if (firstCard) firstCard.isSelected = false;
+        if (clickedCard) clickedCard.isSelected = false;
+        antonymGame.selectedCardId = null;
+        this.renderMain();
+      }, 700);
+    }
+  }
+
+  // ==========================================
+  // ゲーム②：類義語シチュエーションクイズ UI ＆ ロジック
+  // ==========================================
+  static renderSynonymGameUI() {
+    const { questions, currentIndex, currentQ, hasAnswered, selectedChoiceIndex, score, streak, isFinished } = this.state.synonymGame;
+
+    if (isFinished || !currentQ) {
+      return `
+        <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 rounded-3xl p-6 sm:p-8 text-white text-center shadow-xl space-y-4 animate-scale-up">
+          <div class="flex justify-center transform scale-110">
+            ${PenguinMascot.getSvg({ mood: 'celebrate', size: 100 })}
+          </div>
+          <div class="space-y-1">
+            <span class="text-xs bg-white/20 text-white font-black px-3 py-1 rounded-full uppercase">ROUND COMPLETE</span>
+            <h3 class="text-2xl sm:text-3xl font-black text-indigo-100">類義語ニュアンスマスター！🎯</h3>
+            <p class="text-xs text-indigo-200">スコア: <span class="font-black text-amber-300 text-sm">${score} pt</span> ｜ 正解数: ${score / 15} / ${questions.length} 問</p>
+          </div>
+          <div class="pt-2 flex justify-center gap-3">
+            <button type="button" id="btn-synonym-replay" class="px-6 py-2.5 rounded-xl bg-white text-slate-900 font-black text-sm shadow-md active:scale-95 transition-all">
+              🔄 もう1ラウンド挑戦
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="space-y-4">
+        <!-- 進行度ヘッダー -->
+        <div class="bg-indigo-50 p-3.5 rounded-2xl border border-indigo-200 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🎯</span>
+            <div>
+              <div class="font-black text-indigo-950">類義語シチュエーション使い分けクイズ</div>
+              <div class="text-[11px] text-indigo-700 font-medium">文脈や場面に最もふさわしい単語を選ぼう！</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-full bg-white font-black text-indigo-900 border border-indigo-300">
+              第 ${currentIndex + 1} / ${questions.length} 問
+            </span>
+            <span class="px-2.5 py-1 rounded-full bg-indigo-600 text-white font-black">
+              ${score} pt
+            </span>
+          </div>
+        </div>
+
+        <!-- 問題カード -->
+        <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200 shadow-sm space-y-4 text-center">
+          
+          <div class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-xs font-black">
+            テーマ: ${currentQ.title}
+          </div>
+
+          <h3 class="text-lg sm:text-xl font-black text-slate-800 max-w-xl mx-auto leading-snug">
+            Q. ${currentQ.question}
+          </h3>
+
+          <!-- 3択選択肢 -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+            ${currentQ.options.map((opt, idx) => {
+              let btnClass = "bg-slate-50 hover:bg-indigo-50/50 border-slate-200 hover:border-indigo-400 text-slate-800";
+              if (hasAnswered) {
+                if (idx === currentQ.correctIndex) {
+                  btnClass = "bg-emerald-500 border-emerald-600 text-white font-black shadow-md scale-102";
+                } else if (idx === selectedChoiceIndex) {
+                  btnClass = "bg-rose-500 border-rose-600 text-white font-bold animate-shake";
+                } else {
+                  btnClass = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                }
+              }
+              return `
+                <button type="button" class="synonym-choice-btn p-4 rounded-2xl border-2 font-black text-base sm:text-lg cyrillic-text transition-all active:scale-95 shadow-xs cursor-pointer ${btnClass}" data-choice-idx="${idx}" ${hasAnswered ? 'disabled' : ''}>
+                  ${opt}
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- 回答後解説パネル -->
+          ${hasAnswered ? `
+            <div class="mt-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 text-left space-y-2 animate-fade-in text-xs">
+              <div class="font-bold text-indigo-900 flex items-center gap-1.5 text-sm">
+                <span>💡</span>
+                <span>解説 ＆ ニュアンス使い分け</span>
+              </div>
+              <p class="text-slate-700 leading-relaxed font-medium">
+                ${currentQ.explanation}
+              </p>
+              <div class="border-t border-indigo-200/60 pt-2 space-y-1">
+                ${currentQ.words.map(w => `
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="btn-play-word-audio text-indigo-600 hover:text-indigo-800 font-bold" data-word="${w.word}">🔊</button>
+                    <span class="font-extrabold text-indigo-950 cyrillic-text">${w.word}</span>:
+                    <span class="text-slate-600">${w.meaning}</span>
                   </div>
                 `).join('')}
               </div>
+              <div class="pt-2 text-right">
+                <button type="button" id="btn-synonym-next" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-md active:scale-95 transition-all">
+                  次の問題へ →
+                </button>
+              </div>
             </div>
-          `).join('')}
+          ` : ''}
+
         </div>
       </div>
     `;
+  }
+
+  static onSynonymChoice(idx) {
+    const { synonymGame } = this.state;
+    if (synonymGame.hasAnswered || !synonymGame.currentQ) return;
+
+    synonymGame.hasAnswered = true;
+    synonymGame.selectedChoiceIndex = idx;
+    const isCorrect = idx === synonymGame.currentQ.correctIndex;
+
+    const chosenWord = synonymGame.currentQ.options[idx];
+    if (chosenWord) SpeechService.speak(chosenWord, { rate: 0.9 });
+
+    if (isCorrect) {
+      SoundEffects.playCorrect();
+      synonymGame.score += 15;
+      synonymGame.streak++;
+      GamificationService.addXp(15);
+    } else {
+      SoundEffects.playWrong();
+      synonymGame.streak = 0;
+    }
+
+    this.renderMain();
+  }
+
+  static nextSynonymQuestion() {
+    const { synonymGame } = this.state;
+    synonymGame.currentIndex++;
+    if (synonymGame.currentIndex >= synonymGame.questions.length) {
+      synonymGame.isFinished = true;
+      SoundEffects.playLevelUp();
+    } else {
+      synonymGame.currentQ = synonymGame.questions[synonymGame.currentIndex];
+      synonymGame.hasAnswered = false;
+      synonymGame.selectedChoiceIndex = null;
+    }
+    this.renderMain();
+  }
+
+  // ==========================================
+  // ゲーム③：語根ファミリービルドクイズ UI ＆ ロジック
+  // ==========================================
+  static renderFamilyGameUI() {
+    const { quizzes, currentIndex, currentQuiz, hasAnswered, selectedSuffix, score, isFinished } = this.state.familyGame;
+
+    if (isFinished || !currentQuiz) {
+      return `
+        <div class="bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-800 rounded-3xl p-6 sm:p-8 text-white text-center shadow-xl space-y-4 animate-scale-up">
+          <div class="flex justify-center transform scale-110">
+            ${PenguinMascot.getSvg({ mood: 'celebrate', size: 100 })}
+          </div>
+          <div class="space-y-1">
+            <span class="text-xs bg-white/20 text-white font-black px-3 py-1 rounded-full uppercase">ROOT BUILDER FINISHED</span>
+            <h3 class="text-2xl sm:text-3xl font-black text-emerald-100">語根ビルドマスター！！🌳</h3>
+            <p class="text-xs text-emerald-200">スコア: <span class="font-black text-yellow-300 text-sm">${score} pt</span> ｜ 獲得: +30 XP</p>
+          </div>
+          <div class="pt-2 flex justify-center gap-3">
+            <button type="button" id="btn-family-replay" class="px-6 py-2.5 rounded-xl bg-white text-slate-900 font-black text-sm shadow-md active:scale-95 transition-all">
+              🔄 もう1ラウンド遊ぶ
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="space-y-4">
+        <!-- 進行度ヘッダー -->
+        <div class="bg-emerald-50 p-3.5 rounded-2xl border border-emerald-200 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🌳</span>
+            <div>
+              <div class="font-black text-emerald-950">語根ファミリー・パーツ組み立てパズル</div>
+              <div class="text-[11px] text-emerald-700 font-medium">語根にぴったりの接尾辞を組み合わせて単語を作ろう！</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-full bg-white font-black text-emerald-900 border border-emerald-300">
+              第 ${currentIndex + 1} / ${quizzes.length} 問
+            </span>
+            <span class="px-2.5 py-1 rounded-full bg-emerald-600 text-white font-black">
+              ${score} pt
+            </span>
+          </div>
+        </div>
+
+        <!-- 組み立てステージカード -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm text-center space-y-5">
+          
+          <div class="space-y-1">
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
+              お題の日本語
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-black text-slate-900">
+              「${currentQuiz.targetMeaning}」
+            </h3>
+          </div>
+
+          <!-- 語根 ＋ スロット -->
+          <div class="flex items-center justify-center gap-2 sm:gap-3 py-3">
+            <div class="px-4 py-3 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-white font-black text-2xl sm:text-3xl cyrillic-text shadow-md">
+              ${currentQuiz.root}
+              <span class="block text-[10px] text-emerald-200 font-normal">(${currentQuiz.rootMeaning})</span>
+            </div>
+            <span class="text-2xl font-black text-slate-400">＋</span>
+            <div class="w-24 sm:w-28 h-16 rounded-2xl border-2 border-dashed flex items-center justify-center text-xl sm:text-2xl font-black cyrillic-text transition-all ${
+              hasAnswered
+                ? 'bg-amber-100 border-amber-400 text-amber-900'
+                : 'bg-slate-50 border-slate-300 text-slate-400 animate-pulse'
+            }">
+              ${hasAnswered ? currentQuiz.correctSuffix : '?'}
+            </div>
+            <span class="text-2xl font-black text-slate-400">＝</span>
+            <div class="px-4 py-3 rounded-2xl border-2 font-black text-xl sm:text-2xl cyrillic-text transition-all ${
+              hasAnswered
+                ? 'bg-emerald-50 border-emerald-500 text-emerald-900 shadow-md'
+                : 'bg-slate-50 border-slate-200 text-slate-400'
+            }">
+              ${hasAnswered ? currentQuiz.targetWord : '？？？'}
+            </div>
+          </div>
+
+          <!-- 接尾辞の選択肢タイル (4択) -->
+          <div class="space-y-2">
+            <div class="text-xs font-bold text-slate-500">正しいパーツ（接尾辞）をタップ:</div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-lg mx-auto">
+              ${currentQuiz.options.map(opt => {
+                let btnStyle = "bg-slate-50 hover:bg-emerald-50/50 border-slate-200 hover:border-emerald-400 text-slate-800";
+                if (hasAnswered) {
+                  if (opt === currentQuiz.correctSuffix) {
+                    btnStyle = "bg-emerald-500 border-emerald-600 text-white font-black shadow-md scale-102";
+                  } else if (opt === selectedSuffix) {
+                    btnStyle = "bg-rose-500 border-rose-600 text-white font-bold animate-shake";
+                  } else {
+                    btnStyle = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                  }
+                }
+                return `
+                  <button type="button" class="family-suffix-btn p-3.5 rounded-2xl border-2 font-black text-lg cyrillic-text transition-all active:scale-95 shadow-xs cursor-pointer ${btnStyle}" data-suffix="${opt}" ${hasAnswered ? 'disabled' : ''}>
+                    ${opt}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- 回答後解説 -->
+          ${hasAnswered ? `
+            <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-left space-y-1.5 animate-fade-in text-xs">
+              <div class="font-black text-emerald-950 text-sm flex items-center justify-between">
+                <span>🎉 完成！「${currentQuiz.targetWord}」</span>
+                <button type="button" class="btn-play-word-audio text-emerald-700 hover:text-emerald-900 font-bold" data-word="${currentQuiz.targetWord}">🔊 発音を聞く</button>
+              </div>
+              <p class="text-slate-700 font-medium">
+                接尾辞: <span class="font-bold text-emerald-800">${currentQuiz.fullSuffixDesc}</span>
+              </p>
+              <p class="text-slate-600">
+                メモ: ${currentQuiz.note}
+              </p>
+              <div class="pt-2 text-right">
+                <button type="button" id="btn-family-next" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md active:scale-95 transition-all">
+                  次の語根へ →
+                </button>
+              </div>
+            </div>
+          ` : ''}
+
+        </div>
+      </div>
+    `;
+  }
+
+  static onFamilySuffixChoice(suffix) {
+    const { familyGame } = this.state;
+    if (familyGame.hasAnswered || !familyGame.currentQuiz) return;
+
+    familyGame.hasAnswered = true;
+    familyGame.selectedSuffix = suffix;
+    const isCorrect = suffix === familyGame.currentQuiz.correctSuffix;
+
+    SpeechService.speak(familyGame.currentQuiz.targetWord, { rate: 0.9 });
+
+    if (isCorrect) {
+      SoundEffects.playCorrect();
+      familyGame.score += 15;
+      GamificationService.addXp(15);
+    } else {
+      SoundEffects.playWrong();
+    }
+
+    this.renderMain();
+  }
+
+  static nextFamilyQuiz() {
+    const { familyGame } = this.state;
+    familyGame.currentIndex++;
+    if (familyGame.currentIndex >= familyGame.quizzes.length) {
+      familyGame.isFinished = true;
+      SoundEffects.playLevelUp();
+    } else {
+      familyGame.currentQuiz = familyGame.quizzes[familyGame.currentIndex];
+      familyGame.hasAnswered = false;
+      familyGame.selectedSuffix = null;
+    }
+    this.renderMain();
+  }
+
+  // ==========================================
+  // 図鑑・一覧閲覧モード UI
+  // ==========================================
+  static renderStudyUI() {
+    const { studyTab, searchQuery } = this.state;
+    const qLower = (searchQuery || '').toLowerCase().trim();
+
+    return `
+      <div class="space-y-4">
+        <!-- 検索バー ＆ サブタブ切り替え -->
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+            <button type="button" class="study-subtab px-3 py-1.5 rounded-lg transition-all ${
+              studyTab === 'antonyms' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }" data-subtab="antonyms">
+              対義語 (${wordFamilyData.antonyms.length})
+            </button>
+            <button type="button" class="study-subtab px-3 py-1.5 rounded-lg transition-all ${
+              studyTab === 'synonyms' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }" data-subtab="synonyms">
+              類義語 (${wordFamilyData.synonyms.length})
+            </button>
+            <button type="button" class="study-subtab px-3 py-1.5 rounded-lg transition-all ${
+              studyTab === 'families' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }" data-subtab="families">
+              語根ファミリー (${wordFamilyData.wordFamilies.length})
+            </button>
+          </div>
+
+          <div class="relative flex-1 min-w-[200px] max-w-xs">
+            <input type="text" id="input-wf-search" placeholder="単語や日本語で検索..." value="${searchQuery}" class="w-full text-xs px-3 py-2 pl-8 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-hidden font-medium">
+            <span class="absolute left-2.5 top-2.5 text-slate-400 text-xs">🔍</span>
+          </div>
+        </div>
+
+        <!-- 一覧コンテンツ -->
+        <div class="space-y-3">
+          ${studyTab === 'antonyms' ? this.renderAntonymsList(qLower) : ''}
+          ${studyTab === 'synonyms' ? this.renderSynonymsList(qLower) : ''}
+          ${studyTab === 'families' ? this.renderFamiliesList(qLower) : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  static renderAntonymsList(query) {
+    const list = wordFamilyData.antonyms.filter(a => {
+      if (!query) return true;
+      return a.wordA.toLowerCase().includes(query) || 
+             a.wordB.toLowerCase().includes(query) || 
+             a.meaningA.includes(query) || 
+             a.meaningB.includes(query);
+    });
+
+    return `
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        ${list.map(a => `
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 hover:border-amber-400 shadow-2xs hover:shadow-sm transition-all space-y-2">
+            <div class="flex items-center justify-between text-[11px] text-amber-700 font-bold bg-amber-50 px-2.5 py-0.5 rounded-full">
+              <span>反意語ペア</span>
+              <span>${a.category || ''}</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-center items-center py-1">
+              <div class="space-y-0.5 bg-slate-50 p-2.5 rounded-xl">
+                <div class="text-base font-black text-slate-900 cyrillic-text">${a.wordA}</div>
+                <div class="text-xs font-bold text-slate-600">${a.meaningA}</div>
+                <button type="button" class="btn-play-word-audio text-xs text-amber-600 hover:text-amber-800" data-word="${a.wordA}">🔊</button>
+              </div>
+              <div class="space-y-0.5 bg-slate-50 p-2.5 rounded-xl">
+                <div class="text-base font-black text-slate-900 cyrillic-text">${a.wordB}</div>
+                <div class="text-xs font-bold text-slate-600">${a.meaningB}</div>
+                <button type="button" class="btn-play-word-audio text-xs text-amber-600 hover:text-amber-800" data-word="${a.wordB}">🔊</button>
+              </div>
+            </div>
+            <div class="text-[11px] text-slate-500 space-y-0.5 pt-1 border-t border-slate-100">
+              <div>・${a.exampleA}</div>
+              <div>・${a.exampleB}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  static renderSynonymsList(query) {
+    const list = wordFamilyData.synonyms.filter(s => {
+      if (!query) return true;
+      return s.title.includes(query) || s.nuance.includes(query) || s.words.some(w => w.word.toLowerCase().includes(query) || w.meaning.includes(query));
+    });
+
+    return `
+      <div class="space-y-3">
+        ${list.map(s => `
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-400 shadow-2xs hover:shadow-sm transition-all space-y-3">
+            <div class="font-black text-indigo-950 text-sm flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+              <span>${s.title}</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              ${s.words.map(w => `
+                <div class="p-3 rounded-xl bg-slate-50 space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-extrabold text-slate-900 cyrillic-text text-sm">${w.word}</span>
+                    <button type="button" class="btn-play-word-audio text-xs text-indigo-600" data-word="${w.word}">🔊</button>
+                  </div>
+                  <div class="text-[11px] text-slate-600 font-medium">${w.meaning}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="text-xs text-slate-600 bg-indigo-50/60 p-3 rounded-xl border border-indigo-100 leading-relaxed">
+              💡 <span class="font-bold text-indigo-900">使い分けポイント:</span> ${s.nuance}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  static renderFamiliesList(query) {
+    const list = wordFamilyData.wordFamilies.filter(fam => {
+      if (!query) return true;
+      return fam.root.toLowerCase().includes(query) || fam.meaning.includes(query) || fam.derivatives.some(d => d.word.toLowerCase().includes(query) || d.meaning.includes(query));
+    });
+
+    return `
+      <div class="space-y-3">
+        ${list.map(fam => `
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-400 shadow-2xs hover:shadow-sm transition-all space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 rounded-xl bg-emerald-600 text-white font-black text-lg cyrillic-text shadow-2xs">
+                  ${fam.root}
+                </span>
+                <div>
+                  <div class="font-black text-slate-800 text-sm">${fam.meaning}</div>
+                  <div class="text-[10px] text-slate-400 font-bold">${fam.pos}</div>
+                </div>
+              </div>
+              <span class="text-xs text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full font-bold">
+                ${fam.derivatives.length} 個の派生語
+              </span>
+            </div>
+
+            <!-- 派生語ツリーグリッド -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 pt-1">
+              ${fam.derivatives.map(d => `
+                <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-black text-slate-900 cyrillic-text text-sm">${d.word}</span>
+                    <button type="button" class="btn-play-word-audio text-xs text-emerald-600" data-word="${d.word}">🔊</button>
+                  </div>
+                  <div class="text-xs font-bold text-emerald-800">${d.meaning}</div>
+                  <div class="text-[10px] text-slate-400 font-medium">${d.suffix}</div>
+                  <div class="text-[10px] text-slate-500">${d.note}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // ==========================================
+  // イベントバインド
+  // ==========================================
+  static bindMainEvents() {
+    if (!this.container) return;
+
+    // 戻るボタン
+    const backBtn = this.container.querySelector('#btn-wf-back');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
+        if (this.onNavigate) this.onNavigate('home');
+      });
+    }
+
+    // メインタブ切り替え
+    this.container.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.activeTab = btn.dataset.tab;
+        SoundEffects.playCorrect();
+        this.renderMain();
+      });
+    });
+
+    // 音声再生ボタン
+    this.container.querySelectorAll('.btn-play-word-audio').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const word = btn.dataset.word;
+        SpeechService.speak(word, { rate: 0.9 });
+      });
+    });
+
+    // ゲーム①のイベント
+    if (this.state.activeTab === 'game_antonym') {
+      this.container.querySelectorAll('.antonym-card').forEach(card => {
+        card.addEventListener('click', () => {
+          this.onAntonymCardClick(card.dataset.cardId);
+        });
+      });
+
+      const replayBtn = this.container.querySelector('#btn-antonym-replay');
+      if (replayBtn) {
+        replayBtn.addEventListener('click', () => {
+          this.initAntonymGame();
+          SoundEffects.playCorrect();
+          this.renderMain();
+        });
+      }
+    }
+
+    // ゲーム②のイベント
+    if (this.state.activeTab === 'game_synonym') {
+      this.container.querySelectorAll('.synonym-choice-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.choiceIdx, 10);
+          this.onSynonymChoice(idx);
+        });
+      });
+
+      const nextBtn = this.container.querySelector('#btn-synonym-next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          this.nextSynonymQuestion();
+        });
+      }
+
+      const replayBtn = this.container.querySelector('#btn-synonym-replay');
+      if (replayBtn) {
+        replayBtn.addEventListener('click', () => {
+          this.initSynonymGame();
+          SoundEffects.playCorrect();
+          this.renderMain();
+        });
+      }
+    }
+
+    // ゲーム③のイベント
+    if (this.state.activeTab === 'game_family') {
+      this.container.querySelectorAll('.family-suffix-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const suffix = btn.dataset.suffix;
+          this.onFamilySuffixChoice(suffix);
+        });
+      });
+
+      const nextBtn = this.container.querySelector('#btn-family-next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          this.nextFamilyQuiz();
+        });
+      }
+
+      const replayBtn = this.container.querySelector('#btn-family-replay');
+      if (replayBtn) {
+        replayBtn.addEventListener('click', () => {
+          this.initFamilyGame();
+          SoundEffects.playCorrect();
+          this.renderMain();
+        });
+      }
+    }
+
+    // 図鑑タブのイベント
+    if (this.state.activeTab === 'study_cards') {
+      this.container.querySelectorAll('.study-subtab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          this.state.studyTab = btn.dataset.subtab;
+          SoundEffects.playTile();
+          this.renderMain();
+        });
+      });
+
+      const searchInput = this.container.querySelector('#input-wf-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          this.state.searchQuery = e.target.value;
+          const content = this.container.querySelector('#wf-content-area');
+          if (content) {
+            content.innerHTML = this.renderActiveContent();
+            // 再バインド
+            this.container.querySelectorAll('.btn-play-word-audio').forEach(btn => {
+              btn.addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                SpeechService.speak(btn.dataset.word, { rate: 0.9 });
+              });
+            });
+          }
+        });
+      }
+    }
   }
 }
 
