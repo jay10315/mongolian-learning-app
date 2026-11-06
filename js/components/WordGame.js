@@ -425,7 +425,7 @@ export class WordGameComponent {
               </div>
             </div>
 
-            <!-- 5. ペンギンドロップ（HAMARU風 落下単語シューティング） -->
+            <!-- 5. ペンギンドロップ（落下単語シューティング） -->
             <div class="game-mode-card bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-950 text-white rounded-2xl p-5 border-2 ${this.state.mode === 'drop' ? 'border-sky-400 shadow-xl ring-2 ring-sky-400/50' : 'border-slate-700 hover:border-sky-400'} transition-all cursor-pointer relative col-span-1 sm:col-span-2 overflow-hidden group" data-mode="drop">
               <div class="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
               <div class="absolute -top-10 -right-10 w-44 h-44 bg-sky-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -441,9 +441,7 @@ export class WordGameComponent {
                         <h4 class="text-lg font-black text-white flex items-center gap-1.5">
                           ペンギンドロップ（防衛バトル）
                         </h4>
-                        <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-xs">
-                          新登場 🔥 HAMARU風
-                        </span>
+
                       </div>
                       <p class="text-[11px] text-sky-200/80 mt-0.5">
                         上空から降ってくる日本語をモンゴル語タップで撃破！
@@ -632,7 +630,7 @@ export class WordGameComponent {
     // ジャンル別プール構築
     let pool = [];
     if (this.state.mode === 'drop') {
-      // ペンギンドロップ（HAMARU風）は日本語からモンゴル語（キリル文字）を撃ち落とす
+      // ペンギンドロップ（）は日本語からモンゴル語（キリル文字）を撃ち落とす
       pool = filteredVocab.map(v => ({ ...v, _genre: 'mn_translation' }));
     } else if (this.state.questionGenre === 'ja_meaning') {
       // 日本語訳（モンゴル語 → 日本語）
@@ -1038,7 +1036,7 @@ export class WordGameComponent {
             </div>
           </div>
 
-          <!-- HAMARU風 ペンギンドロップ アリーナ -->
+          <!-- ペンギンドロップ アリーナ -->
           <div id="drop-arena" class="relative w-full h-80 sm:h-96 rounded-3xl bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950 p-4 border-2 ${isFever ? 'border-amber-400 shadow-2xl ring-2 ring-amber-400/50' : 'border-sky-500/30 shadow-xl'} overflow-hidden flex flex-col justify-between select-none">
             
             <!-- 背景スター＆サイバーグリッド -->

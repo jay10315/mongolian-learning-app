@@ -43383,7 +43383,7 @@ class HomeComponent {
                     🌕
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 shadow-2xs flex items-center gap-1">
-                    <span>🐟</span> ご飯フィーディング新登場！
+                    <span>🐟</span> ご飯フィーディング！
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-amber-700 transition-colors flex items-center gap-1.5">
@@ -43414,7 +43414,7 @@ class HomeComponent {
                   学習バトル（ゲーム）
                 </h4>
                 <p class="text-xs text-slate-600 mt-1">
-                  HAMARU風の落下単語シューティング「ペンギンドロップ」やスピードラン、サバイバルで爽快に単語をマスター！
+                  落下単語シューティング「ペンギンドロップ」やスピードラン、サバイバルで爽快に単語をマスター！
                 </p>
               </div>
               <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-between text-xs font-black text-amber-700">
@@ -43600,7 +43600,7 @@ class HomeComponent {
                     ⚡
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-rose-600 text-white shadow-2xs">
-                    新登場 ⚡ 語尾道場
+                    ⚡ 語尾道場
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-rose-700 transition-colors flex items-center gap-1.5">
@@ -43624,7 +43624,7 @@ class HomeComponent {
                     🎧
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-teal-600 text-white shadow-2xs">
-                    新登場 ⚡ 音声特化
+                    ⚡ 音声特化
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-teal-700 transition-colors flex items-center gap-1.5">
@@ -43648,7 +43648,7 @@ class HomeComponent {
                     📖
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
-                    新登場 ⚡ 単語タップ辞書
+                    ⚡ 単語タップ辞書
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-emerald-700 transition-colors flex items-center gap-1.5">
@@ -43672,7 +43672,7 @@ class HomeComponent {
                     ⌨️
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-teal-600 text-white shadow-2xs">
-                    新登場 ⚡ 和訳即時表示
+                    ⚡ 和訳即時表示
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-teal-700 transition-colors flex items-center gap-1.5">
@@ -43696,7 +43696,7 @@ class HomeComponent {
                     🎙️
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-cyan-700 text-white shadow-2xs">
-                    新登場 ⚡ AIマイク採点
+                    ⚡ AIマイク採点
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-cyan-700 transition-colors flex items-center gap-1.5">
@@ -44488,7 +44488,7 @@ class WordGameComponent {
               </div>
             </div>
 
-            <!-- 5. ペンギンドロップ（HAMARU風 落下単語シューティング） -->
+            <!-- 5. ペンギンドロップ（落下単語シューティング） -->
             <div class="game-mode-card bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-950 text-white rounded-2xl p-5 border-2 ${this.state.mode === 'drop' ? 'border-sky-400 shadow-xl ring-2 ring-sky-400/50' : 'border-slate-700 hover:border-sky-400'} transition-all cursor-pointer relative col-span-1 sm:col-span-2 overflow-hidden group" data-mode="drop">
               <div class="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
               <div class="absolute -top-10 -right-10 w-44 h-44 bg-sky-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -44504,9 +44504,7 @@ class WordGameComponent {
                         <h4 class="text-lg font-black text-white flex items-center gap-1.5">
                           ペンギンドロップ（防衛バトル）
                         </h4>
-                        <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-xs">
-                          新登場 🔥 HAMARU風
-                        </span>
+
                       </div>
                       <p class="text-[11px] text-sky-200/80 mt-0.5">
                         上空から降ってくる日本語をモンゴル語タップで撃破！
@@ -44695,7 +44693,7 @@ class WordGameComponent {
     // ジャンル別プール構築
     let pool = [];
     if (this.state.mode === 'drop') {
-      // ペンギンドロップ（HAMARU風）は日本語からモンゴル語（キリル文字）を撃ち落とす
+      // ペンギンドロップ（）は日本語からモンゴル語（キリル文字）を撃ち落とす
       pool = filteredVocab.map(v => ({ ...v, _genre: 'mn_translation' }));
     } else if (this.state.questionGenre === 'ja_meaning') {
       // 日本語訳（モンゴル語 → 日本語）
@@ -45101,7 +45099,7 @@ class WordGameComponent {
             </div>
           </div>
 
-          <!-- HAMARU風 ペンギンドロップ アリーナ -->
+          <!-- ペンギンドロップ アリーナ -->
           <div id="drop-arena" class="relative w-full h-80 sm:h-96 rounded-3xl bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950 p-4 border-2 ${isFever ? 'border-amber-400 shadow-2xl ring-2 ring-amber-400/50' : 'border-sky-500/30 shadow-xl'} overflow-hidden flex flex-col justify-between select-none">
             
             <!-- 背景スター＆サイバーグリッド -->

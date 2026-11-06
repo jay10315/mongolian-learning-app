@@ -308,7 +308,7 @@ export class HomeComponent {
                     🌕
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 shadow-2xs flex items-center gap-1">
-                    <span>🐟</span> ご飯フィーディング新登場！
+                    <span>🐟</span> ご飯フィーディング！
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-amber-700 transition-colors flex items-center gap-1.5">
@@ -339,7 +339,7 @@ export class HomeComponent {
                   学習バトル（ゲーム）
                 </h4>
                 <p class="text-xs text-slate-600 mt-1">
-                  HAMARU風の落下単語シューティング「ペンギンドロップ」やスピードラン、サバイバルで爽快に単語をマスター！
+                  落下単語シューティング「ペンギンドロップ」やスピードラン、サバイバルで爽快に単語をマスター！
                 </p>
               </div>
               <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-between text-xs font-black text-amber-700">
@@ -525,7 +525,7 @@ export class HomeComponent {
                     ⚡
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-rose-600 text-white shadow-2xs">
-                    新登場 ⚡ 語尾道場
+                    ⚡ 語尾道場
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-rose-700 transition-colors flex items-center gap-1.5">
@@ -549,7 +549,7 @@ export class HomeComponent {
                     🎧
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-teal-600 text-white shadow-2xs">
-                    新登場 ⚡ 音声特化
+                    ⚡ 音声特化
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-teal-700 transition-colors flex items-center gap-1.5">
@@ -573,7 +573,7 @@ export class HomeComponent {
                     📖
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
-                    新登場 ⚡ 単語タップ辞書
+                    ⚡ 単語タップ辞書
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-emerald-700 transition-colors flex items-center gap-1.5">
@@ -597,7 +597,7 @@ export class HomeComponent {
                     ⌨️
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-teal-600 text-white shadow-2xs">
-                    新登場 ⚡ 和訳即時表示
+                    ⚡ 和訳即時表示
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-teal-700 transition-colors flex items-center gap-1.5">
@@ -621,7 +621,7 @@ export class HomeComponent {
                     🎙️
                   </div>
                   <span class="text-xs font-black px-2 py-0.5 rounded-full bg-cyan-700 text-white shadow-2xs">
-                    新登場 ⚡ AIマイク採点
+                    ⚡ AIマイク採点
                   </span>
                 </div>
                 <h4 class="text-base font-black text-slate-900 group-hover:text-cyan-700 transition-colors flex items-center gap-1.5">
