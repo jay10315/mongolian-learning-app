@@ -1,8 +1,24 @@
-// Service Worker: Network-First 戦略（常に最新の教材データを取得）
-const CACHE_NAME = 'mongol-app-cache-v3';
+// Service Worker: 完全オフライン・圏外対応 PWA キャッシュ
+const CACHE_NAME = 'mongol-app-cache-v4';
+const PRECACHE_ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.svg',
+  './icon-512.svg',
+  './audio_map.json',
+  './audio_phrases.json',
+  'https://cdn.tailwindcss.com'
+];
 
 self.addEventListener('install', (event) => {
-  self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(PRECACHE_ASSETS).catch((err) => {
+        console.warn('[SW] Pre-cache partial fallback:', err);
+      });
+    }).then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -11,7 +27,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         keyList.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('Clearing old cache:', key);
+            console.log('[SW] Clearing old cache:', key);
             return caches.delete(key);
           }
         })
@@ -20,8 +36,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Network-First: ネットワークを最優先し、オフライン時のみキャッシュを使用
+// Network-First with Cache Fallback (圏外・機内モードでも完全動作)
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
@@ -34,8 +52,13 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       })
       .catch(() => {
+        // 圏外・オフライン時のフォールバック
         return caches.match(event.request).then((cachedResponse) => {
-          return cachedResponse || caches.match('./index.html');
+          if (cachedResponse) return cachedResponse;
+          if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+            return caches.match('./index.html') || caches.match('./');
+          }
+          return null;
         });
       })
   );

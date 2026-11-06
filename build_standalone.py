@@ -75,39 +75,41 @@ html_template = f"""<!DOCTYPE html>
   <meta http-equiv="Expires" content="0">
   
   <script>
-    // タブレットやスマホでのエラー発生時に画面上に診断情報を表示
+    // タブレットやスマホでのエラー発生時に画面上に診断情報を表示（手動で閉じられるUI）
     window.addEventListener('error', function(e) {{
       var msg = e.message || (e.error && e.error.message) || String(e);
       console.error('Mobile Global Error:', msg);
       if (document.body && !document.getElementById('mobile-debug-alert')) {{
         var d = document.createElement('div');
         d.id = 'mobile-debug-alert';
-        d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#fee2e2;color:#991b1b;padding:12px;font-size:12px;z-index:999999;border-top:2px solid #ef4444;font-family:sans-serif;word-break:break-all;';
-        d.innerHTML = '<strong>⚠️ 初期化エラー:</strong> ' + msg;
+        d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#fee2e2;color:#991b1b;padding:10px 14px;font-size:12px;z-index:999999;border-top:2px solid #ef4444;font-family:sans-serif;word-break:break-all;display:flex;align-items:center;justify-content:space-between;box-shadow:0 -4px 12px rgba(0,0,0,0.15);';
+        d.innerHTML = '<span style="flex:1;margin-right:8px;"><strong>⚠️ エラー検知:</strong> ' + String(msg).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span><button onclick="this.parentElement.remove()" style="background:#ef4444;color:white;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11px;font-weight:bold;white-space:nowrap;">✕ 閉じる</button>';
         document.body.appendChild(d);
       }}
     }});
 
-    // 古いPWAキャッシュを安全にクリア（非HTTPS/LAN環境のSecurityErrorを完全防御）
+    // 完全オフライン・圏外対応 PWA Service Worker 登録
     try {{
-      if (typeof window !== 'undefined' && 'serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {{
+      var isSecureEnv = typeof window !== 'undefined' && (
+        window.location.protocol === 'https:' ||
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1'
+      );
+      if (isSecureEnv && 'serviceWorker' in navigator) {{
+        window.addEventListener('load', function() {{
+          navigator.serviceWorker.register('./sw.js').then(function(reg) {{
+            console.log('[PWA] ServiceWorker registered:', reg.scope);
+          }}).catch(function(err) {{
+            console.warn('[PWA] ServiceWorker registration warning:', err);
+          }});
+        }});
+      }} else if (!isSecureEnv && 'serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {{
+        // 非HTTPS LAN環境（192.168.x.x）ではSecurityError防止のため解除
         navigator.serviceWorker.getRegistrations().then(function(regs) {{
           if (regs) {{
             for (var i = 0; i < regs.length; i++) {{
               try {{ regs[i].unregister(); }} catch (_) {{}}
             }}
-          }}
-        }}).catch(function() {{}});
-      }}
-    }} catch (_) {{}}
-
-    try {{
-      if (typeof window !== 'undefined' && 'caches' in window && caches.keys) {{
-        caches.keys().then(function(keys) {{
-          if (keys) {{
-            keys.forEach(function(k) {{
-              try {{ caches.delete(k); }} catch (_) {{}}
-            }});
           }}
         }}).catch(function() {{}});
       }}
