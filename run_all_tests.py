@@ -52,7 +52,8 @@ tests = [
     'test_user_requested_expressions.py',
     'test_night_mode_feedback.py',
     'test_compound_etymology_display.py',
-    'test_mnemonic_display.py'
+    'test_mnemonic_display.py',
+    'test_night_mode_comprehensive.py'
 ]
 
 for t in tests:

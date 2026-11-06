@@ -146,67 +146,231 @@ body {
    テーマシステム（ワンタップナイトモード ＆ 背景色カスタマイズ）
    ======================================================== */
 body.theme-dark {
-  --text-main: #f1f5f9;
-  --text-muted: #94a3b8;
-  --bg-main: #0f172a;
-  background-color: #0f172a !important;
-  color: #f1f5f9 !important;
+  --text-main: #f8fafc;
+  --text-muted: #cbd5e1;
+  --bg-main: #0b1120;
+  background-color: #0b1120 !important;
+  color: #f8fafc !important;
 }
 
 body.theme-dark header,
 body.theme-dark #app-header > header {
-  background-color: rgba(15, 23, 42, 0.96) !important;
+  background-color: rgba(11, 17, 32, 0.96) !important;
   border-color: #334155 !important;
-  color: #f1f5f9 !important;
+  color: #f8fafc !important;
 }
 
 body.theme-dark .mobile-bottom-nav {
-  background-color: rgba(15, 23, 42, 0.96) !important;
+  background-color: rgba(11, 17, 32, 0.96) !important;
   border-color: #334155 !important;
 }
 
-body.theme-dark .bg-white {
+/* メインカードサーフェス（白・薄灰色の半透明による濁りグレーを完全解消） */
+body.theme-dark .bg-white,
+body.theme-dark [class*="bg-white"],
+body.theme-dark [class*="bg-white/"],
+body.theme-dark [class*="bg-slate-50"],
+body.theme-dark .bg-slate-50,
+body.theme-dark [class*="bg-gray-50"],
+body.theme-dark .bg-gray-50,
+body.theme-dark [class*="bg-zinc-50"] {
   background-color: #1e293b !important;
-  color: #f1f5f9;
+  border-color: #334155 !important;
+  color: #f8fafc;
 }
 
-body.theme-dark .bg-slate-50 {
-  background-color: #0f172a !important;
+/* サブパネル・インナーコンテナ・コントロールバー（濃紺スレートで階層を美しく表現） */
+body.theme-dark .bg-slate-100,
+body.theme-dark [class*="bg-slate-100"],
+body.theme-dark .bg-gray-100,
+body.theme-dark [class*="bg-gray-100"],
+body.theme-dark .bg-slate-200,
+body.theme-dark [class*="bg-slate-200"],
+body.theme-dark .interview-control-bar,
+body.theme-dark .sub-panel-dark {
+  background-color: #131d2e !important;
+  border-color: #293548 !important;
+  color: #f8fafc;
 }
 
-body.theme-dark .bg-slate-100 {
-  background-color: #263349 !important;
-}
-
+/* 境界線・枠線（夜間でも品のあるコントラスト） */
 body.theme-dark .border-slate-200,
-body.theme-dark .border-slate-100 {
+body.theme-dark .border-slate-100,
+body.theme-dark .border-slate-300,
+body.theme-dark [class*="border-slate-"],
+body.theme-dark [class*="border-gray-"] {
   border-color: #334155 !important;
 }
 
-body.theme-dark .text-slate-800,
+/* 主要テキスト・見出し・キリル文字（くっきりクリアな純白） */
 body.theme-dark .text-slate-900,
-body.theme-dark .text-slate-700 {
-  color: #f1f5f9 !important;
+body.theme-dark .text-slate-800,
+body.theme-dark .text-slate-700,
+body.theme-dark .text-gray-900,
+body.theme-dark .text-gray-800,
+body.theme-dark .text-gray-700,
+body.theme-dark .sentence-mn-text {
+  color: #ffffff !important;
 }
 
-body.theme-dark .text-slate-500,
+/* 日本語訳・サブテキスト（薄青ルミナスシアンでモンゴル語と視覚的に区別＆圧倒的視認性） */
 body.theme-dark .text-slate-600,
-body.theme-dark .text-slate-400 {
+body.theme-dark .text-gray-600,
+body.theme-dark .sentence-ja-text,
+body.theme-dark [data-ja-meaning] {
+  color: #bae6fd !important; /* 澄んだアイスシアン（暗所でも目を凝らさず一瞬で読める） */
+  font-weight: 500 !important;
+}
+
+/* 解説・ルール・補助説明文（視認性の高いクッキリホワイトシルバー） */
+body.theme-dark .text-slate-500,
+body.theme-dark .text-gray-500,
+body.theme-dark .sentence-exp-content {
+  color: #e2e8f0 !important; /* 暗闇でもしっかり読める明るいスレートホワイト */
+}
+
+body.theme-dark .text-slate-400,
+body.theme-dark .text-gray-400 {
   color: #94a3b8 !important;
 }
 
+/* 入力欄・テキストエリア・セレクトボックス */
 body.theme-dark input:not([type="color"]):not([type="checkbox"]):not([type="radio"]),
 body.theme-dark textarea,
 body.theme-dark select {
-  background-color: #0f172a !important;
-  color: #f1f5f9 !important;
+  background-color: #0b1120 !important;
+  color: #ffffff !important;
   border-color: #475569 !important;
+}
+
+body.theme-dark input::placeholder,
+body.theme-dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* 口述・シャドーイング・文法センテンスカード特化スタイル */
+body.theme-dark .interview-sentence-card {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.theme-dark .interview-sentence-card:hover {
+  background-color: #24344d !important;
+  border-color: #34d399 !important;
+}
+
+/* 音声再生ボタン（🔊 聴く） */
+body.theme-dark .play-sentence-btn,
+body.theme-dark .sentence-audio-btn,
+body.theme-dark button[data-speech-text],
+body.theme-dark .btn-speak-feedback,
+body.theme-dark .btn-replay-item {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: #34d399 !important;
+  font-weight: 700 !important;
+}
+
+body.theme-dark .play-sentence-btn:hover,
+body.theme-dark .sentence-audio-btn:hover,
+body.theme-dark button[data-speech-text]:hover {
+  background-color: #1e293b !important;
+  border-color: #34d399 !important;
+  color: #6ee7b7 !important;
+}
+
+/* 停止ボタン */
+body.theme-dark #stop-speech-btn,
+body.theme-dark .interview-stop-btn {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* ナンバーバッジ (1, 2, 3...) */
+body.theme-dark .sentence-num-badge,
+body.theme-dark span.rounded-full[class*="bg-slate-200"],
+body.theme-dark span.rounded-full[class*="bg-slate-100"] {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+/* 話者バッジ */
+body.theme-dark .bg-emerald-100 {
+  background-color: #064e3b !important;
+  color: #6ee7b7 !important;
+  border: 1px solid #059669 !important;
+}
+
+/* 解説ボックス (💡 解説:) */
+body.theme-dark .sentence-exp-box {
+  border-top-color: #334155 !important;
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  margin-top: 8px !important;
+}
+
+body.theme-dark .sentence-exp-badge,
+body.theme-dark .text-emerald-600 {
+  color: #34d399 !important;
+  font-weight: 800 !important;
+}
+
+/* チェックボックス・ラベル */
+body.theme-dark .interview-control-bar label,
+body.theme-dark label[class*="text-slate-700"] {
+  color: #f1f5f9 !important;
+  font-weight: 600 !important;
+}
+
+/* 4択選択肢ボタン (Choice Buttons) */
+body.theme-dark .choice-btn,
+body.theme-dark button[class*="hover:border-emerald-500"],
+body.theme-dark button[class*="border-slate-200"] {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+body.theme-dark .choice-btn:hover {
+  background-color: #27374d !important;
+  border-color: #34d399 !important;
+}
+
+/* キリル文字キーパッド (Cyrillic Keyboard buttons) */
+body.theme-dark .btn-quick-char,
+body.theme-dark .cyrillic-key,
+body.theme-dark button[data-char] {
+  background-color: #243248 !important;
+  border-color: #3b4e6b !important;
+  color: #f8fafc !important;
+}
+
+body.theme-dark .btn-quick-char:hover,
+body.theme-dark button[data-char]:hover {
+  background-color: #324461 !important;
+  color: #34d399 !important;
+}
+
+/* ステップタブ (Step 1, Step 2, Step 3) */
+body.theme-dark .step-tab-btn {
+  color: #94a3b8 !important;
+  border-color: transparent !important;
+}
+
+body.theme-dark .step-tab-btn[class*="border-emerald-600"],
+body.theme-dark .step-tab-btn[class*="text-emerald-700"] {
+  color: #34d399 !important;
+  border-color: #34d399 !important;
+  font-weight: 800 !important;
 }
 
 
 /* ========================================================
    ナイトモード・ダークテーマ用 フィードバック＆解答表示 最適化
-   （正解の白文字潰れ防止、不正解・正解カードの目に優しいダークトーン化）
    ======================================================== */
 
 /* 正解テキストの視認性向上（白文字潰れを徹底防止し、鮮やかで視認性の高いエメラルド/シアンで表示） */
@@ -219,7 +383,7 @@ body.theme-dark .text-emerald-900.cyrillic-text,
 body.theme-dark span.cyrillic-text.text-slate-900,
 body.theme-forest span.cyrillic-text.text-slate-900,
 body.theme-ocean span.cyrillic-text.text-slate-900 {
-  color: #34d399 !important; /* 鮮やかなエメラルドグリーン（夜間でもくっきり視認） */
+  color: #34d399 !important; /* 鮮やかなエメラルドグリーン */
   text-shadow: 0 0 10px rgba(52, 211, 153, 0.3) !important;
   font-weight: 800 !important;
 }
@@ -240,12 +404,10 @@ body.theme-ocean .text-sky-800.cyrillic-text {
   font-weight: 800 !important;
 }
 
-/* 不正解・克服未完了カード（明るいピンクから深みのあるダークローズへ） */
+/* 不正解・克服未完了カード（深みのあるダークローズ） */
 body.theme-dark [class*="bg-rose-50"],
 body.theme-dark .bg-rose-50,
-body.theme-dark .bg-rose-50\/90,
-body.theme-dark .bg-rose-50\/80,
-body.theme-dark .bg-rose-100,
+body.theme-dark [class*="bg-rose-100"],
 body.theme-dark [class*="bg-red-50"] {
   background-color: #24141d !important;
   border-color: rgba(244, 63, 94, 0.45) !important;
@@ -262,12 +424,10 @@ body.theme-dark [class*="text-rose-800"] {
   color: #fb7185 !important;
 }
 
-/* 正解・克服完了カード（明るい薄緑から深みのあるダークエメラルドへ） */
+/* 正解・克服完了カード（深みのあるダークエメラルド） */
 body.theme-dark [class*="bg-emerald-50"],
 body.theme-dark .bg-emerald-50,
-body.theme-dark .bg-emerald-50\/90,
-body.theme-dark .bg-emerald-50\/80,
-body.theme-dark .bg-emerald-100,
+body.theme-dark [class*="bg-emerald-100"],
 body.theme-dark [class*="bg-teal-50"] {
   background-color: #0d281e !important;
   border-color: rgba(16, 185, 129, 0.45) !important;
@@ -283,7 +443,7 @@ body.theme-dark [class*="text-emerald-700"] {
   color: #34d399 !important;
 }
 
-/* 解説ボックス・インナーホワイトボックス（白背景＆白文字の重なりを完全解消） */
+/* 解説ボックス・インナーホワイトボックス */
 body.theme-dark [class*="bg-white/"],
 body.theme-dark .bg-white\/90,
 body.theme-dark .bg-white\/95,
@@ -296,7 +456,7 @@ body.theme-dark .bg-white\/80 {
 /* 警告・アンバー枠 */
 body.theme-dark [class*="bg-amber-50"],
 body.theme-dark .bg-amber-50,
-body.theme-dark .bg-amber-100 {
+body.theme-dark [class*="bg-amber-100"] {
   background-color: #2a1b0a !important;
   border-color: rgba(245, 158, 11, 0.45) !important;
   color: #fef3c7 !important;
