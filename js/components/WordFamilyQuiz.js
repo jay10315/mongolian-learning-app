@@ -247,7 +247,7 @@ export class WordFamilyComponent {
   // ゲーム①：対義語スピードマッチング UI ＆ ロジック
   // ==========================================
   static renderAntonymGameUI() {
-    const { cards, matchedCount, totalPairs, combo, isCleared, clearSeconds } = this.state.antonymGame;
+    const { cards, pairs, matchedCount, totalPairs, combo, isCleared, clearSeconds } = this.state.antonymGame;
 
     if (isCleared) {
       return `
@@ -259,6 +259,26 @@ export class WordFamilyComponent {
             <span class="text-xs bg-white/20 text-white font-black px-3 py-1 rounded-full uppercase">ALL PAIRS MATCHED!</span>
             <h3 class="text-2xl sm:text-3xl font-black text-yellow-100">対義語全ペア制覇！！✨</h3>
             <p class="text-xs text-amber-100">クリアタイム: <span class="font-black text-sm">${clearSeconds} 秒</span> ｜ 獲得: +35 XP</p>
+          </div>
+
+          <!-- 今回のペア振り返り -->
+          <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 text-left border border-white/20 max-w-md mx-auto space-y-2">
+            <div class="text-xs font-black text-amber-200 uppercase tracking-wider">今回マッチングした対義語ペア（復習）:</div>
+            <div class="divide-y divide-white/10 text-xs">
+              ${(pairs || []).map(p => `
+                <div class="py-1.5 flex items-center justify-between">
+                  <div>
+                    <span class="font-black cyrillic-text text-white">${p.wordA}</span>
+                    <span class="text-[10px] text-amber-100 ml-1">(${p.meaningA})</span>
+                  </div>
+                  <span class="text-amber-200 text-xs px-1.5">↔</span>
+                  <div class="text-right">
+                    <span class="font-black cyrillic-text text-white">${p.wordB}</span>
+                    <span class="text-[10px] text-amber-100 ml-1">(${p.meaningB})</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
           </div>
           <div class="pt-2 flex justify-center gap-3">
             <button type="button" id="btn-antonym-replay" class="px-6 py-2.5 rounded-xl bg-white text-slate-900 font-black text-sm shadow-md active:scale-95 transition-all">
@@ -298,8 +318,7 @@ export class WordFamilyComponent {
                   ? 'bg-amber-400 border-amber-500 text-slate-950 shadow-md ring-4 ring-amber-300/50 scale-102'
                   : 'bg-white hover:bg-amber-50/50 border-slate-200 hover:border-amber-400 text-slate-800'
             }" data-card-id="${card.id}">
-              <span class="text-base sm:text-lg font-black cyrillic-text leading-tight">${card.text}</span>
-              <span class="text-[11px] font-bold text-slate-500 mt-1">${card.subText}</span>
+              <span class="text-base sm:text-xl font-black cyrillic-text leading-snug">${card.text}</span>
             </button>
           `).join('')}
         </div>
