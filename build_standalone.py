@@ -58,6 +58,7 @@ files_order = [
     'js/components/WordFamilyQuiz.js',
     'js/components/PenguinExpedition.js',
     'js/components/SuffixRuleDojo.js',
+    'js/components/GenreWordMaster.js',
     'js/components/SpellingGame.js',
     'js/components/Flashcards.js',
     'js/components/ReviewNotebook.js',

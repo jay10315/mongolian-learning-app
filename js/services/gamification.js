@@ -114,6 +114,13 @@ export class GamificationService {
   }
 
   /**
+   * 大文字XPのエイリアス
+   */
+  static addXP(amount = 0, desc = '') {
+    return this.addXp(amount);
+  }
+
+  /**
    * テスト開始時にセッションコンボをリセット
    */
   static resetSessionCombo() {

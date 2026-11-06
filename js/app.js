@@ -28,6 +28,7 @@ import { PenguinExpeditionComponent } from './components/PenguinExpedition.js';
 import { SpellingGameComponent } from './components/SpellingGame.js';
 import { SuffixRuleDojoComponent } from './components/SuffixRuleDojo.js';
 import { InterviewMasterComponent } from './components/InterviewMaster.js';
+import { GenreWordMasterComponent } from './components/GenreWordMaster.js';
 
 class App {
   static currentTab = 'home';
@@ -107,6 +108,9 @@ class App {
     };
 
     switch (this.currentTab) {
+      case 'genre_master':
+        GenreWordMasterComponent.render(mainContainer, onNavigate);
+        break;
       case 'home':
         HomeComponent.render(mainContainer, onNavigate);
         break;

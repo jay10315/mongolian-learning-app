@@ -368,12 +368,12 @@ export class SuffixRuleDojoComponent {
       const scoreGain = 10 + (this.state.combo > 1 ? this.state.combo * 2 : 0);
       this.state.score += scoreGain;
       this.state.xpEarned += 5;
-      GamificationService.addXp(5);
+      try { if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') GamificationService.addXp(5); } catch (_) {}
     } else {
       SoundEffects.playWrong();
       this.state.combo = 0;
       this.state.xpEarned += 1;
-      GamificationService.addXp(1);
+      try { if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') GamificationService.addXp(1); } catch (_) {}
 
       // 間違いノートに記録
       StorageService.recordMistake({

@@ -619,9 +619,45 @@ export class SpellingGameComponent {
       }
 
       let keyChar = e.key ? e.key.toLowerCase() : '';
+      // 日本語IME入力時（ひらがな打鍵）のローマ字自動変換
+      const HIRAGANA_MAP = {
+        'あ': 'a', 'い': 'i', 'う': 'u', 'え': 'e', 'お': 'o',
+        'か': 'k', 'き': 'k', 'く': 'k', 'け': 'k', 'こ': 'k',
+        'さ': 's', 'し': 's', 'す': 's', 'せ': 's', 'そ': 's',
+        'た': 't', 'ち': 'ch', 'つ': 'ts', 'て': 't', 'と': 't',
+        'な': 'n', 'に': 'n', 'ぬ': 'n', 'ね': 'n', 'の': 'n',
+        'は': 'h', 'ひ': 'h', 'ふ': 'f', 'へ': 'h', 'ほ': 'h',
+        'ま': 'm', 'み': 'm', 'む': 'm', 'め': 'm', 'も': 'm',
+        'や': 'y', 'ゆ': 'y', 'よ': 'y',
+        'ら': 'r', 'り': 'r', 'る': 'r', 'れ': 'r', 'ろ': 'r',
+        'わ': 'w', 'を': 'o', 'ん': 'n',
+        'が': 'g', 'ぎ': 'g', 'ぐ': 'g', 'げ': 'g', 'ご': 'g',
+        'ざ': 'z', 'じ': 'j', 'ず': 'z', 'ぜ': 'z', 'ぞ': 'z',
+        'だ': 'd', 'ぢ': 'd', 'づ': 'd', 'で': 'd', 'ど': 'd',
+        'ば': 'b', 'び': 'b', 'ぶ': 'b', 'べ': 'b', 'ぼ': 'b',
+        'ぱ': 'p', 'ぴ': 'p', 'ぷ': 'p', 'ぺ': 'p', 'ぽ': 'p'
+      };
+      if (HIRAGANA_MAP[keyChar]) {
+        keyChar = HIRAGANA_MAP[keyChar];
+      }
+
       // Windows 日本語IMEがONの場合、e.code から物理キー名を取得
-      if ((keyChar === 'process' || e.isComposing) && e.code && e.code.startsWith('Key')) {
-        keyChar = e.code.slice(3).toLowerCase();
+      if ((keyChar === 'process' || e.isComposing) && e.code) {
+        if (e.code.startsWith('Key')) {
+          keyChar = e.code.slice(3).toLowerCase();
+        } else if (e.code === 'Minus') {
+          keyChar = '-';
+        } else if (e.code === 'Equal') {
+          keyChar = '=';
+        } else if (e.code === 'Quote') {
+          keyChar = "'";
+        } else if (e.code === 'BracketLeft') {
+          keyChar = '[';
+        } else if (e.code === 'BracketRight') {
+          keyChar = ']';
+        } else if (e.code === 'Semicolon') {
+          keyChar = ';';
+        }
       }
 
       if (this.state.mode === 'tile_arrange') {
@@ -842,8 +878,8 @@ export class SpellingGameComponent {
   }
 
   static checkArrangeAnswer() {
-    const formedWord = this.state.placedLetters.map(p => p.char).join('');
-    const targetWord = this.state.targetLetters.join('');
+    const formedWord = this.state.placedLetters.map(p => p.char).join('').trim().toLowerCase();
+    const targetWord = this.state.targetLetters.join('').trim().toLowerCase();
 
     if (formedWord === targetWord) {
       this.onCorrectAnswer();
@@ -875,8 +911,8 @@ export class SpellingGameComponent {
   }
 
   static verifyFreeTypeAnswer() {
-    const formed = this.state.typedLetters.join('');
-    const target = this.state.targetLetters.join('');
+    const formed = this.state.typedLetters.join('').trim().toLowerCase();
+    const target = this.state.targetLetters.join('').trim().toLowerCase();
 
     if (formed === target) {
       this.onCorrectAnswer();

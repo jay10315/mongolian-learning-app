@@ -348,6 +348,30 @@ export class HomeComponent {
               </div>
             </div>
 
+            <!-- ジャンル別単語マスター -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 hover:border-emerald-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="genre_master">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🏷️
+                  </div>
+                  <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    全7分野・単語帳＆クイズ
+                  </span>
+                </div>
+                <h4 class="text-base font-bold text-slate-800 group-hover:text-emerald-700 transition-colors">
+                  ジャンル別単語マスター
+                </h4>
+                <p class="text-xs text-slate-500 mt-1">
+                  身体の部位・学校文房具・衣類・食べ物・日用品家電・果物野菜・方位の7分野を完全網羅。単語帳とテーマ別4択ゲームで集中特訓！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-700">
+                <span>ジャンル一覧を見る</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- 単語テスト -->
             <div class="bg-white rounded-xl p-5 border border-slate-200 hover:border-emerald-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="word_test">
               <div>
