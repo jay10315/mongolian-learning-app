@@ -63,7 +63,8 @@ tests = [
     'test_all_mistakes_unified_recording.py',
     'test_all_recent_feedback_fixes.py',
     'test_all_tests_mistakes_review.py',
-    'test_sentence_translation_test.py'
+    'test_sentence_translation_test.py',
+    'test_six_image_issues.py'
 ]
 
 for t in tests:

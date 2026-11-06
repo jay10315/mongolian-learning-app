@@ -2,7 +2,7 @@
 // 身体部位・学校文房具・衣類・食べ物・日用品家電・果物野菜・方位 の全7分野を完全網羅
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
-import { SoundEffects, shuffleArray, isPronunciationCautionWord } from '../utils/helpers.js';
+import { SoundEffects, shuffleArray, isPronunciationCautionWord, getWordIllustrationHTML } from '../utils/helpers.js';
 import { PenguinMascot } from './PenguinMascot.js';
 import { GamificationService } from '../services/gamification.js';
 

@@ -261,7 +261,7 @@ export class DeclensionTestComponent {
                 </span>
               ` : ''}
               <span class="text-[10px] px-2 py-0.5 rounded-full ${isNoun ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800' : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'} border font-bold">
-                ${isNoun ? `🏛 名詞格変化: ${q.targetCase || '格変化'}` : `🔄 動詞活用: ${q.targetForm || '活用'}`}
+                ${isNoun ? `🏛 名詞格変化: ${q.targetCase || '格変化'}` : `🔄 動詞活用: ${q.targetForm || q.targetCase || '活用'}`}
               </span>
             </span>
             <div class="flex items-center gap-3">
@@ -339,8 +339,15 @@ export class DeclensionTestComponent {
           <!-- 回答後フィードバック・解説 -->
           <div class="animate-fade-in space-y-4">
             <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50/90 dark:bg-emerald-950/50 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50/90 dark:bg-rose-950/50 border-rose-300 dark:border-rose-800 text-rose-950 dark:text-rose-100'} shadow-sm">
-              <div class="text-2xl font-bold mb-2 ${this.state.isCorrect ? 'text-emerald-800' : 'text-rose-800'}">
-                ${this.state.isCorrect ? '⭕ 正解！' : '❌ 不正解'}
+              <div class="flex items-center justify-between mb-2">
+                <div class="text-2xl font-bold ${this.state.isCorrect ? 'text-emerald-800 dark:text-emerald-300' : 'text-rose-800 dark:text-rose-300'}">
+                  ${this.state.isCorrect ? '⭕ 正解！' : '❌ 不正解'}
+                </div>
+                ${(!this.state.isCorrect && this.state.settings.inputMode === 'text') ? `
+                  <button type="button" id="btn-override-decl-correct" class="px-3 py-1.5 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-700 text-xs font-black hover:bg-amber-200 transition-all cursor-pointer flex items-center gap-1" title="入力の表記ゆれや軽微なタイポの場合は正解に変更できます">
+                    <span>⭕</span> <span>正解にする (表記ゆれ)</span>
+                  </button>
+                ` : ''}
               </div>
 
               <!-- 6項目完全網羅解説カード（辞書形・語幹・意味・過程の明確化） -->
@@ -353,6 +360,7 @@ export class DeclensionTestComponent {
                   meaning: q.baseMeaning,
                   baseMeaning: q.baseMeaning,
                   japanese: q.baseMeaning,
+                  pos: '動詞',
                   isVerb: true,
                   derivation: `語幹「${cleanRoot}」に活用語尾が接続し、${q.targetForm || '活用形'}「${q.answer}」が形成されます。`
                 } : {
@@ -362,6 +370,7 @@ export class DeclensionTestComponent {
                   meaning: q.baseMeaning,
                   baseMeaning: q.baseMeaning,
                   japanese: q.baseMeaning,
+                  pos: '名詞',
                   isVerb: false,
                   derivation: `${q.targetCase || '格変化'}: 「${q.baseWord}」に格語尾が接続して「${q.answer}」となります。`
                 };
@@ -470,6 +479,27 @@ export class DeclensionTestComponent {
           }
         };
         window.addEventListener('keydown', keyHandler);
+      }
+
+      // 自己正解化ボタン（表記ゆれ・タイポ）
+      const overrideBtn = this.container.querySelector('#btn-override-decl-correct');
+      if (overrideBtn) {
+        overrideBtn.addEventListener('click', () => {
+          this.state.isCorrect = true;
+          this.state.sessionScore = (this.state.sessionScore || 0) + 10;
+          this.state.sessionXp = (this.state.sessionXp || 0) + 15;
+          SoundEffects.playCorrect();
+          if (this.state.results && this.state.results.length > 0) {
+            this.state.results[this.state.results.length - 1].isCorrect = true;
+          }
+          try {
+            const q = this.state.currentQuiz;
+            const qTitle = `【${q.kind === 'noun' ? '格変化' : '動詞活用'}】${q.question}`;
+            const mistakes = StorageService.getMistakes().filter(m => m.question !== qTitle);
+            localStorage.setItem('mongol_mistakes', JSON.stringify(mistakes));
+          } catch (_) {}
+          this.renderTesting();
+        });
       }
     }
   }

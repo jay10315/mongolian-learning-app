@@ -164,7 +164,7 @@ export function getWordGrammarDetails(item) {
   }
 
   const m = (item.mongolian || item.baseWord || item.word || item.dictForm || '').trim();
-  const pos = (item.pos || (item.kind === 'verb' || (item.category && item.category.startsWith('verb')) ? '動詞' : (item.kind === 'noun' ? '名詞' : ''))).trim();
+  const pos = (item.pos || (item.kind === 'verb' || (item.category && item.category.startsWith('verb')) ? '動詞' : (item.kind === 'noun' || item.kind === 'hidden_n_g' || item.type === 'declension' || item.targetCase ? '名詞' : '名詞'))).trim();
   let meaning = (item.japanese || item.baseMeaning || item.meaning || item.meaning_ja || item.translation || '').trim();
   const isV = isVerb(item);
 
@@ -2506,9 +2506,12 @@ export function renderGrammarExplanationHTML({
       ${isV ? `
         <div class="bg-white/95 rounded-xl p-3.5 border border-emerald-200 shadow-2xs space-y-2.5 my-2">
           <div class="flex items-center justify-between border-b border-emerald-100 pb-1.5">
-            <span class="font-bold text-emerald-900 text-xs flex items-center gap-1.5">
-              <span>🌱</span> 動詞の基本形・語幹構造解説
-            </span>
+            <div class="flex items-center gap-2">
+              ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(item || dictForm || correctAnswer, { size: 'sm' }) : ''}
+              <span class="font-bold text-emerald-900 text-xs flex items-center gap-1.5">
+                <span>🌱</span> 動詞の基本形・語幹構造解説
+              </span>
+            </div>
             ${details && details.vowelHarmonyLabel ? `
               <span class="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-medium">
                 ${details.vowelHarmonyLabel}
@@ -2557,8 +2560,11 @@ export function renderGrammarExplanationHTML({
         <!-- 非動詞（名詞・複合語など）の場合 -->
         <div class="bg-white/95 rounded-xl p-3 border border-slate-200 space-y-1.5 my-2 text-xs">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-slate-800">見出し語: <span class="cyrillic-text font-extrabold text-slate-900">${dictForm}</span></span>
-            <span class="text-slate-500 font-medium">【品詞: ${details ? details.pos : (item ? item.pos : '名詞')}】</span>
+            <div class="flex items-center gap-2">
+              ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(item || dictForm || correctAnswer, { size: 'sm' }) : ''}
+              <span class="font-bold text-slate-800">見出し語: <span class="cyrillic-text font-extrabold text-slate-900">${dictForm}</span></span>
+            </div>
+            <span class="text-slate-500 font-medium">【品詞: ${(details && details.pos) || (item && item.pos) || '名詞'}】</span>
           </div>
           <div>意味: <span class="font-semibold text-slate-800">${meaning}</span></div>
           
