@@ -467,6 +467,50 @@ export class WordGameComponent {
               </div>
             </div>
 
+            <!-- 6. お魚スペルシューター（ペンギンレーザー防衛ゲーム） -->
+            <div class="game-mode-card bg-gradient-to-br from-indigo-950 via-slate-900 to-sky-950 text-white rounded-2xl p-5 border-2 ${this.state.mode === 'spelling' ? 'border-amber-400 shadow-xl ring-2 ring-amber-400/50' : 'border-slate-700 hover:border-amber-400'} transition-all cursor-pointer relative col-span-1 sm:col-span-2 overflow-hidden group" data-mode="spelling">
+              <div class="absolute inset-0 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:16px_16px] opacity-15 pointer-events-none"></div>
+              <div class="absolute -top-10 -right-10 w-44 h-44 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+              <div class="relative z-10">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/30 border border-amber-400/50 text-amber-300 flex items-center justify-center text-2xl font-bold shadow-xs">
+                      🐟⚡
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <h4 class="text-lg font-black text-white flex items-center gap-1.5">
+                          お魚スペルシューター（レーザー防衛）
+                        </h4>
+                        <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                          人気
+                        </span>
+                      </div>
+                      <p class="text-[11px] text-amber-200/90 mt-0.5">
+                        落ちてくる魚をキリル文字スペル入力でレーザー撃破！
+                      </p>
+                    </div>
+                  </div>
+                  <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/30 text-amber-200 border border-amber-400/40">
+                    満腹フィーバー ⚡ レーザー
+                  </span>
+                </div>
+
+                <p class="text-xs text-slate-300 mt-2.5 leading-relaxed">
+                  上空から降ってくるお魚を、画面下の文字タイルをタップ（またはキーボード打鍵）して正しいスペルを撃ち込もう！5匹満腹でフィーバー突入＆XPボーナス大量獲得！
+                </p>
+
+                <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-extrabold text-amber-300">
+                  <span>タイピング・スペル特訓</span>
+                  <button type="button" class="btn-direct-start-mode px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1.5" data-mode="spelling">
+                    <span>挑戦する</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -608,6 +652,15 @@ export class WordGameComponent {
   // 2. ゲーム開始・初期化
   // ==========================================
   static startGame() {
+    if (this.state.mode === 'spelling') {
+      if (this.onNavigate) {
+        if (typeof SpellingGameComponent !== 'undefined') {
+          SpellingGameComponent.returnTarget = 'word_game';
+        }
+        this.onNavigate('spelling_game');
+      }
+      return;
+    }
     const vocabList = StorageService.getVocabulary();
     const grammarQuizzes = StorageService.getGrammarQuizzes();
     const declensionQuizzes = StorageService.getDeclensionQuizzes();

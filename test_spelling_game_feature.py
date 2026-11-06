@@ -28,6 +28,17 @@ def test_spelling_game():
     assert "'y': ['й'" in comp_content, "y must map to Cyrillic й"
     assert "process" in comp_content, "Must handle Japanese IME process key"
     assert "renderUI()" in comp_content, "Must render UI immediately"
+    # User requirement: "正解出ちゃってるから決して。" (Eradicate answer leak on playing screen)
+    assert '正解: <strong class="text-white">' not in comp_content, "Answer must NOT be leaked during spelling game"
+    assert "static returnTarget = 'word_game'" in comp_content, "SpellingGame must have returnTarget"
+
+    # User requirement: "またこのゲームも単語ゲームのモードから選べるようにして。"
+    wg_path = os.path.join(base_dir, 'js', 'components', 'WordGame.js')
+    with open(wg_path, 'r', encoding='utf-8') as f_wg:
+        wg_content = f_wg.read()
+    assert 'data-mode="spelling"' in wg_content, "WordGame must provide spelling game mode selection card"
+    assert "this.state.mode === 'spelling'" in wg_content, "WordGame must handle spelling mode in startGame"
+    print("  [OK] SpellingGame answer leak removed & selectable from WordGame modes")
     print("  [OK] SpellingGameComponent implementation verified")
 
     # 2. Check PenguinMascot has both getSvg and renderSVG alias to avoid runtime errors

@@ -11,6 +11,7 @@ import { GamificationService } from '../services/gamification.js';
 export class SpellingGameComponent {
   static container = null;
   static onNavigate = null;
+  static returnTarget = 'word_game';
   static keydownHandler = null;
   static fallInterval = null;
 
@@ -486,9 +487,7 @@ export class SpellingGameComponent {
                 <div id="penguin-mascot-msg" class="text-xs font-bold text-amber-200 leading-snug">
                   ${mascotMessage}
                 </div>
-                <div class="text-[10px] text-sky-200/80 mt-0.5">
-                  正解: <strong class="text-white">${targetLetters.join('')}</strong>
-                </div>
+
               </div>
             </div>
           </div>
@@ -563,7 +562,7 @@ export class SpellingGameComponent {
     if (btnBack) {
       btnBack.addEventListener('click', () => {
         this.stopFallTimer();
-        if (this.onNavigate) this.onNavigate('home');
+        if (this.onNavigate) this.onNavigate(this.returnTarget || 'word_game');
       });
     }
 
@@ -1259,7 +1258,7 @@ export class SpellingGameComponent {
               もう一度あそぶ 🔄
             </button>
             <button type="button" id="btn-result-home" class="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-sm rounded-xl transition-all">
-              ホームへ戻る 🏠
+              単語ゲームへ戻る 🎮
             </button>
           </div>
         </div>
@@ -1298,7 +1297,7 @@ export class SpellingGameComponent {
     const btnHome = this.container.querySelector('#btn-result-home');
     if (btnHome) {
       btnHome.addEventListener('click', () => {
-        if (this.onNavigate) this.onNavigate('home');
+        if (this.onNavigate) this.onNavigate(this.returnTarget || 'word_game');
       });
     }
 
