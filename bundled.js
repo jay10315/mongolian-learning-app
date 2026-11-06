@@ -928,7 +928,6 @@ function findWordInDictionary(rawWord, passageGlossary = null) {
 
 
 // === js/data/initialVocabulary.js ===
-// モンゴル語ボキャブラリー完全版（744語・動詞語幹＆解説＆校正済み完全データ）
 const initialVocabulary = [
   {
     "id": "v_1_1",
@@ -12019,7 +12018,11 @@ const initialVocabulary = [
   {
     "id": "v_gen_622",
     "mongolian": "цай",
-    "acceptableAnswers": ["цай", "сүүтэй цай", "сүүтэйцай"],
+    "acceptableAnswers": [
+      "цай",
+      "сүүтэй цай",
+      "сүүтэйцай"
+    ],
     "japanese": "お茶、スーテーツァイ",
     "pronunciation": "ツァイ",
     "root": "",
@@ -12960,6 +12963,1803 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "зуу",
     "derivation": "見出し語「зуу」"
+  },
+  {
+    "mongolian": "гар өргөх",
+    "japanese": "手を挙げる",
+    "pronunciation": "ガル オルゴフ",
+    "pos": "動詞句",
+    "category": "日常動作",
+    "priority": "★★★",
+    "exampleMn": "Сурагчид асуултад хариулахын тулд гараа өргөв.",
+    "exampleJa": "生徒たちは質問に答えるために手を挙げました。",
+    "note": "гар（手）＋ өргөх（挙げる・持ち上げる）。",
+    "isVerb": true,
+    "dictForm": "гар өргөх",
+    "root": "гар өргө",
+    "id": "v_note_1",
+    "derivation": "見出し語「гар өргөх」"
+  },
+  {
+    "mongolian": "дээс тоглох",
+    "japanese": "縄跳びをする",
+    "pronunciation": "デース トグロフ",
+    "pos": "動詞句",
+    "category": "遊び・スポーツ",
+    "priority": "★★",
+    "exampleMn": "Хүүхдүүд гадаа дээс тоглож байна.",
+    "exampleJa": "子どもたちが外で縄跳びをしています。",
+    "note": "дээс（縄・ロープ）＋ тоглох（遊ぶ・する）。",
+    "isVerb": true,
+    "dictForm": "дээс тоглох",
+    "root": "дээс тогло",
+    "id": "v_note_2",
+    "derivation": "見出し語「дээс тоглох」"
+  },
+  {
+    "mongolian": "авирах",
+    "japanese": "登る、よじ登る",
+    "pronunciation": "アウィラハ",
+    "pos": "動詞",
+    "category": "日常動作",
+    "priority": "★★",
+    "exampleMn": "Тэд өндөр уулын орой руу авирсан.",
+    "exampleJa": "彼らは高い山の頂上へと登りました。",
+    "note": "語幹: авир。山や木などに登る動作。",
+    "isVerb": true,
+    "dictForm": "авирах",
+    "root": "авир",
+    "id": "v_note_3",
+    "derivation": "見出し語「авирах」"
+  },
+  {
+    "mongolian": "сэлэлт",
+    "japanese": "水泳、泳ぐこと",
+    "pronunciation": "セレルト",
+    "pos": "名詞",
+    "category": "遊び・スポーツ",
+    "priority": "★★",
+    "exampleMn": "Сэлэлт бол эрүүл мэндэд маш сайн спорт.",
+    "exampleJa": "水泳は健康にとても良いスポーツです。",
+    "note": "動詞 сэлэх（泳ぐ）の名詞形。",
+    "isVerb": false,
+    "dictForm": "сэлэлт",
+    "id": "v_note_4",
+    "derivation": "見出し語「сэлэлт」"
+  },
+  {
+    "mongolian": "насанд хүрэх",
+    "japanese": "成人する、大人になる",
+    "pronunciation": "ナサンド フレハ",
+    "pos": "動詞句",
+    "category": "生活・人生",
+    "priority": "★★",
+    "exampleMn": "Монголд 18 нас хүрээд насанд хүрсэнд тооцогддог.",
+    "exampleJa": "モンゴルでは18歳になると成人とみなされます。",
+    "note": "нас（年齢）の与位格（насанд）＋ хүрэх（達する）。",
+    "isVerb": true,
+    "dictForm": "насанд хүрэх",
+    "root": "насанд хүр",
+    "id": "v_note_5",
+    "derivation": "見出し語「насанд хүрэх」"
+  },
+  {
+    "mongolian": "сонгох",
+    "japanese": "選ぶ、選択する",
+    "pronunciation": "ソンゴホ",
+    "pos": "動詞",
+    "category": "日常動作",
+    "priority": "★★★",
+    "exampleMn": "Цэснээс дуртай хоолоо сонгоорой.",
+    "exampleJa": "メニューから好きな料理を選んでください。",
+    "note": "語幹: сонго。日常的によく使う重要動詞。",
+    "isVerb": true,
+    "dictForm": "сонгох",
+    "root": "сонго",
+    "id": "v_note_6",
+    "derivation": "見出し語「сонгох」"
+  },
+  {
+    "mongolian": "тарих",
+    "japanese": "育てる、植える、栽培する",
+    "pronunciation": "タリハ",
+    "pos": "動詞",
+    "category": "自然・農業",
+    "priority": "★★",
+    "exampleMn": "Хашаандаа төмс, лууван тарьсан.",
+    "exampleJa": "庭にジャガイモと人参を植えました。",
+    "note": "語幹: тарь。植物や作物を植えて育てること。",
+    "isVerb": true,
+    "dictForm": "тарих",
+    "root": "тарь",
+    "id": "v_note_7",
+    "derivation": "見出し語「тарих」"
+  },
+  {
+    "mongolian": "ургуулах",
+    "japanese": "生やす、成長させる、育てる",
+    "pronunciation": "ウルグーラハ",
+    "pos": "動詞",
+    "category": "自然・農業",
+    "priority": "★★",
+    "exampleMn": "Цэцгийг арчилж сайхан ургууллаа.",
+    "exampleJa": "花を手入れしてきれいに育てました。",
+    "note": "ургах（育つ・生える）の使役形。",
+    "isVerb": true,
+    "dictForm": "ургуулах",
+    "root": "ургуул",
+    "id": "v_note_8",
+    "derivation": "見出し語「ургуулах」"
+  },
+  {
+    "mongolian": "нисэх",
+    "japanese": "飛ぶ、（飛行機で）向かう",
+    "pronunciation": "ニセハ",
+    "pos": "動詞",
+    "category": "交通・移動",
+    "priority": "★★★",
+    "exampleMn": "Маргааш өглөө Улаанбаатар луу ниснэ.",
+    "exampleJa": "明日の朝、ウランバートルへ飛びます。",
+    "note": "語幹: нис。鳥や飛行機が飛ぶこと。",
+    "isVerb": true,
+    "dictForm": "нисэх",
+    "root": "нис",
+    "id": "v_note_9",
+    "derivation": "見出し語「нисэх」"
+  },
+  {
+    "mongolian": "нойр хүрэх",
+    "japanese": "眠くなる、眠気をもよおす",
+    "pronunciation": "ノイル フレハ",
+    "pos": "動詞句",
+    "category": "日常生活",
+    "priority": "★★",
+    "exampleMn": "Орой болоод нойр хүрч байна.",
+    "exampleJa": "夜になって眠くなってきました。",
+    "note": "нойр（眠り）＋ хүрэх（届く・達する）。",
+    "isVerb": true,
+    "dictForm": "нойр хүрэх",
+    "root": "нойр хүр",
+    "id": "v_note_10",
+    "derivation": "見出し語「нойр хүрэх」"
+  },
+  {
+    "mongolian": "буцаах",
+    "japanese": "返品する、返す、戻す",
+    "pronunciation": "ブツァーハ",
+    "pos": "動詞",
+    "category": "買い物・日常",
+    "priority": "★★",
+    "exampleMn": "Хэмжээ нь таарахгүй тул буцааж болох уу?",
+    "exampleJa": "サイズが合わないので返品できますか？",
+    "note": "語幹: буцаа。元に戻す・返品すること。",
+    "isVerb": true,
+    "dictForm": "буцаах",
+    "root": "буцаа",
+    "id": "v_note_11",
+    "derivation": "見出し語「буцаах」"
+  },
+  {
+    "mongolian": "зураг авахуулах",
+    "japanese": "写真を撮ってもらう",
+    "pronunciation": "ズラグ アワフーラハ",
+    "pos": "動詞句",
+    "category": "旅行・観光",
+    "priority": "★★",
+    "exampleMn": "Төв талбай дээр зураг авахуулъя.",
+    "exampleJa": "中央広場で写真を撮ってもらいましょう。",
+    "note": "зураг авах（写真を撮る）の使役受動形。",
+    "isVerb": true,
+    "dictForm": "зураг авахуулах",
+    "root": "зураг авахуул",
+    "id": "v_note_12",
+    "derivation": "見出し語「зураг авахуулах」"
+  },
+  {
+    "mongolian": "өнжүүлэх",
+    "japanese": "預ける、日中を過ごさせる",
+    "pronunciation": "オンジューレハ",
+    "pos": "動詞",
+    "category": "教育・福祉",
+    "priority": "★★",
+    "exampleMn": "Хүүхдээ өдөр өнжүүлэхэд үлдээв.",
+    "exampleJa": "子どもを日中預かり（デイケア）に預けました。",
+    "note": "өнжих（日中を過ごす）の使役形。",
+    "isVerb": true,
+    "dictForm": "өнжүүлэх",
+    "root": "өнжүүл",
+    "id": "v_note_13",
+    "derivation": "見出し語「өнжүүлэх」"
+  },
+  {
+    "mongolian": "төөрөх",
+    "japanese": "道に迷う、迷子になる",
+    "pronunciation": "トーロフ",
+    "pos": "動詞",
+    "category": "移動・道案内",
+    "priority": "★★",
+    "exampleMn": "Танихгүй газар төөрчхөв.",
+    "exampleJa": "見知らぬ場所で道に迷ってしまいました。",
+    "note": "語幹: төөр。道に迷うこと。",
+    "isVerb": true,
+    "dictForm": "төөрөх",
+    "root": "төөр",
+    "id": "v_note_14",
+    "derivation": "見出し語「төөрөх」"
+  },
+  {
+    "mongolian": "эргэлзэх",
+    "japanese": "迷う、ためらう、疑う",
+    "pronunciation": "エルゲルゼハ",
+    "pos": "動詞",
+    "category": "思考・判断",
+    "priority": "★★",
+    "exampleMn": "Аль нь дээр вэ гэж эргэлзэж байна.",
+    "exampleJa": "どちらが良いか迷っています。",
+    "note": "語幹: эргэлз。判断に迷うこと。",
+    "isVerb": true,
+    "dictForm": "эргэлзэх",
+    "root": "эргэлз",
+    "id": "v_note_15",
+    "derivation": "見出し語「эргэлзэх」"
+  },
+  {
+    "mongolian": "амьтан тэжээх",
+    "japanese": "動物を飼う、飼育する",
+    "pronunciation": "アムタン テジエヘ",
+    "pos": "動詞句",
+    "category": "生活・動物",
+    "priority": "★★",
+    "exampleMn": "Манайх гэртээ нохой, муур тэжээдэг.",
+    "exampleJa": "うちは家で犬と猫を飼っています。",
+    "note": "амьтан（動物）＋ тэжээх（養う・飼う）。",
+    "isVerb": true,
+    "dictForm": "амьтан тэжээх",
+    "root": "амьтан тэжээ",
+    "id": "v_note_16",
+    "derivation": "見出し語「амьтан тэжээх」"
+  },
+  {
+    "mongolian": "эмнэлэгт хэвтэх",
+    "japanese": "入院する",
+    "pronunciation": "エムネレグト ヘウテヘ",
+    "pos": "動詞句",
+    "category": "医療・健康",
+    "priority": "★★",
+    "exampleMn": "Өвчин нь хүндэрсэн тул эмнэлэгт хэвтэв.",
+    "exampleJa": "病気が悪化したため入院しました。",
+    "note": "эмнэлэг（病院）＋ хэвтэх（横たわる・入院する）。",
+    "isVerb": true,
+    "dictForm": "эмнэлэгт хэвтэх",
+    "root": "эмнэлэгт хэвт",
+    "id": "v_note_17",
+    "derivation": "見出し語「эмнэлэгт хэвтэх」"
+  },
+  {
+    "mongolian": "таргалах",
+    "japanese": "太る",
+    "pronunciation": "タルガラハ",
+    "pos": "動詞",
+    "category": "身体・健康",
+    "priority": "★★",
+    "exampleMn": "Өвөл хөдөлгөөн багасаад таргалдаг.",
+    "exampleJa": "冬は運動量が減って太ります。",
+    "note": "語幹: таргал。対義語は турах（痩せる）。",
+    "isVerb": true,
+    "dictForm": "таргалах",
+    "root": "таргал",
+    "id": "v_note_18",
+    "derivation": "見出し語「таргалах」"
+  },
+  {
+    "mongolian": "турах",
+    "japanese": "痩せる",
+    "pronunciation": "トラハ",
+    "pos": "動詞",
+    "category": "身体・健康",
+    "priority": "★★",
+    "exampleMn": "Өдөр бүр гүйгээд таван кило турсан.",
+    "exampleJa": "毎日走って5キロ痩せました。",
+    "note": "語幹: тур。対義語は таргалах（太る）。",
+    "isVerb": true,
+    "dictForm": "турах",
+    "root": "тур",
+    "id": "v_note_19",
+    "derivation": "見出し語「турах」"
+  },
+  {
+    "mongolian": "үерхэх",
+    "japanese": "付き合う、交際する",
+    "pronunciation": "ウエルヘハ",
+    "pos": "動詞",
+    "category": "人間関係",
+    "priority": "★★",
+    "exampleMn": "Тэр хоёр их сургуулиас хойш үерхэж байна.",
+    "exampleJa": "あの二人は大学時代から付き合っています。",
+    "note": "語幹: үерх。恋人として交際すること。",
+    "isVerb": true,
+    "dictForm": "үерхэх",
+    "root": "үерх",
+    "id": "v_note_20",
+    "derivation": "見出し語「үерхэх」"
+  },
+  {
+    "mongolian": "хөлс гарах",
+    "japanese": "汗が出る、汗をかく",
+    "pronunciation": "ホルソ ガラハ",
+    "pos": "動詞句",
+    "category": "身体・健康",
+    "priority": "★★",
+    "exampleMn": "Халуун цай уухад хөлс гардаг.",
+    "exampleJa": "熱いお茶を飲むと汗が出ます。",
+    "note": "хөлс（汗）＋ гарах（出る）。",
+    "isVerb": true,
+    "dictForm": "хөлс гарах",
+    "root": "хөлс гар",
+    "id": "v_note_21",
+    "derivation": "見出し語「хөлс гарах」"
+  },
+  {
+    "mongolian": "маск зүүх",
+    "japanese": "マスクをつける",
+    "pronunciation": "マスク ズーハ",
+    "pos": "動詞句",
+    "category": "生活・衛生",
+    "priority": "★★",
+    "exampleMn": "Ханиадтай үед маск зүүх хэрэгтэй.",
+    "exampleJa": "風邪をひいているときはマスクをつける必要があります。",
+    "note": "маск / амны хаалт（マスク）＋ зүүх（身につける）。",
+    "isVerb": true,
+    "dictForm": "маск зүүх",
+    "root": "маск зүү",
+    "id": "v_note_22",
+    "derivation": "見出し語「маск зүүх」"
+  },
+  {
+    "mongolian": "илтгэл тавих",
+    "japanese": "発表する、プレゼンテーションをする",
+    "pronunciation": "イルトゲル タウィハ",
+    "pos": "動詞句",
+    "category": "学校・仕事",
+    "priority": "★★",
+    "exampleMn": "Маргаашийн хурал дээр би илтгэл тавина.",
+    "exampleJa": "明日の会議で私がプレゼン（発表）をします。",
+    "note": "илтгэл（報告・発表）＋ тавих（置く・行う）。",
+    "isVerb": true,
+    "dictForm": "илтгэл тавих",
+    "root": "илтгэл тавь",
+    "id": "v_note_23",
+    "derivation": "見出し語「илтгэл тавих」"
+  },
+  {
+    "mongolian": "байрны мөнгө шилжүүлэх",
+    "japanese": "家賃を振り込む",
+    "pronunciation": "バイリニー モンゴ シルジューレヘ",
+    "pos": "動詞句",
+    "category": "生活・住まい",
+    "priority": "★★",
+    "exampleMn": "Сар бүрийн 25-нд байрны мөнгө шилжүүлдэг.",
+    "exampleJa": "毎月25日に家賃を銀行振込します。",
+    "note": "байрны мөнгө（家賃）＋ шилжүүлэх（移す・送金する）。",
+    "isVerb": true,
+    "dictForm": "байрны мөнгө шилжүүлэх",
+    "root": "байрны мөнгө шилжүүл",
+    "id": "v_note_24",
+    "derivation": "見出し語「байрны мөнгө шилжүүлэх」"
+  },
+  {
+    "mongolian": "вакцин хийлгэх",
+    "japanese": "ワクチンを接種する",
+    "pronunciation": "ワクツィン ヒールゲヘ",
+    "pos": "動詞句",
+    "category": "医療・健康",
+    "priority": "★★",
+    "exampleMn": "Өвлийн өмнө томуугийн вакцин хийлгэсэн.",
+    "exampleJa": "冬の前にインフルエンザワクチンを接種しました。",
+    "note": "вакцин（ワクチン）＋ хийлгэх（させる・打ってもらう）。",
+    "isVerb": true,
+    "dictForm": "вакцин хийлгэх",
+    "root": "вакцин хийлгэ",
+    "id": "v_note_25",
+    "derivation": "見出し語「вакцин хийлгэх」"
+  },
+  {
+    "mongolian": "хаалгаа түгжих",
+    "japanese": "ドアに鍵をかける",
+    "pronunciation": "ハールガー トゥグジハ",
+    "pos": "動詞句",
+    "category": "防犯・生活",
+    "priority": "★★★",
+    "exampleMn": "Гэрээс гарахдаа хаалгаа түгжсэн үү?",
+    "exampleJa": "家を出るときドアの鍵を閉めましたか？",
+    "note": "хаалга（ドア）の対格 ＋ түгжих（施錠する）。",
+    "isVerb": true,
+    "dictForm": "хаалгаа түгжих",
+    "root": "хаалгаа түгж",
+    "id": "v_note_26",
+    "derivation": "見出し語「хаалгаа түгжих」"
+  },
+  {
+    "mongolian": "сургуульд орох",
+    "japanese": "入学する、学校に入る",
+    "pronunciation": "スルグーリド オロホ",
+    "pos": "動詞句",
+    "category": "学校・教育",
+    "priority": "★★",
+    "exampleMn": "Дүү маань энэ намар нэгдүгээр ангид орсон.",
+    "exampleJa": "私の弟はこの秋に小学校1年生に入学しました。",
+    "note": "сургууль（学校）＋ орох（入る）。",
+    "isVerb": true,
+    "dictForm": "сургуульд орох",
+    "root": "сургуульд ор",
+    "id": "v_note_27",
+    "derivation": "見出し語「сургуульд орох」"
+  },
+  {
+    "mongolian": "мөнгө солих",
+    "japanese": "両替する",
+    "pronunciation": "モンゴ ソリホ",
+    "pos": "動詞句",
+    "category": "お金・旅行",
+    "priority": "★★★",
+    "exampleMn": "Банкинд очиж иенээ төгрөгөөр солив.",
+    "exampleJa": "銀行に行って日本円をトゥグルグに両替しました。",
+    "note": "мөнгө（お金）＋ солих（替える・交換する）。",
+    "isVerb": true,
+    "dictForm": "мөнгө солих",
+    "root": "мөнгө соль",
+    "id": "v_note_28",
+    "derivation": "見出し語「мөнгө солих」"
+  },
+  {
+    "mongolian": "нум сум",
+    "japanese": "弓矢",
+    "pronunciation": "ヌム スム",
+    "pos": "名詞",
+    "category": "伝統・スポーツ",
+    "priority": "★★",
+    "exampleMn": "Монголчууд наадмаар нум сум харвадаг.",
+    "exampleJa": "モンゴル人はナーダム祭で弓矢を射ます。",
+    "note": "нум（弓）＋ сум（矢）。ナーダム三競技の一つ。",
+    "isVerb": false,
+    "dictForm": "нум сум",
+    "id": "v_note_29",
+    "derivation": "見出し語「нум сум」"
+  },
+  {
+    "mongolian": "зөөлөн тоглоом",
+    "japanese": "ぬいぐるみ",
+    "pronunciation": "ゾーロン トグローム",
+    "pos": "名詞句",
+    "category": "玩具・子ども",
+    "priority": "★★",
+    "exampleMn": "Орон дээрээ зөөлөн бамбарууш тавьсан байна.",
+    "exampleJa": "ベッドの上にぬいぐるみの小熊が置いてあります。",
+    "note": "зөөлөн（柔らかい）＋ тоглоом（おもちゃ）。",
+    "isVerb": false,
+    "dictForm": "зөөлөн тоглоом",
+    "id": "v_note_30",
+    "derivation": "見出し語「зөөлөн тоглоом」"
+  },
+  {
+    "mongolian": "хөвөн чихэр",
+    "japanese": "綿菓子、わたあめ",
+    "pronunciation": "ホウォン チヘル",
+    "pos": "名詞句",
+    "category": "お菓子・縁日",
+    "priority": "★★",
+    "exampleMn": "Баяраар хүүхдүүд хөвөн чихэр бариад инээж байна.",
+    "exampleJa": "お祭りで子どもたちが綿菓子を持って笑っています。",
+    "note": "хөвөн（綿）＋ чихэр（砂糖・飴）。",
+    "isVerb": false,
+    "dictForm": "хөвөн чихэр",
+    "id": "v_note_31",
+    "derivation": "見出し語「хөвөн чихэр」"
+  },
+  {
+    "mongolian": "үзэм",
+    "japanese": "レーズン、干しぶどう",
+    "pronunciation": "ウゼム",
+    "pos": "名詞",
+    "category": "果物・食品",
+    "priority": "★★",
+    "exampleMn": "Үзэмтэй ааруул маш амттай байдаг.",
+    "exampleJa": "干しぶどう入りのアーロールはとてもおいしいです。",
+    "note": "乾燥ぶどう。乳製品やお菓子によく混ぜられます。",
+    "isVerb": false,
+    "dictForm": "үзэм",
+    "id": "v_note_32",
+    "derivation": "見出し語「үзэм」"
+  },
+  {
+    "mongolian": "эрүүл хоол",
+    "japanese": "健康食、ヘルシーな食事",
+    "pronunciation": "エルール ホール",
+    "pos": "名詞句",
+    "category": "飲食・健康",
+    "priority": "★★",
+    "exampleMn": "Эрүүл хоол идэж, урт наслаарай.",
+    "exampleJa": "体に良い食事をとって、長生きしてください。",
+    "note": "эрүүл（健康な）＋ хоол（食事）。",
+    "isVerb": false,
+    "dictForm": "эрүүл хоол",
+    "id": "v_note_33",
+    "derivation": "見出し語「эрүүл хоол」"
+  },
+  {
+    "mongolian": "шөлтэй хоол",
+    "japanese": "スープ料理、温かい汁物・鍋",
+    "pronunciation": "ショルテイ ホール",
+    "pos": "名詞句",
+    "category": "飲食・料理",
+    "priority": "★★★",
+    "exampleMn": "Хүйтэн өдөр халуун шөлтэй хоол идвэл бие дулаацна.",
+    "exampleJa": "寒い日に温かいスープ料理を食べると体が温まります。",
+    "note": "шөл（スープ）＋ -тэй（〜付きの）＋ хоол（料理）。",
+    "isVerb": false,
+    "dictForm": "шөлтэй хоол",
+    "id": "v_note_34",
+    "derivation": "見出し語「шөлтэй хоол」"
+  },
+  {
+    "mongolian": "далайн байцаа",
+    "japanese": "海苔、ワカメ、海藻",
+    "pronunciation": "ダライン バイツァー",
+    "pos": "名詞句",
+    "category": "食品・日本食",
+    "priority": "★★",
+    "exampleMn": "Сүшиг далайн байцаагаар ороодог.",
+    "exampleJa": "寿司は海苔（海藻）で巻きます。",
+    "note": "далай（海）の属格（далайн）＋ байцаа（キャベツ/菜）。",
+    "isVerb": false,
+    "dictForm": "далайн байцаа",
+    "id": "v_note_35",
+    "derivation": "見出し語「далайн байцаа」"
+  },
+  {
+    "mongolian": "шилтэй архи",
+    "japanese": "瓶入りの酒、ボトルウォッカ",
+    "pronunciation": "シルテイ アルヒ",
+    "pos": "名詞句",
+    "category": "飲食・お酒",
+    "priority": "★★",
+    "exampleMn": "Бэлгэнд шилтэй архи авчирсан байна.",
+    "exampleJa": "お土産に瓶入りのお酒を持ってきてくれました。",
+    "note": "шил（ガラス瓶）＋ -тэй ＋ архи（お酒）。",
+    "isVerb": false,
+    "dictForm": "шилтэй архи",
+    "id": "v_note_36",
+    "derivation": "見出し語「шилтэй архи」"
+  },
+  {
+    "mongolian": "цонхны шил",
+    "japanese": "窓ガラス",
+    "pronunciation": "ツォンホニー シル",
+    "pos": "名詞句",
+    "category": "住居・設備",
+    "priority": "★★",
+    "exampleMn": "Гадаа салхи үлээхэд цонхны шил чичирч байв.",
+    "exampleJa": "外の風が吹いたとき窓ガラスがカタカタ鳴っていました。",
+    "note": "цонх（窓）の属格 ＋ шил（ガラス）。",
+    "isVerb": false,
+    "dictForm": "цонхны шил",
+    "id": "v_note_37",
+    "derivation": "見出し語「цонхны шил」"
+  },
+  {
+    "mongolian": "овог нэр",
+    "japanese": "姓名、苗字と名前",
+    "pronunciation": "オウォグ ネエル",
+    "pos": "名詞句",
+    "category": "書類・身分",
+    "priority": "★★★",
+    "exampleMn": "Энэ шугаман дээр овог нэрээ тодорхой бичнэ үү.",
+    "exampleJa": "この線の上に姓名をはっきりと記入してください。",
+    "note": "овог（父称・氏族名）＋ нэр（名前）。",
+    "isVerb": false,
+    "dictForm": "овог нэр",
+    "id": "v_note_38",
+    "derivation": "見出し語「овог нэр」"
+  },
+  {
+    "mongolian": "заан",
+    "japanese": "象、ゾウ",
+    "pronunciation": "ザーン",
+    "pos": "名詞",
+    "category": "動物",
+    "priority": "★★",
+    "exampleMn": "Заан бол хуурай газрын хамгийн том амьтан.",
+    "exampleJa": "ゾウは陸上で最も大きな動物です。",
+    "note": "モンゴル将棋（Шатар）の駒にも登場する動物。",
+    "isVerb": false,
+    "dictForm": "заан",
+    "id": "v_note_39",
+    "derivation": "見出し語「заан」"
+  },
+  {
+    "mongolian": "бэлэн хоол",
+    "japanese": "出来合いの料理、お惣菜",
+    "pronunciation": "ベレン ホール",
+    "pos": "名詞句",
+    "category": "食事・買い物",
+    "priority": "★★",
+    "exampleMn": "Цаг завгүй үед дэлгүүрээс бэлэн хоол авдаг.",
+    "exampleJa": "時間がないときは店で出来合いの惣菜を買います。",
+    "note": "бэлэн（準備できた・レディメイド）＋ хоол（料理）。",
+    "isVerb": false,
+    "dictForm": "бэлэн хоол",
+    "id": "v_note_40",
+    "derivation": "見出し語「бэлэн хоол」"
+  },
+  {
+    "mongolian": "авч явдаг хоол",
+    "japanese": "持ち帰り料理、お弁当、テイクアウト",
+    "pronunciation": "アウチ ヤウダグ ホール",
+    "pos": "名詞句",
+    "category": "食事・生活",
+    "priority": "★★",
+    "exampleMn": "Ресторанаас авч явдаг хоол захиалав.",
+    "exampleJa": "レストランで持ち帰り料理（テイクアウト）を注文しました。",
+    "note": "持ち運んで食べるお弁当やテイクアウト料理。",
+    "isVerb": false,
+    "dictForm": "авч явдаг хоол",
+    "id": "v_note_41",
+    "derivation": "見出し語「авч явдаг хоол」"
+  },
+  {
+    "mongolian": "зам засвар",
+    "japanese": "道路修理、道路工事",
+    "pronunciation": "ザム ザスワル",
+    "pos": "名詞句",
+    "category": "交通・インフラ",
+    "priority": "★★",
+    "exampleMn": "Зам засвартай тул өөр замаар тойрч явлаа.",
+    "exampleJa": "道路工事中のため、別の道を迂回して行きました。",
+    "note": "зам（道）＋ засвар（修理・整備）。",
+    "isVerb": false,
+    "dictForm": "зам засвар",
+    "id": "v_note_42",
+    "derivation": "見出し語「зам засвар」"
+  },
+  {
+    "mongolian": "хаан",
+    "japanese": "王、皇帝、ハーン",
+    "pronunciation": "ハーン",
+    "pos": "名詞",
+    "category": "歴史・身分",
+    "priority": "★★★",
+    "exampleMn": "Чингис хаан дэлхийн түүхэнд агуу ул мөр үлдээсэн.",
+    "exampleJa": "チンギス・ハーンは世界史に偉大な足跡を残しました。",
+    "note": "モンゴル君主の尊称。英語の Khan。",
+    "isVerb": false,
+    "dictForm": "хаан",
+    "id": "v_note_43",
+    "derivation": "見出し語「хаан」"
+  },
+  {
+    "mongolian": "хатан",
+    "japanese": "王妃、ハトゥン",
+    "pronunciation": "ハトゥン",
+    "pos": "名詞",
+    "category": "歴史・身分",
+    "priority": "★★",
+    "exampleMn": "Мандухай сэцэн хатан улс төрд чухал үүрэг гүйцэтгэсэн.",
+    "exampleJa": "マンドハイ賢后は政治において重要な役割を果たしました。",
+    "note": "ハーンの正妻・皇后の尊称。",
+    "isVerb": false,
+    "dictForm": "хатан",
+    "id": "v_note_44",
+    "derivation": "見出し語「хатан」"
+  },
+  {
+    "mongolian": "шүдний чигчлүүр",
+    "japanese": "爪楊枝、ようじ",
+    "pronunciation": "シュドニー チグチルール",
+    "pos": "名詞句",
+    "category": "食卓・小物",
+    "priority": "★★",
+    "exampleMn": "Ширээн дээр шүдний чигчлүүр тавьсан байна.",
+    "exampleJa": "食卓に爪楊枝が置いてあります。",
+    "note": "шүдний（歯の）＋ чигчлүүр（つつく道具）。",
+    "isVerb": false,
+    "dictForm": "шүдний чигчлүүр",
+    "id": "v_note_45",
+    "derivation": "見出し語「шүдний чигчлүүр」"
+  },
+  {
+    "mongolian": "хулс",
+    "japanese": "竹、竹材",
+    "pronunciation": "フルス",
+    "pos": "名詞",
+    "category": "自然・素材",
+    "priority": "★★",
+    "exampleMn": "Хулсаар хийсэн үзэсгэлэнтэй сагс.",
+    "exampleJa": "竹で作られた美しいカゴ。",
+    "note": "形容詞形は хулсан（竹製の）。",
+    "isVerb": false,
+    "dictForm": "хулс",
+    "id": "v_note_46",
+    "derivation": "見出し語「хулс」"
+  },
+  {
+    "mongolian": "төрийн дуулал",
+    "japanese": "国歌",
+    "pronunciation": "トリーン ドーラル",
+    "pos": "名詞句",
+    "category": "国家・音楽",
+    "priority": "★★",
+    "exampleMn": "Ёслолын эхэнд төрийн дуулал эгшиглэдэг.",
+    "exampleJa": "式典の初めに国歌が演奏されます。",
+    "note": "төр（国家）の属格 ＋ дуулал（讃歌）。",
+    "isVerb": false,
+    "dictForm": "төрийн дуулал",
+    "id": "v_note_47",
+    "derivation": "見出し語「төрийн дуулал」"
+  },
+  {
+    "mongolian": "амтлагч",
+    "japanese": "調味料、香辛料、スパイス",
+    "pronunciation": "アムトラグチ",
+    "pos": "名詞",
+    "category": "料理・調味料",
+    "priority": "★★",
+    "exampleMn": "Хоолонд зориулж төрөл бүрийн амтлагч худалдаж авлаа.",
+    "exampleJa": "料理用に様々な調味料を買いました。",
+    "note": "амт（味）から派生した道具・名詞。",
+    "isVerb": false,
+    "dictForm": "амтлагч",
+    "id": "v_note_48",
+    "derivation": "見出し語「амтлагч」"
+  },
+  {
+    "mongolian": "ихэр",
+    "japanese": "双子、ふたご",
+    "pronunciation": "イヘル",
+    "pos": "名詞",
+    "category": "家族・人間",
+    "priority": "★★",
+    "exampleMn": "Тэр хоёр ихэр хүүхэд тун адилхан.",
+    "exampleJa": "あの双子の子どもたちは本当によく似ています。",
+    "note": "ихрүүд（双子たち）。",
+    "isVerb": false,
+    "dictForm": "ихэр",
+    "id": "v_note_49",
+    "derivation": "見出し語「ихэр」"
+  },
+  {
+    "mongolian": "цайны ёслол",
+    "japanese": "茶道",
+    "pronunciation": "ツァイニー ヨスロル",
+    "pos": "名詞句",
+    "category": "日本文化",
+    "priority": "★★",
+    "exampleMn": "Би найздаа Японы цайны ёслолыг тайлбарлаж өгөв.",
+    "exampleJa": "私は友人に日本の茶道について説明してあげました。",
+    "note": "цай（お茶）＋ ёслол（儀式・礼法）。",
+    "isVerb": false,
+    "dictForm": "цайны ёслол",
+    "id": "v_note_50",
+    "derivation": "見出し語「цайны ёслол」"
+  },
+  {
+    "mongolian": "манан",
+    "japanese": "霧、きり",
+    "pronunciation": "マナン",
+    "pos": "名詞",
+    "category": "自然・天気",
+    "priority": "★★",
+    "exampleMn": "Уулын бэлээр өтгөн манан татжээ.",
+    "exampleJa": "山のふもとに濃い霧が立ち込めています。",
+    "note": "манантай（霧の立ち込めた）。",
+    "isVerb": false,
+    "dictForm": "манан",
+    "id": "v_note_51",
+    "derivation": "見出し語「манан」"
+  },
+  {
+    "mongolian": "хурдан галт тэрэг",
+    "japanese": "新幹線、特急列車、高速鉄道",
+    "pronunciation": "フルダン ガルト テレグ",
+    "pos": "名詞句",
+    "category": "交通・乗り物",
+    "priority": "★★",
+    "exampleMn": "Японы хурдан галт тэрэг маш нарийн цаг баримталдаг.",
+    "exampleJa": "日本の新幹線は非常に時間を正確に守ります。",
+    "note": "хурдан（速い）＋ галт тэрэг（列車・汽車）。",
+    "isVerb": false,
+    "dictForm": "хурдан галт тэрэг",
+    "id": "v_note_52",
+    "derivation": "見出し語「хурдан галт тэрэг」"
+  },
+  {
+    "mongolian": "тогоруу",
+    "japanese": "鶴、ツル",
+    "pronunciation": "トゴロー",
+    "pos": "名詞",
+    "category": "鳥・自然",
+    "priority": "★★",
+    "exampleMn": "Нуурын эрэгт цагаан тогоруу буусан байв.",
+    "exampleJa": "湖の岸辺に白鶴が舞い降りていました。",
+    "note": "цаасан тогоруу（折り紙の鶴）。",
+    "isVerb": false,
+    "dictForm": "тогоруу",
+    "id": "v_note_53",
+    "derivation": "見出し語「тогоруу」"
+  },
+  {
+    "mongolian": "алтан зул",
+    "japanese": "チューリップ",
+    "pronunciation": "アルタン ズル",
+    "pos": "名詞句",
+    "category": "花・植物",
+    "priority": "★★",
+    "exampleMn": "Хавар цэцэрлэгт өнгө өнгийн алтан зул цэцэглэдэг.",
+    "exampleJa": "春、庭に色とりどりのチューリップが咲きます。",
+    "note": "алтан（黄金の）＋ зул（灯明・花）。",
+    "isVerb": false,
+    "dictForm": "алтан зул",
+    "id": "v_note_54",
+    "derivation": "見出し語「алтан зул」"
+  },
+  {
+    "mongolian": "хөзөр",
+    "japanese": "トランプ、カードゲーム",
+    "pronunciation": "ホズル",
+    "pos": "名詞",
+    "category": "娯楽・ゲーム",
+    "priority": "★★",
+    "exampleMn": "Амралтаар гэр бүлээрээ хөзөр тоглодог.",
+    "exampleJa": "休日に家族でトランプをして遊びます。",
+    "note": "西洋のトランプカードのこと。",
+    "isVerb": false,
+    "dictForm": "хөзөр",
+    "id": "v_note_55",
+    "derivation": "見出し語「хөзөр」"
+  },
+  {
+    "mongolian": "дэлхийн хоёрдугаар дайн",
+    "japanese": "第二次世界大戦",
+    "pronunciation": "デルヒーン ホヨルドゥガール ダイン",
+    "pos": "固有名詞句",
+    "category": "歴史・世界",
+    "priority": "★★",
+    "exampleMn": "Дэлхийн хоёрдугаар дайны дараа олон улс шинээр байгуулагдсан.",
+    "exampleJa": "第二次世界大戦後、多くの国が新たに設立されました。",
+    "note": "дэлхий（世界）＋ хоёрдугаар（第二）＋ дайн（戦争）。",
+    "isVerb": false,
+    "dictForm": "дэлхийн хоёрдугаар дайн",
+    "id": "v_note_56",
+    "derivation": "見出し語「дэлхийн хоёрдугаар дайн」"
+  },
+  {
+    "mongolian": "хүнсний зах",
+    "japanese": "食品市場、生鮮マーケット",
+    "pronunciation": "フンスニー ザハ",
+    "pos": "名詞句",
+    "category": "買い物・食品",
+    "priority": "★★★",
+    "exampleMn": "Амралтын өдөр хүнсний зах орж ногоо, мах авдаг.",
+    "exampleJa": "休日に生鮮市場へ行って野菜や肉を買います。",
+    "note": "хүнс（食糧）＋ зах（市場・ザハ）。",
+    "isVerb": false,
+    "dictForm": "хүнсний зах",
+    "id": "v_note_57",
+    "derivation": "見出し語「хүнсний зах」"
+  },
+  {
+    "mongolian": "сайхны хэрэгсэл",
+    "japanese": "化粧品、コスメ",
+    "pronunciation": "サイハニー ヘレグセル",
+    "pos": "名詞句",
+    "category": "日用品・美容",
+    "priority": "★★",
+    "exampleMn": "Японы сайхны хэрэгсэл чанараараа алдартай.",
+    "exampleJa": "日本の化粧品は品質の良さで有名です。",
+    "note": "сайхан（美しい）＋ хэрэгсэл（道具・用品）。",
+    "isVerb": false,
+    "dictForm": "сайхны хэрэгсэл",
+    "id": "v_note_58",
+    "derivation": "見出し語「сайхны хэрэгсэл」"
+  },
+  {
+    "mongolian": "гэрийн хаяг",
+    "japanese": "自宅住所",
+    "pronunciation": "ゲリーン ハヤグ",
+    "pos": "名詞句",
+    "category": "書類・生活",
+    "priority": "★★★",
+    "exampleMn": "Гэрийн хаягаа тодорхой бичиж өгнө үү.",
+    "exampleJa": "自宅の住所をはっきりとご記入ください。",
+    "note": "гэр（家）の属格 ＋ хаяг（住所・あて先）。",
+    "isVerb": false,
+    "dictForm": "гэрийн хаяг",
+    "id": "v_note_59",
+    "derivation": "見出し語「гэрийн хаяг」"
+  },
+  {
+    "mongolian": "энгийн гадаад паспорт",
+    "japanese": "一般旅券、通常パスポート",
+    "pronunciation": "エンギーン ガダーダ パスポルト",
+    "pos": "名詞句",
+    "category": "旅行・身分証",
+    "priority": "★★",
+    "exampleMn": "Тэр энгийн гадаад паспортоор зорчиж байна.",
+    "exampleJa": "彼は一般パスポートで渡航しています。",
+    "note": "энгийн（通常の・一般の）＋ гадаад паспорт（旅券）。",
+    "isVerb": false,
+    "dictForm": "энгийн гадаад паспорт",
+    "id": "v_note_60",
+    "derivation": "見出し語「энгийн гадаад паспорт」"
+  },
+  {
+    "mongolian": "чемодан",
+    "japanese": "スーツケース、旅行鞄",
+    "pronunciation": "チェモダン",
+    "pos": "名詞",
+    "category": "旅行・荷物",
+    "priority": "★★★",
+    "exampleMn": "Хүнд чемоданаа онгоцонд ачаанд өгөв.",
+    "exampleJa": "重いスーツケースを飛行機の預け荷物に預けました。",
+    "note": "ロシア語由来。旅行用トランク・スーツケース。",
+    "isVerb": false,
+    "dictForm": "чемодан",
+    "id": "v_note_61",
+    "derivation": "見出し語「чемодан」"
+  },
+  {
+    "mongolian": "өдөр өнжүүлэх төв",
+    "japanese": "デイケアセンター、学童保育所",
+    "pronunciation": "オドル オンジューレフ トヴ",
+    "pos": "名詞句",
+    "category": "教育・福祉",
+    "priority": "★★",
+    "exampleMn": "Хичээл тарсны дараа хүүхдүүд өдөр өнжүүлэх төвд ирдэг.",
+    "exampleJa": "放課後、子どもたちはデイケア（学童保育所）にやって来ます。",
+    "note": "өдөр（昼・日中）＋ өнжүүлэх（過ごさせる）＋ төв（センター）。",
+    "isVerb": false,
+    "dictForm": "өдөр өнжүүлэх төв",
+    "id": "v_note_62",
+    "derivation": "見出し語「өдөр өнжүүлэх төв」"
+  },
+  {
+    "mongolian": "улаан түрс",
+    "japanese": "イクラ、赤キャビア",
+    "pronunciation": "ウラーン トゥルス",
+    "pos": "名詞句",
+    "category": "食品・水産",
+    "priority": "★★",
+    "exampleMn": "Улаан түрс түрхсэн талх амттай.",
+    "exampleJa": "イクラを乗せたパンはとても美味しいです。",
+    "note": "улаан（赤い）＋ түрс（魚卵）。",
+    "isVerb": false,
+    "dictForm": "улаан түрс",
+    "id": "v_note_63",
+    "derivation": "見出し語「улаан түрс」"
+  },
+  {
+    "mongolian": "эрүүл мэндийн даатгалын үнэмлэх",
+    "japanese": "健康保険証",
+    "pronunciation": "エルール メンディーン ダートガリーン ウネムレフ",
+    "pos": "名詞句",
+    "category": "医療・身分証",
+    "priority": "★★★",
+    "exampleMn": "Эмчид үзүүлэхдээ эрүүл мэндийн даатгалын үнэмлэхээ үзүүлнэ.",
+    "exampleJa": "診察を受ける際に健康保険証を提示します。",
+    "note": "эрүүл мэнд（健康）＋ даатгал（保険）＋ үнэмлэх（証明書）。",
+    "isVerb": false,
+    "dictForm": "эрүүл мэндийн даатгалын үнэмлэх",
+    "id": "v_note_64",
+    "derivation": "見出し語「эрүүл мэндийн даатгалын үнэмлэх」"
+  },
+  {
+    "mongolian": "ногоочин",
+    "japanese": "野菜農家、野菜栽培者",
+    "pronunciation": "ノゴーチン",
+    "pos": "名詞",
+    "category": "職業・農業",
+    "priority": "★★",
+    "exampleMn": "Ногоочид хүлэмжинд өргөст хэмх ургуулж байна.",
+    "exampleJa": "農家がビニールハウスできゅうりを育てています。",
+    "note": "ногоо（野菜）＋ -чин（〜する人）。",
+    "isVerb": false,
+    "dictForm": "ногоочин",
+    "id": "v_note_65",
+    "derivation": "見出し語「ногоочин」"
+  },
+  {
+    "mongolian": "тахианы дэгдээхэй",
+    "japanese": "ヒヨコ、ひな鳥",
+    "pronunciation": "タヒアニー デグデーヘイ",
+    "pos": "名詞句",
+    "category": "動物・鳥",
+    "priority": "★★",
+    "exampleMn": "Шар өнгөтэй бяцхан дэгдээхэй хөөрхөн харагдана.",
+    "exampleJa": "黄色い小さなヒヨコがかわいらしく見えます。",
+    "note": "тахиа（鶏）の属格 ＋ дэгдээхэй（雛）。",
+    "isVerb": false,
+    "dictForm": "тахианы дэгдээхэй",
+    "id": "v_note_66",
+    "derivation": "見出し語「тахианы дэгдээхэй」"
+  },
+  {
+    "mongolian": "яст мэлхий",
+    "japanese": "カメ、亀",
+    "pronunciation": "ヤスト メルヒー",
+    "pos": "名詞句",
+    "category": "動物・爬虫類",
+    "priority": "★★",
+    "exampleMn": "Яст мэлхий урт насалдаг амьтан.",
+    "exampleJa": "カメは長生きする動物です。",
+    "note": "яст（骨・甲羅を持つ）＋ мэлхий（カエル/両生爬虫類）。",
+    "isVerb": false,
+    "dictForm": "яст мэлхий",
+    "id": "v_note_67",
+    "derivation": "見出し語「яст мэлхий」"
+  },
+  {
+    "mongolian": "туулай",
+    "japanese": "ウサギ、兎",
+    "pronunciation": "トールライ",
+    "pos": "名詞",
+    "category": "動物",
+    "priority": "★★",
+    "exampleMn": "Хээр талд зэрлэг туулай гүйж явна.",
+    "exampleJa": "大草原で野生のウサギが走っています。",
+    "note": "十二支の「卯（うさぎ）」にもあたる動物。",
+    "isVerb": false,
+    "dictForm": "туулай",
+    "id": "v_note_68",
+    "derivation": "見出し語「туулай」"
+  },
+  {
+    "mongolian": "давалгаа",
+    "japanese": "波、うねり",
+    "pronunciation": "ダワルガー",
+    "pos": "名詞",
+    "category": "自然・海",
+    "priority": "★★",
+    "exampleMn": "Хүчтэй салхинаас болж далайн давалгаа ширүүсэв.",
+    "exampleJa": "強い風のせいで海の波が激しくなりました。",
+    "note": "давалгаалах（波立つ）。",
+    "isVerb": false,
+    "dictForm": "давалгаа",
+    "id": "v_note_69",
+    "derivation": "見出し語「давалгаа」"
+  },
+  {
+    "mongolian": "гадаад харилцааны яам",
+    "japanese": "外務省",
+    "pronunciation": "ガダーダ ハリルツァアニー ヤーム",
+    "pos": "固有名詞句",
+    "category": "政府・外交",
+    "priority": "★★",
+    "exampleMn": "Гадаад харилцааны яам төрийн ордны дэргэд байдаг.",
+    "exampleJa": "外務省は政府宮殿のそばにあります。",
+    "note": "гадаад харилцаа（外交・対外関係）＋ яам（省庁）。",
+    "isVerb": false,
+    "dictForm": "гадаад харилцааны яам",
+    "id": "v_note_70",
+    "derivation": "見出し語「гадаад харилцааны яам」"
+  },
+  {
+    "mongolian": "гэр хороолол",
+    "japanese": "ゲル地区",
+    "pronunciation": "ゲル ホーローロル",
+    "pos": "名詞句",
+    "category": "都市・社会",
+    "priority": "★★★",
+    "exampleMn": "Улаанбаатарын гэр хороололд олон айл өвөлждөг.",
+    "exampleJa": "ウランバートルのゲル地区で多くの家庭が越冬します。",
+    "note": "ウランバートル郊外に広がる伝統ゲルと木造家屋の居住区。",
+    "isVerb": false,
+    "dictForm": "гэр хороолол",
+    "id": "v_note_71",
+    "derivation": "見出し語「гэр хороолол」"
+  },
+  {
+    "mongolian": "байрны хороолол",
+    "japanese": "アパート街、団地地区",
+    "pronunciation": "バイリニー ホーローロル",
+    "pos": "名詞句",
+    "category": "住まい・都市",
+    "priority": "★★",
+    "exampleMn": "Шинээр баригдсан байрны хороололд дэлгүүр, цэцэрлэг олон байна.",
+    "exampleJa": "新築のアパート街には店や幼稚園がたくさんあります。",
+    "note": "байр（アパート・集合住宅）＋ хороолол（地区・街）。",
+    "isVerb": false,
+    "dictForm": "байрны хороолол",
+    "id": "v_note_72",
+    "derivation": "見出し語「байрны хороолол」"
+  },
+  {
+    "mongolian": "сүлжээ дэлгүүр",
+    "japanese": "チェーン店、スーパーのチェーン",
+    "pronunciation": "スルジェー デルフール",
+    "pos": "名詞句",
+    "category": "買い物・店舗",
+    "priority": "★★",
+    "exampleMn": "Хотын хаанаас ч сүлжээ дэлгүүр олоход амархан.",
+    "exampleJa": "街のどこからでもチェーンストアを見つけるのは簡単です。",
+    "note": "сүлжээ（ネットワーク・網）＋ дэлгүүр（店）。",
+    "isVerb": false,
+    "dictForm": "сүлжээ дэлгүүр",
+    "id": "v_note_73",
+    "derivation": "見出し語「сүлжээ дэлгүүр」"
+  },
+  {
+    "mongolian": "өндөр настан",
+    "japanese": "高齢者、お年寄り",
+    "pronunciation": "オンドル ナスタン",
+    "pos": "名詞句",
+    "category": "社会・敬称",
+    "priority": "★★★",
+    "exampleMn": "Монголчууд өндөр настнаа гүнээ хүндэтгэдэг уламжлалтай.",
+    "exampleJa": "モンゴル人はお年寄りを深く尊敬する伝統があります。",
+    "note": "өндөр（高い）＋ настан（年齢の人）。敬意を込めた表現。",
+    "isVerb": false,
+    "dictForm": "өндөр настан",
+    "id": "v_note_74",
+    "derivation": "見出し語「өндөр настан」"
+  },
+  {
+    "mongolian": "адуу",
+    "japanese": "馬、馬の群れ",
+    "pronunciation": "アドー",
+    "pos": "名詞",
+    "category": "家畜・文化",
+    "priority": "★★★",
+    "exampleMn": "Адуучин эр хээр талд олон адуугаа хурааж байна.",
+    "exampleJa": "馬飼いの男性が大草原でたくさんの馬を集めています。",
+    "note": "морь は個別の乗用馬、адуу は種族・群れ全体としての馬。",
+    "isVerb": false,
+    "dictForm": "адуу",
+    "id": "v_note_75",
+    "derivation": "見出し語「адуу」"
+  },
+  {
+    "mongolian": "лам",
+    "japanese": "僧侶、ラマ僧",
+    "pronunciation": "ラム",
+    "pos": "名詞",
+    "category": "宗教・文化",
+    "priority": "★★",
+    "exampleMn": "Гандан хийдэд лам хуврагууд ном хурж байна.",
+    "exampleJa": "ガンダン寺院でラマ僧たちが読経しています。",
+    "note": "チベット仏教（黄帽派）の僧侶。",
+    "isVerb": false,
+    "dictForm": "лам",
+    "id": "v_note_76",
+    "derivation": "見出し語「лам」"
+  },
+  {
+    "mongolian": "жүжигчин",
+    "japanese": "俳優、役者",
+    "pronunciation": "ジュジグチン",
+    "pos": "名詞",
+    "category": "職業・芸術",
+    "priority": "★★",
+    "exampleMn": "Тэр театрын алдартай жүжигчин болсон.",
+    "exampleJa": "彼は劇場の有名な俳優になりました。",
+    "note": "жүжиг（劇・芝居）＋ -чин（職業人）。",
+    "isVerb": false,
+    "dictForm": "жүжигчин",
+    "id": "v_note_77",
+    "derivation": "見出し語「жүжигчин」"
+  },
+  {
+    "mongolian": "уншигч",
+    "japanese": "読者",
+    "pronunciation": "ウンシグチ",
+    "pos": "名詞",
+    "category": "本・読書",
+    "priority": "★★",
+    "exampleMn": "Зохиолч шинэ номоо уншигчдадаа танилцуулав.",
+    "exampleJa": "作家は新しい本を読者たちに紹介しました。",
+    "note": "унших（読む）から派生した名詞。",
+    "isVerb": false,
+    "dictForm": "уншигч",
+    "id": "v_note_78",
+    "derivation": "見出し語「уншигч」"
+  },
+  {
+    "mongolian": "хөгжимчин",
+    "japanese": "音楽家、ミュージシャン",
+    "pronunciation": "ホグジムチン",
+    "pos": "名詞",
+    "category": "芸術・音楽",
+    "priority": "★★",
+    "exampleMn": "Морин хуур тоглож буй хөгжимчин гайхалтай аялгуу эгшиглүүлэв.",
+    "exampleJa": "馬頭琴を奏でる音楽家が素晴らしい音色を響かせました。",
+    "note": "хөгжим（音楽・楽器）＋ -чин。",
+    "isVerb": false,
+    "dictForm": "хөгжимчин",
+    "id": "v_note_79",
+    "derivation": "見出し語「хөгжимчин」"
+  },
+  {
+    "mongolian": "тамирчин",
+    "japanese": "スポーツ選手、アスリート",
+    "pronunciation": "タミルチン",
+    "pos": "名詞",
+    "category": "スポーツ・職業",
+    "priority": "★★",
+    "exampleMn": "Олимпод оролцсон тамирчид эх орондоо ирлээ.",
+    "exampleJa": "五輪に出場した選手たちが母国に戻ってきました。",
+    "note": "тамир（体力・力）＋ -чин。",
+    "isVerb": false,
+    "dictForm": "тамирчин",
+    "id": "v_note_80",
+    "derivation": "見出し語「тамирчин」"
+  },
+  {
+    "mongolian": "шинийн нэгэн",
+    "japanese": "旧正月元日、ツァガーンサルの初日",
+    "pronunciation": "シニーン ネゲン",
+    "pos": "名詞句",
+    "category": "祝日・文化",
+    "priority": "★★★",
+    "exampleMn": "Шинийн нэгний өглөө эртлэн босож наранд мөргөдөг.",
+    "exampleJa": "旧正月の元日の朝、早く起きて初日の出を拝みます。",
+    "note": "新月（初月）の1日目。モンゴル最大の祝日ツァガーンサルの幕開け。",
+    "isVerb": false,
+    "dictForm": "шинийн нэгэн",
+    "id": "v_note_81",
+    "derivation": "見出し語「шинийн нэгэн」"
+  },
+  {
+    "mongolian": "зурагтай ном",
+    "japanese": "絵本、図鑑",
+    "pronunciation": "ズラグタイ ノム",
+    "pos": "名詞句",
+    "category": "子ども・書籍",
+    "priority": "★★",
+    "exampleMn": "Ээж нь хүүхдэдээ унтахын өмнө зурагтай ном уншиж өгөв.",
+    "exampleJa": "お母さんは寝る前に子どもに絵本を読んであげました。",
+    "note": "зураг（絵）＋ -тай（付き）＋ ном（本）。",
+    "isVerb": false,
+    "dictForm": "зурагтай ном",
+    "id": "v_note_82",
+    "derivation": "見出し語「зурагтай ном」"
+  },
+  {
+    "mongolian": "хурдан морь",
+    "japanese": "俊足の競走馬、足の速い馬",
+    "pronunciation": "フルダン モリ",
+    "pos": "名詞句",
+    "category": "ナーダム・馬",
+    "priority": "★★",
+    "exampleMn": "Наадмын хурдан морины уралдаанд олон хүүхэд унаач болж оролцдог.",
+    "exampleJa": "ナーダム祭の競馬レースには多くの子ども騎手が参加します。",
+    "note": "ナーダム祭の主要競技（モリン・ウラルダーン）に出場する競走馬。",
+    "isVerb": false,
+    "dictForm": "хурдан морь",
+    "id": "v_note_83",
+    "derivation": "見出し語「хурдан морь」"
+  },
+  {
+    "mongolian": "гар чийдэн",
+    "japanese": "懐中電灯、ハンドライト",
+    "pronunciation": "ガル チーデン",
+    "pos": "名詞句",
+    "category": "日用品・防災",
+    "priority": "★★",
+    "exampleMn": "Шөнө хөдөө явахад гар чийдэн зайлшгүй хэрэгтэй.",
+    "exampleJa": "夜間に田舎を歩く際は懐中電灯が絶対に必要です。",
+    "note": "гар（手）＋ чийдэн（ランプ・電灯）。",
+    "isVerb": false,
+    "dictForm": "гар чийдэн",
+    "id": "v_note_84",
+    "derivation": "見出し語「гар чийдэн」"
+  },
+  {
+    "mongolian": "бэлэн мөнгө",
+    "japanese": "現金、キャッシュ",
+    "pronunciation": "ベレン モンゴ",
+    "pos": "名詞句",
+    "category": "お金・買い物",
+    "priority": "★★★",
+    "exampleMn": "Карт уншихгүй тул бэлэн мөнгөөр тооцоо хийлээ.",
+    "exampleJa": "カードが読み取れなかったため現金で決済しました。",
+    "note": "бэлэн（用意された・手元の）＋ мөнгө（お金）。",
+    "isVerb": false,
+    "dictForm": "бэлэн мөнгө",
+    "id": "v_note_85",
+    "derivation": "見出し語「бэлэн мөнгө」"
+  },
+  {
+    "mongolian": "цэцгийн тоосны харшил",
+    "japanese": "花粉症",
+    "pronunciation": "ツェツギーン トーソニー ハルシル",
+    "pos": "名詞句",
+    "category": "健康・医療",
+    "priority": "★★",
+    "exampleMn": "Хавар цэцгийн тоосны харшилтай хүмүүс найтааж, нулимс гоождог.",
+    "exampleJa": "春、花粉症の人はくしゃみが出たり涙が出たりします。",
+    "note": "цэцэг（花）＋ тоос（粉塵・花粉）＋ харшил（アレルギー）。",
+    "isVerb": false,
+    "dictForm": "цэцгийн тоосны харшил",
+    "id": "v_note_86",
+    "derivation": "見出し語「цэцгийн тоосны харшил」"
+  },
+  {
+    "mongolian": "үндэсний хувцас",
+    "japanese": "民族衣装（デール）",
+    "pronunciation": "ウンデスニー フウツァス",
+    "pos": "名詞句",
+    "category": "伝統・衣装",
+    "priority": "★★★",
+    "exampleMn": "Цагаан сараар бүгд өнгөлөг үндэсний хувцсаа өмсөн гоёдог.",
+    "exampleJa": "ツァガーンサルには皆が色鮮やかな民族衣装（デール）を着て着飾ります。",
+    "note": "үндэсний（民族の）＋ хувцас（衣服）。代表格は дээл（デール）。",
+    "isVerb": false,
+    "dictForm": "үндэсний хувцас",
+    "id": "v_note_87",
+    "derivation": "見出し語「үндэсний хувцас」"
+  },
+  {
+    "mongolian": "банштай цай",
+    "japanese": "バンシ入りミルクティー（モンゴル伝統軽食・鍋）",
+    "pronunciation": "バンシタイ ツァイ",
+    "pos": "名詞句",
+    "category": "伝統料理",
+    "priority": "★★★",
+    "exampleMn": "Өвлийн хүйтэнд халуун банштай цай уухад хамгийн тохиромжтой.",
+    "exampleJa": "冬の寒さには熱いバンシタイツァイを飲むのが最適です。",
+    "note": "熱々のスーテーツァイ（ミルクティー）に小ぶりな肉水餃子（банш）を入れて煮込んだ伝統料理。",
+    "isVerb": false,
+    "dictForm": "банштай цай",
+    "id": "v_note_88",
+    "derivation": "見出し語「банштай цай」"
+  },
+  {
+    "mongolian": "гурилтай шөл",
+    "japanese": "モンゴル風手延べうどんスープ",
+    "pronunciation": "グリルフタイ ショル",
+    "pos": "名詞句",
+    "category": "伝統料理",
+    "priority": "★★★",
+    "exampleMn": "Хонины мах, гар аргаар татсан гоймонтой гурилтай шөл маш амттай.",
+    "exampleJa": "羊肉と手打ち麺で作るうどんスープはとても美味しいです。",
+    "note": "羊肉スープに手延べ平打ち麺を入れた、モンゴルの家庭の定番ソウルフード。",
+    "isVerb": false,
+    "dictForm": "гурилтай шөл",
+    "id": "v_note_89",
+    "derivation": "見出し語「гурилтай шөл」"
+  },
+  {
+    "mongolian": "цахилгаан шат",
+    "japanese": "エレベーター、エスカレーター",
+    "pronunciation": "ツァヒルガーン シャト",
+    "pos": "名詞句",
+    "category": "建物・設備",
+    "priority": "★★★",
+    "exampleMn": "Хүнд ачаатай тул цахилгаан шатаар дээш гарлаа.",
+    "exampleJa": "重い荷物があるためエレベーターで上へ上がりました。",
+    "note": "цахилгаан（電気）＋ шат（階段・梯子）。",
+    "isVerb": false,
+    "dictForm": "цахилгаан шат",
+    "id": "v_note_90",
+    "derivation": "見出し語「цахилгаан шат」"
+  },
+  {
+    "mongolian": "чихэрлэг",
+    "japanese": "甘い、甘味のある",
+    "pronunciation": "チヘルレグ",
+    "pos": "形容詞",
+    "category": "味覚・飲食",
+    "priority": "★★",
+    "exampleMn": "Энэ ундаа дэндүү чихэрлэг тул уухад хэцүү байна.",
+    "exampleJa": "このジュースは甘すぎるので飲むのが大変です。",
+    "note": "чихэр（砂糖・飴）から派生した形容詞。",
+    "isVerb": false,
+    "dictForm": "чихэрлэг",
+    "id": "v_note_91",
+    "derivation": "見出し語「чихэрлэг」"
+  },
+  {
+    "mongolian": "биед муу",
+    "japanese": "体に悪い、健康に良くない",
+    "pronunciation": "ビエド ムー",
+    "pos": "形容詞句",
+    "category": "健康・医療",
+    "priority": "★★★",
+    "exampleMn": "Тамхи татах нь хүний биед маш муу.",
+    "exampleJa": "タバコを吸うことは人の体にとても悪いです。",
+    "note": "бие（体）の与位格（биед）＋ муу（悪い）。",
+    "isVerb": false,
+    "dictForm": "биед муу",
+    "id": "v_note_92",
+    "derivation": "見出し語「биед муу」"
+  },
+  {
+    "mongolian": "аймаар",
+    "japanese": "怖い、恐ろしい／（口語強調）マジで、ものすごく",
+    "pronunciation": "アイマール",
+    "pos": "形容詞/副詞",
+    "category": "感情・強調",
+    "priority": "★★★",
+    "exampleMn": "Өнөөдөр аймаар их цас орлоо!",
+    "exampleJa": "今日はマジで（ものすごく）大雪が降りました！",
+    "note": "本来は「恐ろしい」の意だが、若者言葉で英語の crazy/insanely や日本語の「マジで〜」と同じ強調副詞として頻用。",
+    "isVerb": false,
+    "dictForm": "аймаар",
+    "id": "v_note_93",
+    "derivation": "見出し語「аймаар」"
+  },
+  {
+    "mongolian": "зэрлэг",
+    "japanese": "野生の、手つかずの",
+    "pronunciation": "ゼルレグ",
+    "pos": "形容詞",
+    "category": "自然・動物",
+    "priority": "★★",
+    "exampleMn": "Зэрлэг ан амьтдыг хамгаалах ёстой.",
+    "exampleJa": "野生の鳥獣を守らなければなりません。",
+    "note": "飼いならされていない野生・原野の状態を表す語。",
+    "isVerb": false,
+    "dictForm": "зэрлэг",
+    "id": "v_note_94",
+    "derivation": "見出し語「зэрлэг」"
+  },
+  {
+    "mongolian": "дотно",
+    "japanese": "親しい、親密な、仲良しの",
+    "pronunciation": "ドトノ",
+    "pos": "形容詞",
+    "category": "人間関係",
+    "priority": "★★★",
+    "exampleMn": "Тэр бид хоёр багаасаа дотно найзууд байсан.",
+    "exampleJa": "彼と私は子どもの頃から親しい友達でした。",
+    "note": "дотно харилцаа（親密な関係）。",
+    "isVerb": false,
+    "dictForm": "дотно",
+    "id": "v_note_95",
+    "derivation": "見出し語「дотно」"
+  },
+  {
+    "mongolian": "зэргэлдээ",
+    "japanese": "隣接した、隣の、並びの",
+    "pronunciation": "ゼルゲルデー",
+    "pos": "形容詞/副詞",
+    "category": "位置・空間",
+    "priority": "★★",
+    "exampleMn": "Бид зэргэлдээ байранд амьдардаг.",
+    "exampleJa": "私たちは隣のアパートに住んでいます。",
+    "note": "すぐ隣にあること。",
+    "isVerb": false,
+    "dictForm": "зэргэлдээ",
+    "id": "v_note_96",
+    "derivation": "見出し語「зэргэлдээ」"
+  },
+  {
+    "mongolian": "найрсаг",
+    "japanese": "親切な、友好的な、温かい",
+    "pronunciation": "ナイルサグ",
+    "pos": "形容詞",
+    "category": "性格・態度",
+    "priority": "★★★",
+    "exampleMn": "Монголын хүмүүс тун найрсаг угтаж авав.",
+    "exampleJa": "モンゴルの人々はとても親切に出迎えてくれました。",
+    "note": "найрсаг зан（親切なもてなしの心）。",
+    "isVerb": false,
+    "dictForm": "найрсаг",
+    "id": "v_note_97",
+    "derivation": "見出し語「найрсаг」"
+  },
+  {
+    "mongolian": "чийгтэй",
+    "japanese": "湿った、湿気のある、じめじめした",
+    "pronunciation": "チーグテイ",
+    "pos": "形容詞",
+    "category": "気候・天気",
+    "priority": "★★",
+    "exampleMn": "Борооны дараа агаар чийгтэй болсон.",
+    "exampleJa": "雨の後、空気が湿っぽくなりました。",
+    "note": "чийг（湿気）＋ -тэй。対義語は хуурай（乾燥した）。",
+    "isVerb": false,
+    "dictForm": "чийгтэй",
+    "id": "v_note_98",
+    "derivation": "見出し語「чийгтэй」"
+  },
+  {
+    "mongolian": "алтлаг",
+    "japanese": "金色の、黄金の",
+    "pronunciation": "アルトラグ",
+    "pos": "形容詞",
+    "category": "色彩",
+    "priority": "★★",
+    "exampleMn": "Алтлаг шаргал өнгөтэй навчис газарт унажээ.",
+    "exampleJa": "黄金色の落ち葉が地面に舞い落ちています。",
+    "note": "алт（金・ゴールド）から派生した色合いの語。",
+    "isVerb": false,
+    "dictForm": "алтлаг",
+    "id": "v_note_99",
+    "derivation": "見出し語「алтлаг」"
+  },
+  {
+    "mongolian": "хөнгөн",
+    "japanese": "軽い",
+    "pronunciation": "ホンゴン",
+    "pos": "形容詞",
+    "category": "重量・性質",
+    "priority": "★★★",
+    "exampleMn": "Энэ пальто хөнгөн боловч маш дулаахан.",
+    "exampleJa": "このコートは軽いですがとても暖かいです。",
+    "note": "対義語は хүнд（重い）。",
+    "isVerb": false,
+    "dictForm": "хөнгөн",
+    "id": "v_note_100",
+    "derivation": "見出し語「хөнгөн」"
+  },
+  {
+    "mongolian": "цав цагаан",
+    "japanese": "真っ白な、純白の",
+    "pronunciation": "ツァウ ツァガーン",
+    "pos": "強調形容詞",
+    "category": "色彩・強調",
+    "priority": "★★",
+    "exampleMn": "Шинээр орсон цас тал нутгийг цав цагаан болголоо.",
+    "exampleJa": "新雪が草原を真っ白に染め上げました。",
+    "note": "цагаан（白い）の語頭音節重複による強調形（цав цагаан）。",
+    "isVerb": false,
+    "dictForm": "цав цагаан",
+    "id": "v_note_101",
+    "derivation": "見出し語「цав цагаан」"
+  },
+  {
+    "mongolian": "хав хар",
+    "japanese": "真っ黒な",
+    "pronunciation": "ハウ ハル",
+    "pos": "強調形容詞",
+    "category": "色彩・強調",
+    "priority": "★★",
+    "exampleMn": "Тэр охин хав хар нүдтэй.",
+    "exampleJa": "その少女は真っ黒な瞳をしています。",
+    "note": "хар（黒い）の強調形（хав хар）。",
+    "isVerb": false,
+    "dictForm": "хав хар",
+    "id": "v_note_102",
+    "derivation": "見出し語「хав хар」"
+  },
+  {
+    "mongolian": "намхан",
+    "japanese": "背が低い、低い",
+    "pronunciation": "ナムハン",
+    "pos": "形容詞",
+    "category": "身長・高さ",
+    "priority": "★★",
+    "exampleMn": "Тэр дүүгээсээ жаахан намхан.",
+    "exampleJa": "彼は弟より少し背が低いです。",
+    "note": "対義語は өндөр（高い・背が高い）。",
+    "isVerb": false,
+    "dictForm": "намхан",
+    "id": "v_note_103",
+    "derivation": "見出し語「намхан」"
+  },
+  {
+    "mongolian": "төвөгтэй",
+    "japanese": "厄介な、面倒な、複雑な",
+    "pronunciation": "トウォグテイ",
+    "pos": "形容詞",
+    "category": "感情・評価",
+    "priority": "★★",
+    "exampleMn": "Олон шат дамжлагатай тул их төвөгтэй ажил байна.",
+    "exampleJa": "手続きが多くてとても面倒な仕事です。",
+    "note": "төвөг（面倒・厄介）＋ -тэй。",
+    "isVerb": false,
+    "dictForm": "төвөгтэй",
+    "id": "v_note_104",
+    "derivation": "見出し語「төвөгтэй」"
+  },
+  {
+    "mongolian": "нөхөрсөг",
+    "japanese": "親しみやすい、気さくな、フレンドリーな",
+    "pronunciation": "ノホルソグ",
+    "pos": "形容詞",
+    "category": "性格・人間関係",
+    "priority": "★★★",
+    "exampleMn": "Манай багийнхан бүгд нөхөрсөг хүмүүс.",
+    "exampleJa": "私たちのチームのメンバーは全員親しみやすい人たちです。",
+    "note": "нөхөр（友・仲間）から派生した温かい人柄を表す語。",
+    "isVerb": false,
+    "dictForm": "нөхөрсөг",
+    "id": "v_note_105",
+    "derivation": "見出し語「нөхөрсөг」"
+  },
+  {
+    "mongolian": "ажилсаг",
+    "japanese": "働き者の、勤勉な",
+    "pronunciation": "アジルサグ",
+    "pos": "形容詞",
+    "category": "性格・仕事",
+    "priority": "★★★",
+    "exampleMn": "Тэр маш ажилсаг залуу тул хүн бүр түүнд дуртай.",
+    "exampleJa": "彼はとても働き者の青年なので、皆彼を気に入っています。",
+    "note": "ажил（仕事）から派生。勤勉でよく働くこと。",
+    "isVerb": false,
+    "dictForm": "ажилсаг",
+    "id": "v_note_106",
+    "derivation": "見出し語「ажилсаг」"
+  },
+  {
+    "mongolian": "хөөрхөн",
+    "japanese": "かわいい、愛らしい",
+    "pronunciation": "ホールホン",
+    "pos": "形容詞",
+    "category": "外見・印象",
+    "priority": "★★★",
+    "exampleMn": "Ямар хөөрхөн муурын зулзага вэ!",
+    "exampleJa": "なんてかわいい子猫なんでしょう！",
+    "note": "子どもや小動物、愛らしい物に対して最もよく使われる表現。",
+    "isVerb": false,
+    "dictForm": "хөөрхөн",
+    "id": "v_note_107",
+    "derivation": "見出し語「хөөрхөн」"
+  },
+  {
+    "mongolian": "аль болох",
+    "japanese": "できるだけ、なるべく",
+    "pronunciation": "アリ ボロホ",
+    "pos": "副詞句",
+    "category": "頻度・程度",
+    "priority": "★★★",
+    "exampleMn": "Аль болох олон үг тогтоохыг хичээж байна.",
+    "exampleJa": "できるだけたくさんの単語を覚えるよう努力しています。",
+    "note": "英語の as much as possible に相当する必須表現。",
+    "isVerb": false,
+    "dictForm": "аль болох",
+    "id": "v_note_108",
+    "derivation": "見出し語「аль болох」"
+  },
+  {
+    "mongolian": "ялангуяа",
+    "japanese": "特に、とりわけ",
+    "pronunciation": "ヤラングヤ",
+    "pos": "副詞",
+    "category": "強調",
+    "priority": "★★★",
+    "exampleMn": "Өвлийн улиралд, ялангуяа нэгдүгээр сард маш хүйтэрдэг.",
+    "exampleJa": "冬、とりわけ1月は非常に冷え込みます。",
+    "note": "英語の especially。特定のものを取り立てて強調する副詞。",
+    "isVerb": false,
+    "dictForm": "ялангуяа",
+    "id": "v_note_109",
+    "derivation": "見出し語「ялангуяа」"
+  },
+  {
+    "mongolian": "үнэндээ",
+    "japanese": "実は、本当は",
+    "pronunciation": "ウネンデー",
+    "pos": "接続詞/副詞",
+    "category": "日常会話フレーズ",
+    "priority": "★★★",
+    "exampleMn": "Үнэндээ би өмнө нь морь унаж үзээгүй.",
+    "exampleJa": "実は私はこれまで馬に乗ったことがありません。",
+    "note": "英語の Actually に相当。本音や意外な事実を打ち明ける口語フレーズ。",
+    "isVerb": false,
+    "dictForm": "үнэндээ",
+    "id": "v_note_110",
+    "derivation": "見出し語「үнэндээ」"
+  },
+  {
+    "mongolian": "зүгээр л",
+    "japanese": "ただ、単に（〜だけ）",
+    "pronunciation": "ズゲール ル",
+    "pos": "副詞句",
+    "category": "日常会話フレーズ",
+    "priority": "★★★",
+    "exampleMn": "Би зүгээр л санаагаа хэлсэн юм.",
+    "exampleJa": "私はただ自分の考えを言ってみただけです。",
+    "note": "英語の Just。理由や意図を軽く添える便利な会話表現。",
+    "isVerb": false,
+    "dictForm": "зүгээр л",
+    "id": "v_note_111",
+    "derivation": "見出し語「зүгээр л」"
+  },
+  {
+    "mongolian": "хангалттай",
+    "japanese": "十分、足りている",
+    "pronunciation": "ハンガルトライ",
+    "pos": "形容詞/副詞",
+    "category": "日常会話フレーズ",
+    "priority": "★★★",
+    "exampleMn": "Бидэнд бэлтгэл хийх хангалттай хугацаа байна.",
+    "exampleJa": "私たちには準備をするための十分な時間があります。",
+    "note": "英語の Enough。量や程度が十分であることを表す。",
+    "isVerb": false,
+    "dictForm": "хангалттай",
+    "id": "v_note_112",
+    "derivation": "見出し語「хангалттай」"
+  },
+  {
+    "mongolian": "түүнээс бусад нь",
+    "japanese": "それ以外は",
+    "pronunciation": "トゥーネース ブサド ニ",
+    "pos": "接続詞句",
+    "category": "日常会話フレーズ",
+    "priority": "★★",
+    "exampleMn": "Түүнээс бусад нь бүгд цагтаа ирцгээсэн.",
+    "exampleJa": "それ以外は皆時間通りにやって来ました。",
+    "note": "英語の Other than that。例外を除いた全体を指す表現。",
+    "isVerb": false,
+    "dictForm": "түүнээс бусад нь",
+    "id": "v_note_113",
+    "derivation": "見出し語「түүнээс бусад нь」"
+  },
+  {
+    "mongolian": "тийм ээ, яг тийм",
+    "japanese": "うん、まさにその通り",
+    "pronunciation": "ティーム エー ヤグ ティーム",
+    "pos": "感嘆詞句",
+    "category": "日常会話フレーズ",
+    "priority": "★★★",
+    "exampleMn": "Тийм ээ, яг тийм зүйл тохиолдсон.",
+    "exampleJa": "うん、まさにその通りのことが起きました。",
+    "note": "相手への強い同意を表す定番の相槌フレーズ。",
+    "isVerb": false,
+    "dictForm": "тийм ээ, яг тийм",
+    "id": "v_note_114",
+    "derivation": "見出し語「тийм ээ, яг тийм」"
+  },
+  {
+    "mongolian": "би ч бас тэгж бодсон",
+    "japanese": "私もそう思いました",
+    "pronunciation": "ビ チ バス テグジ ボドソン",
+    "pos": "会話文",
+    "category": "日常会話フレーズ",
+    "priority": "★★★",
+    "exampleMn": "Би ч бас тэгж бодож байсан юм.",
+    "exampleJa": "私もまさにそう考えていたところでした。",
+    "note": "相手の意見に共感する定番フレーズ（That's what I thought）。",
+    "isVerb": false,
+    "dictForm": "би ч бас тэгж бодсон",
+    "id": "v_note_115",
+    "derivation": "見出し語「би ч бас тэгж бодсон」"
+  },
+  {
+    "mongolian": "тэр үед",
+    "japanese": "その時、当時",
+    "pronunciation": "テル ウエド",
+    "pos": "副詞句",
+    "category": "時間",
+    "priority": "★★★",
+    "exampleMn": "Тэр үед би япон хэлний багш хийж байв.",
+    "exampleJa": "その当時、私は日本語教師をしていました。",
+    "note": "過去の特定の時点を指す表現（At that time）。",
+    "isVerb": false,
+    "dictForm": "тэр үед",
+    "id": "v_note_116",
+    "derivation": "見出し語「тэр үед」"
+  },
+  {
+    "mongolian": "тэрнээс болоод",
+    "japanese": "そのせいで、それが原因で",
+    "pronunciation": "テルネース ボロード",
+    "pos": "接続詞句",
+    "category": "日常会話フレーズ",
+    "priority": "★★",
+    "exampleMn": "Түгжрэл их байсан, тэрнээс болоод хоцорчихлоо.",
+    "exampleJa": "渋滞がひどく、そのせいで遅刻してしまいました。",
+    "note": "因果関係・原因（〜のせいで）を説明する口語表現。",
+    "isVerb": false,
+    "dictForm": "тэрнээс болоод",
+    "id": "v_note_117",
+    "derivation": "見出し語「тэрнээс болоод」"
+  },
+  {
+    "mongolian": "биеэ бодоорой",
+    "japanese": "お体に気をつけて、ご自愛ください",
+    "pronunciation": "ビエエ ボドーロイ",
+    "pos": "挨拶/慣用句",
+    "category": "日常挨拶",
+    "priority": "★★★",
+    "exampleMn": "Хүйтэрч байна, дулаан хувцаслаад биеэ бодоорой!",
+    "exampleJa": "寒くなってきましたので、暖かくしてお体に気をつけてくださいね！",
+    "note": "別れ際や手紙・メールの結びで健康を気遣う定番の温かい挨拶言葉。",
+    "isVerb": false,
+    "dictForm": "биеэ бодоорой",
+    "id": "v_note_118",
+    "derivation": "見出し語「биеэ бодоорой」"
   }
 ];
 
@@ -20228,6 +22028,10 @@ const initialTypingSentences = [
 ];
 
 const typingSentences = initialTypingSentences;
+if (typeof window !== 'undefined') {
+  window.typingSentences = initialTypingSentences;
+  window.initialTypingSentences = initialTypingSentences;
+}
 
 
 
@@ -20855,7 +22659,700 @@ const roleplayScenarios = [
         ]
       }
     ]
-  }
+  },
+{
+  "id": "jica_self_intro",
+  "title": "口述試験① 自己紹介 (Өөрийнхөө тухай)",
+  "category": "interview",
+  "icon": "🎓",
+  "description": "派遣前口述試験・自己紹介対策。名前、年齢、草加市出身、犯罪学専攻、趣味、活動への意欲をスラスラ答える！",
+  "initialPrompt": "派遣前モンゴル語口述試験の面接室に入りました。面接官の先生が自己紹介を促します。",
+  "character": {
+    "name": "Ярилцлагын багш (面接官)",
+    "avatar": "👨‍🏫"
+  },
+  "steps": [
+    {
+      "npcText": "Сайн байна уу? Та өөрийгөө товч танилцуулна уу.",
+      "npcMeaning": "こんにちは。自己紹介を簡潔にお願いします。",
+      "options": [
+        {
+          "text": "Сайн байна уу? Намайг Кахо гэдэг. Би 22 настай. Би Японы Сайтама мужийн Сока хотоос ирсэн.",
+          "meaning": "こんにちは。私の名前はカホです。22歳です。日本の埼玉県草加市出身です。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧です！名前、年齢、出身地を正確かつ流暢に伝えられました。"
+        },
+        {
+          "text": "Би оюутан. Сокад амьдардаг.",
+          "meaning": "私は学生です。草加に住んでいます。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "通じますが、挨拶、名前、年齢を含めて礼儀正しく話すと高得点です。"
+        },
+        {
+          "text": "Миний нэр Сока.",
+          "meaning": "私の名前は草加です。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "名前と出身地の草加が混ざってしまっています！「Намайг Кахо гэдэг」と名乗りましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Та их сургуульд ямар мэргэжлээр сурсан бэ? Сонирхдог зүйл юу вэ?",
+      "npcMeaning": "大学では何を専攻して学びましたか？関心のあることは何ですか？",
+      "options": [
+        {
+          "text": "Би их сургуульд криминологи сурсан. Би гэмт хэрэг, хүүхэд, нийгмийн асуудлыг сонирхдог.",
+          "meaning": "大学で犯罪学を学びました。犯罪、子ども、社会問題に関心があります。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！専攻（криминологи）と関心分野（нийгмийн асуудал）を堂々と答えられました。"
+        },
+        {
+          "text": "Би төгөлдөр хуур тоглох дуртай.",
+          "meaning": "ピアノを弾くのが好きです。",
+          "isBest": false,
+          "score": 6,
+          "feedback": "趣味としては良いですが、まずは大学の専攻（криминологи）について答えましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Чөлөөт цагаараа юу хийх дуртай вэ? Монголд очоод юу хийхийг хүсэж байна?",
+      "npcMeaning": "自由な時間には何をするのが好きですか？モンゴルに行って何をしたいですか？",
+      "options": [
+        {
+          "text": "Би төгөлдөр хуур тоглох, дуу дуулах, хоол хийх дуртай. Монголд очоод монгол хэлээр сайн ярьдаг болохыг хүсэж байна.",
+          "meaning": "ピアノ、歌、料理が好きです。モンゴルに行ってモンゴル語を上手に話せるようになりたいです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！趣味とモンゴルでの言語上達への意欲が生き生きと伝わります。"
+        },
+        {
+          "text": "Юу ч хийдэггүй.",
+          "meaning": "何もしていません。",
+          "isBest": false,
+          "score": 1,
+          "feedback": "面接では趣味や意欲を積極的にアピールしましょう！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "jica_family",
+  "title": "口述試験② 家族について (Гэр бүлийнхээ тухай)",
+  "category": "interview",
+  "icon": "👨‍👩‍👧‍👦",
+  "description": "5人家族（祖母、両親、一人暮らしの兄、本人）について、年齢や仕事、家族の仲の良さを説明する！",
+  "initialPrompt": "面接官があなたの家族について質問してきました。",
+  "character": {
+    "name": "Ярилцлагын багш (面接官)",
+    "avatar": "👨‍🏫"
+  },
+  "steps": [
+    {
+      "npcText": "Танай гэр бүл хэдэн хүнтэй вэ? Хэнтэйгээ амьдардаг вэ?",
+      "npcMeaning": "ご家族は何人ですか？誰と一緒に暮らしていますか？",
+      "options": [
+        {
+          "text": "Манай гэр бүл таван хүнтэй. Эмээ, аав, ээж, ах, бид тавуулаа. Гэхдээ ах маань одоо тусдаа амьдардаг.",
+          "meaning": "5人家族です。祖母、父、母、兄、私の5人です。ただ兄は現在一人暮らしをしています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "見事です！集合数詞「тавуулаа（5人で）」と「тусдаа амьдардаг（別々に住んでいる）」が完璧です。"
+        },
+        {
+          "text": "Таван хүн байна. Аав, ээж.",
+          "meaning": "5人です。父、母。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "通じますが、家族の構成員（эмээ, ах）も具体的に挙げるとさらに説得力が増します。"
+        }
+      ]
+    },
+    {
+      "npcText": "Гэр бүлийнхэн чинь юу хийдэг вэ? Хоорондоо ямар харилцаатай вэ?",
+      "npcMeaning": "ご家族の皆さんは何をされていますか？家族の仲はどうですか？",
+      "options": [
+        {
+          "text": "Аав, ээж хоёр маань ажилладаг. Бид маш дотно, халуун дулаан уур амьсгалтай гэр бүл.",
+          "meaning": "両親は働いています。私たちはとても親密で温かい雰囲気の家族です。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！「дотно（親密な）」「халуун дулаан（温かい）」という豊かな表現を使えました。"
+        },
+        {
+          "text": "Гэр бүл сайн байна.",
+          "meaning": "家族は元気です。",
+          "isBest": false,
+          "score": 6,
+          "feedback": "家族の関係性について「Бид их дотно（私たちはとても仲が良い）」と具体的に描写しましょう。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "jica_hometown",
+  "title": "口述試験③ 出身地について (Төрсөн нутгийнхаа тухай)",
+  "category": "interview",
+  "icon": "🍘",
+  "description": "埼玉県草加市について。東京近郊の便利さ、名物の草加せんべい、美しい松並木をモンゴル語で語る！",
+  "initialPrompt": "面接官があなたの生まれ育った故郷・草加市について尋ねてきました。",
+  "character": {
+    "name": "Ярилцлагын багш (面接官)",
+    "avatar": "👨‍🏫"
+  },
+  "steps": [
+    {
+      "npcText": "Таны төрсөн нутаг хаана вэ? Ямар онцлогтой хот вэ?",
+      "npcMeaning": "あなたの出身地はどこですか？どのような特徴のある街ですか？",
+      "options": [
+        {
+          "text": "Би Сайтама мужийн Сока хотод төрсөн. Токио хоттой ойрхон, амьдрахад тун таатай сайхан газар.",
+          "meaning": "埼玉県草加市出身です。東京に近く、暮らすのにとても快適で良い場所です。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "的確です！東京との位置関係（Токиотой ойрхон）と住みやすさをしっかり説明できています。"
+        },
+        {
+          "text": "Сока бол хот юм.",
+          "meaning": "草加は街です。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "特徴や魅力をもう少し詳しく付け加えましょう！"
+        }
+      ]
+    },
+    {
+      "npcText": "Сока хот юугаараа алдартай вэ?",
+      "npcMeaning": "草加市は何で有名ですか？",
+      "options": [
+        {
+          "text": "Сока сэнбэй буюу цагаан будааны шаржигнасан жигнэмэгээрээ маш алдартай. Бас голын дагуух нарс модод үзэсгэлэнтэй.",
+          "meaning": "草加せんべい（お米の香ばしいお菓子）でとても有名です。また川沿いの松並木も美しいです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "最高の説明です！せんべいの特徴と松並木（нарс модод）の情景が目に浮かびます。"
+        },
+        {
+          "text": "Сэнбэйгээр алдартай.",
+          "meaning": "せんべいで有名です。",
+          "isBest": false,
+          "score": 7,
+          "feedback": "正しいですが、モンゴル人面接官向けにせんべいがどんなものか（будааны жигнэмэг）を補足すると抜群です。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "jica_training_center",
+  "title": "口述試験④ 二本松訓練所生活 (Нихонмацүгийн амьдрал)",
+  "category": "interview",
+  "icon": "⏰",
+  "description": "朝6:30起床、7:40朝食、8:45授業開始。規則正しい生活とモンゴル語集中特訓の日々を説明！",
+  "initialPrompt": "二本松訓練所（NTC）での毎日の生活スケジュールについて聞かれます。",
+  "character": {
+    "name": "Ярилцлагын багш (面接官)",
+    "avatar": "👨‍🏫"
+  },
+  "steps": [
+    {
+      "npcText": "Нихонмацү сургалтын төвд өдрийг яаж өнгөрүүлдэг вэ? Хуваариа ярина уу.",
+      "npcMeaning": "二本松訓練センターではどのように一日を過ごしていますか？時間割を話してください。",
+      "options": [
+        {
+          "text": "Бид өглөө 6:30-д босоод, 7:40-д өглөөний цайгаа уудаг. 8:45-аас хичээл эхэлж өдөржин монгол хэл давтдаг.",
+          "meaning": "私たちは朝6:30に起き、7:40に朝食をとります。8:45から授業が始まり一日中モンゴル語を練習します。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "パーフェクト！具体的な時間表現（6:30-д, 8:45-аас）と「өдөржин（一日中）」が的確に使えています。"
+        },
+        {
+          "text": "Өглөө эрт босдог. Орой унтдаг.",
+          "meaning": "朝早く起きます。夜寝ます。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "大まかすぎます！何時に起きて何時に授業が始まるか時間を明示しましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Монгол хэл сурах ямар байна вэ?",
+      "npcMeaning": "モンゴル語を学ぶのはどうですか？",
+      "options": [
+        {
+          "text": "Монгол хэлний дүрэм, дуудлага хэцүү боловч маш сонирхолтой. Өдөр бүр шинэ үг сурахдаа баяртай байдаг.",
+          "meaning": "モンゴル語の文法や発音は難しいですが、とても面白いです。毎日新しい単語を学ぶのが楽しいです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "前向きで意欲溢れる素晴らしい回答です！"
+        },
+        {
+          "text": "Маш хэцүү, нойр хүрч байна.",
+          "meaning": "とても難しく、眠くなります。",
+          "isBest": false,
+          "score": 3,
+          "feedback": "本音かもしれませんが（笑）、試験では学習への前向きな姿勢を表現しましょう！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "jica_dornod_assignment",
+  "title": "口述試験⑤ ドルノド県での活動 (Дорнод аймаг дахь ажил)",
+  "category": "interview",
+  "icon": "🌏",
+  "description": "ドルノド県チョイバルサン市への派遣。青少年の健全育成、放課後活動の企画、自信を持たせる支援！",
+  "initialPrompt": "派遣先であるドルノド県チョイバルサンでの活動内容についての質問です。",
+  "character": {
+    "name": "Ярилцлагын багш (面接官)",
+    "avatar": "👨‍🏫"
+  },
+  "steps": [
+    {
+      "npcText": "Та Монголд хаана ажиллах вэ? Ямар ажил хийхээр төлөвлөж байна вэ?",
+      "npcMeaning": "あなたはモンゴルのどこで活動しますか？どのような活動を予定していますか？",
+      "options": [
+        {
+          "text": "Би Дорнод аймгийн Чойбалсан хотод хүүхэд, залуучуудын хөгжлийн төвд ажиллана. Хүүхдүүдэд олон талт арга хэмжээ зохион байгуулж тусална.",
+          "meaning": "ドルノド県チョイバルサン市の子ども・青少年の育成センターで活動します。子どもたちに多様な活動を企画して支援します。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！派遣先（Дорнод аймаг, Чойбалсан）と活動内容を自信を持って答えられました。"
+        },
+        {
+          "text": "Монголд хүүхдүүдтэй ажиллана.",
+          "meaning": "モンゴルで子どもたちと活動します。",
+          "isBest": false,
+          "score": 6,
+          "feedback": "県名（Дорнод аймаг）や都市名（Чойбалсан）を明確に述べると信頼感が高まります。"
+        }
+      ]
+    },
+    {
+      "npcText": "Хүүхдүүдэд ямар туслалцаа үзүүлэхийг зорьж байна вэ?",
+      "npcMeaning": "子どもたちにどのような支援を提供することを目指していますか？",
+      "options": [
+        {
+          "text": "Хүүхдүүд чөлөөт цагаа үр дүнтэй өнгөрүүлж, өөртөө итгэх итгэлтэй болоход нь дэмжлэг үзүүлэхийг хүсэж байна.",
+          "meaning": "子どもたちが自由時間を有意義に過ごし、自分に自信を持てるよう支援したいと考えています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！「өөртөө итгэх итгэл（自己肯定感・自信）」を育むという青年海外協力隊の理念に合致しています。"
+        },
+        {
+          "text": "Зүгээр л тоглоно.",
+          "meaning": "ただ遊びます。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "遊びを通じた成長や自信の育成など、支援の目的を言語化しましょう。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "jica_weekend_plans",
+  "title": "口述試験⑥ 休日にしたいこと (Амралтын төлөвлөгөө)",
+  "category": "interview",
+  "icon": "🐎",
+  "description": "ボーズ作り、大草原での乗馬体験、遊牧民のゲル宿泊、馬頭琴やホーミー鑑賞など、休日の文化体験！",
+  "initialPrompt": "面接官がモンゴル滞在中の休日や余暇の過ごし方について質問します。",
+  "character": {
+    "name": "Ярилцлагын багш (面接官)",
+    "avatar": "👨‍🏫"
+  },
+  "steps": [
+    {
+      "npcText": "Та Монголд байхдаа амралтын өдрүүдээрээ юу хийхийг хүсэж байна вэ?",
+      "npcMeaning": "モンゴル滞在中、休日はどんなことをして過ごしたいですか？",
+      "options": [
+        {
+          "text": "Нутгийн хүмүүстэй хамт бууз, хуушуур хийж сурмаар байна. Бас хээр талд морь унаж, гэр буудалд хонохыг хүсэж байна.",
+          "meaning": "現地の人々と一緒にボーズやホーショールを作ってみたいです。また草原で馬に乗り、ゲルに泊まってみたいです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！料理（бууз, хуушуур）、乗馬（морь унах）、ゲル宿泊（гэрт хонох）と具体的で文化的です。"
+        },
+        {
+          "text": "Гэртээ унтана.",
+          "meaning": "家で寝ます。",
+          "isBest": false,
+          "score": 3,
+          "feedback": "休養も大切ですが、現地文化に積極的に触れる意欲をアピールしましょう！"
+        }
+      ]
+    },
+    {
+      "npcText": "Монголын уламжлалт урлагаас юу сонирхож байна вэ?",
+      "npcMeaning": "モンゴルの伝統芸術の中で何に興味がありますか？",
+      "options": [
+        {
+          "text": "Би морин хуурын уянгалаг аялгуу, хөөмийн гайхамшигт дуугаралтыг биечлэн сонсох дуртай.",
+          "meaning": "馬頭琴の美しいメロディと、ホーミーの素晴らしい歌声を直に聴くのが楽しみです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "見事です！馬頭琴（морин хуур）とホーミー（хөөмий）への関心は面接官に大変好印象を与えます。"
+        },
+        {
+          "text": "Мэдэхгүй байна.",
+          "meaning": "よく知りません。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "モンゴルを代表する「морин хуур」や「хөөмий」を挙げてみましょう。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "jica_facts_interview",
+  "title": "口述試験⑦ ЖАЙКАについて (ЖАЙКА-ийн тухай)",
+  "category": "interview",
+  "icon": "🏢",
+  "description": "ЖАЙКА設立（1974年）、モンゴル派遣開始（1992年4月）、累計派遣実績758名、ボランティア志望理由！",
+  "initialPrompt": "ЖАЙКАの歴史や活動実績、なぜ志望したのかという核心的な質問です。",
+  "character": {
+    "name": "Ярилцлагын багш (面接官)",
+    "avatar": "👨‍🏫"
+  },
+  "steps": [
+    {
+      "npcText": "ЖАЙКА хэдэн онд байгуулагдсан бэ? Монголд анх хэзээ сайн дурын гишүүн ирсэн бэ?",
+      "npcMeaning": "ЖАЙКА（海外協力隊）は何年に設立されましたか？モンゴルに最初の隊員が来たのはいつですか？",
+      "options": [
+        {
+          "text": "ЖАЙКА нь 1974 онд байгуулагдсан. Монголд 1992 оны 4 дүгээр сард анхны хоёр сайн дурын гишүүн ирсэн.",
+          "meaning": "ЖАЙКАは1974年に設立されました。モンゴルには1992年4月に最初の隊員2名が派遣されました。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧な知識です！1974年設立、1992年4月の最初の2名派遣を正確に答えられました。"
+        },
+        {
+          "text": "Саяхан байгуулагдсан гэж бодож байна.",
+          "meaning": "最近設立されたと思います。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "ЖАЙКАは1974年設立、モンゴル派遣は1992年4月開始です。数字をしっかり頭に入れておきましょう！"
+        }
+      ]
+    },
+    {
+      "npcText": "Та яагаад ЖАЙКА-ийн сайн дурын гишүүн болохоор шийдсэн бэ?",
+      "npcMeaning": "あなたはなぜЖАЙКАのボランティア隊員になろうと決めたのですか？",
+      "options": [
+        {
+          "text": "Би бусад хүмүүст тусалж, өөр соёлоос суралцахыг хүсдэг. Харилцан ойлголцлыг гүнзгийрүүлж, хоёр орны гүүр болохыг зорьж байна.",
+          "meaning": "他者を助け、異文化から学びたいからです。相互理解を深め、両国の架け橋になることを目指しています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点の志望動機です！「харилцан ойлголцол（相互理解）」と「гүүр болох（架け橋になる）」は最高のキーワードです。"
+        },
+        {
+          "text": "Монголд явж үзэхийг хүссэн учраас.",
+          "meaning": "モンゴルに行って見たかったからです。",
+          "isBest": false,
+          "score": 6,
+          "feedback": "観光ではなく、相互学習と支援の意義を伝えると面接官の心が動きます！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "hospital_visit",
+  "title": "病院にて (Эмнэлэгт)",
+  "category": "medical",
+  "icon": "🏥",
+  "description": "医師との問診。「どこが痛みますか？」「昨日から頭と喉が痛く、微熱があります」などの病状説明！",
+  "initialPrompt": "体調を崩してウランバートルのクリニックを訪れました。医師が診察室で問診を始めます。",
+  "character": {
+    "name": "Эмч (医師)",
+    "avatar": "👨‍⚕️"
+  },
+  "steps": [
+    {
+      "npcText": "Сайн байна уу? Таны бие хаагуураа өвдөж байна вэ?",
+      "npcMeaning": "こんにちは。お体のどこが痛みますか？どこがお悪いですか？",
+      "options": [
+        {
+          "text": "Сайн байна уу? Өчигдрөөс толгой болон хоолой их өвдөж байна.",
+          "meaning": "こんにちは。昨日から頭と喉がとても痛みます。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "痛む部位（толгой, хоолой）と発症時期（өчигдрөөс）を明瞭に伝えられました。"
+        },
+        {
+          "text": "Би ядарч байна.",
+          "meaning": "疲れています。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "疲労だけでなく、痛む場所（толгой өвдөх など）を具体的に言いましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Халуурч байна уу? Ханиалгаж байна уу?",
+      "npcMeaning": "熱はありますか？咳は出ていますか？",
+      "options": [
+        {
+          "text": "Тийм ээ, бага зэрэг халуурч, ханиалгаж байна.",
+          "meaning": "はい、少し熱があり、咳も出ています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧です！「бага зэрэг（少し）」を使って正確な病状を伝えられました。"
+        },
+        {
+          "text": "Мэдэхгүй.",
+          "meaning": "わかりません。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "「Бага зэрэг халуурч байна（微熱があります）」など自分の体感を伝えましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "За, энэ эмийг өдөрт гурван удаа хоолны дараа уугаарай. Сайн амраарай.",
+      "npcMeaning": "では、この薬を1日3回食後に飲んでくださいね。よく休んでください。",
+      "options": [
+        {
+          "text": "Ойлголоо. Маш их баярлалаа, эмч ээ.",
+          "meaning": "わかりました。先生、本当にありがとうございました。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "医師への敬意を込めた丁寧なお礼の言葉です。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "store_shopping",
+  "title": "お店で買い物 (Дэлгүүрт)",
+  "category": "shopping",
+  "icon": "🛍️",
+  "description": "「これはいくらですか？」「もう少し安いものはありますか？」「これをください」の実践買い物会話！",
+  "initialPrompt": "お土産屋さんでフェルト製品や日用品を見ています。店員さんに声をかけます。",
+  "character": {
+    "name": "Худалдагч (店員さん)",
+    "avatar": "👩‍💼"
+  },
+  "steps": [
+    {
+      "npcText": "Сайн байна уу? Танд юугаар туслах вэ?",
+      "npcMeaning": "いらっしゃいませ。何かお探しですか？",
+      "options": [
+        {
+          "text": "Сайн байна уу? Энэ ноолууран ороолт хэдэн төгрөг вэ?",
+          "meaning": "こんにちは。このカシミヤマフラーはいくらですか？",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！「хэдэн төгрөг вэ?（いくらですか？）」は買い物で最も使う最重要フレーズです。"
+        },
+        {
+          "text": "Энэ ямар үнэтэй вэ?",
+          "meaning": "これはどんな値段ですか？",
+          "isBest": true,
+          "score": 9,
+          "feedback": "こちらも自然に通じる良い聞き方です！"
+        }
+      ]
+    },
+    {
+      "npcText": "Энэ нь 80000 төгрөг. Маш сайн чанарын цэвэр ноолуур шүү.",
+      "npcMeaning": "こちらは80,000トゥグルグです。とても上質な純カシミヤですよ。",
+      "options": [
+        {
+          "text": "Арай хямдхан зүйл байна уу?",
+          "meaning": "もう少し安いものはありますか？",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧です！「Арай хямдхан зүйл байна уу?（もう少し安いものはありますか？）」はノート通りの定番表現！"
+        },
+        {
+          "text": "Дэндүү үнэтэй байна, худалдаж авахгүй.",
+          "meaning": "高すぎます、買いません。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "少し直接的すぎます。「Арай хямдхан нь байна уу?」と優しく尋ねてみましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Тэгвэл энэ 50000 төгрөгийн ороолтыг үз дээ. Бас тун дулаахан.",
+      "npcMeaning": "それならこちらの50,000トゥグルグのマフラーをご覧になってみてください。こちらもとても暖かいですよ。",
+      "options": [
+        {
+          "text": "Өө сайхан байна! За, үүнийг авъя.",
+          "meaning": "あ、いいですね！では、これをください（買います）。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！「Үүнийг авъя（これをください）」で気持ちよく購入決定できました。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "pharmacy_consultation",
+  "title": "薬局にて (Эмийн санд)",
+  "category": "medical",
+  "icon": "💊",
+  "description": "薬局で薬剤師と話す。「頭痛薬はありますか？」「熱はありません」「1日何回飲みますか？」",
+  "initialPrompt": "頭痛がするので緑色の十字看板がある薬局（Эмийн сан）に入りました。",
+  "character": {
+    "name": "Эмийн санч (薬剤師)",
+    "avatar": "👩‍⚕️"
+  },
+  "steps": [
+    {
+      "npcText": "Сайн байна уу? Танд ямар эм хэрэгтэй вэ?",
+      "npcMeaning": "いらっしゃいませ。どのようなお薬が必要ですか？",
+      "options": [
+        {
+          "text": "Сайн байна уу? Толгой их өвдөж байна. Толгойны эм байна уу?",
+          "meaning": "こんにちは。頭がとても痛みます。頭痛薬はありますか？",
+          "isBest": true,
+          "score": 10,
+          "feedback": "的確です！「Толгойны эм（頭の薬＝頭痛薬）」と自然に伝えられました。"
+        },
+        {
+          "text": "Эм өгөөч.",
+          "meaning": "薬をください。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "どの部分の薬か（толгойны эм, ханиадны эм など）を指定しましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Тийм ээ, байна. Та халуурч байна уу?",
+      "npcMeaning": "はい、ございます。お熱はありますか？",
+      "options": [
+        {
+          "text": "Үгүй ээ, халуурахгүй байна. Зөвхөн толгой өвдөж байна.",
+          "meaning": "いいえ、熱はありません。頭だけが痛みます。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！熱の有無を正確に回答できました。"
+        }
+      ]
+    },
+    {
+      "npcText": "За, энэ эмийг уугаарай. Өвчин намдаана.",
+      "npcMeaning": "では、このお薬を飲んでくださいね。痛みを和らげます。",
+      "options": [
+        {
+          "text": "Өдөрт хэдэн удаа, яаж уух вэ?",
+          "meaning": "1日に何回、どのように飲みますか？",
+          "isBest": true,
+          "score": 10,
+          "feedback": "服薬方法をしっかり確認する重要な質問ができました！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "hotel_stay",
+  "title": "ホテル宿泊 (Зочид буудалд)",
+  "category": "travel",
+  "icon": "🏨",
+  "description": "ホテルのフロントでチェックイン。予約の確認、静かな部屋の希望、Wi-Fiと朝食時間の案内！",
+  "initialPrompt": "旅行先のホテルに到着しました。フロントのスタッフにチェックインを伝えます。",
+  "character": {
+    "name": "Хүлээн авагч (フロント係)",
+    "avatar": "🛎️"
+  },
+  "steps": [
+    {
+      "npcText": "Тавтай морилно уу! Танд юугаар туслах вэ?",
+      "npcMeaning": "いらっしゃいませ！ご用件を伺います。",
+      "options": [
+        {
+          "text": "Сайн байна уу? Би өрөө захиалсан Кахо гэдэг хүн байна.",
+          "meaning": "こんにちは。部屋を予約しているカホと申します。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "簡潔で完璧なチェックインの挨拶です。"
+        },
+        {
+          "text": "Би энд унтмаар байна.",
+          "meaning": "ここで眠りたいです。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "「Өрөө захиалсан（部屋を予約した）」とスマートに告げましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Тийм ээ, таны захиалга байна. 302 тоот өрөө. Өглөөний цай 7-оос 10 цаг хүртэл шүү.",
+      "npcMeaning": "はい、ご予約を承っております。302号室です。朝食は7時から10時までとなっております。",
+      "options": [
+        {
+          "text": "Баярлалаа. Wi-Fi-ийн нууц үг юу вэ?",
+          "meaning": "ありがとうございます。Wi-Fiのパスワードは何ですか？",
+          "isBest": true,
+          "score": 10,
+          "feedback": "ホテルで必ず尋ねる必須の便利フレーズです！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "ticket_office",
+  "title": "切符売り場にて (Тасалбар авах газар)",
+  "category": "travel",
+  "icon": "🎫",
+  "description": "鉄道や長距離バスのチケット窓口。「チョイバルサン行きの切符を1枚」「何時に出発しますか？」",
+  "initialPrompt": "地方へ向かうため駅の切符売り場（Тасалбар түгээгүүр）の窓口に並びました。",
+  "character": {
+    "name": "Тасалбар түгээгч (窓口係)",
+    "avatar": "🧑‍💼"
+  },
+  "steps": [
+    {
+      "npcText": "Сайн байна уу? Хаашаа явах тасалбар авах вэ?",
+      "npcMeaning": "こんにちは。どちらまでの切符をお求めですか？",
+      "options": [
+        {
+          "text": "Сайн байна уу? Чойбалсан хот руу явах нэг тасалбар авъя.",
+          "meaning": "こんにちは。チョイバルサン市行きの切符を1枚ください。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "行き先（Чойбалсан руу）と枚数（нэг тасалбар）が的確です！"
+        },
+        {
+          "text": "Би явна.",
+          "meaning": "私は行きます。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "行き先を「〜 хот руу（〜市へ）」とはっきり告げましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Өнөө орой 19 цагийн галт тэрэг байна. Суудал сонгох уу?",
+      "npcMeaning": "今夜19時の列車がございます。座席を選ばれますか？",
+      "options": [
+        {
+          "text": "Тийм ээ, цонхны талын суудал авч болох уу?",
+          "meaning": "はい、窓側の席をお願いできますか？",
+          "isBest": true,
+          "score": 10,
+          "feedback": "「цонхны тал（窓側）」の指定まで完璧に話せました！"
+        }
+      ]
+    }
+  ]
+}
 ];
 
 
@@ -28967,7 +31464,7 @@ class BatchAudioModal {
               <span>💡</span> 一括ダウンロードのメリット:
             </div>
             <ul class="list-disc list-inside space-y-0.5 text-slate-700 pl-1">
-              <li>全 744 単語 ＋ 文法・リスニング・タイピングの全音声を端末内蔵ストレージ（IndexedDB）に完全保存。</li>
+              <li>全 862 単語 ＋ 文法・リスニング・タイピングの全音声を端末内蔵ストレージ（IndexedDB）に完全保存。</li>
               <li>一度保存すれば、<strong>ネット接続なし（飛行機・オフライン）でも0秒即時再生</strong>！</li>
               <li>Microsoft Edge Neural TTS（Yesui / Bataa）の最高品位ネイティブ発音。</li>
             </ul>
@@ -39792,7 +42289,7 @@ class PronunciationTestComponent {
               <label class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer hover:bg-slate-50 transition-colors ${this.state.category === 'all_vocab' ? 'border-teal-600 bg-teal-50/70' : 'border-slate-200'}">
                 <input type="radio" name="pronCategory" value="all_vocab" ${this.state.category === 'all_vocab' ? 'checked' : ''} class="mt-0.5">
                 <div>
-                  <div class="text-xs font-bold text-slate-800">📖 全744単語マスターからランダム出題</div>
+                  <div class="text-xs font-bold text-slate-800">📖 全862単語マスターからランダム出題</div>
                   <div class="text-[11px] text-slate-500">学習ノートに登録された全単語の中から発音を練習</div>
                 </div>
               </label>
@@ -41249,11 +43746,15 @@ class ShadowingDictationComponent {
         console.warn('StorageService error in Shadowing:', e);
       }
       if (!rawList || !rawList.length) {
-        if (typeof typingSentences !== 'undefined' && typingSentences.length) {
-          rawList = typingSentences;
-        } else if (typeof initialTypingSentences !== 'undefined' && initialTypingSentences.length) {
-          rawList = initialTypingSentences;
-        }
+        try {
+          if (typeof typingSentences !== 'undefined' && typingSentences && typingSentences.length) {
+            rawList = typingSentences;
+          } else if (typeof initialTypingSentences !== 'undefined' && initialTypingSentences && initialTypingSentences.length) {
+            rawList = initialTypingSentences;
+          } else if (typeof window !== 'undefined' && window.initialTypingSentences && window.initialTypingSentences.length) {
+            rawList = window.initialTypingSentences;
+          }
+        } catch (_) {}
       }
       this.state.sentences = (rawList || []).map(s => ({
         ...s,
@@ -46594,7 +49095,7 @@ class MaterialManagerComponent {
 
         <!-- 初期データリセット -->
         <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-          <span class="text-slate-500 font-medium">全単語（744語）・全文法（48項目）に同期:</span>
+          <span class="text-slate-500 font-medium">全単語（862語）・全文法（48項目）に同期:</span>
           <button type="button" id="btn-reset-default" class="px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg font-bold border border-rose-200 transition-all">
             最新マスターデータに同期
           </button>
@@ -46857,16 +49358,25 @@ class ReferenceGuideComponent {
           <!-- サブタブ切り替え -->
           <div class="flex flex-wrap gap-2 text-xs border-b border-indigo-100 pb-2.5">
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-black transition-all bg-indigo-600 text-white shadow-2xs" data-tab="ref-tab-hidden-n">
-              🟢 ① 隠れн (нууц н) の法則
+              🟢 ① 隠れн (нууц н)
             </button>
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-hidden-g">
-              🔵 ② 隠れг (нууц г) の法則
+              🔵 ② 隠れг (нууц г)
             </button>
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-dropping-vowel">
-              🟣 ③ 落ちる母音 (гээгдэх эгшиг)
+              🟣 ③ 落ちる母音
             </button>
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-compare">
               ⚠️ ④ ひっかけ対比表
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-frequency">
+              ⏱️ ⑤ 頻度副詞スケール
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-collective">
+              🔢 ⑥ 集合数詞・後置詞
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-conversation">
+              💬 ⑦ 実践会話表現
             </button>
           </div>
 
@@ -47184,7 +49694,270 @@ class ReferenceGuideComponent {
                 </tr>
               </tbody>
             </table>
+                    <!-- タブ5: 頻度副詞体系（7段階頻度スケール） -->
+          <div id="ref-tab-frequency" class="ref-subtab-pane hidden space-y-3">
+            <div class="bg-amber-50/80 p-3.5 rounded-xl border border-amber-200 text-xs text-amber-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-amber-900">
+                <span>⏱️</span> モンゴル語の頻度表現（頻度順完全ガイド）
+              </div>
+              <p class="leading-relaxed">
+                日常会話や試験で頻出する「どれくらいの頻度で行うか」を表す副詞です。毎日100%の「байнга」から、数ヶ月に1回の「ховор」まで、頻度スケール順に整理しました。
+              </p>
+            </div>
+
+            <div class="overflow-x-auto border border-amber-200 rounded-xl bg-white shadow-2xs">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-amber-100/70 text-amber-950 font-bold border-b border-amber-200">
+                  <tr>
+                    <th class="p-2.5">頻度副詞</th>
+                    <th class="p-2.5">日本語の意味</th>
+                    <th class="p-2.5">頻度の目安</th>
+                    <th class="p-2.5">用例</th>
+                    <th class="p-2.5 text-center">音声</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-amber-100 font-sans">
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">байнга</td>
+                    <td class="p-2.5 font-bold text-amber-900">常に、毎日（100%）</td>
+                    <td class="p-2.5 text-slate-600">毎日（週7日）</td>
+                    <td class="p-2.5 text-slate-700">Би байнга цай уудаг.（私は常に/毎日お茶を飲みます）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="байнга">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">дандаа</td>
+                    <td class="p-2.5 font-bold text-amber-900">いつも、毎回</td>
+                    <td class="p-2.5 text-slate-600">行動のたびにいつも</td>
+                    <td class="p-2.5 text-slate-700">Тэр дандаа инээмсэглэдэг.（彼はいつも笑顔です）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="дандаа">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">ихэвчлэн</td>
+                    <td class="p-2.5 font-bold text-amber-900">たいてい、普段は</td>
+                    <td class="p-2.5 text-slate-600">週5〜6日程度</td>
+                    <td class="p-2.5 text-slate-700">Би ихэвчлэн 7 цагт босдог.（普段はたいてい7時に起きます）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="ихэвчлэн">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">ихэнхдээ</td>
+                    <td class="p-2.5 font-bold text-amber-900">大半は、大部分は</td>
+                    <td class="p-2.5 text-slate-600">週4〜6日（確率・全体として）</td>
+                    <td class="p-2.5 text-slate-700">Амралтын өдрөөр ихэнхдээ гэртээ амардаг.（休日は大半家で休みます）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="ихэнхдээ">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">заримдаа</td>
+                    <td class="p-2.5 font-bold text-amber-900">時々</td>
+                    <td class="p-2.5 text-slate-600">週2〜3日</td>
+                    <td class="p-2.5 text-slate-700">Би заримдаа ресторанд хооллодог.（時々レストランで食事します）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="заримдаа">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">хааяа</td>
+                    <td class="p-2.5 font-bold text-amber-900">たまに</td>
+                    <td class="p-2.5 text-slate-600">週1日程度</td>
+                    <td class="p-2.5 text-slate-700">Хааяа кино үздэг.（たまに映画を見ます）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="хааяа">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">хааяахан</td>
+                    <td class="p-2.5 font-bold text-amber-900">ごくたまに</td>
+                    <td class="p-2.5 text-slate-600">数週間に1回</td>
+                    <td class="p-2.5 text-slate-700">Түүнтэй хааяахан тааралддаг.（彼とはごくたまに出くわします）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="хааяахан">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">ховор</td>
+                    <td class="p-2.5 font-bold text-amber-900">めったにない、稀な</td>
+                    <td class="p-2.5 text-slate-600">数ヶ月に1回（滅多に〜ない）</td>
+                    <td class="p-2.5 text-slate-700">Би чихэрлэг зүйл ховор иддэг.（私は甘いものをめったに食べません）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="ховор">🔊</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
+
+          <!-- タブ6: 集合数詞 ＆ 位置・時間後置詞 -->
+          <div id="ref-tab-collective" class="ref-subtab-pane hidden space-y-3">
+            <div class="bg-sky-50/80 p-3.5 rounded-xl border border-sky-200 text-xs text-sky-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-sky-900">
+                <span>🔢</span> 集合数詞（〜人で）＆ 位置・方向・時間後置詞
+              </div>
+              <p class="leading-relaxed">
+                人数を表す集合数詞（語尾: <strong>-уулаа / -үүлээ</strong>）と、日常会話に欠かせない空間・時間後置詞の体系です。
+              </p>
+            </div>
+
+            <!-- 集合数詞カード -->
+            <div class="bg-white p-3.5 rounded-xl border border-sky-200 space-y-2">
+              <div class="font-bold text-sky-900 text-xs flex items-center gap-1">
+                <span>👥</span> 集合数詞一覧（〜人で、全員で）
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">хоёулаа</div>
+                  <div class="text-[11px] text-sky-800">2人で（私たち2人）</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">гурвуулаа</div>
+                  <div class="text-[11px] text-sky-800">3人で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">дөрвүүлээ</div>
+                  <div class="text-[11px] text-sky-800">4人で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">тавуулаа</div>
+                  <div class="text-[11px] text-sky-800">5人で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">зургуулаа</div>
+                  <div class="text-[11px] text-sky-800">6人で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">долуулаа</div>
+                  <div class="text-[11px] text-sky-800">7人で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">олуулаа</div>
+                  <div class="text-[11px] text-sky-800">大勢で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200">
+                  <div class="font-black text-emerald-900 cyrillic-text">бүгдээрээ</div>
+                  <div class="text-[11px] text-emerald-800">全員で、みんなで</div>
+                </div>
+              </div>
+              <div class="text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                💡 質問するときは「<strong>Хэдүүлээ явах вэ?</strong>（何人で行きますか？）」と言います。
+              </div>
+            </div>
+
+            <!-- 位置・方向・時間後置詞 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
+                <div class="font-bold text-slate-800 flex items-center gap-1">
+                  <span>📍</span> 位置・方向の後置詞
+                </div>
+                <div class="space-y-1 text-[11px] text-slate-700">
+                  <div><strong>дээр</strong> : 上に（ширээн дээр = 机の上に）</div>
+                  <div><strong>дор / доор</strong> : 下に（модон доор = 木の下に）</div>
+                  <div><strong>дотор</strong> : 中に（өрөөн дотор = 部屋の中に）</div>
+                  <div><strong>гадаа</strong> : 外に（гэрийн гадаа = ゲルの外に）</div>
+                  <div><strong>хажууд / дэргэд</strong> : 横に、そばに</div>
+                  <div><strong>өмнө / урд</strong> : 前に、南に</div>
+                  <div><strong>ард / хойно</strong> : 後ろに、北に</div>
+                  <div><strong>хооронд</strong> : 間に（хоёр хотын хооронд = 2都市の間）</div>
+                  <div><strong>наана / цаана</strong> : 手前に / 奥・向こうに</div>
+                  <div><strong>руу / рүү</strong> : 〜へ向かって（чиглэл）</div>
+                </div>
+              </div>
+
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
+                <div class="font-bold text-slate-800 flex items-center gap-1">
+                  <span>📅</span> 時間・日時の表現
+                </div>
+                <div class="space-y-1 text-[11px] text-slate-700">
+                  <div><strong>өмнө</strong> : 〜の前に（долоо хоногийн өмнө = 1週間前）</div>
+                  <div><strong>дараа</strong> : 〜の後に（хичээлийн дараа = 授業の後）</div>
+                  <div><strong>хойно</strong> : 〜以降に（хоёр цагаас хойш = 2時以降）</div>
+                  <div><strong>эхээр / дундуур / сүүлээр</strong> : 初旬 / 中旬 / 下旬</div>
+                  <div><strong>турш</strong> : 〜の間ずっと（жилийн турш = 1年間ずっと）</div>
+                  <div><strong>хүртэл / болтол</strong> : 〜まで（10 цаг хүртэл = 10時まで）</div>
+                  <div><strong>орчим</strong> : 約、およそ（3 хоног орчим = 約3日間）</div>
+                  <div><strong>гаруй</strong> : 〜余り、〜以上（1000 гаруй = 1000人以上）</div>
+                  <div><strong>шахам</strong> : 〜近く、〜弱（нэг цаг шахам = 1時間近く）</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- タブ7: 実践会話フレーズ -->
+          <div id="ref-tab-conversation" class="ref-subtab-pane hidden space-y-3">
+            <div class="bg-emerald-50/80 p-3.5 rounded-xl border border-emerald-200 text-xs text-emerald-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-emerald-900">
+                <span>💬</span> 日常・面接・実践会話で即役立つネイティブ表現集
+              </div>
+              <p class="leading-relaxed">
+                英語の Actually, Just, Enough や、相槌「まさにその通り」「私もそう思いました」など、会話を驚くほど自然にする頻出キーフレーズです。
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Үнэндээ</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Actually</span>
+                </div>
+                <div class="font-bold text-emerald-900">実は、本当は</div>
+                <div class="text-[11px] text-slate-600">Үнэндээ би кофе уудаггүй.（実は私はコーヒーを飲まないんです）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Зүгээр л</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Just</span>
+                </div>
+                <div class="font-bold text-emerald-900">ただ、単に（〜だけ）</div>
+                <div class="text-[11px] text-slate-600">Би зүгээр л асуусан юм.（ただ聞いてみただけですよ）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Хангалттай</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Enough</span>
+                </div>
+                <div class="font-bold text-emerald-900">十分、足りている</div>
+                <div class="text-[11px] text-slate-600">Энэ хангалттай сайн байна.（これで十分いいですよ）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Түүнээс бусад нь</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Other than that</span>
+                </div>
+                <div class="font-bold text-emerald-900">それ以外は</div>
+                <div class="text-[11px] text-slate-600">Түүнээс бусад нь бүх зүйл сайн байсан.（それ以外は全部順調でした）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Тийм ээ, яг тийм</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Yeah, exactly</span>
+                </div>
+                <div class="font-bold text-emerald-900">うん、まさにその通り</div>
+                <div class="text-[11px] text-slate-600">Тийм ээ, яг тийм зүйл болсон.（うん、まさにその通りのことが起きました）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Би ч бас тэгж бодсон</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">That's what I thought</span>
+                </div>
+                <div class="font-bold text-emerald-900">私もそう思いました</div>
+                <div class="text-[11px] text-slate-600">Би ч бас тэгж бодож байсан юм.（私もまさにそう考えていました）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Тэр үед</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">At that time</span>
+                </div>
+                <div class="font-bold text-emerald-900">その時、当時</div>
+                <div class="text-[11px] text-slate-600">Тэр үед би оюутан байсан.（当時私は学生でした）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Биеэ бодоорой</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Take care</span>
+                </div>
+                <div class="font-bold text-emerald-900">お体に気をつけて（ご自愛ください）</div>
+                <div class="text-[11px] text-slate-600">Хүйтэн байна, дулаан хувцаслаад биеэ бодоорой!（寒いので暖かくして気をつけてね！）</div>
+              </div>
+            </div>
+          </div>
+</div>
         </div>
 
         <!-- 2. 格支配の重要ルール -->

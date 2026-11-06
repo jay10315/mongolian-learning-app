@@ -49,7 +49,7 @@ export class BatchAudioModal {
               <span>💡</span> 一括ダウンロードのメリット:
             </div>
             <ul class="list-disc list-inside space-y-0.5 text-slate-700 pl-1">
-              <li>全 744 単語 ＋ 文法・リスニング・タイピングの全音声を端末内蔵ストレージ（IndexedDB）に完全保存。</li>
+              <li>全 862 単語 ＋ 文法・リスニング・タイピングの全音声を端末内蔵ストレージ（IndexedDB）に完全保存。</li>
               <li>一度保存すれば、<strong>ネット接続なし（飛行機・オフライン）でも0秒即時再生</strong>！</li>
               <li>Microsoft Edge Neural TTS（Yesui / Bataa）の最高品位ネイティブ発音。</li>
             </ul>

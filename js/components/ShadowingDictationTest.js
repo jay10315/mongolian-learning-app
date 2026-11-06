@@ -32,11 +32,15 @@ export class ShadowingDictationComponent {
         console.warn('StorageService error in Shadowing:', e);
       }
       if (!rawList || !rawList.length) {
-        if (typeof typingSentences !== 'undefined' && typingSentences.length) {
-          rawList = typingSentences;
-        } else if (typeof initialTypingSentences !== 'undefined' && initialTypingSentences.length) {
-          rawList = initialTypingSentences;
-        }
+        try {
+          if (typeof typingSentences !== 'undefined' && typingSentences && typingSentences.length) {
+            rawList = typingSentences;
+          } else if (typeof initialTypingSentences !== 'undefined' && initialTypingSentences && initialTypingSentences.length) {
+            rawList = initialTypingSentences;
+          } else if (typeof window !== 'undefined' && window.initialTypingSentences && window.initialTypingSentences.length) {
+            rawList = window.initialTypingSentences;
+          }
+        } catch (_) {}
       }
       this.state.sentences = (rawList || []).map(s => ({
         ...s,

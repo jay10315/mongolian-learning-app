@@ -342,7 +342,7 @@ export class MaterialManagerComponent {
 
         <!-- 初期データリセット -->
         <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-          <span class="text-slate-500 font-medium">全単語（744語）・全文法（48項目）に同期:</span>
+          <span class="text-slate-500 font-medium">全単語（862語）・全文法（48項目）に同期:</span>
           <button type="button" id="btn-reset-default" class="px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg font-bold border border-rose-200 transition-all">
             最新マスターデータに同期
           </button>

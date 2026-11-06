@@ -114,7 +114,7 @@ export class PronunciationTestComponent {
               <label class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer hover:bg-slate-50 transition-colors ${this.state.category === 'all_vocab' ? 'border-teal-600 bg-teal-50/70' : 'border-slate-200'}">
                 <input type="radio" name="pronCategory" value="all_vocab" ${this.state.category === 'all_vocab' ? 'checked' : ''} class="mt-0.5">
                 <div>
-                  <div class="text-xs font-bold text-slate-800">📖 全744単語マスターからランダム出題</div>
+                  <div class="text-xs font-bold text-slate-800">📖 全862単語マスターからランダム出題</div>
                   <div class="text-[11px] text-slate-500">学習ノートに登録された全単語の中から発音を練習</div>
                 </div>
               </label>

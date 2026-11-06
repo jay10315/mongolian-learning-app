@@ -378,4 +378,8 @@ export const initialTypingSentences = [
 ];
 
 export const typingSentences = initialTypingSentences;
+if (typeof window !== 'undefined') {
+  window.typingSentences = initialTypingSentences;
+  window.initialTypingSentences = initialTypingSentences;
+}
 

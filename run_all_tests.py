@@ -39,7 +39,8 @@ tests = [
     'test_word_family_games.py',
     'test_suffix_rule_dojo.py',
     'test_theme_and_night_mode.py',
-    'test_expedition_map_all_aimags.py'
+    'test_expedition_map_all_aimags.py',
+    'test_user_notes_added.py'
 ]
 
 for t in tests:

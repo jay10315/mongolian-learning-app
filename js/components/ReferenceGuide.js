@@ -46,16 +46,25 @@ export class ReferenceGuideComponent {
           <!-- サブタブ切り替え -->
           <div class="flex flex-wrap gap-2 text-xs border-b border-indigo-100 pb-2.5">
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-black transition-all bg-indigo-600 text-white shadow-2xs" data-tab="ref-tab-hidden-n">
-              🟢 ① 隠れн (нууц н) の法則
+              🟢 ① 隠れн (нууц н)
             </button>
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-hidden-g">
-              🔵 ② 隠れг (нууц г) の法則
+              🔵 ② 隠れг (нууц г)
             </button>
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-dropping-vowel">
-              🟣 ③ 落ちる母音 (гээгдэх эгшиг)
+              🟣 ③ 落ちる母音
             </button>
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-compare">
               ⚠️ ④ ひっかけ対比表
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-frequency">
+              ⏱️ ⑤ 頻度副詞スケール
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-collective">
+              🔢 ⑥ 集合数詞・後置詞
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-conversation">
+              💬 ⑦ 実践会話表現
             </button>
           </div>
 
@@ -373,7 +382,270 @@ export class ReferenceGuideComponent {
                 </tr>
               </tbody>
             </table>
+                    <!-- タブ5: 頻度副詞体系（7段階頻度スケール） -->
+          <div id="ref-tab-frequency" class="ref-subtab-pane hidden space-y-3">
+            <div class="bg-amber-50/80 p-3.5 rounded-xl border border-amber-200 text-xs text-amber-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-amber-900">
+                <span>⏱️</span> モンゴル語の頻度表現（頻度順完全ガイド）
+              </div>
+              <p class="leading-relaxed">
+                日常会話や試験で頻出する「どれくらいの頻度で行うか」を表す副詞です。毎日100%の「байнга」から、数ヶ月に1回の「ховор」まで、頻度スケール順に整理しました。
+              </p>
+            </div>
+
+            <div class="overflow-x-auto border border-amber-200 rounded-xl bg-white shadow-2xs">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-amber-100/70 text-amber-950 font-bold border-b border-amber-200">
+                  <tr>
+                    <th class="p-2.5">頻度副詞</th>
+                    <th class="p-2.5">日本語の意味</th>
+                    <th class="p-2.5">頻度の目安</th>
+                    <th class="p-2.5">用例</th>
+                    <th class="p-2.5 text-center">音声</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-amber-100 font-sans">
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">байнга</td>
+                    <td class="p-2.5 font-bold text-amber-900">常に、毎日（100%）</td>
+                    <td class="p-2.5 text-slate-600">毎日（週7日）</td>
+                    <td class="p-2.5 text-slate-700">Би байнга цай уудаг.（私は常に/毎日お茶を飲みます）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="байнга">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">дандаа</td>
+                    <td class="p-2.5 font-bold text-amber-900">いつも、毎回</td>
+                    <td class="p-2.5 text-slate-600">行動のたびにいつも</td>
+                    <td class="p-2.5 text-slate-700">Тэр дандаа инээмсэглэдэг.（彼はいつも笑顔です）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="дандаа">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">ихэвчлэн</td>
+                    <td class="p-2.5 font-bold text-amber-900">たいてい、普段は</td>
+                    <td class="p-2.5 text-slate-600">週5〜6日程度</td>
+                    <td class="p-2.5 text-slate-700">Би ихэвчлэн 7 цагт босдог.（普段はたいてい7時に起きます）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="ихэвчлэн">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">ихэнхдээ</td>
+                    <td class="p-2.5 font-bold text-amber-900">大半は、大部分は</td>
+                    <td class="p-2.5 text-slate-600">週4〜6日（確率・全体として）</td>
+                    <td class="p-2.5 text-slate-700">Амралтын өдрөөр ихэнхдээ гэртээ амардаг.（休日は大半家で休みます）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="ихэнхдээ">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">заримдаа</td>
+                    <td class="p-2.5 font-bold text-amber-900">時々</td>
+                    <td class="p-2.5 text-slate-600">週2〜3日</td>
+                    <td class="p-2.5 text-slate-700">Би заримдаа ресторанд хооллодог.（時々レストランで食事します）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="заримдаа">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">хааяа</td>
+                    <td class="p-2.5 font-bold text-amber-900">たまに</td>
+                    <td class="p-2.5 text-slate-600">週1日程度</td>
+                    <td class="p-2.5 text-slate-700">Хааяа кино үздэг.（たまに映画を見ます）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="хааяа">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">хааяахан</td>
+                    <td class="p-2.5 font-bold text-amber-900">ごくたまに</td>
+                    <td class="p-2.5 text-slate-600">数週間に1回</td>
+                    <td class="p-2.5 text-slate-700">Түүнтэй хааяахан тааралддаг.（彼とはごくたまに出くわします）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="хааяахан">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-amber-50/50">
+                    <td class="p-2.5 font-black text-slate-900 cyrillic-text">ховор</td>
+                    <td class="p-2.5 font-bold text-amber-900">めったにない、稀な</td>
+                    <td class="p-2.5 text-slate-600">数ヶ月に1回（滅多に〜ない）</td>
+                    <td class="p-2.5 text-slate-700">Би чихэрлэг зүйл ховор иддэг.（私は甘いものをめったに食べません）</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-xs font-bold" data-word="ховор">🔊</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
+
+          <!-- タブ6: 集合数詞 ＆ 位置・時間後置詞 -->
+          <div id="ref-tab-collective" class="ref-subtab-pane hidden space-y-3">
+            <div class="bg-sky-50/80 p-3.5 rounded-xl border border-sky-200 text-xs text-sky-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-sky-900">
+                <span>🔢</span> 集合数詞（〜人で）＆ 位置・方向・時間後置詞
+              </div>
+              <p class="leading-relaxed">
+                人数を表す集合数詞（語尾: <strong>-уулаа / -үүлээ</strong>）と、日常会話に欠かせない空間・時間後置詞の体系です。
+              </p>
+            </div>
+
+            <!-- 集合数詞カード -->
+            <div class="bg-white p-3.5 rounded-xl border border-sky-200 space-y-2">
+              <div class="font-bold text-sky-900 text-xs flex items-center gap-1">
+                <span>👥</span> 集合数詞一覧（〜人で、全員で）
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">хоёулаа</div>
+                  <div class="text-[11px] text-sky-800">2人で（私たち2人）</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">гурвуулаа</div>
+                  <div class="text-[11px] text-sky-800">3人で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">дөрвүүлээ</div>
+                  <div class="text-[11px] text-sky-800">4人で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">тавуулаа</div>
+                  <div class="text-[11px] text-sky-800">5人で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">зургуулаа</div>
+                  <div class="text-[11px] text-sky-800">6人で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">долуулаа</div>
+                  <div class="text-[11px] text-sky-800">7人で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-sky-50 border border-sky-100">
+                  <div class="font-black text-slate-900 cyrillic-text">олуулаа</div>
+                  <div class="text-[11px] text-sky-800">大勢で</div>
+                </div>
+                <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200">
+                  <div class="font-black text-emerald-900 cyrillic-text">бүгдээрээ</div>
+                  <div class="text-[11px] text-emerald-800">全員で、みんなで</div>
+                </div>
+              </div>
+              <div class="text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                💡 質問するときは「<strong>Хэдүүлээ явах вэ?</strong>（何人で行きますか？）」と言います。
+              </div>
+            </div>
+
+            <!-- 位置・方向・時間後置詞 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
+                <div class="font-bold text-slate-800 flex items-center gap-1">
+                  <span>📍</span> 位置・方向の後置詞
+                </div>
+                <div class="space-y-1 text-[11px] text-slate-700">
+                  <div><strong>дээр</strong> : 上に（ширээн дээр = 机の上に）</div>
+                  <div><strong>дор / доор</strong> : 下に（модон доор = 木の下に）</div>
+                  <div><strong>дотор</strong> : 中に（өрөөн дотор = 部屋の中に）</div>
+                  <div><strong>гадаа</strong> : 外に（гэрийн гадаа = ゲルの外に）</div>
+                  <div><strong>хажууд / дэргэд</strong> : 横に、そばに</div>
+                  <div><strong>өмнө / урд</strong> : 前に、南に</div>
+                  <div><strong>ард / хойно</strong> : 後ろに、北に</div>
+                  <div><strong>хооронд</strong> : 間に（хоёр хотын хооронд = 2都市の間）</div>
+                  <div><strong>наана / цаана</strong> : 手前に / 奥・向こうに</div>
+                  <div><strong>руу / рүү</strong> : 〜へ向かって（чиглэл）</div>
+                </div>
+              </div>
+
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
+                <div class="font-bold text-slate-800 flex items-center gap-1">
+                  <span>📅</span> 時間・日時の表現
+                </div>
+                <div class="space-y-1 text-[11px] text-slate-700">
+                  <div><strong>өмнө</strong> : 〜の前に（долоо хоногийн өмнө = 1週間前）</div>
+                  <div><strong>дараа</strong> : 〜の後に（хичээлийн дараа = 授業の後）</div>
+                  <div><strong>хойно</strong> : 〜以降に（хоёр цагаас хойш = 2時以降）</div>
+                  <div><strong>эхээр / дундуур / сүүлээр</strong> : 初旬 / 中旬 / 下旬</div>
+                  <div><strong>турш</strong> : 〜の間ずっと（жилийн турш = 1年間ずっと）</div>
+                  <div><strong>хүртэл / болтол</strong> : 〜まで（10 цаг хүртэл = 10時まで）</div>
+                  <div><strong>орчим</strong> : 約、およそ（3 хоног орчим = 約3日間）</div>
+                  <div><strong>гаруй</strong> : 〜余り、〜以上（1000 гаруй = 1000人以上）</div>
+                  <div><strong>шахам</strong> : 〜近く、〜弱（нэг цаг шахам = 1時間近く）</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- タブ7: 実践会話フレーズ -->
+          <div id="ref-tab-conversation" class="ref-subtab-pane hidden space-y-3">
+            <div class="bg-emerald-50/80 p-3.5 rounded-xl border border-emerald-200 text-xs text-emerald-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-emerald-900">
+                <span>💬</span> 日常・面接・実践会話で即役立つネイティブ表現集
+              </div>
+              <p class="leading-relaxed">
+                英語の Actually, Just, Enough や、相槌「まさにその通り」「私もそう思いました」など、会話を驚くほど自然にする頻出キーフレーズです。
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Үнэндээ</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Actually</span>
+                </div>
+                <div class="font-bold text-emerald-900">実は、本当は</div>
+                <div class="text-[11px] text-slate-600">Үнэндээ би кофе уудаггүй.（実は私はコーヒーを飲まないんです）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Зүгээр л</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Just</span>
+                </div>
+                <div class="font-bold text-emerald-900">ただ、単に（〜だけ）</div>
+                <div class="text-[11px] text-slate-600">Би зүгээр л асуусан юм.（ただ聞いてみただけですよ）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Хангалттай</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Enough</span>
+                </div>
+                <div class="font-bold text-emerald-900">十分、足りている</div>
+                <div class="text-[11px] text-slate-600">Энэ хангалттай сайн байна.（これで十分いいですよ）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Түүнээс бусад нь</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Other than that</span>
+                </div>
+                <div class="font-bold text-emerald-900">それ以外は</div>
+                <div class="text-[11px] text-slate-600">Түүнээс бусад нь бүх зүйл сайн байсан.（それ以外は全部順調でした）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Тийм ээ, яг тийм</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Yeah, exactly</span>
+                </div>
+                <div class="font-bold text-emerald-900">うん、まさにその通り</div>
+                <div class="text-[11px] text-slate-600">Тийм ээ, яг тийм зүйл болсон.（うん、まさにその通りのことが起きました）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Би ч бас тэгж бодсон</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">That's what I thought</span>
+                </div>
+                <div class="font-bold text-emerald-900">私もそう思いました</div>
+                <div class="text-[11px] text-slate-600">Би ч бас тэгж бодож байсан юм.（私もまさにそう考えていました）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Тэр үед</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">At that time</span>
+                </div>
+                <div class="font-bold text-emerald-900">その時、当時</div>
+                <div class="text-[11px] text-slate-600">Тэр үед би оюутан байсан.（当時私は学生でした）</div>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-black text-slate-900 cyrillic-text">Биеэ бодоорой</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Take care</span>
+                </div>
+                <div class="font-bold text-emerald-900">お体に気をつけて（ご自愛ください）</div>
+                <div class="text-[11px] text-slate-600">Хүйтэн байна, дулаан хувцаслаад биеэ бодоорой!（寒いので暖かくして気をつけてね！）</div>
+              </div>
+            </div>
+          </div>
+</div>
         </div>
 
         <!-- 2. 格支配の重要ルール -->

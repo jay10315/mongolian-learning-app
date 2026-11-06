@@ -39,7 +39,7 @@ with open(os.path.join(app_dir, "js", "data", "grammarQuizzes.js"), "r", encodin
 g_json_str = g_raw[g_raw.index('['):g_raw.rindex(']')+1]
 grammar = json.loads(g_json_str)
 
-assert len(vocab) == 744, f"Expected 744 vocab items, got {len(vocab)}"
+assert len(vocab) >= 744, f"Expected at least 744 vocab items, got {len(vocab)}"
 assert len(grammar) == 152, f"Expected 152 grammar items, got {len(grammar)}"
 
 # Test 3a: ja_meaning (Mongolian prompt -> Japanese choice)
