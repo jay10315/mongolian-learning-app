@@ -752,8 +752,10 @@ export class GenreWordMasterComponent {
                 </button>
               </div>
               <div class="text-xs space-y-1">
-                <div><strong>正解:</strong> ${currentQuestion.mongolian} ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(currentQuestion) && currentQuestion.pronunciation) ? `<span class="text-amber-700 font-bold ml-1">⚠️ [${currentQuestion.pronunciation}]</span>` : ''} = ${currentQuestion.japanese}</div>
+                <div><strong>正解:</strong> <span class="correct-answer-text font-black text-slate-900">${currentQuestion.mongolian}</span> ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(currentQuestion) && currentQuestion.pronunciation) ? `<span class="text-amber-700 font-bold ml-1">⚠️ [${currentQuestion.pronunciation}]</span>` : ''} = ${currentQuestion.japanese}</div>
                 ${currentQuestion.exampleMn ? `<div><strong>例文:</strong> ${currentQuestion.exampleMn} (${currentQuestion.exampleJa || ''})</div>` : ''}
+                ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(currentQuestion, currentQuestion.mongolian) : ''}
+                ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(currentQuestion, currentQuestion.mongolian) : ''}
               </div>
             </div>
           ` : ''}

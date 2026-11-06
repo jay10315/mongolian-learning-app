@@ -329,7 +329,7 @@ export class GrammarTestComponent {
               <div class="space-y-2 text-xs sm:text-sm">
                 <div>
                   <span class="text-slate-500 font-medium">正しい解答: </span>
-                  <span class="font-extrabold text-base cyrillic-text text-slate-900">${q.answer}</span>
+                  <span class="font-extrabold text-base cyrillic-text text-emerald-800 correct-answer-text">${q.answer}</span>
                 </div>
 
                 ${!this.state.isCorrect && this.state.userAnswer ? `
@@ -338,6 +338,9 @@ export class GrammarTestComponent {
                     <span class="font-semibold line-through">${this.state.userAnswer}</span>
                   </div>
                 ` : ''}
+
+                ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(null, q.answer) : ''}
+                ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(null, q.answer) : ''}
 
                 <!-- 詳細解説（赤字注意点・格支配など） -->
                 <div class="mt-3 p-3.5 bg-white/90 rounded-xl border border-slate-200 text-slate-700 leading-relaxed text-xs sm:text-sm">

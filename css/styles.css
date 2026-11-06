@@ -395,3 +395,25 @@ body.theme-dark .etymology-breakdown-card .text-slate-900,
 body.theme-dark .etymology-breakdown-card .text-slate-800 {
   color: #ffffff !important;
 }
+
+
+/* 語呂合わせ・楽しい覚え方カード（夜間モード・テーマ対応） */
+body.theme-dark .mnemonic-card,
+body.theme-forest .mnemonic-card,
+body.theme-ocean .mnemonic-card {
+  background: linear-gradient(to right, #241c0c, #2e2208) !important;
+  border-color: rgba(234, 179, 8, 0.45) !important;
+  color: #fef08a !important;
+}
+
+body.theme-dark .mnemonic-card div,
+body.theme-forest .mnemonic-card div,
+body.theme-ocean .mnemonic-card div {
+  color: #fef9c3 !important;
+}
+
+body.theme-dark .mnemonic-card .border-amber-400,
+body.theme-forest .mnemonic-card .border-amber-400,
+body.theme-ocean .mnemonic-card .border-amber-400 {
+  border-color: #f59e0b !important;
+}

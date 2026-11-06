@@ -51,7 +51,8 @@ tests = [
     'test_railway_sugoroku_feature.py',
     'test_user_requested_expressions.py',
     'test_night_mode_feedback.py',
-    'test_compound_etymology_display.py'
+    'test_compound_etymology_display.py',
+    'test_mnemonic_display.py'
 ]
 
 for t in tests:

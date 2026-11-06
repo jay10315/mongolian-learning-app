@@ -481,6 +481,226 @@ if (typeof window !== 'undefined') {
   window.getWordEtymologyHTML = getWordEtymologyHTML;
 }
 
+const MNEMONICS_MAP = {
+  "хөл": "足で穴を【掘る（хөл）】！",
+  "гар": "手からビームが【出る（гар）】！",
+  "толгой": "頭を【取るごい（толгой）】！",
+  "нүд": "【目】を【ぬーど（нүд）】で見つめる／目を濡らす！",
+  "чих": "【耳】を【ちく（чих）】っと刺される！",
+  "хамар": "鼻が【ハマる（хамар）】！",
+  "ам": "口を【アム（ам）】っと開けて食べる！",
+  "шүд": "歯を【シュッ（шүд）】と磨く！",
+  "үс": "髪の毛が【薄（үс）】い！",
+  "өсгий": "【オス】が踏ん張る【踵（өсгий）】！",
+  "хөлийн өсгий": "足（хөл）の踵（өсгий）＝「オスが踏ん張る足のかかと」！",
+  "зүрх": "胸が【ずるっ（зүрх）】とするほど高鳴る【心臓・ハート】！",
+  "гэдэс": "お腹を【下駄です（гэдэс）】と叩く【お腹・胃】！",
+  "нуруу": "【ぬる（нуруу）】っと曲がる【背中・背骨】！",
+  "хэл": "【口から出る言葉・舌】を【ヘル（хэл）】プと叫ぶ！",
+  "гар хуруу": "手（гар）の指（хуруу）＝「手から出る指」！",
+  "тоос": "埃が隙間を【通す（тоос）】！",
+  "тоос сорогч": "埃（トース）を吸う（ソログ）器具（チ）＝「埃吸い取りマシン」！",
+  "толь": "自分の姿を【取り（толь）】映す【鏡】！",
+  "толь бичиг": "照合する鏡（толь）＋文字の本（бичиг）＝「真実を映す辞書」！",
+  "гар утас": "手（гар）の電話コード（утас）＝「手のひら携帯電話」！",
+  "цахилгаан шат": "電気（цахилгаан）の階段（шат）＝「動く電気階段（エレベーター）」！",
+  "ус буцалгагч": "水（ус）を沸かす（буцалгах）器具（-гч）＝「湯沸かしケトル」！",
+  "угаалгын машин": "洗濯（угаалга）の機械（машин）＝「洗濯機」！",
+  "шүүгээ": "洋服をきれいに【収納（шүү）】する【棚・タンス】！",
+  "хаалга": "ドアを開けて【はーいガ（хаалга）】ッチャ！",
+  "цонх": "窓から【チョン（цонх）】と顔を出す【窓】！",
+  "ор": "ベッドに【おっ（ор）】と飛び乗る【ベッド・寝台】！",
+  "ширээ": "机に【しれっ（ширээ）】と座る【机・テーブル】！",
+  "сандал": "椅子に【サンダル（сандал）】履いて座る【椅子】！",
+  "зурагт": "絵（зураг）が動く箱（-т）＝「テレビ」！",
+  "зурагтын удирдлага": "テレビ（зурагт）の操縦器（удирдлага）＝「テレビのリモコン」！",
+  "мах": "【マハ】ラジャが食べる【肉（мах）】！",
+  "ус": "【オス】の水／【押す】と出る【水（ус）】！",
+  "цай": "お【茶い（цай）】かが？／お茶を【注い（цай）】で！",
+  "сүү": "【スー】ッと一気に飲める【牛乳（сүү）】！",
+  "давс": "料理に塩を【出す（давс）】！",
+  "талх": "パンを【たる（талх）】ほど食べる【パン】！",
+  "бууз": "肉まんのボーズを食べて【坊主（бууз）】も笑顔！",
+  "хуушуур": "揚げ餃子を【ふーふー（хуушуур）】冷まして食べる！",
+  "цуйван": "焼うどんのツォイワンを食べて【強いワン（цуйван）】！",
+  "жимс": "果物を【ジューシー（жимс）】に味わう【果物・フルーツ】！",
+  "ногоо": "野菜を食べて【のびのび成長（ногоо）】する【野菜】！",
+  "өндөг": "卵を【おんぶ（өндөг）】する【卵】！",
+  "гурил": "小麦粉を【ぐり（гурил）】ぐりこねる【小麦粉・麺】！",
+  "цагаан будаа": "白い（цагаан）米（будаа）＝「白米・ごはん」！",
+  "гал": "火が【ガール（гал）】ガール燃える／ガールと囲む焚き火！",
+  "цас": "雪が【さーっ（цас）】と降る【雪】！",
+  "бороо": "雨に濡れて服が【ボロ（бороо）】ボロ！",
+  "салхи": "風に乗って【猿飛（салхи）】佐助が飛ぶ【風】！",
+  "нар": "空で太陽が【鳴る（нар）】！",
+  "сар": "【月（сар）】で【サル】が餅つき！",
+  "од": "夜空の星の輝きに【オド（од）】ろく！",
+  "уул": "高い【山（уул）】を見て【ウール（уул）】トラマンもびっくり！",
+  "гол": "【川（гол）】を渡って【ゴール（гол）】！",
+  "мод": "【木（мод）】に登る【モード（мод）】！",
+  "цэцэг": "花を【ツェツェ（цэцэг）】と愛でる【花】！",
+  "өдөр": "昼間に元気に【踊る（өдөр）】！",
+  "шөнө": "夜は静かに【しょん（шөнө）】ぼり！",
+  "маргааш": "明日の予定は【丸がし（маргааш）】！",
+  "өнөөдөр": "今日の予定は【おのー（өнөөдөр）】これだ！",
+  "өчигдөр": "昨日のことを【おちついて（өчигдөр）】思い出す！",
+  "хүйтэн": "寒い日は【食う手（хүйтэн）】がかじかむ【寒い・冷たい】！",
+  "халуун": "暑い日は【はる（халуун）】か彼方に逃げたい【暑い・熱い】！",
+  "нохой": "犬が庭に【野放（нохой）】し！",
+  "муур": "猫が【モール（муур）】で買い物／ニャーと鳴くムール！",
+  "морь": "馬が【森（морь）】を颯爽と駆ける！",
+  "хонь": "羊に【骨（хонь）】なし、ふわふわウール！",
+  "ямаа": "山羊が【山（ямаа）】を軽快に登る！",
+  "үхэр": "牛が大きくて【ウヒャー（үхэр）】と驚く！",
+  "тэмээ": "ラクダに乗って【てめえ（тэмээ）】どこ行く！",
+  "шувуу": "鳥が空を【しゅーっ（шувуу）】と飛ぶ！",
+  "загас": "魚が川を【ザガ（загас）】スザガス泳ぐ【魚】！",
+  "чоно": "狼に【ちょの（чоно）】っと注意！",
+  "баавгай": "熊が【バア（баавгай）】と現れる【熊】！",
+  "явах": "【ヤバ（явах）】い、もう【行か】なきゃ！",
+  "ирэх": "友達が家に【入れ（ирэх）】ば【来る】！",
+  "идэх": "ご飯をいただきますと【食べる（идэх）】！",
+  "уух": "ウーロン茶を【ウー（уух）】と【飲む】！",
+  "унших": "本を【うんしょ（унших）】と抱えて【読む】！",
+  "бичих": "鉛筆で【びっしり（бичих）】ノートに【書く】！",
+  "мэдэх": "【目玉（мэдэх）】で見て【知る】！",
+  "ойлгох": "【オイル（ойлгох）】の仕組みが【分かる・理解する】！",
+  "бодох": "【僕（бодох）】が【思う・考える】に…！",
+  "унтах": "【うん（унтах）】とぐっすり【寝る】！",
+  "босох": "朝【ボサーッ（босох）】と【起きる・立つ】！",
+  "суух": "椅子に【すーっ（суух）】と【座る】！",
+  "зогсох": "車が【続々（зогсох）】と【止まる】！",
+  "үзэх": "テレビを【うずうず（үзэх）】しながら【見る・試す】！",
+  "сонсох": "【そん（сонсох）】な面白い話を【聞く】！",
+  "өгөх": "人にプレゼントを【おごる（өгөх）】ように【あげる・渡す】！",
+  "авах": "お小遣いを【暴（авах）】れるほど【もらう・取る】！",
+  "харах": "【はる（харах）】か遠くを【見る】！",
+  "зарах": "バザーで【皿（зарах）】を【売る】！",
+  "ажиллах": "仕事（ажил）に【汗流（ажиллах）】して【働く】！",
+  "сурах": "学校で【すらすら（сурах）】【学ぶ・習う】！",
+  "хийх": "何でも【ひいひい（хийх）】言いながら【する・作る】！",
+  "хэлэх": "真実を【へる（хэлэх）】ぷと【言う】！",
+  "маллах": "家畜（мал）を【まったり（маллах）】【飼育する】！",
+  "инээх": "【いいねー（инээх）】と楽しそうに【笑う】！",
+  "уйлах": "悲しくて【初々（уйлах）】しく【泣く】！",
+  "айх": "お化けを見て【アイヤ〜（айх）】と【怖がる】！",
+  "дурлах": "好きな人に【ド直球（дурлах）】で【恋する】！",
+  "бахархах": "友達の活躍を【バッチリ（бахархах）】【誇る】！",
+  "цангах": "喉が渇いて【ツァン（цангах）】と水が飲みたい！",
+  "мөрөөдөх": "未来の夢を【もうロード（мөрөөдөх）】のように【夢見る】！",
+  "хичээх": "勉学を【ひーひー知恵（хичээх）】絞って【努力する】！",
+  "сайн": "良いことの【サイン（сайн）】！",
+  "муу": "悪いことして牛が【モー（муу）】と鳴く！",
+  "их": "【一歩（их）】が大きい・【多い】！",
+  "бага": "【バカ（бага）】にするなと【小さい】子が怒る！",
+  "өндөр": "【温度る（өндөр）】ほど熱気【高い】！",
+  "намхан": "【波（намхан）】が静かで【低い】！",
+  "сайхан": "【最上（сайхан）】に【美しい・素敵だ】！",
+  "хурдан": "【車（хурдан）】のように【速い】！",
+  "удаан": "【うだ（удаан）】うだして【遅い】！",
+  "хямдхан": "値段が【百円（хямдхан）】で【安い】！",
+  "үнэтэй": "真実の価値（үнэ）を持つ（-тэй）＝「【値段が高い・貴重だ】」！",
+  "сайхан амттай": "素敵（сайхан）＋味（амт）＋ある（-тай）＝「【美味しい】」！",
+  "муухай": "【むむっ（муухай）】と顔をしかめる【不気味な・まずい】！",
+  "дажгүй": "【ダシ（дажгүй）】が効いて【まぁまぁ・悪くない】！",
+  "гайхалтай": "驚き（гайх-）に値する（-лтай）＝「【素晴らしい・すごい】」！",
+  "энгийн": "飾りのない平素（энг）＝「【普通・簡単・シンプル】」！",
+  "хар": "【春（хар）】なのに【黒】い服！",
+  "шар": "【黄色】い【シャル（шар）】ロット！",
+  "цагаан": "【白】を【ツァガ（цагаан）】っと塗る！",
+  "улаан": "【ウラン（улаан）】バートルの【赤】！",
+  "хөх": "【コック（хөх）】さんの【青】いエプロン！",
+  "ногоон": "大草原の草（ногоо）の色＝「【緑】」！",
+  "юу": "【ゆう（юу）】べ【何】があった？",
+  "хэн": "【変（хэн）】な人は【誰】？",
+  "хаана": "【鼻（хаана）】は【どこ】？",
+  "хэзээ": "【風邪（хэзээ）】は【いつ】治る？",
+  "яагаад": "【嫌が（яагаад）】るのに【なぜ】？",
+  "ямар": "【やまる（ямар）】（止まる）のは【どんな】車？",
+  "хэд": "お菓子が減って【いくつ（хэд）】残った？",
+  "аль": "【有る（аль）】選択肢の【どちら】？",
+  "баярлалаа": "バナナやるからラララ〜と【ありがとう（баярлалаа）】！",
+  "баярлалаа.": "バナナやるからラララ〜と【ありがとう（баярлалаа）】！",
+  "уучлаарай": "お茶（ууча）をこぼして【すみません（уучлаарай）】！",
+  "баяртай": "バイバイしたい【さようなら（баяртай）】！",
+  "тийм": "チームの決定に「【はい、そうです（тийм）】」！",
+  "үгүй": "ウグイスが「【いいえ（үгүй）】」と鳴く！",
+  "зүгээр": "お礼を言われて「【ズバリ大丈夫（зүгээр）】」！",
+  "тийм шүү": "そう（тийм）＋強調（шүү）＝「【その通り・確かにそうだよね】」！",
+  "үнэн шүү": "本当（үнэн）＋強調（шүү）＝「【本当だよね・確かに】」！",
+  "магадгүй": "公算（магад）＋なし（-гүй）＝「【多分・おそらく】」！",
+  "ёстой": "礼儀・道理（ёс）＋ある（-той）＝「【当然・本当に・〜すべき】」！",
+  "би": "【美（би）】しい【私】！",
+  "чи": "【ち（чи）】み【君】！",
+  "та": "【他（та）】人行儀に丁寧に【あなた】！",
+  "тэр": "【照れ（тэр）】屋の【あの人・彼・彼女】！",
+  "бид": "【ビビッ（бид）】と団結する【私たち】！",
+  "аав": "【あー（аав）】頼れる【父】さん！",
+  "ээж": "【えー（ээж）】優しい【母】さん！",
+  "хүү": "腕白な息子に【ふーっ（хүү）】とため息！",
+  "охин": "【お品（охин）】の良い【娘・女の子】！",
+  "ах": "【あっ（ах）】と頼れる【兄・年上男性】！",
+  "эгч": "【えっ（эгч）】と驚く美人な【姉・年上女性】！",
+  "дүү": "年下の【弟・妹（дүү）】にぎゅー（дүү）っとハグ！",
+  "өвөө": "【おー（өвөө）】元気な【おじいちゃん】！",
+  "эмээ": "【えみ（эмээ）】がこぼれる【おばあちゃん】！",
+  "багш": "【バッジ（багш）】をつけた偉大な【先生】！",
+  "найз": "【ナイス（найз）】な【友達】！"
+};
+
+/**
+ * 語呂合わせ・覚えやすい仕組みを解析してHTMLカードを生成
+ */
+function getWordMnemonicHTML(item, targetWord) {
+  let mnemonic = (item && item.mnemonic) ? String(item.mnemonic).trim() : '';
+
+  if (!mnemonic) {
+    const rawWord = ((item && (item.mongolian || item.dictForm)) || targetWord || '').trim();
+    const cleanWord = rawWord.toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+    const cleanRaw = rawWord.toLowerCase().replace(/[.,!?]/g, '').trim();
+
+    if (MNEMONICS_MAP[cleanRaw]) {
+      mnemonic = MNEMONICS_MAP[cleanRaw];
+    } else if (MNEMONICS_MAP[cleanWord]) {
+      mnemonic = MNEMONICS_MAP[cleanWord];
+    } else {
+      try {
+        let vocabList = [];
+        if (typeof initialVocabulary !== 'undefined') vocabList = initialVocabulary;
+        else if (typeof StorageService !== 'undefined') vocabList = StorageService.getVocabulary();
+
+        const match = vocabList.find(w => {
+          const wMn = (w.mongolian || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+          const wDf = (w.dictForm || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+          return w.mnemonic && (wMn === cleanWord || wDf === cleanWord);
+        });
+        if (match && match.mnemonic) {
+          mnemonic = match.mnemonic;
+        }
+      } catch (_) {}
+    }
+  }
+
+  if (!mnemonic) return '';
+
+  return `
+    <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50/70 border border-amber-300/90 text-xs space-y-1 shadow-2xs mnemonic-card">
+      <div class="font-black text-amber-950 flex items-center gap-1.5">
+        <span>💡</span> 語呂合わせ・楽しい覚え方:
+      </div>
+      <div class="font-bold text-amber-900 leading-relaxed text-xs sm:text-sm pl-2 border-l-2 border-amber-400">
+        ${mnemonic}
+      </div>
+    </div>
+  `;
+}
+
+if (typeof window !== 'undefined') {
+  window.MNEMONICS_MAP = MNEMONICS_MAP;
+  window.getWordMnemonicHTML = getWordMnemonicHTML;
+}
+
+
 
 function renderGrammarExplanationHTML({
   correctAnswer,
@@ -608,6 +828,12 @@ function renderGrammarExplanationHTML({
           ` : ''}
         </div>
       `}
+
+      <!-- 単語の成り立ち・構成カード（動詞・派生語で存在する場合） -->
+      ${parsed.isVerb && (typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(item, correctAnswer) : ''}
+
+      <!-- 語呂合わせ・楽しい覚え方カード（動詞・名詞問わず存在すれば必ず表示） -->
+      ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(item, correctAnswer) : ''}
 
       <!-- 例文表示 -->
       ${exampleMn ? `
@@ -1081,7 +1307,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "би",
-    "derivation": "見出し語「би」"
+    "derivation": "見出し語「би」",
+    "mnemonic": "【美（би）】しい【私】！"
   },
   {
     "id": "v_1_3",
@@ -1115,7 +1342,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "та",
-    "derivation": "見出し語「та」"
+    "derivation": "見出し語「та」",
+    "mnemonic": "【他（та）】人行儀に丁寧に【あなた】！"
   },
   {
     "id": "v_1_5",
@@ -1149,7 +1377,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "чи",
-    "derivation": "見出し語「чи」"
+    "derivation": "見出し語「чи」",
+    "mnemonic": "【ち（чи）】み【君】！"
   },
   {
     "id": "v_1_7",
@@ -1201,7 +1430,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "хэн",
-    "derivation": "見出し語「хэн」"
+    "derivation": "見出し語「хэн」",
+    "mnemonic": "【変（хэн）】な人は【誰】？"
   },
   {
     "id": "v_1_10",
@@ -1237,7 +1467,8 @@ const initialVocabulary = [
     "dictForm": "багш",
     "derivation": "見出し語「багш」",
     "genreId": "school",
-    "genreName": "学校・文房具・教室"
+    "genreName": "学校・文房具・教室",
+    "mnemonic": "【バッジ（багш）】をつけた偉大な【先生】！"
   },
   {
     "id": "v_1_12",
@@ -1361,7 +1592,8 @@ const initialVocabulary = [
     "lesson": 2,
     "isVerb": false,
     "dictForm": "тэр",
-    "derivation": "見出し語「тэр」"
+    "derivation": "見出し語「тэр」",
+    "mnemonic": "【照れ（тэр）】屋の【あの人・彼・彼女】！"
   },
   {
     "id": "v_1_19",
@@ -1432,7 +1664,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Сайн.",
-    "derivation": "見出し語「Сайн.」"
+    "derivation": "見出し語「Сайн.」",
+    "mnemonic": "良いことの【サイン（сайн）】！"
   },
   {
     "id": "v_greet_4",
@@ -1485,7 +1718,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Баярлалаа.",
-    "derivation": "見出し語「Баярлалаа.」"
+    "derivation": "見出し語「Баярлалаа.」",
+    "mnemonic": "バナナやるからラララ〜と【ありがとう（баярлалаа）】！"
   },
   {
     "id": "v_greet_7",
@@ -1538,7 +1772,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Уучлаарай.",
-    "derivation": "見出し語「Уучлаарай.」"
+    "derivation": "見出し語「Уучлаарай.」",
+    "mnemonic": "お茶（ууча）をこぼして【すみません（уучлаарай）】！"
   },
   {
     "id": "v_greet_10",
@@ -1555,7 +1790,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Баяртай.",
-    "derivation": "見出し語「Баяртай.」"
+    "derivation": "見出し語「Баяртай.」",
+    "mnemonic": "バイバイしたい【さようなら（баяртай）】！"
   },
   {
     "id": "v_greet_11",
@@ -1699,7 +1935,8 @@ const initialVocabulary = [
     "dictForm": "юу",
     "derivation": "基本疑問詞",
     "genreId": "demonstratives",
-    "genreName": "指示代名詞・疑問詞"
+    "genreName": "指示代名詞・疑問詞",
+    "mnemonic": "【ゆう（юу）】べ【何】があった？"
   },
   {
     "id": "v_2_2",
@@ -1754,7 +1991,8 @@ const initialVocabulary = [
     "dictForm": "толь бичиг",
     "derivation": "複合名詞「толь」＋「бичиг」",
     "genreId": "school",
-    "genreName": "学校・文房具・教室"
+    "genreName": "学校・文房具・教室",
+    "mnemonic": "照合する鏡（толь）＋文字の本（бичиг）＝「真実を映す辞書」！"
   },
   {
     "id": "v_2_5",
@@ -1864,7 +2102,8 @@ const initialVocabulary = [
     "dictForm": "зурагт",
     "derivation": "見出し語「зурагт」",
     "genreId": "appliances",
-    "genreName": "日用品・家電・家具"
+    "genreName": "日用品・家電・家具",
+    "mnemonic": "絵（зураг）が動く箱（-т）＝「テレビ」！"
   },
   {
     "id": "v_2_11",
@@ -1902,7 +2141,8 @@ const initialVocabulary = [
     "dictForm": "шүүгээ",
     "derivation": "語根「шүү」＋名詞接尾辞「-гээ」",
     "genreId": "appliances",
-    "genreName": "日用品・家電・家具"
+    "genreName": "日用品・家電・家具",
+    "mnemonic": "洋服をきれいに【収納（шүү）】する【棚・タンス】！"
   },
   {
     "id": "v_2_13",
@@ -1921,7 +2161,8 @@ const initialVocabulary = [
     "dictForm": "сандал",
     "derivation": "見出し語「сандал」",
     "genreId": "school",
-    "genreName": "学校・文房具・教室"
+    "genreName": "学校・文房具・教室",
+    "mnemonic": "椅子に【サンダル（сандал）】履いて座る【椅子】！"
   },
   {
     "id": "v_2_14",
@@ -1940,7 +2181,8 @@ const initialVocabulary = [
     "dictForm": "ширээ",
     "derivation": "見出し語「ширээ」",
     "genreId": "school",
-    "genreName": "学校・文房具・教室"
+    "genreName": "学校・文房具・教室",
+    "mnemonic": "机に【しれっ（ширээ）】と座る【机・テーブル】！"
   },
   {
     "id": "v_2_15",
@@ -2265,7 +2507,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": true,
     "dictForm": "идэх",
-    "derivation": "辞書形「идэх」は、語幹「ид」に不定詞語尾「-эх」（中性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「ид」に接続します。"
+    "derivation": "辞書形「идэх」は、語幹「ид」に不定詞語尾「-эх」（中性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「ид」に接続します。",
+    "mnemonic": "ご飯をいただきますと【食べる（идэх）】！"
   },
   {
     "id": "v_3_2",
@@ -2282,7 +2525,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": true,
     "dictForm": "уух",
-    "derivation": "辞書形「уух」は、長母音・二重母音の語幹「уу」に語尾「-х」が接続した形です（男性母音語）。母音で始まる活用語尾の前には隠れ「г」が現れます。"
+    "derivation": "辞書形「уух」は、長母音・二重母音の語幹「уу」に語尾「-х」が接続した形です（男性母音語）。母音で始まる活用語尾の前には隠れ「г」が現れます。",
+    "mnemonic": "ウーロン茶を【ウー（уух）】と【飲む】！"
   },
   {
     "id": "v_3_3",
@@ -2299,7 +2543,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": true,
     "dictForm": "унших",
-    "derivation": "辞書形「унших」は、語幹「унш」に不定詞語尾「-их」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「унш」に接続します。"
+    "derivation": "辞書形「унших」は、語幹「унш」に不定詞語尾「-их」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「унш」に接続します。",
+    "mnemonic": "本を【うんしょ（унших）】と抱えて【読む】！"
   },
   {
     "id": "v_3_4",
@@ -2316,7 +2561,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": true,
     "dictForm": "сонсох",
-    "derivation": "辞書形「сонсох」は、語幹「сонс」に不定詞語尾「-ох」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「сонс」に接続します。"
+    "derivation": "辞書形「сонсох」は、語幹「сонс」に不定詞語尾「-ох」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「сонс」に接続します。",
+    "mnemonic": "【そん（сонсох）】な面白い話を【聞く】！"
   },
   {
     "id": "v_3_5",
@@ -2335,7 +2581,8 @@ const initialVocabulary = [
     "dictForm": "хийх",
     "derivation": "語幹「хий-」＋不定形語尾「-х」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "何でも【ひいひい（хийх）】言いながら【する・作る】！"
   },
   {
     "id": "v_3_6",
@@ -2354,7 +2601,8 @@ const initialVocabulary = [
     "dictForm": "үзэх",
     "derivation": "語幹「үз-」＋不定形語尾「-х」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "テレビを【うずうず（үзэх）】しながら【見る・試す】！"
   },
   {
     "id": "v_3_7",
@@ -2388,7 +2636,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": true,
     "dictForm": "өгөх",
-    "derivation": "辞書形「өгөх」は、語幹「өг」に不定詞語尾「-өх」（女性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「өг」に接続します。"
+    "derivation": "辞書形「өгөх」は、語幹「өг」に不定詞語尾「-өх」（女性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「өг」に接続します。",
+    "mnemonic": "人にプレゼントを【おごる（өгөх）】ように【あげる・渡す】！"
   },
   {
     "id": "v_3_9",
@@ -2405,7 +2654,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": true,
     "dictForm": "бичих",
-    "derivation": "辞書形「бичих」は、語幹「бич」に不定詞語尾「-их」（中性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「бич」に接続します。"
+    "derivation": "辞書形「бичих」は、語幹「бич」に不定詞語尾「-их」（中性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「бич」に接続します。",
+    "mnemonic": "鉛筆で【びっしり（бичих）】ノートに【書く】！"
   },
   {
     "id": "v_3_10",
@@ -2422,7 +2672,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": true,
     "dictForm": "явах",
-    "derivation": "辞書形「явах」は、語幹「яв」に不定詞語尾「-ах」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「яв」に接続します。"
+    "derivation": "辞書形「явах」は、語幹「яв」に不定詞語尾「-ах」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「яв」に接続します。",
+    "mnemonic": "【ヤバ（явах）】い、もう【行か】なきゃ！"
   },
   {
     "id": "v_3_11",
@@ -2439,7 +2690,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": true,
     "dictForm": "ирэх",
-    "derivation": "辞書形「ирэх」は、語幹「ир」に不定詞語尾「-эх」（中性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「ир」に接続します。"
+    "derivation": "辞書形「ирэх」は、語幹「ир」に不定詞語尾「-эх」（中性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「ир」に接続します。",
+    "mnemonic": "友達が家に【入れ（ирэх）】ば【来る】！"
   },
   {
     "id": "v_3_12",
@@ -2456,7 +2708,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": true,
     "dictForm": "авах",
-    "derivation": "辞書形「авах」は、語幹「ав」に不定詞語尾「-ах」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「ав」に接続します。"
+    "derivation": "辞書形「авах」は、語幹「ав」に不定詞語尾「-ах」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「ав」に接続します。",
+    "mnemonic": "お小遣いを【暴（авах）】れるほど【もらう・取る】！"
   },
   {
     "id": "v_3_13",
@@ -2541,7 +2794,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": false,
     "dictForm": "хүйтэн",
-    "derivation": "見出し語「хүйтэн」"
+    "derivation": "見出し語「хүйтэн」",
+    "mnemonic": "寒い日は【食う手（хүйтэн）】がかじかむ【寒い・冷たい】！"
   },
   {
     "id": "v_3_18",
@@ -2558,7 +2812,8 @@ const initialVocabulary = [
     "lesson": 3,
     "isVerb": false,
     "dictForm": "найз",
-    "derivation": "見出し語「найз」"
+    "derivation": "見出し語「найз」",
+    "mnemonic": "【ナイス（найз）】な【友達】！"
   },
   {
     "id": "v_3_19",
@@ -2802,7 +3057,8 @@ const initialVocabulary = [
     "lesson": 5,
     "isVerb": false,
     "dictForm": "өнөөдөр",
-    "derivation": "見出し語「өнөөдөр」"
+    "derivation": "見出し語「өнөөдөр」",
+    "mnemonic": "今日の予定は【おのー（өнөөдөр）】これだ！"
   },
   {
     "id": "v_5_2",
@@ -2819,7 +3075,8 @@ const initialVocabulary = [
     "lesson": 5,
     "isVerb": false,
     "dictForm": "өчигдөр",
-    "derivation": "見出し語「өчигдөр」"
+    "derivation": "見出し語「өчигдөр」",
+    "mnemonic": "昨日のことを【おちついて（өчигдөр）】思い出す！"
   },
   {
     "id": "v_5_3",
@@ -2836,7 +3093,8 @@ const initialVocabulary = [
     "lesson": 5,
     "isVerb": false,
     "dictForm": "маргааш",
-    "derivation": "見出し語「маргааш」"
+    "derivation": "見出し語「маргааш」",
+    "mnemonic": "明日の予定は【丸がし（маргааш）】！"
   },
   {
     "id": "v_5_4",
@@ -2853,7 +3111,8 @@ const initialVocabulary = [
     "lesson": 5,
     "isVerb": false,
     "dictForm": "хэзээ",
-    "derivation": "見出し語「хэзээ」"
+    "derivation": "見出し語「хэзээ」",
+    "mnemonic": "【風邪（хэзээ）】は【いつ】治る？"
   },
   {
     "id": "v_5_5",
@@ -2887,7 +3146,8 @@ const initialVocabulary = [
     "lesson": 5,
     "isVerb": true,
     "dictForm": "босох",
-    "derivation": "辞書形「босох」は、語幹「бос」に不定詞語尾「-ох」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「бос」に接続します。"
+    "derivation": "辞書形「босох」は、語幹「бос」に不定詞語尾「-ох」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「бос」に接続します。",
+    "mnemonic": "朝【ボサーッ（босох）】と【起きる・立つ】！"
   },
   {
     "id": "v_5_7",
@@ -2904,7 +3164,8 @@ const initialVocabulary = [
     "lesson": 5,
     "isVerb": true,
     "dictForm": "унтах",
-    "derivation": "辞書形「унтах」は、語幹「унт」に不定詞語尾「-ах」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「унт」に接続します。"
+    "derivation": "辞書形「унтах」は、語幹「унт」に不定詞語尾「-ах」（男性母音語調和）が接続した基本形です。活用語尾（-на/-нэ, -сан/-сэн, -ж/-ч等）はすべて語幹「унт」に接続します。",
+    "mnemonic": "【うん（унтах）】とぐっすり【寝る】！"
   },
   {
     "id": "v_5_8",
@@ -3112,7 +3373,8 @@ const initialVocabulary = [
     "dictForm": "мэдэх",
     "derivation": "語幹「мэд-」＋不定形語尾「-х」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "【目玉（мэдэх）】で見て【知る】！"
   },
   {
     "id": "v_10_2",
@@ -3264,7 +3526,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "аав",
-    "derivation": "見出し語「аав」"
+    "derivation": "見出し語「аав」",
+    "mnemonic": "【あー（аав）】頼れる【父】さん！"
   },
   {
     "id": "v_gen_2",
@@ -3491,7 +3754,8 @@ const initialVocabulary = [
     "dictForm": "аль",
     "derivation": "基本指示詞",
     "genreId": "demonstratives",
-    "genreName": "指示代名詞・疑問詞"
+    "genreName": "指示代名詞・疑問詞",
+    "mnemonic": "【有る（аль）】選択肢の【どちら】？"
   },
   {
     "id": "v_gen_17",
@@ -3751,7 +4015,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "ах",
-    "derivation": "見出し語「ах」"
+    "derivation": "見出し語「ах」",
+    "mnemonic": "【あっ（ах）】と頼れる【兄・年上男性】！"
   },
   {
     "id": "v_gen_34",
@@ -4225,7 +4490,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "бороо",
-    "derivation": "見出し語「бороо」"
+    "derivation": "見出し語「бороо」",
+    "mnemonic": "雨に濡れて服が【ボロ（бороо）】ボロ！"
   },
   {
     "id": "v_gen_66",
@@ -4687,7 +4953,8 @@ const initialVocabulary = [
     "dictForm": "гар",
     "derivation": "見出し語「гар」",
     "genreId": "body",
-    "genreName": "身体の部位"
+    "genreName": "身体の部位",
+    "mnemonic": "手からビームが【出る（гар）】！"
   },
   {
     "id": "v_gen_94",
@@ -4767,7 +5034,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "гол",
-    "derivation": "見出し語「гол」"
+    "derivation": "見出し語「гол」",
+    "mnemonic": "【川（гол）】を渡って【ゴール（гол）】！"
   },
   {
     "id": "v_gen_99",
@@ -4802,7 +5070,8 @@ const initialVocabulary = [
     "dictForm": "гурил",
     "derivation": "見出し語「гурил」",
     "genreId": "dining",
-    "genreName": "食べ物・レストラン"
+    "genreName": "食べ物・レストラン",
+    "mnemonic": "小麦粉を【ぐり（гурил）】ぐりこねる【小麦粉・麺】！"
   },
   {
     "id": "v_gen_101",
@@ -5018,7 +5287,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "давс",
-    "derivation": "見出し語「давс」"
+    "derivation": "見出し語「давс」",
+    "mnemonic": "料理に塩を【出す（давс）】！"
   },
   {
     "id": "v_gen_116",
@@ -5629,7 +5899,8 @@ const initialVocabulary = [
     "dictForm": "загас",
     "derivation": "見出し語「загас」",
     "genreId": "dining",
-    "genreName": "食べ物・レストラン"
+    "genreName": "食べ物・レストラン",
+    "mnemonic": "魚が川を【ザガ（загас）】スザガス泳ぐ【魚】！"
   },
   {
     "id": "v_gen_158",
@@ -6072,7 +6343,8 @@ const initialVocabulary = [
     "dictForm": "зүгээр",
     "derivation": "基本語彙",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "お礼を言われて「【ズバリ大丈夫（зүгээр）】」！"
   },
   {
     "id": "v_gen_186",
@@ -6590,7 +6862,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "мод",
-    "derivation": "見出し語「мод」"
+    "derivation": "見出し語「мод」",
+    "mnemonic": "【木（мод）】に登る【モード（мод）】！"
   },
   {
     "id": "v_gen_220",
@@ -6735,7 +7008,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "муур",
-    "derivation": "見出し語「муур」"
+    "derivation": "見出し語「муур」",
+    "mnemonic": "猫が【モール（муур）】で買い物／ニャーと鳴くムール！"
   },
   {
     "id": "v_gen_229",
@@ -6946,7 +7220,8 @@ const initialVocabulary = [
     "note": "品詞: 形容詞",
     "isVerb": false,
     "dictForm": "ногоон",
-    "derivation": "見出し語「ногоон」"
+    "derivation": "見出し語「ногоон」",
+    "mnemonic": "大草原の草（ногоо）の色＝「【緑】」！"
   },
   {
     "id": "v_gen_243",
@@ -7465,7 +7740,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "охин",
-    "derivation": "見出し語「охин」"
+    "derivation": "見出し語「охин」",
+    "mnemonic": "【お品（охин）】の良い【娘・女の子】！"
   },
   {
     "id": "v_gen_279",
@@ -7594,7 +7870,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "өдөр",
-    "derivation": "見出し語「өдөр」"
+    "derivation": "見出し語「өдөр」",
+    "mnemonic": "昼間に元気に【踊る（өдөр）】！"
   },
   {
     "id": "v_gen_289",
@@ -7740,7 +8017,8 @@ const initialVocabulary = [
     "note": "身長が高い、建物が高い。",
     "isVerb": false,
     "dictForm": "өндөр",
-    "derivation": "見出し語「өндөр」"
+    "derivation": "見出し語「өндөр」",
+    "mnemonic": "【温度る（өндөр）】ほど熱気【高い】！"
   },
   {
     "id": "v_gen_299",
@@ -7952,7 +8230,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "салхи",
-    "derivation": "見出し語「салхи」"
+    "derivation": "見出し語「салхи」",
+    "mnemonic": "風に乗って【猿飛（салхи）】佐助が飛ぶ【風】！"
   },
   {
     "id": "v_gen_313",
@@ -8000,7 +8279,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "сар",
-    "derivation": "見出し語「сар」"
+    "derivation": "見出し語「сар」",
+    "mnemonic": "【月（сар）】で【サル】が餅つき！"
   },
   {
     "id": "v_gen_318",
@@ -8311,7 +8591,8 @@ const initialVocabulary = [
     "dictForm": "сүү",
     "derivation": "見出し語「сүү」",
     "genreId": "dining",
-    "genreName": "食べ物・レストラン"
+    "genreName": "食べ物・レストラン",
+    "mnemonic": "【スー】ッと一気に飲める【牛乳（сүү）】！"
   },
   {
     "id": "v_gen_339",
@@ -8722,7 +9003,8 @@ const initialVocabulary = [
     "dictForm": "толгой",
     "derivation": "見出し語「толгой」",
     "genreId": "body",
-    "genreName": "身体の部位"
+    "genreName": "身体の部位",
+    "mnemonic": "頭を【取るごい（толгой）】！"
   },
   {
     "id": "v_gen_367",
@@ -9047,7 +9329,8 @@ const initialVocabulary = [
     "note": "モンゴル5大家畜（タヴァン・ホシュー・マル）の1つ。",
     "isVerb": false,
     "dictForm": "тэмээ",
-    "derivation": "見出し語「тэмээ」"
+    "derivation": "見出し語「тэмээ」",
+    "mnemonic": "ラクダに乗って【てめえ（тэмээ）】どこ行く！"
   },
   {
     "id": "v_gen_387",
@@ -9096,7 +9379,8 @@ const initialVocabulary = [
     "note": "品詞: 形容詞",
     "isVerb": false,
     "dictForm": "улаан",
-    "derivation": "見出し語「улаан」"
+    "derivation": "見出し語「улаан」",
+    "mnemonic": "【ウラン（улаан）】バートルの【赤】！"
   },
   {
     "id": "v_gen_392",
@@ -9550,7 +9834,8 @@ const initialVocabulary = [
     "note": "品詞: 形容詞",
     "isVerb": false,
     "dictForm": "үнэтэй",
-    "derivation": "見出し語「үнэтэй」"
+    "derivation": "見出し語「үнэтэй」",
+    "mnemonic": "真実の価値（үнэ）を持つ（-тэй）＝「【値段が高い・貴重だ】」！"
   },
   {
     "id": "v_gen_420",
@@ -9631,7 +9916,8 @@ const initialVocabulary = [
     "note": "モンゴル5大家畜の1つ。牛肉は үхрийн мах。",
     "isVerb": false,
     "dictForm": "үхэр",
-    "derivation": "見出し語「үхэр」"
+    "derivation": "見出し語「үхэр」",
+    "mnemonic": "牛が大きくて【ウヒャー（үхэр）】と驚く！"
   },
   {
     "id": "v_gen_425",
@@ -9695,7 +9981,8 @@ const initialVocabulary = [
     "note": "品詞: 代名詞",
     "isVerb": false,
     "dictForm": "хаана",
-    "derivation": "見出し語「хаана」"
+    "derivation": "見出し語「хаана」",
+    "mnemonic": "【鼻（хаана）】は【どこ】？"
   },
   {
     "id": "v_gen_429",
@@ -9856,7 +10143,8 @@ const initialVocabulary = [
     "note": "気温が暑い、飲み物が熱い。",
     "isVerb": false,
     "dictForm": "халуун",
-    "derivation": "見出し語「халуун」"
+    "derivation": "見出し語「халуун」",
+    "mnemonic": "暑い日は【はる（халуун）】か彼方に逃げたい【暑い・熱い】！"
   },
   {
     "id": "v_gen_439",
@@ -10001,7 +10289,8 @@ const initialVocabulary = [
     "note": "対義語は цагаан（白い）。",
     "isVerb": false,
     "dictForm": "хар",
-    "derivation": "見出し語「хар」"
+    "derivation": "見出し語「хар」",
+    "mnemonic": "【春（хар）】なのに【黒】い服！"
   },
   {
     "id": "v_gen_449",
@@ -10471,7 +10760,8 @@ const initialVocabulary = [
     "note": "スピードが速い。",
     "isVerb": false,
     "dictForm": "хурдан",
-    "derivation": "見出し語「хурдан」"
+    "derivation": "見出し語「хурдан」",
+    "mnemonic": "【車（хурдан）】のように【速い】！"
   },
   {
     "id": "v_gen_481",
@@ -10554,7 +10844,8 @@ const initialVocabulary = [
     "dictForm": "хуушуур",
     "derivation": "見出し語「хуушуур」",
     "genreId": "dining",
-    "genreName": "食べ物・レストラン"
+    "genreName": "食べ物・レストラン",
+    "mnemonic": "揚げ餃子を【ふーふー（хуушуур）】冷まして食べる！"
   },
   {
     "id": "v_gen_486",
@@ -10749,7 +11040,8 @@ const initialVocabulary = [
     "note": "Хэдэн цаг вэ?（何時ですか？）。",
     "isVerb": false,
     "dictForm": "хэд",
-    "derivation": "見出し語「хэд」"
+    "derivation": "見出し語「хэд」",
+    "mnemonic": "お菓子が減って【いくつ（хэд）】残った？"
   },
   {
     "id": "v_gen_499",
@@ -10944,7 +11236,8 @@ const initialVocabulary = [
     "note": "対義語は үнэтэй（高い）。",
     "isVerb": false,
     "dictForm": "хямдхан",
-    "derivation": "見出し語「хямдхан」"
+    "derivation": "見出し語「хямдхан」",
+    "mnemonic": "値段が【百円（хямдхан）】で【安い】！"
   },
   {
     "id": "v_gen_515",
@@ -11045,7 +11338,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "цагаан будаа",
     "derivation": "「цагаан（白い）」 ＋ 「будаа」 ＝ 【白米、ご飯】",
-    "etymologyBreakdown": "「цагаан（白い）」 ＋ 「будаа」 ＝ 【白米、ご飯】"
+    "etymologyBreakdown": "「цагаан（白い）」 ＋ 「будаа」 ＝ 【白米、ご飯】",
+    "mnemonic": "白い（цагаан）米（будаа）＝「白米・ごはん」！"
   },
   {
     "id": "v_gen_522",
@@ -11243,7 +11537,8 @@ const initialVocabulary = [
     "dictForm": "цэцэг",
     "derivation": "見出し語「цэцэг」",
     "genreId": "school",
-    "genreName": "学校・文房具・教室"
+    "genreName": "学校・文房具・教室",
+    "mnemonic": "花を【ツェツェ（цэцэг）】と愛でる【花】！"
   },
   {
     "id": "v_gen_536",
@@ -11537,7 +11832,8 @@ const initialVocabulary = [
     "note": "шөнийн 12 цаг（深夜0時）。",
     "isVerb": false,
     "dictForm": "шөнө",
-    "derivation": "見出し語「шөнө」"
+    "derivation": "見出し語「шөнө」",
+    "mnemonic": "夜は静かに【しょん（шөнө）】ぼり！"
   },
   {
     "id": "v_gen_555",
@@ -11634,7 +11930,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "эгч",
-    "derivation": "見出し語「эгч」"
+    "derivation": "見出し語「эгч」",
+    "mnemonic": "【えっ（эгч）】と驚く美人な【姉・年上女性】！"
   },
   {
     "id": "v_gen_562",
@@ -11942,7 +12239,8 @@ const initialVocabulary = [
     "note": "親愛を込めた母親の呼び方。",
     "isVerb": false,
     "dictForm": "ээж",
-    "derivation": "見出し語「ээж」"
+    "derivation": "見出し語「ээж」",
+    "mnemonic": "【えー（ээж）】優しい【母】さん！"
   },
   {
     "id": "v_gen_583",
@@ -12038,7 +12336,8 @@ const initialVocabulary = [
     "note": "品詞: 副詞",
     "isVerb": false,
     "dictForm": "яагаад",
-    "derivation": "見出し語「яагаад」"
+    "derivation": "見出し語「яагаад」",
+    "mnemonic": "【嫌が（яагаад）】るのに【なぜ】？"
   },
   {
     "id": "v_gen_590",
@@ -12184,7 +12483,8 @@ const initialVocabulary = [
     "note": "性質や種類を尋ねる疑問詞。",
     "isVerb": false,
     "dictForm": "ямар",
-    "derivation": "見出し語「ямар」"
+    "derivation": "見出し語「ямар」",
+    "mnemonic": "【やまる（ямар）】（止まる）のは【どんな】車？"
   },
   {
     "id": "v_gen_599",
@@ -12372,7 +12672,8 @@ const initialVocabulary = [
     "dictForm": "ус",
     "derivation": "見出し語「ус」",
     "genreId": "dining",
-    "genreName": "食べ物・レストラン"
+    "genreName": "食べ物・レストラン",
+    "mnemonic": "【オス】の水／【押す】と出る【水（ус）】！"
   },
   {
     "id": "v_gen_622",
@@ -12395,7 +12696,8 @@ const initialVocabulary = [
     "dictForm": "цай",
     "derivation": "見出し語「цай」",
     "genreId": "dining",
-    "genreName": "食べ物・レストラン"
+    "genreName": "食べ物・レストラン",
+    "mnemonic": "お【茶い（цай）】かが？／お茶を【注い（цай）】で！"
   },
   {
     "id": "v_gen_624",
@@ -12429,7 +12731,8 @@ const initialVocabulary = [
     "dictForm": "ногоо",
     "derivation": "見出し語「ногоо」",
     "genreId": "produce",
-    "genreName": "果物・野菜"
+    "genreName": "果物・野菜",
+    "mnemonic": "野菜を食べて【のびのび成長（ногоо）】する【野菜】！"
   },
   {
     "id": "v_gen_626",
@@ -12465,7 +12768,8 @@ const initialVocabulary = [
     "dictForm": "өндөг",
     "derivation": "見出し語「өндөг」",
     "genreId": "dining",
-    "genreName": "食べ物・レストラン"
+    "genreName": "食べ物・レストラン",
+    "mnemonic": "卵を【おんぶ（өндөг）】する【卵】！"
   },
   {
     "id": "v_gen_628",
@@ -12501,7 +12805,8 @@ const initialVocabulary = [
     "dictForm": "жимс",
     "derivation": "見出し語「жимс」",
     "genreId": "produce",
-    "genreName": "果物・野菜"
+    "genreName": "果物・野菜",
+    "mnemonic": "果物を【ジューシー（жимс）】に味わう【果物・フルーツ】！"
   },
   {
     "id": "v_gen_630",
@@ -12533,7 +12838,8 @@ const initialVocabulary = [
     "note": "モンゴルのシンボル、5大家畜の1つ。",
     "isVerb": false,
     "dictForm": "морь",
-    "derivation": "見出し語「морь」"
+    "derivation": "見出し語「морь」",
+    "mnemonic": "馬が【森（морь）】を颯爽と駆ける！"
   },
   {
     "id": "v_gen_632",
@@ -12549,7 +12855,8 @@ const initialVocabulary = [
     "note": "遊牧民の大切な家畜。",
     "isVerb": false,
     "dictForm": "хонь",
-    "derivation": "見出し語「хонь」"
+    "derivation": "見出し語「хонь」",
+    "mnemonic": "羊に【骨（хонь）】なし、ふわふわウール！"
   },
   {
     "id": "v_gen_634",
@@ -12565,7 +12872,8 @@ const initialVocabulary = [
     "note": "カシミヤの原料となる5大家畜の1つ。",
     "isVerb": false,
     "dictForm": "ямаа",
-    "derivation": "見出し語「ямаа」"
+    "derivation": "見出し語「ямаа」",
+    "mnemonic": "山羊が【山（ямаа）】を軽快に登る！"
   },
   {
     "id": "v_gen_638",
@@ -12581,7 +12889,8 @@ const initialVocabulary = [
     "note": "番犬（Банхарなど）。Нохой хорь! で「犬を押さえて！」。",
     "isVerb": false,
     "dictForm": "нохой",
-    "derivation": "見出し語「нохой」"
+    "derivation": "見出し語「нохой」",
+    "mnemonic": "犬が庭に【野放（нохой）】し！"
   },
   {
     "id": "v_gen_643",
@@ -12597,7 +12906,8 @@ const initialVocabulary = [
     "note": "昨日の意味。",
     "isVerb": false,
     "dictForm": "өчигдөр",
-    "derivation": "見出し語「өчигдөр」"
+    "derivation": "見出し語「өчигдөр」",
+    "mnemonic": "昨日のことを【おちついて（өчигдөр）】思い出す！"
   },
   {
     "id": "v_gen_649",
@@ -12796,7 +13106,8 @@ const initialVocabulary = [
     "note": "自然の山、山岳。",
     "isVerb": false,
     "dictForm": "уул",
-    "derivation": "見出し語「уул」"
+    "derivation": "見出し語「уул」",
+    "mnemonic": "高い【山（уул）】を見て【ウール（уул）】トラマンもびっくり！"
   },
   {
     "id": "v_gen_680",
@@ -12828,7 +13139,8 @@ const initialVocabulary = [
     "note": "空から降る雪。",
     "isVerb": false,
     "dictForm": "цас",
-    "derivation": "見出し語「цас」"
+    "derivation": "見出し語「цас」",
+    "mnemonic": "雪が【さーっ（цас）】と降る【雪】！"
   },
   {
     "id": "v_gen_683",
@@ -12844,7 +13156,8 @@ const initialVocabulary = [
     "note": "温度・気温が高い。",
     "isVerb": false,
     "dictForm": "халуун",
-    "derivation": "見出し語「халуун」"
+    "derivation": "見出し語「халуун」",
+    "mnemonic": "暑い日は【はる（халуун）】か彼方に逃げたい【暑い・熱い】！"
   },
   {
     "id": "v_gen_687",
@@ -12892,7 +13205,8 @@ const initialVocabulary = [
     "note": "Сайн байна уу?（こんにちは）の根幹。",
     "isVerb": false,
     "dictForm": "сайн",
-    "derivation": "見出し語「сайн」"
+    "derivation": "見出し語「сайн」",
+    "mnemonic": "良いことの【サイン（сайн）】！"
   },
   {
     "id": "v_gen_692",
@@ -12908,7 +13222,8 @@ const initialVocabulary = [
     "note": "対義語は сайн（良い）。",
     "isVerb": false,
     "dictForm": "муу",
-    "derivation": "見出し語「муу」"
+    "derivation": "見出し語「муу」",
+    "mnemonic": "悪いことして牛が【モー（муу）】と鳴く！"
   },
   {
     "id": "v_gen_693",
@@ -12924,7 +13239,8 @@ const initialVocabulary = [
     "note": "景色や天気が素晴らしい、美味しい。",
     "isVerb": false,
     "dictForm": "сайхан",
-    "derivation": "見出し語「сайхан」"
+    "derivation": "見出し語「сайхан」",
+    "mnemonic": "【最上（сайхан）】に【美しい・素敵だ】！"
   },
   {
     "id": "v_gen_694",
@@ -12940,7 +13256,8 @@ const initialVocabulary = [
     "note": "対義語は сайхан（美しい）。",
     "isVerb": false,
     "dictForm": "муухай",
-    "derivation": "見出し語「муухай」"
+    "derivation": "見出し語「муухай」",
+    "mnemonic": "【むむっ（муухай）】と顔をしかめる【不気味な・まずい】！"
   },
   {
     "id": "v_gen_696",
@@ -12972,7 +13289,8 @@ const initialVocabulary = [
     "note": "Цагаан сар（白月・旧正月）。",
     "isVerb": false,
     "dictForm": "цагаан",
-    "derivation": "見出し語「цагаан」"
+    "derivation": "見出し語「цагаан」",
+    "mnemonic": "【白】を【ツァガ（цагаан）】っと塗る！"
   },
   {
     "id": "v_gen_700",
@@ -12988,7 +13306,8 @@ const initialVocabulary = [
     "note": "色彩の黄色。",
     "isVerb": false,
     "dictForm": "шар",
-    "derivation": "見出し語「шар」"
+    "derivation": "見出し語「шар」",
+    "mnemonic": "【黄色】い【シャル（шар）】ロット！"
   },
   {
     "id": "v_gen_707",
@@ -14779,7 +15098,8 @@ const initialVocabulary = [
     "dictForm": "цахилгаан шат",
     "id": "v_note_90",
     "derivation": "「цахилгаан（電気）」 ＋ 「шат（階段）」 ＝ 【エレベーター、エスカレーター】",
-    "etymologyBreakdown": "「цахилгаан（電気）」 ＋ 「шат（階段）」 ＝ 【エレベーター、エスカレーター】"
+    "etymologyBreakdown": "「цахилгаан（電気）」 ＋ 「шат（階段）」 ＝ 【エレベーター、エスカレーター】",
+    "mnemonic": "電気（цахилгаан）の階段（шат）＝「動く電気階段（エレベーター）」！"
   },
   {
     "mongolian": "чихэрлэг",
@@ -14977,7 +15297,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "намхан",
     "id": "v_note_103",
-    "derivation": "見出し語「намхан」"
+    "derivation": "見出し語「намхан」",
+    "mnemonic": "【波（намхан）】が静かで【低い】！"
   },
   {
     "mongolian": "төвөгтэй",
@@ -15556,7 +15877,8 @@ const initialVocabulary = [
     "dictForm": "бодох",
     "derivation": "語幹「бод-」＋不定形語尾「-х」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "【僕（бодох）】が【思う・考える】に…！"
   },
   {
     "id": "v_note_136",
@@ -16205,7 +16527,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "үс",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "【身体の部位】の基本語彙です。",
+    "mnemonic": "髪の毛が【薄（үс）】い！"
   },
   {
     "id": "v_genre_802",
@@ -16241,7 +16564,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "нүд",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "【身体の部位】の基本語彙です。",
+    "mnemonic": "【目】を【ぬーど（нүд）】で見つめる／目を濡らす！"
   },
   {
     "id": "v_genre_804",
@@ -16259,7 +16583,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "чих",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "【身体の部位】の基本語彙です。",
+    "mnemonic": "【耳】を【ちく（чих）】っと刺される！"
   },
   {
     "id": "v_genre_805",
@@ -16277,7 +16602,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "хамар",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "【身体の部位】の基本語彙です。",
+    "mnemonic": "鼻が【ハマる（хамар）】！"
   },
   {
     "id": "v_genre_806",
@@ -16313,7 +16639,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "ам",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "【身体の部位】の基本語彙です。",
+    "mnemonic": "口を【アム（ам）】っと開けて食べる！"
   },
   {
     "id": "v_genre_808",
@@ -16331,7 +16658,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "шүд",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "【身体の部位】の基本語彙です。",
+    "mnemonic": "歯を【シュッ（шүд）】と磨く！"
   },
   {
     "id": "v_genre_809",
@@ -16349,7 +16677,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "хөх",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "【身体の部位】の基本語彙です。",
+    "mnemonic": "【コック（хөх）】さんの【青】いエプロン！"
   },
   {
     "id": "v_genre_810",
@@ -16532,7 +16861,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "хөлийн өсгий",
     "derivation": "「хөлийн（足の（хөл ＋ 属格 -ийн））」 ＋ 「өсгий（踵（かかと））」 ＝ 【かかと】",
-    "etymologyBreakdown": "「хөлийн（足の（хөл ＋ 属格 -ийн））」 ＋ 「өсгий（踵（かかと））」 ＝ 【かかと】"
+    "etymologyBreakdown": "「хөлийн（足の（хөл ＋ 属格 -ийн））」 ＋ 「өсгий（踵（かかと））」 ＝ 【かかと】",
+    "mnemonic": "足（хөл）の踵（өсгий）＝「オスが踏ん張る足のかかと」！"
   },
   {
     "id": "v_genre_820",
@@ -16696,7 +17026,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "зүрх",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "【身体の部位】の基本語彙です。",
+    "mnemonic": "胸が【ずるっ（зүрх）】とするほど高鳴る【心臓・ハート】！"
   },
   {
     "id": "v_genre_829",
@@ -16750,7 +17081,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "нуруу",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "【身体の部位】の基本語彙です。",
+    "mnemonic": "【ぬる（нуруу）】っと曲がる【背中・背骨】！"
   },
   {
     "id": "v_genre_832",
@@ -16768,7 +17100,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "хөл",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "【身体の部位】の基本語彙です。",
+    "mnemonic": "足で穴を【掘る（хөл）】！"
   },
   {
     "id": "v_genre_833",
@@ -16804,7 +17137,8 @@ const initialVocabulary = [
     "note": "ジャンル: 学校・文房具・教室",
     "isVerb": false,
     "dictForm": "хаалга",
-    "derivation": "【学校・文房具・教室】の基本語彙です。"
+    "derivation": "【学校・文房具・教室】の基本語彙です。",
+    "mnemonic": "ドアを開けて【はーいガ（хаалга）】ッチャ！"
   },
   {
     "id": "v_genre_835",
@@ -16822,7 +17156,8 @@ const initialVocabulary = [
     "note": "ジャンル: 学校・文房具・教室",
     "isVerb": false,
     "dictForm": "цонх",
-    "derivation": "【学校・文房具・教室】の基本語彙です。"
+    "derivation": "【学校・文房具・教室】の基本語彙です。",
+    "mnemonic": "窓から【チョン（цонх）】と顔を出す【窓】！"
   },
   {
     "id": "v_genre_836",
@@ -17912,7 +18247,8 @@ const initialVocabulary = [
     "note": "ジャンル: 食べ物・レストラン",
     "isVerb": false,
     "dictForm": "талх",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "derivation": "【食べ物・レストラン】の基本語彙です。",
+    "mnemonic": "パンを【たる（талх）】ほど食べる【パン】！"
   },
   {
     "id": "v_genre_896",
@@ -17985,7 +18321,8 @@ const initialVocabulary = [
     "note": "ジャンル: 食べ物・レストラン",
     "isVerb": false,
     "dictForm": "мах",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "derivation": "【食べ物・レストラン】の基本語彙です。",
+    "mnemonic": "【マハ】ラジャが食べる【肉（мах）】！"
   },
   {
     "id": "v_genre_900",
@@ -18201,7 +18538,8 @@ const initialVocabulary = [
     "note": "ジャンル: 食べ物・レストラン",
     "isVerb": false,
     "dictForm": "бууз",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "derivation": "【食べ物・レストラン】の基本語彙です。",
+    "mnemonic": "肉まんのボーズを食べて【坊主（бууз）】も笑顔！"
   },
   {
     "id": "v_genre_912",
@@ -18219,7 +18557,8 @@ const initialVocabulary = [
     "note": "ジャンル: 食べ物・レストラン",
     "isVerb": false,
     "dictForm": "цуйван",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "derivation": "【食べ物・レストラン】の基本語彙です。",
+    "mnemonic": "焼うどんのツォイワンを食べて【強いワン（цуйван）】！"
   },
   {
     "id": "v_genre_913",
@@ -18384,7 +18723,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "ор",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "【日用品・家電・家具】の基本語彙です。",
+    "mnemonic": "ベッドに【おっ（ор）】と飛び乗る【ベッド・寝台】！"
   },
   {
     "id": "v_genre_922",
@@ -18531,7 +18871,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "ус буцалгагч",
     "derivation": "「ус（水）」 ＋ 「буцалгагч（沸騰させる器具（動詞 буцалгах［沸かす］＋接尾辞 -гч））」 ＝ 【電気ケトル・湯沸かし器】",
-    "etymologyBreakdown": "「ус（水）」 ＋ 「буцалгагч（沸騰させる器具（動詞 буцалгах［沸かす］＋接尾辞 -гч））」 ＝ 【電気ケトル・湯沸かし器】"
+    "etymologyBreakdown": "「ус（水）」 ＋ 「буцалгагч（沸騰させる器具（動詞 буцалгах［沸かす］＋接尾辞 -гч））」 ＝ 【電気ケトル・湯沸かし器】",
+    "mnemonic": "水（ус）を沸かす（буцалгах）器具（-гч）＝「湯沸かしケトル」！"
   },
   {
     "id": "v_genre_930",
@@ -18605,7 +18946,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "толь",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "【日用品・家電・家具】の基本語彙です。",
+    "mnemonic": "自分の姿を【取り（толь）】映す【鏡】！"
   },
   {
     "id": "v_genre_934",
@@ -18881,7 +19223,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "угаалгын машин",
     "derivation": "「угаалгын（洗濯の（угаалга ＋ 属格 -ын））」 ＋ 「машин（機械・自動車）」 ＝ 【洗濯機】",
-    "etymologyBreakdown": "「угаалгын（洗濯の（угаалга ＋ 属格 -ын））」 ＋ 「машин（機械・自動車）」 ＝ 【洗濯機】"
+    "etymologyBreakdown": "「угаалгын（洗濯の（угаалга ＋ 属格 -ын））」 ＋ 「машин（機械・自動車）」 ＝ 【洗濯機】",
+    "mnemonic": "洗濯（угаалга）の機械（машин）＝「洗濯機」！"
   },
   {
     "id": "v_genre_949",
@@ -18973,7 +19316,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "тоос сорогч",
     "derivation": "「тоос（埃・チリ・粉塵）」 ＋ 「сорогч（吸う器具（動詞 сорох［吸う］＋接尾辞 -гч［器具］））」 ＝ 【掃除機】",
-    "etymologyBreakdown": "「тоос（埃・チリ・粉塵）」 ＋ 「сорогч（吸う器具（動詞 сорох［吸う］＋接尾辞 -гч［器具］））」 ＝ 【掃除機】"
+    "etymologyBreakdown": "「тоос（埃・チリ・粉塵）」 ＋ 「сорогч（吸う器具（動詞 сорох［吸う］＋接尾辞 -гч［器具］））」 ＝ 【掃除機】",
+    "mnemonic": "埃（トース）を吸う（ソログ）器具（チ）＝「埃吸い取りマシン」！"
   },
   {
     "id": "v_genre_954",
@@ -20286,7 +20630,8 @@ const initialVocabulary = [
     "genreId": "education",
     "genreName": "教育・大学・学問",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【バッジ（багш）】をつけた偉大な【先生】！"
   },
   {
     "id": "v_gen_education_3",
@@ -20810,7 +21155,8 @@ const initialVocabulary = [
     "genreId": "emotions",
     "genreName": "感情・心理・気持ち",
     "caseGovernment": "奪格（〜аас / 〜ээс）支配",
-    "caseNote": "「〜から逃げたい」発想のため、恐れる対象に必ず奪格（〜から）を用います。"
+    "caseNote": "「〜から逃げたい」発想のため、恐れる対象に必ず奪格（〜から）を用います。",
+    "mnemonic": "お化けを見て【アイヤ〜（айх）】と【怖がる】！"
   },
   {
     "id": "v_gen_emotions_9",
@@ -20850,7 +21196,8 @@ const initialVocabulary = [
     "genreId": "emotions",
     "genreName": "感情・心理・気持ち",
     "caseGovernment": "与位格（〜д / 〜т）支配",
-    "caseNote": "恋する相手を与位格（〜に向かって）で表します。"
+    "caseNote": "恋する相手を与位格（〜に向かって）で表します。",
+    "mnemonic": "好きな人に【ド直球（дурлах）】で【恋する】！"
   },
   {
     "id": "v_gen_emotions_11",
@@ -20971,7 +21318,8 @@ const initialVocabulary = [
     "genreId": "emotions",
     "genreName": "感情・心理・気持ち",
     "caseGovernment": "具格（〜аар / 〜ээр）支配",
-    "caseNote": "誇りの根拠を具格（〜によって）で表します。"
+    "caseNote": "誇りの根拠を具格（〜によって）で表します。",
+    "mnemonic": "友達の活躍を【バッチリ（бахархах）】【誇る】！"
   },
   {
     "id": "v_gen_emotions_17",
@@ -21093,7 +21441,8 @@ const initialVocabulary = [
     "genreId": "weather",
     "genreName": "天気・気候・自然現象",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "空で太陽が【鳴る（нар）】！"
   },
   {
     "id": "v_gen_weather_3",
@@ -21113,7 +21462,8 @@ const initialVocabulary = [
     "genreId": "weather",
     "genreName": "天気・気候・自然現象",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "雨に濡れて服が【ボロ（бороо）】ボロ！"
   },
   {
     "id": "v_gen_weather_4",
@@ -21133,7 +21483,8 @@ const initialVocabulary = [
     "genreId": "weather",
     "genreName": "天気・気候・自然現象",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "雪が【さーっ（цас）】と降る【雪】！"
   },
   {
     "id": "v_gen_weather_5",
@@ -21153,7 +21504,8 @@ const initialVocabulary = [
     "genreId": "weather",
     "genreName": "天気・気候・自然現象",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "風に乗って【猿飛（салхи）】佐助が飛ぶ【風】！"
   },
   {
     "id": "v_gen_weather_6",
@@ -21313,7 +21665,8 @@ const initialVocabulary = [
     "genreId": "weather",
     "genreName": "天気・気候・自然現象",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "寒い日は【食う手（хүйтэн）】がかじかむ【寒い・冷たい】！"
   },
   {
     "id": "v_gen_weather_14",
@@ -21333,7 +21686,8 @@ const initialVocabulary = [
     "genreId": "weather",
     "genreName": "天気・気候・自然現象",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "暑い日は【はる（халуун）】か彼方に逃げたい【暑い・熱い】！"
   },
   {
     "id": "v_gen_weather_15",
@@ -21474,7 +21828,8 @@ const initialVocabulary = [
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【美（би）】しい【私】！"
   },
   {
     "id": "v_gen_pronouns_2",
@@ -21494,7 +21849,8 @@ const initialVocabulary = [
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【ち（чи）】み【君】！"
   },
   {
     "id": "v_gen_pronouns_3",
@@ -21514,7 +21870,8 @@ const initialVocabulary = [
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【他（та）】人行儀に丁寧に【あなた】！"
   },
   {
     "id": "v_gen_pronouns_4",
@@ -21534,7 +21891,8 @@ const initialVocabulary = [
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【照れ（тэр）】屋の【あの人・彼・彼女】！"
   },
   {
     "id": "v_gen_pronouns_5",
@@ -21554,7 +21912,8 @@ const initialVocabulary = [
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【ビビッ（бид）】と団結する【私たち】！"
   },
   {
     "id": "v_gen_pronouns_6",
@@ -22751,7 +23110,8 @@ const initialVocabulary = [
     "genreId": "demonstratives",
     "genreName": "指示代名詞・疑問詞",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【照れ（тэр）】屋の【あの人・彼・彼女】！"
   },
   {
     "id": "v_gen_demonstratives_3",
@@ -22951,7 +23311,8 @@ const initialVocabulary = [
     "genreId": "demonstratives",
     "genreName": "指示代名詞・疑問詞",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "チームの決定に「【はい、そうです（тийм）】」！"
   },
   {
     "id": "v_gen_demonstratives_13",
@@ -22971,7 +23332,8 @@ const initialVocabulary = [
     "genreId": "demonstratives",
     "genreName": "指示代名詞・疑問詞",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【やまる（ямар）】（止まる）のは【どんな】車？"
   },
   {
     "id": "v_gen_demonstratives_14",
@@ -22991,7 +23353,8 @@ const initialVocabulary = [
     "genreId": "demonstratives",
     "genreName": "指示代名詞・疑問詞",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【鼻（хаана）】は【どこ】？"
   },
   {
     "id": "v_gen_demonstratives_15",
@@ -23031,7 +23394,8 @@ const initialVocabulary = [
     "genreId": "demonstratives",
     "genreName": "指示代名詞・疑問詞",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【風邪（хэзээ）】は【いつ】治る？"
   },
   {
     "id": "v_gen_demonstratives_17",
@@ -23051,7 +23415,8 @@ const initialVocabulary = [
     "genreId": "demonstratives",
     "genreName": "指示代名詞・疑問詞",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "【嫌が（яагаад）】るのに【なぜ】？"
   },
   {
     "id": "v_gen_demonstratives_18",
@@ -24261,7 +24626,8 @@ const initialVocabulary = [
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "バナナやるからラララ〜と【ありがとう（баярлалаа）】！"
   },
   {
     "id": "v_gen_useful_phrases_2",
@@ -24302,7 +24668,8 @@ const initialVocabulary = [
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "お茶（ууча）をこぼして【すみません（уучлаарай）】！"
   },
   {
     "id": "v_gen_useful_phrases_4",
@@ -25114,7 +25481,8 @@ const initialVocabulary = [
     "genreId": "medical",
     "genreName": "医療・健康・病院",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "mnemonic": "暑い日は【はる（халуун）】か彼方に逃げたい【暑い・熱い】！"
   },
   {
     "id": "v_gen_medical_8",
@@ -25335,7 +25703,8 @@ const initialVocabulary = [
     "dictForm": "ойлгох",
     "derivation": "語幹「ойлго-」＋不定形語尾「-х」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "【オイル（ойлгох）】の仕組みが【分かる・理解する】！"
   },
   {
     "id": "v_req_know_4",
@@ -25407,7 +25776,8 @@ const initialVocabulary = [
     "dictForm": "магадгүй",
     "derivation": "語根「магад」＋接尾辞「-гүй」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "公算（магад）＋なし（-гүй）＝「【多分・おそらく】」！"
   },
   {
     "id": "v_req_know_8",
@@ -25659,7 +26029,8 @@ const initialVocabulary = [
     "dictForm": "энгийн",
     "derivation": "語根「энг」＋形容詞接尾辞「-ийн」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "飾りのない平素（энг）＝「【普通・簡単・シンプル】」！"
   },
   {
     "id": "v_req_eval_10",
@@ -25713,7 +26084,8 @@ const initialVocabulary = [
     "dictForm": "дажгүй",
     "derivation": "日常口語表現",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "【ダシ（дажгүй）】が効いて【まぁまぁ・悪くない】！"
   },
   {
     "id": "v_req_eval_13",
@@ -25731,7 +26103,8 @@ const initialVocabulary = [
     "dictForm": "гайхалтай",
     "derivation": "動詞語幹「гайх-」＋形容詞接尾辞「-лтай」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "驚き（гайх-）に値する（-лтай）＝「【素晴らしい・すごい】」！"
   },
   {
     "id": "v_req_eval_14",
@@ -25893,7 +26266,8 @@ const initialVocabulary = [
     "dictForm": "хичээх",
     "derivation": "語幹「хичээ-」＋不定形語尾「-х」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "勉学を【ひーひー知恵（хичээх）】絞って【努力する】！"
   },
   {
     "id": "v_req_act_13",
@@ -25929,7 +26303,8 @@ const initialVocabulary = [
     "dictForm": "үнэн шүү",
     "derivation": "名詞「үнэн」＋強調助詞「шүү」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "本当（үнэн）＋強調（шүү）＝「【本当だよね・確かに】」！"
   },
   {
     "id": "v_req_react_2",
@@ -25947,7 +26322,8 @@ const initialVocabulary = [
     "dictForm": "тийм шүү",
     "derivation": "指示詞「тийм」＋強調助詞「шүү」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "そう（тийм）＋強調（шүү）＝「【その通り・確かにそうだよね】」！"
   },
   {
     "id": "v_req_react_3",
@@ -26019,7 +26395,8 @@ const initialVocabulary = [
     "dictForm": "ёстой",
     "derivation": "語根「ёс」＋接尾辞「-той」",
     "genreId": "useful_phrases",
-    "genreName": "便利な言葉・日常決まり文句"
+    "genreName": "便利な言葉・日常決まり文句",
+    "mnemonic": "礼儀・道理（ёс）＋ある（-той）＝「【当然・本当に・〜すべき】」！"
   },
   {
     "id": "v_req_react_8",
@@ -26073,7 +26450,8 @@ const initialVocabulary = [
     "dictForm": "цангах",
     "derivation": "語幹「цанг-」＋不定形語尾「-ах」",
     "genreId": "dining",
-    "genreName": "食べ物・レストラン"
+    "genreName": "食べ物・レストラン",
+    "mnemonic": "喉が渇いて【ツァン（цангах）】と水が飲みたい！"
   },
   {
     "id": "v_req_extra_5",
@@ -26145,7 +26523,8 @@ const initialVocabulary = [
     "dictForm": "мөрөөдөх",
     "derivation": "語幹「мөрөөд-」＋不定形語尾「-өх」",
     "genreId": "emotions",
-    "genreName": "感情・心理・気持ち"
+    "genreName": "感情・心理・気持ち",
+    "mnemonic": "未来の夢を【もうロード（мөрөөдөх）】のように【夢見る】！"
   },
   {
     "id": "v_req_extra_10",
@@ -56533,7 +56912,7 @@ class GrammarTestComponent {
               <div class="space-y-2 text-xs sm:text-sm">
                 <div>
                   <span class="text-slate-500 font-medium">正しい解答: </span>
-                  <span class="font-extrabold text-base cyrillic-text text-slate-900">${q.answer}</span>
+                  <span class="font-extrabold text-base cyrillic-text text-emerald-800 correct-answer-text">${q.answer}</span>
                 </div>
 
                 ${!this.state.isCorrect && this.state.userAnswer ? `
@@ -56542,6 +56921,9 @@ class GrammarTestComponent {
                     <span class="font-semibold line-through">${this.state.userAnswer}</span>
                   </div>
                 ` : ''}
+
+                ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(null, q.answer) : ''}
+                ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(null, q.answer) : ''}
 
                 <!-- 詳細解説（赤字注意点・格支配など） -->
                 <div class="mt-3 p-3.5 bg-white/90 rounded-xl border border-slate-200 text-slate-700 leading-relaxed text-xs sm:text-sm">
@@ -68356,8 +68738,10 @@ class GenreWordMasterComponent {
                 </button>
               </div>
               <div class="text-xs space-y-1">
-                <div><strong>正解:</strong> ${currentQuestion.mongolian} ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(currentQuestion) && currentQuestion.pronunciation) ? `<span class="text-amber-700 font-bold ml-1">⚠️ [${currentQuestion.pronunciation}]</span>` : ''} = ${currentQuestion.japanese}</div>
+                <div><strong>正解:</strong> <span class="correct-answer-text font-black text-slate-900">${currentQuestion.mongolian}</span> ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(currentQuestion) && currentQuestion.pronunciation) ? `<span class="text-amber-700 font-bold ml-1">⚠️ [${currentQuestion.pronunciation}]</span>` : ''} = ${currentQuestion.japanese}</div>
                 ${currentQuestion.exampleMn ? `<div><strong>例文:</strong> ${currentQuestion.exampleMn} (${currentQuestion.exampleJa || ''})</div>` : ''}
+                ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(currentQuestion, currentQuestion.mongolian) : ''}
+                ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(currentQuestion, currentQuestion.mongolian) : ''}
               </div>
             </div>
           ` : ''}
@@ -70828,9 +71212,12 @@ class ReviewNotebookComponent {
                   });
                 }
 
-                // マッチ単語がない場合のフォールバック（成り立ち解析つき）
+                // マッチ単語がない場合のフォールバック（成り立ち解析＆語呂合わせつき）
                 const etymologyHTML = (typeof getWordEtymologyHTML === 'function')
                   ? getWordEtymologyHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
+                  : '';
+                const mnemonicHTML = (typeof getWordMnemonicHTML === 'function')
+                  ? getWordMnemonicHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
                   : '';
 
                 return `
@@ -70848,6 +71235,7 @@ class ReviewNotebookComponent {
                     ` : ''}
 
                     ${etymologyHTML}
+                    ${mnemonicHTML}
 
                     ${item.explanation ? `
                       <div class="p-3 bg-white/90 rounded-xl border border-slate-200 text-slate-700 text-xs">

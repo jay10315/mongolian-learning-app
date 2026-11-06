@@ -683,9 +683,12 @@ export class ReviewNotebookComponent {
                   });
                 }
 
-                // マッチ単語がない場合のフォールバック（成り立ち解析つき）
+                // マッチ単語がない場合のフォールバック（成り立ち解析＆語呂合わせつき）
                 const etymologyHTML = (typeof getWordEtymologyHTML === 'function')
                   ? getWordEtymologyHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
+                  : '';
+                const mnemonicHTML = (typeof getWordMnemonicHTML === 'function')
+                  ? getWordMnemonicHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
                   : '';
 
                 return `
@@ -703,6 +706,7 @@ export class ReviewNotebookComponent {
                     ` : ''}
 
                     ${etymologyHTML}
+                    ${mnemonicHTML}
 
                     ${item.explanation ? `
                       <div class="p-3 bg-white/90 rounded-xl border border-slate-200 text-slate-700 text-xs">
