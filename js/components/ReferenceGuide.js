@@ -1132,7 +1132,7 @@ export class ReferenceGuideComponent {
                 <div class="space-y-1.5 text-slate-700">
                   <div class="p-2 bg-slate-50 rounded-lg">
                     <strong class="text-indigo-800 cyrillic-text">минь</strong>（私の〜: 親愛感・慈しみ）<br>
-                    • Ээж минь сайн байна уウ?（私のお母さんは元気かい？）
+                    • Ээж минь сайн байна уу?（私のお母さんは元気かい？）
                   </div>
                   <div class="p-2 bg-slate-50 rounded-lg">
                     <strong class="text-indigo-800 cyrillic-text">маань</strong>（私たちの〜: 誇り・家族・仲間）<br>
@@ -1386,7 +1386,7 @@ export class ReferenceGuideComponent {
           </div>
 
           <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
-            語幹に含まれる母音が男性母音であれば、付く語尾も男性母音（-аас, -сан, -на, -аар など）になります。女性母音であれば女性母音の語尾（-ээス, -сэн, -нэ, -ээр など）が接続します。
+            語幹に含まれる母音が男性母音であれば、付く語尾も男性母音（-аас, -сан, -на, -аар など）になります。女性母音であれば女性母音の語尾（-ээс, -сэн, -нэ, -ээр など）が接続します。
           </p>
         </div>
 

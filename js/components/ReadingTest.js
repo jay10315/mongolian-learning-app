@@ -676,6 +676,15 @@ export class ReadingTestComponent {
           </div>
         </div>
 
+        ${list.length > 0 ? `
+          <div class="flex items-center gap-2">
+            <button type="button" id="btn-test-looked-up-from-reading" class="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
+              <span>⚡</span>
+              <span>調べた単語をテストする (${list.length}語)</span>
+            </button>
+          </div>
+        ` : ''}
+
         <!-- 検索バー -->
         ${list.length > 0 ? `
           <div class="relative">
@@ -730,6 +739,21 @@ export class ReadingTestComponent {
   }
 
   static bindLookedUpEvents() {
+    const testBtn = this.container.querySelector('#btn-test-looked-up-from-reading');
+    if (testBtn) {
+      testBtn.addEventListener('click', () => {
+        if (this.onNavigate) {
+          if (typeof ReviewNotebookComponent !== 'undefined') {
+            ReviewNotebookComponent.state.view = 'testing';
+            ReviewNotebookComponent.state.filterType = 'looked_up';
+            ReviewNotebookComponent.state.testMode = 'drill';
+            ReviewNotebookComponent.startTest();
+          }
+          this.onNavigate('review_notebook');
+        }
+      });
+    }
+
     const backBtn = this.container.querySelector('#btn-back-from-lookup');
     if (backBtn) {
       backBtn.addEventListener('click', () => {

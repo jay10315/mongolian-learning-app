@@ -66,7 +66,17 @@ export function isFuzzyMatch(userAnswer, correctAnswer) {
 
   const normalizeLookalikes = (str) => {
     return String(str || '')
-      .replace(/ス/g, 'с') // 片仮名「ス」の混入是正
+      .replace(/ス/g, 'с') // 片仮名「ス」
+      .replace(/ウ/g, 'у') // 片仮名「ウ」
+      .replace(/エ/g, 'э') // 片仮名「エ」
+      .replace(/ア/g, 'а') // 片仮名「ア」
+      .replace(/オ/g, 'о') // 片仮名「オ」
+      .replace(/タ/g, 'т') // 片仮名「タ」
+      .replace(/ル/g, 'л') // 片仮名「ル」
+      .replace(/ン/g, 'н') // 片仮名「ン」
+      .replace(/グ/g, 'г') // 片仮名「グ」
+      .replace(/ゴ/g, 'г') // 片仮名「ゴ」
+      .replace(/モ/g, 'м') // 片仮名「モ」
       .replace(/c/g, 'с') // Latin c -> Cyrillic с
       .replace(/a/g, 'а') // Latin a -> Cyrillic а
       .replace(/e/g, 'е') // Latin e -> Cyrillic е
@@ -341,7 +351,7 @@ export function isWordAnswerMatch(userAnswer, item, mode) {
     // 2. 挨拶・御礼の柔軟表現
     if (dClean === 'баярлалаа' && (u === 'ихбаярлалаа' || u === 'талархлаа')) return true;
     if (dClean === 'сайнбайнауу' && (u === 'сайнуу' || u === 'сайнбайна')) return true;
-    if (dClean === 'сайнуу' && (u === 'сайнбайнауウ' || u === 'сайнбайна')) return true;
+    if (dClean === 'сайнуу' && (u === 'сайнбайнауу' || u === 'сайнбайна')) return true;
     if (dClean === 'баяртай' && (u === 'дараауулзъя' || u === 'маргаашуулзъя')) return true;
 
     return false;
@@ -3005,4 +3015,139 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
     pron: '',
     derivation: ''
   };
+}
+
+/**
+ * モンゴル語キリル文字テキストの各単語をタップ可能なspan要素でラップする
+ * @param {string} text - 対象テキスト
+ * @param {function} lookedUpCheckFn - 単語が保存済みか判定する関数 (token => boolean)
+ * @returns {string} HTML文字列
+ */
+export function renderClickableWordsHTML(text, lookedUpCheckFn = null) {
+  if (!text) return '';
+  const tokens = text.split(/([А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?)/g);
+  return tokens.map(token => {
+    if (/^[А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?$/.test(token)) {
+      const isLookedUp = typeof lookedUpCheckFn === 'function' ? lookedUpCheckFn(token) : false;
+      return `<span class="clickable-word cursor-pointer px-0.5 rounded transition-all inline-block select-none ${
+        isLookedUp
+          ? 'bg-amber-100/80 border-b-2 border-amber-400 font-bold text-amber-950 dark:bg-amber-950/60 dark:text-amber-200'
+          : 'hover:bg-amber-100 hover:text-amber-900 dark:hover:bg-amber-900/40 dark:hover:text-amber-200 border-b border-dotted border-slate-400 dark:border-slate-500'
+      }" data-word="${token}" title="タップして辞書解説を表示">${token}</span>`;
+    }
+    return token;
+  }).join('');
+}
+
+/**
+ * 単語詳細モーダルを表示するユニバーサルヘルパー
+ */
+export function showUniversalWordModal({ wordInfo, passageTitle = '', onNavigate = null, onClose = null }) {
+  if (!wordInfo) return;
+
+  const existing = document.getElementById('universal-word-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'universal-word-modal';
+  modal.className = 'fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 animate-fade-in';
+
+  modal.innerHTML = `
+    <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm p-5 border border-slate-200 dark:border-slate-800 shadow-xl space-y-3.5 relative">
+      
+      <!-- ヘッダー（ビジュアルイラスト付き・要件準拠） -->
+      <div class="flex items-start justify-between gap-2.5">
+        <div class="flex items-center gap-3">
+          ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML({ mongolian: wordInfo.rawWord, dictForm: wordInfo.dictForm, japanese: wordInfo.meaning }, { size: 'lg' }) : ''}
+          <div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+              ${wordInfo.pos || '単語解説'}
+            </span>
+            <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white cyrillic-text mt-1 flex items-center gap-2">
+              <span>${wordInfo.rawWord}</span>
+              <button type="button" id="btn-u-modal-speak" class="p-1.5 rounded-lg bg-teal-50 dark:bg-teal-950 hover:bg-teal-100 text-teal-700 dark:text-teal-300 text-sm cursor-pointer" title="音声を再生">
+                🔊
+              </button>
+            </div>
+            ${wordInfo.pron ? `<div class="text-xs text-slate-400 font-medium">${wordInfo.pron}</div>` : ''}
+          </div>
+        </div>
+
+        <button type="button" id="btn-u-close-modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg p-1 cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <!-- 辞書形 ＆ 意味 -->
+      <div class="space-y-2 bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500 font-medium">📖 辞書形（基本形）:</span>
+          <span class="font-extrabold text-slate-900 dark:text-slate-100 cyrillic-text text-sm">${wordInfo.dictForm || wordInfo.rawWord}</span>
+        </div>
+
+        <div class="pt-1.5 border-t border-slate-200/60 dark:border-slate-800">
+          <span class="text-slate-500 font-medium">🇯🇵 日本語の意味:</span>
+          <div class="text-sm font-black text-emerald-900 dark:text-emerald-300 mt-0.5">${wordInfo.meaning}</div>
+        </div>
+
+        ${wordInfo.derivation ? `
+          <div class="pt-1.5 border-t border-slate-200/60 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+            <span class="text-slate-500 font-medium">🌱 文法・語幹構造:</span>
+            <div class="mt-0.5 text-[11px] leading-relaxed">${wordInfo.derivation}</div>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- 語呂合わせ・楽しい覚え方カード -->
+      ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML({ mongolian: wordInfo.rawWord, dictForm: wordInfo.dictForm, japanese: wordInfo.meaning }, wordInfo.rawWord) : ''}
+
+      <!-- 似ている単語との違い・使い分けカード（要件準拠） -->
+      ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML({ mongolian: wordInfo.rawWord, dictForm: wordInfo.dictForm, japanese: wordInfo.meaning }, wordInfo.rawWord) : ''}
+
+      <!-- 保存通知バッジ ＆ テストリンク -->
+      <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 rounded-xl p-2.5 flex items-center justify-between text-xs text-amber-900 dark:text-amber-200">
+        <div class="flex items-center gap-1.5 font-bold">
+          <span>📌</span>
+          <span>「調べた単語帳」に保存しました！</span>
+        </div>
+        ${onNavigate ? `
+          <button type="button" id="btn-u-goto-lookup" class="text-[11px] font-extrabold text-amber-800 dark:text-amber-400 underline cursor-pointer">
+            単語帳・テストを見る
+          </button>
+        ` : ''}
+      </div>
+
+      <button type="button" id="btn-u-modal-close-action" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold rounded-xl text-xs cursor-pointer">
+        閉じる
+      </button>
+
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const cleanup = () => {
+    modal.remove();
+    if (typeof onClose === 'function') onClose();
+  };
+
+  modal.querySelector('#btn-u-close-modal')?.addEventListener('click', cleanup);
+  modal.querySelector('#btn-u-modal-close-action')?.addEventListener('click', cleanup);
+  modal.querySelector('#btn-u-modal-speak')?.addEventListener('click', () => {
+    try {
+      if (typeof SpeechService !== 'undefined' && SpeechService.speak) {
+        SpeechService.speak(wordInfo.dictForm || wordInfo.rawWord);
+      }
+    } catch (_) {}
+  });
+  modal.querySelector('#btn-u-goto-lookup')?.addEventListener('click', () => {
+    cleanup();
+    if (typeof onNavigate === 'function') {
+      onNavigate('looked_up_words');
+    }
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) cleanup();
+  });
 }

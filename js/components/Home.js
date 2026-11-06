@@ -6,6 +6,7 @@ import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 import { BatchAudioModal } from './BatchAudioModal.js';
 import { DeclensionTestComponent } from './DeclensionTest.js';
+import { ReviewNotebookComponent } from './ReviewNotebook.js';
 
 export class HomeComponent {
   static render(container, onNavigate) {
@@ -14,6 +15,8 @@ export class HomeComponent {
     const historyList = StorageService.getHistory();
     const mistakes = StorageService.getMistakes();
     const activeMistakes = mistakes.filter(m => !m.resolved);
+    const allLookedUp = StorageService.getLookedUpWords() || [];
+    const activeLookedUp = allLookedUp.filter(w => !w.resolved && !w.isMastered);
     const dailyStats = StorageService.getDailyStats();
     const settings = StorageService.getSettings();
     const currentUser = AuthService.getCurrentUser();
@@ -165,7 +168,7 @@ export class HomeComponent {
             <span class="text-xs text-slate-400 font-medium">忘却曲線 ＆ 弱点分析</span>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             
             <!-- タスク1: 忘却曲線 今日の復習期日 -->
             <div class="p-4 rounded-xl border ${dueWords.length > 0 ? 'border-emerald-300 bg-emerald-50/60' : 'border-slate-200 bg-slate-50'} flex flex-col justify-between">
@@ -224,6 +227,26 @@ export class HomeComponent {
               </div>
               <button type="button" id="btn-start-mistake-review" class="mt-3 w-full py-2.5 ${activeMistakes.length > 0 ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-xs' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-bold rounded-lg text-xs transition-all active:scale-98" ${activeMistakes.length === 0 ? 'disabled' : ''}>
                 ${activeMistakes.length > 0 ? `弱点を克服する (${activeMistakes.length}問) →` : '苦手なし'}
+              </button>
+            </div>
+
+            <!-- タスク4: 調べた単語（ストック・全モード横断） -->
+            <div class="p-4 rounded-xl border ${activeLookedUp.length > 0 ? 'border-indigo-300 dark:border-indigo-800 bg-indigo-50/60 dark:bg-indigo-950/40' : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900'} flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1">
+                    <span>📌</span> 調べた単語（ストック）
+                  </span>
+                  <span class="text-xs font-extrabold px-2 py-0.5 rounded-full ${activeLookedUp.length > 0 ? 'bg-indigo-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">
+                    ${activeLookedUp.length} 語
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  ${activeLookedUp.length > 0 ? '長文読解や会話でタップして調べた単語です。テストで定着度をテストしましょう。' : '調べた単語はすべて定着しています。長文で分からない単語をタップしてストックしましょう。'}
+                </p>
+              </div>
+              <button type="button" id="btn-start-looked-up-test" class="mt-3 w-full py-2.5 ${activeLookedUp.length > 0 ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs cursor-pointer' : 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed'} font-bold rounded-lg text-xs transition-all active:scale-98" ${activeLookedUp.length === 0 ? 'disabled' : ''}>
+                ${activeLookedUp.length > 0 ? `調べた単語をテスト (${activeLookedUp.length}語) →` : 'ストックなし'}
               </button>
             </div>
 
@@ -300,6 +323,30 @@ export class HomeComponent {
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
             
+            <!-- 調べた単語帳・特訓テスト（全モード横断ストック） -->
+            <div class="bg-gradient-to-br from-indigo-500/15 via-blue-500/10 to-teal-500/15 rounded-xl p-5 border-2 border-indigo-400 hover:border-indigo-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="looked_up_words">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    📌
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-indigo-600 text-white shadow-2xs">
+                    ${activeLookedUp.length}語ストック中
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-indigo-700 transition-colors flex items-center gap-1.5">
+                  調べた単語帳・特訓テスト
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  長文読解・日常対話・口述面接などでタップして調べた単語を全集約！一覧確認＆定着テストで完全暗記。
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-indigo-200/60 flex items-center justify-between text-xs font-black text-indigo-700">
+                <span>単語一覧・テスト</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- 満月のスペルゲーム（星空タイル並び替え ＆ 自力入力 ＆ ペンギンご飯フィーディング） -->
             <div class="bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-indigo-900/30 rounded-xl p-5 border-2 border-amber-400 hover:border-amber-500 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between" data-target="spelling_game">
               <div>
@@ -935,6 +982,20 @@ export class HomeComponent {
     const mistakeBtn = container.querySelector('#btn-start-mistake-review');
     if (mistakeBtn && activeMistakes.length > 0) {
       mistakeBtn.addEventListener('click', () => {
+        if (onNavigate) onNavigate('review');
+      });
+    }
+
+    // 調べた単語テストボタン
+    const lookedUpBtn = container.querySelector('#btn-start-looked-up-test');
+    if (lookedUpBtn && activeLookedUp.length > 0) {
+      lookedUpBtn.addEventListener('click', () => {
+        if (typeof ReviewNotebookComponent !== 'undefined') {
+          ReviewNotebookComponent.state.view = 'testing';
+          ReviewNotebookComponent.state.filterType = 'looked_up';
+          ReviewNotebookComponent.state.testMode = 'drill';
+          ReviewNotebookComponent.startTest();
+        }
         if (onNavigate) onNavigate('review');
       });
     }

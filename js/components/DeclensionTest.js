@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, getWordGrammarDetails, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR } from '../utils/helpers.js';
+import { isFuzzyMatch, renderChoiceExplanationsHTML, getWordGrammarDetails, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
@@ -377,6 +377,12 @@ export class DeclensionTestComponent {
               })()}
             </div>
 
+            ${(typeof renderChoiceExplanationsHTML === 'function' && q.options && q.options.length > 0) ? renderChoiceExplanationsHTML(q.options, {
+              expectedAnswer: q.answer,
+              userAnswer: this.state.userAnswer,
+              title: '選択肢に出た単語・格変化の全解説を見る（タップで開閉）'
+            }) : ''}
+
             <button type="button" id="btn-next-declension" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm flex items-center justify-center gap-1">
               <span>${idx + 1 < total ? '次の問題へ（Enter） →' : '結果を見る 🎉'}</span>
             </button>
@@ -649,6 +655,11 @@ export class DeclensionTestComponent {
                     ${r.userAnswer ? `<div class="text-slate-500">あなたの回答: <span class="text-emerald-700 font-bold">${r.userAnswer}</span> ✅</div>` : ''}
                   `}
                   ${r.quiz.explanation ? `<div class="text-slate-600 bg-slate-50 p-2 rounded-xl text-[11px] leading-relaxed">${r.quiz.explanation}</div>` : ''}
+                  ${(typeof renderChoiceExplanationsHTML === 'function' && r.quiz.options && r.quiz.options.length > 0) ? renderChoiceExplanationsHTML(r.quiz.options, {
+                    expectedAnswer: r.quiz.answer,
+                    userAnswer: r.userAnswer,
+                    title: '選択肢に出た単語・格変化の全解説を見る（タップで開閉）'
+                  }) : ''}
                 </div>
               `).join('')}
             </div>

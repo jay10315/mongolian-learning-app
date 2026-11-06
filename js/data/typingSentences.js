@@ -770,7 +770,7 @@ export const initialTypingSentences = [
   "id": "type_grt_05",
   "level": "挨拶表現",
   "category": "greetings",
-  "categoryLabel": "日常の挨拶（Мэндчилгээний үг хэлルэг）",
+  "categoryLabel": "日常の挨拶（Мэндчилгээний үг хэллэг）",
   "textMn": "Уучлаарай. Зүгээр ээ, зүгээр.",
   "textJa": "すみません（ごめんなさい）。 大丈夫ですよ、平気です。",
   "romaji": "Uuchlaarai. Zugeer ee, zugeer.",

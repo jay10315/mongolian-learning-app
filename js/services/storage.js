@@ -423,16 +423,35 @@ export class StorageService {
   }
 
   static getDeclensionQuizzes() {
+    const sanitize = (list) => {
+      const fix = (s) => (typeof s === 'string') ? s.replace(/ス/g, 'с').replace(/ウ/g, 'у').replace(/エ/g, 'э').replace(/タ/g, 'т').replace(/モ/g, 'м').replace(/ア/g, 'а').replace(/オ/g, 'о').replace(/ル/g, 'л').replace(/ン/g, 'н').replace(/グ/g, 'г').replace(/ゴ/g, 'г') : s;
+      return list.map(q => ({
+        ...q,
+        answer: fix(q.answer),
+        question: fix(q.question),
+        prompt: fix(q.prompt),
+        baseWord: fix(q.baseWord),
+        baseMeaning: fix(q.baseMeaning),
+        explanation: fix(q.explanation),
+        rule: fix(q.rule),
+        options: Array.isArray(q.options) ? q.options.map(fix) : q.options
+      }));
+    };
     try {
       const data = localStorage.getItem(STORAGE_KEYS.DECLENSION_QUIZZES);
       const parsed = data ? JSON.parse(data) : null;
       if (parsed && Array.isArray(parsed) && parsed.length >= initialDeclensionQuizzes.length) {
-        return parsed;
+        const clean = sanitize(parsed);
+        if (data.includes('ス') || data.includes('ウ') || data.includes('エ')) {
+          this.saveDeclensionQuizzes(clean);
+        }
+        return clean;
       }
-      this.saveDeclensionQuizzes(initialDeclensionQuizzes);
-      return initialDeclensionQuizzes;
+      const initialClean = sanitize(initialDeclensionQuizzes);
+      this.saveDeclensionQuizzes(initialClean);
+      return initialClean;
     } catch (e) {
-      return initialDeclensionQuizzes;
+      return sanitize(initialDeclensionQuizzes);
     }
   }
 

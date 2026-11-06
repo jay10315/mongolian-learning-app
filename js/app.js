@@ -178,6 +178,11 @@ class App {
       case 'review':
         ReviewNotebookComponent.render(mainContainer, onNavigate);
         break;
+      case 'looked_up_words':
+        ReviewNotebookComponent.state.view = 'list';
+        ReviewNotebookComponent.state.filterType = 'looked_up';
+        ReviewNotebookComponent.render(mainContainer, onNavigate);
+        break;
       case 'materials':
         MaterialManagerComponent.render(mainContainer, onNavigate);
         break;

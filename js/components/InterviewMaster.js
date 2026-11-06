@@ -4,14 +4,28 @@ import { SpeechService } from '../services/speech.js';
 import { StorageService } from '../services/storage.js';
 import { GamificationService } from '../services/gamification.js';
 import { interviewTopics } from '../data/interviewTopics.js';
-import { isFuzzyMatch, SoundEffects } from '../utils/helpers.js';
+import { isFuzzyMatch, SoundEffects, renderClickableWordsHTML, findWordInDictionary, showUniversalWordModal } from '../utils/helpers.js';
 
 export class InterviewMasterComponent {
   static currentTopicIndex = 0;
   static currentStep = 1; // 1: シャドーイング/朗読, 2: 虫食い穴埋め暗記, 3: 4分スピーチ・本番シミュレーション
   static showMongolian = true;
-  static showJapanese = true;
+  static showJapanese = false;
   static showRomaji = false;
+
+  static isWordLookedUp(token) {
+    try {
+      const list = StorageService.getLookedUpWords() || [];
+      const clean = (token || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+      return list.some(w => {
+        const raw = (w.rawWord || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+        const df = (w.dictForm || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+        return raw === clean || df === clean;
+      });
+    } catch (_) {
+      return false;
+    }
+  }
   static timerInterval = null;
   static timerSeconds = 0;
   static isTimerRunning = false;
@@ -233,8 +247,8 @@ export class InterviewMasterComponent {
   static renderStep1(topic) {
     return `
       <div>
-        <!-- コントロールバー: 全文再生 ＆ 表示トグル -->
-        <div class="interview-control-bar flex flex-wrap items-center justify-between gap-3 bg-slate-50 rounded-2xl p-3 border border-slate-200 mb-5">
+        <!-- コントロールバー: 全文再生 ＆ 表示トグル（夜間モード完全対応） -->
+        <div class="interview-control-bar flex flex-wrap items-center justify-between gap-3 bg-slate-50 dark:bg-slate-800 rounded-2xl p-3 border border-slate-200 dark:border-slate-700 mb-3">
           <div class="flex items-center gap-2">
             <button
               type="button"
@@ -245,26 +259,32 @@ export class InterviewMasterComponent {
             <button
               type="button"
               id="stop-speech-btn"
-              class="px-3 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200 transition-all flex items-center gap-1 cursor-pointer">
+              class="px-3 py-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-600 transition-all flex items-center gap-1 cursor-pointer">
               <span>⏹ 停止</span>
             </button>
           </div>
 
           <!-- 表示トグル（キリル文字、和訳、ローマ字） -->
           <div class="flex items-center gap-2 text-xs">
-            <label class="flex items-center gap-1 cursor-pointer select-none text-slate-700 font-medium">
+            <label class="flex items-center gap-1 cursor-pointer select-none text-slate-700 dark:text-slate-200 font-medium">
               <input type="checkbox" id="toggle-mn-check" ${this.showMongolian ? 'checked' : ''} class="rounded text-emerald-600 focus:ring-emerald-500">
               <span>キリル文字</span>
             </label>
-            <label class="flex items-center gap-1 cursor-pointer select-none text-slate-700 font-medium ml-2">
+            <label class="flex items-center gap-1 cursor-pointer select-none text-slate-700 dark:text-slate-200 font-medium ml-2">
               <input type="checkbox" id="toggle-ja-check" ${this.showJapanese ? 'checked' : ''} class="rounded text-emerald-600 focus:ring-emerald-500">
               <span>和訳</span>
             </label>
-            <label class="flex items-center gap-1 cursor-pointer select-none text-slate-700 font-medium ml-2">
+            <label class="flex items-center gap-1 cursor-pointer select-none text-slate-700 dark:text-slate-200 font-medium ml-2">
               <input type="checkbox" id="toggle-romaji-check" ${this.showRomaji ? 'checked' : ''} class="rounded text-emerald-600 focus:ring-emerald-500">
               <span>ローマ字</span>
             </label>
           </div>
+        </div>
+
+        <!-- 単語タップガイド -->
+        <div class="text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 mb-4 flex items-center gap-1.5">
+          <span>💡</span>
+          <span>単語をタップすると辞書解説が表示され、自動で「調べた単語帳」に保存されます。</span>
         </div>
 
         <!-- センテンス一覧 -->
@@ -287,10 +307,10 @@ export class InterviewMasterComponent {
                   </button>
                 </div>
 
-                <!-- モンゴル語文 -->
+                <!-- モンゴル語文（単語タップ解説＆保存対応） -->
                 ${this.showMongolian ? `
                   <p class="sentence-mn-text text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-1.5 leading-relaxed font-sans">
-                    ${s.mn}
+                    ${renderClickableWordsHTML(s.mn, t => this.isWordLookedUp(t))}
                   </p>
                 ` : `
                   <p class="text-sm italic text-slate-400 dark:text-slate-500 mb-1">（キリル文字非表示中 - 声に出して言ってみよう！）</p>
@@ -925,6 +945,38 @@ export class InterviewMasterComponent {
         this.render(container, this.onNavigate);
       });
     }
+
+    // 単語タップ解説モーダル＆自動保存
+    container.querySelectorAll('.clickable-word').forEach(span => {
+      span.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const rawToken = span.dataset.word;
+        if (!rawToken) return;
+
+        const info = findWordInDictionary(rawToken);
+        const saved = StorageService.saveLookedUpWord({
+          rawWord: rawToken,
+          dictForm: info.dictForm,
+          meaning: info.meaning,
+          pos: info.pos,
+          passageTitle: `口述試験: ${topic.titleJa || topic.titleMn}`
+        });
+
+        span.classList.remove('hover:bg-amber-100', 'border-dotted');
+        span.classList.add('bg-amber-100/80', 'border-b-2', 'border-amber-400', 'font-bold', 'text-amber-950');
+
+        try {
+          SpeechService.speak(rawToken);
+        } catch (_) {}
+
+        showUniversalWordModal({
+          wordInfo: info,
+          passageTitle: `口述試験: ${topic.titleJa || topic.titleMn}`,
+          onNavigate: this.onNavigate
+        });
+      });
+    });
 
     // 各文の音声再生ボタン
     container.querySelectorAll('.play-sentence-btn').forEach(btn => {

@@ -1,5 +1,7 @@
 // 日常会話・旅行ロールプレイ対話コンポーネント
 import { roleplayScenarios } from '../data/roleplayData.js';
+import { StorageService } from '../services/storage.js';
+import { renderClickableWordsHTML, findWordInDictionary, showUniversalWordModal } from '../utils/helpers.js';
 import { SpeechService } from '../services/speech.js';
 import { SoundEffects } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
@@ -11,8 +13,23 @@ export class RoleplayComponent {
     currentStepIndex: 0,
     selectedOption: null,
     score: 0,
-    history: []
+    history: [],
+    showTranslation: false
   };
+
+  static isWordLookedUp(token) {
+    try {
+      const list = StorageService.getLookedUpWords() || [];
+      const clean = (token || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+      return list.some(w => {
+        const raw = (w.rawWord || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+        const df = (w.dictForm || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+        return raw === clean || df === clean;
+      });
+    } catch (_) {
+      return false;
+    }
+  }
 
   static render(container, onNavigate) {
     this.container = container;
@@ -90,6 +107,7 @@ export class RoleplayComponent {
     this.state.selectedOption = null;
     this.state.score = 0;
     this.state.history = [];
+    this.state.showTranslation = false;
     this.state.view = 'dialogue';
     this.renderDialogue();
   }
@@ -120,45 +138,61 @@ export class RoleplayComponent {
           <div class="bg-amber-500 h-full transition-all duration-300" style="width: ${progress}%"></div>
         </div>
 
-        <!-- 場面説明 -->
-        <div class="bg-amber-50/80 p-3 rounded-xl border border-amber-200 text-xs text-amber-950 flex items-center gap-2">
-          <span>🎬</span>
-          <span>${sc.initialPrompt}</span>
+        <!-- 場面説明 ＆ 和訳トグルバー -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-amber-50/80 dark:bg-amber-950/40 p-3 rounded-xl border border-amber-200 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200">
+          <div class="flex items-center gap-2">
+            <span>🎬</span>
+            <span class="font-medium">${sc.initialPrompt}</span>
+          </div>
+          <button type="button" id="btn-toggle-rp-translation" class="self-start sm:self-auto text-xs px-2.5 py-1 rounded-lg border border-amber-300 dark:border-amber-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-amber-50 font-bold flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer">
+            <span>${this.state.showTranslation ? '👁️' : '🙈'}</span>
+            <span>${this.state.showTranslation ? '日本語訳を隠す' : '🇯🇵 日本語訳を表示'}</span>
+          </button>
+        </div>
+
+        <!-- 単語タップガイド -->
+        <div class="text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-1.5">
+          <span>💡</span>
+          <span>単語をタップすると辞書解説が表示され、自動で「調べた単語帳」に保存されます。</span>
         </div>
 
         <!-- 相手の発言（吹き出し） -->
-        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-2">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-xs space-y-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="text-2xl">${sc.character.avatar}</span>
-              <span class="font-bold text-xs text-slate-700">${sc.character.name}</span>
+              <span class="font-bold text-xs text-slate-700 dark:text-slate-300">${sc.character.name}</span>
             </div>
-            <button type="button" id="btn-play-npc" class="text-xs px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold rounded-lg border border-amber-200 flex items-center gap-1">
+            <button type="button" id="btn-play-npc" class="text-xs px-2.5 py-1 bg-amber-50 dark:bg-slate-700 hover:bg-amber-100 text-amber-800 dark:text-amber-300 font-bold rounded-lg border border-amber-200 dark:border-slate-600 flex items-center gap-1 cursor-pointer">
               <span>🔊</span> 発音を聞く
             </button>
           </div>
-          <div class="text-base sm:text-lg font-black text-slate-900 cyrillic-text pt-1">
-            ${step.npcText}
+          <div class="text-base sm:text-lg font-black text-slate-900 dark:text-white cyrillic-text pt-1 leading-relaxed">
+            ${renderClickableWordsHTML(step.npcText, t => this.isWordLookedUp(t))}
           </div>
-          <div class="text-xs text-slate-500">
-            ${step.npcMeaning}
-          </div>
+          ${this.state.showTranslation ? `
+            <div class="text-xs text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-700 animate-fade-in">
+              ${step.npcMeaning}
+            </div>
+          ` : ''}
         </div>
 
         <!-- 選択肢リスト（未回答時） または フィードバック（回答後） -->
         ${!this.state.selectedOption ? `
           <div class="space-y-2.5">
-            <div class="text-xs font-bold text-slate-600 flex items-center gap-1">
+            <div class="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1">
               <span>💬</span> あなたの返答を選んでください：
             </div>
             ${step.options.map((opt, idx) => `
-              <button type="button" class="btn-roleplay-choice w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-amber-500 hover:bg-amber-50/40 bg-white transition-all space-y-1 group" data-idx="${idx}">
-                <div class="font-bold text-sm text-slate-900 cyrillic-text group-hover:text-amber-800">
-                  ${opt.text}
+              <button type="button" class="btn-roleplay-choice w-full text-left p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-500 hover:bg-amber-50/40 dark:hover:bg-slate-700/60 bg-white dark:bg-slate-800 transition-all space-y-1 group" data-idx="${idx}">
+                <div class="font-bold text-sm text-slate-900 dark:text-slate-100 cyrillic-text group-hover:text-amber-800 dark:group-hover:text-amber-300">
+                  ${renderClickableWordsHTML(opt.text, t => this.isWordLookedUp(t))}
                 </div>
-                <div class="text-xs text-slate-500">
-                  ${opt.meaning}
-                </div>
+                ${this.state.showTranslation ? `
+                  <div class="text-xs text-slate-500 dark:text-slate-400 animate-fade-in">
+                    ${opt.meaning}
+                  </div>
+                ` : ''}
               </button>
             `).join('')}
           </div>
@@ -200,9 +234,51 @@ export class RoleplayComponent {
       });
     }
 
+    // 和訳トグルボタン
+    const toggleTrBtn = this.container.querySelector('#btn-toggle-rp-translation');
+    if (toggleTrBtn) {
+      toggleTrBtn.addEventListener('click', () => {
+        this.state.showTranslation = !this.state.showTranslation;
+        this.renderDialogue();
+      });
+    }
+
+    // 単語タップ解説モーダル＆自動保存
+    this.container.querySelectorAll('.clickable-word').forEach(span => {
+      span.addEventListener('click', (e) => {
+        e.stopPropagation(); // 選択肢決定の誤爆を防止
+        e.preventDefault();
+        const rawToken = span.dataset.word;
+        if (!rawToken) return;
+
+        const info = findWordInDictionary(rawToken);
+        const saved = StorageService.saveLookedUpWord({
+          rawWord: rawToken,
+          dictForm: info.dictForm,
+          meaning: info.meaning,
+          pos: info.pos,
+          passageTitle: `対話: ${sc.title}`
+        });
+
+        span.classList.remove('hover:bg-amber-100', 'border-dotted');
+        span.classList.add('bg-amber-100/80', 'border-b-2', 'border-amber-400', 'font-bold', 'text-amber-950');
+
+        try {
+          SpeechService.speak(rawToken);
+        } catch (_) {}
+
+        showUniversalWordModal({
+          wordInfo: info,
+          passageTitle: `対話: ${sc.title}`,
+          onNavigate: this.onNavigate
+        });
+      });
+    });
+
     if (!this.state.selectedOption) {
       this.container.querySelectorAll('.btn-roleplay-choice').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          if (e.target.closest('.clickable-word')) return; // 単語タップ時は選択しない
           const idx = parseInt(btn.dataset.idx, 10);
           const opt = step.options[idx];
           this.state.selectedOption = opt;
