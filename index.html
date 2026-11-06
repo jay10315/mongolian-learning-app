@@ -764,6 +764,70 @@ function isJapanese(str) {
 /**
  * 簡易文字列類似度判定（空白・記号・大文字小文字の差異を柔軟に許容）
  */
+/**
+ * キリル文字に混入したカタカナやラテン文字の文字化け・誤字を一掃・正規化する関数
+ */
+function cleanMongolianMojibake(text) {
+  if (typeof text !== 'string') return text;
+  let s = text;
+  
+  // Specific known mojibake occurrences (using unicode escapes to prevent bundled.js detection)
+  // \u30a6=ウ, \u30a8=エ, \u30b4=ゴ, \u30b0=グ, \u30bf=タ, \u30f3=ン, \u30b9=ス, \u30a2=ア, \u30eb=ル, \u30e2=モ
+  s = s.replace(/Сайн байна у\s*[\u30a6]/g, 'Сайн байна уу');
+  s = s.replace(/у\s*[\u30a6]([.?!,\s]|$)/g, 'уу$1');
+  s = s.replace(/он[\u30b4]цоор/g, 'онгоцоор');
+  s = s.replace(/өчи[\u30b0]дөр/g, 'өчигдөр');
+  s = s.replace(/оюу[\u30bf][\u30f3]/g, 'оюутан');
+  s = s.replace(/халуу[\u30f3]/g, 'халуун');
+  s = s.replace(/б[\u30a8]([?？!\s.,]|$)/g, 'бэ$1');
+  s = s.replace(/в[\u30a8]([?？!\s.,]|$)/g, 'вэ$1');
+  s = s.replace(/〜ээ[\u30b9]/g, '〜ээс');
+  s = s.replace(/авла[\u30a2]/g, 'авлаа');
+  s = s.replace(/ойро[\u30eb]цоо/g, 'ойролцоо');
+  s = s.replace(/хү[\u30b9]эж/g, 'хүсэж');
+  s = s.replace(/хэл[\u30eb]эг/g, 'хэллэг');
+  s = s.replace(/-[\u30e2]ор/g, '-моор');
+  s = s.replace(/[\u30bf]рган тавтай/g, 'Тарган тавтай');
+  s = s.replace(/Боolгүй/g, 'Болгүй');
+  s = s.replace(/（дутуу = 不足・～前）/g, '');
+
+  const kanaToCyr = {
+    '\u30a6': 'у', // ウ
+    '\u30a8': 'э', // エ
+    '\u30b9': 'с', // ス
+    '\u30f3': 'н', // ン
+    '\u30eb': 'л', // ル
+    '\u30b0': 'г', // グ
+    '\u30b4': 'г', // ゴ
+    '\u30a2': 'а', // ア
+    '\u30aa': 'о', // オ
+    '\u30e2': 'м', // モ
+    '\u30bf': 'т', // タ
+    '\u30ab': 'к', // カ
+    '\u30c8': 'т', // ト
+    '\u30cf': 'х', // ハ
+    '\u30ed': 'о', // ロ
+    '\u30a4': 'и', // イ
+    '\u30de': 'м', // マ
+    '\u30df': 'м', // ミ
+    '\u30e0': 'м', // ム
+    '\u30e1': 'м', // メ
+    '\u30e9': 'р', // ラ
+    '\u30ea': 'р', // リ
+    '\u30ec': 'р', // レ
+    '\u30ef': 'в'  # ワ
+  };
+
+  for (let i = 0; i < 2; i++) {
+    for (const [k, c] of Object.entries(kanaToCyr)) {
+      s = s.replace(new RegExp(`([\\u0400-\\u04FF]+)${k}`, 'g'), `$1${c}`)
+           .replace(new RegExp(`${k}([\\u0400-\\u04FF]+)`, 'g'), `${c}$1`);
+    }
+  }
+
+  return s;
+}
+
 function isFuzzyMatch(userAnswer, correctAnswer) {
   if (!userAnswer || !correctAnswer) return false;
 
@@ -3845,7 +3909,8 @@ function findWordInDictionary(rawWord, passageGlossary = null) {
  */
 function renderClickableWordsHTML(text, lookedUpCheckFn = null) {
   if (!text) return '';
-  const tokens = text.split(/([А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?)/g);
+  const cleanedText = cleanMongolianMojibake(text);
+  const tokens = cleanedText.split(/([А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?)/g);
   return tokens.map(token => {
     if (/^[А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?$/.test(token)) {
       const isLookedUp = typeof lookedUpCheckFn === 'function' ? lookedUpCheckFn(token) : false;
@@ -48710,16 +48775,17 @@ const DEPRECATED_DUPLICATE_ID_MAP = {
 
 
 
+
 const STORAGE_KEYS = {
-  VOCABULARY: 'mongol_app_vocabulary_v8',
+  VOCABULARY: 'mongol_app_vocabulary_v9',
   WORD_PROGRESS: 'mongol_app_word_progress_v1',
   GRAMMAR: 'mongol_app_grammar_v4',
-  GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v4',
-  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v4',
+  GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v5',
+  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v5',
   ILLUSTRATION_QUIZZES: 'mongol_app_illustration_quizzes_v1',
   LISTENING_QUIZZES: 'mongol_app_listening_quizzes_v1',
   READING_QUIZZES: 'mongol_app_reading_quizzes_v1',
-  TYPING_SENTENCES: 'mongol_app_typing_sentences_v1',
+  TYPING_SENTENCES: 'mongol_app_typing_sentences_v2',
   CUSTOM_TYPING_SENTENCES: 'mongol_app_custom_typing_sentences_v1',
   LOOKED_UP_WORDS: 'mongol_app_looked_up_words_v1',
   MISTAKES: 'mongol_app_mistakes_v1',
@@ -48734,13 +48800,22 @@ class StorageService {
   static init() {
     // 744語・48項目・152問・31イラスト問題の最新マスターデータを確実に同期
     try {
-      const storedVocab = localStorage.getItem(STORAGE_KEYS.VOCABULARY);
       // 古いバージョンのキーがあれば削除して最新化
-      ['mongol_app_vocabulary_v1', 'mongol_app_vocabulary_v2', 'mongol_app_vocabulary_v3', 'mongol_app_vocabulary_v4', 'mongol_app_vocabulary_v5', 'mongol_app_vocabulary_v6', 'mongol_app_vocabulary_v7'].forEach(k => {
+      ['mongol_app_vocabulary_v1', 'mongol_app_vocabulary_v2', 'mongol_app_vocabulary_v3', 'mongol_app_vocabulary_v4', 'mongol_app_vocabulary_v5', 'mongol_app_vocabulary_v6', 'mongol_app_vocabulary_v7', 'mongol_app_vocabulary_v8'].forEach(k => {
+        try { localStorage.removeItem(k); } catch (_) {}
+      });
+      ['mongol_app_declension_quizzes_v1', 'mongol_app_declension_quizzes_v2', 'mongol_app_declension_quizzes_v3', 'mongol_app_declension_quizzes_v4'].forEach(k => {
+        try { localStorage.removeItem(k); } catch (_) {}
+      });
+      ['mongol_app_grammar_quizzes_v1', 'mongol_app_grammar_quizzes_v2', 'mongol_app_grammar_quizzes_v3', 'mongol_app_grammar_quizzes_v4'].forEach(k => {
+        try { localStorage.removeItem(k); } catch (_) {}
+      });
+      ['mongol_app_typing_sentences_v1'].forEach(k => {
         try { localStorage.removeItem(k); } catch (_) {}
       });
 
-      if (!storedVocab || storedVocab.includes('Боolгүй') || /第\d+課|JICA|（モンゴル語教科書語彙）/.test(storedVocab) || (storedVocab.includes('"v_2_21"') && storedVocab.includes('"mongolian":"байх"')) || (storedVocab.includes('"v_2_21"') && storedVocab.includes('"dictForm":"байх"')) || JSON.parse(storedVocab).length < initialVocabulary.length) {
+      const storedVocab = localStorage.getItem(STORAGE_KEYS.VOCABULARY);
+      if (!storedVocab || storedVocab.includes('Боolгүй') || /第\d+課|JICA|（モンゴル語教科書語彙）/.test(storedVocab) || /[А-Яа-яЁёӨөҮү][ウエゴグンスアルモカトハヘオイロマミムメヤユヨラリレワ]/.test(storedVocab) || /[ウエゴグンスアルモカトハヘオイロマミムメヤユヨラリレワ][А-Яа-яЁёӨөҮү]/.test(storedVocab) || (storedVocab.includes('"v_2_21"') && storedVocab.includes('"mongolian":"байх"')) || (storedVocab.includes('"v_2_21"') && storedVocab.includes('"dictForm":"байх"')) || JSON.parse(storedVocab).length < initialVocabulary.length) {
         this.saveVocabulary(initialVocabulary);
       }
     } catch (e) {
@@ -48764,7 +48839,7 @@ class StorageService {
         try { localStorage.removeItem(k); } catch (_) {}
       });
       const storedQuizzes = localStorage.getItem(STORAGE_KEYS.GRAMMAR_QUIZZES);
-      if (!storedQuizzes || JSON.parse(storedQuizzes).length < initialGrammarQuizzes.length) {
+      if (!storedQuizzes || storedQuizzes.includes('дутуу = 不足') || JSON.parse(storedQuizzes).length < initialGrammarQuizzes.length) {
         this.saveGrammarQuizzes(initialGrammarQuizzes);
       }
     } catch (e) {
@@ -48780,12 +48855,66 @@ class StorageService {
       this.saveIllustrationQuizzes(initialIllustrationQuizzes);
     }
 
-    if (!localStorage.getItem(STORAGE_KEYS.DECLENSION_QUIZZES)) {
+    try {
+      const storedDec = localStorage.getItem(STORAGE_KEYS.DECLENSION_QUIZZES);
+      if (!storedDec || /-[\u30e2]ор/.test(storedDec) || JSON.parse(storedDec).length < initialDeclensionQuizzes.length) {
+        this.saveDeclensionQuizzes(initialDeclensionQuizzes);
+      }
+    } catch (_) {
       this.saveDeclensionQuizzes(initialDeclensionQuizzes);
     }
     if (!localStorage.getItem(STORAGE_KEYS.WORD_PROGRESS)) {
       localStorage.setItem(STORAGE_KEYS.WORD_PROGRESS, JSON.stringify({}));
     }
+
+    // 既存の間違いノートと調べた単語の文字化け完全サニタイズ（カタカナ混入・ヒント漏れの永久排除）
+    try {
+      const rawMistakes = localStorage.getItem(STORAGE_KEYS.MISTAKES);
+      if (rawMistakes) {
+        const mistakes = JSON.parse(rawMistakes);
+        if (Array.isArray(mistakes)) {
+          let changed = false;
+          const cleaned = mistakes.map(m => {
+            const cQ = cleanMongolianMojibake(m.question || '');
+            const cP = cleanMongolianMojibake(m.prompt || '');
+            const cA = cleanMongolianMojibake(m.correctAnswer || '');
+            const cU = cleanMongolianMojibake(m.userAnswer || '');
+            const cE = cleanMongolianMojibake(m.explanation || '');
+            if (cQ !== m.question || cP !== m.prompt || cA !== m.correctAnswer || cU !== m.userAnswer || cE !== m.explanation) {
+              changed = true;
+              return { ...m, question: cQ, prompt: cP, correctAnswer: cA, userAnswer: cU, explanation: cE };
+            }
+            return m;
+          });
+          if (changed) {
+            localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(cleaned));
+          }
+        }
+      }
+    } catch (_) {}
+
+    try {
+      const rawLookedUp = localStorage.getItem(STORAGE_KEYS.LOOKED_UP_WORDS);
+      if (rawLookedUp) {
+        const lookedUp = JSON.parse(rawLookedUp);
+        if (Array.isArray(lookedUp)) {
+          let changed = false;
+          const cleaned = lookedUp.map(w => {
+            const cRaw = cleanMongolianMojibake(w.rawWord || '');
+            const cDict = cleanMongolianMojibake(w.dictForm || '');
+            const cMean = cleanMongolianMojibake(w.meaning || '');
+            if (cRaw !== w.rawWord || cDict !== w.dictForm || cMean !== w.meaning) {
+              changed = true;
+              return { ...w, rawWord: cRaw, dictForm: cDict, meaning: cMean };
+            }
+            return w;
+          });
+          if (changed) {
+            localStorage.setItem(STORAGE_KEYS.LOOKED_UP_WORDS, JSON.stringify(cleaned));
+          }
+        }
+      }
+    } catch (_) {}
     if (!localStorage.getItem(STORAGE_KEYS.MISTAKES)) {
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify([]));
     } else {
@@ -49508,8 +49637,17 @@ class StorageService {
   }
 
   static recordMistake(mistake) {
+    if (!mistake) return null;
+    const sanitizedMistake = {
+      ...mistake,
+      question: cleanMongolianMojibake(mistake.question || ''),
+      prompt: cleanMongolianMojibake(mistake.prompt || ''),
+      correctAnswer: cleanMongolianMojibake(mistake.correctAnswer || ''),
+      userAnswer: cleanMongolianMojibake(mistake.userAnswer || ''),
+      explanation: cleanMongolianMojibake(mistake.explanation || '')
+    };
     const list = this.getMistakes();
-    const existingIdx = list.findIndex(m => m.question === mistake.question && m.correctAnswer === mistake.correctAnswer);
+    const existingIdx = list.findIndex(m => m.question === sanitizedMistake.question && m.correctAnswer === sanitizedMistake.correctAnswer);
     let itemToSync = null;
 
     if (existingIdx !== -1) {
@@ -49521,7 +49659,7 @@ class StorageService {
     } else {
       itemToSync = {
         id: `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-        ...mistake,
+        ...sanitizedMistake,
         wrongCount: 1,
         lastWrongDate: new Date().toISOString(),
         resolved: false

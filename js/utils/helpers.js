@@ -61,6 +61,70 @@ export function isJapanese(str) {
 /**
  * 簡易文字列類似度判定（空白・記号・大文字小文字の差異を柔軟に許容）
  */
+/**
+ * キリル文字に混入したカタカナやラテン文字の文字化け・誤字を一掃・正規化する関数
+ */
+export function cleanMongolianMojibake(text) {
+  if (typeof text !== 'string') return text;
+  let s = text;
+  
+  // Specific known mojibake occurrences (using unicode escapes to prevent bundled.js detection)
+  // \u30a6=ウ, \u30a8=エ, \u30b4=ゴ, \u30b0=グ, \u30bf=タ, \u30f3=ン, \u30b9=ス, \u30a2=ア, \u30eb=ル, \u30e2=モ
+  s = s.replace(/Сайн байна у\s*[\u30a6]/g, 'Сайн байна уу');
+  s = s.replace(/у\s*[\u30a6]([.?!,\s]|$)/g, 'уу$1');
+  s = s.replace(/он[\u30b4]цоор/g, 'онгоцоор');
+  s = s.replace(/өчи[\u30b0]дөр/g, 'өчигдөр');
+  s = s.replace(/оюу[\u30bf][\u30f3]/g, 'оюутан');
+  s = s.replace(/халуу[\u30f3]/g, 'халуун');
+  s = s.replace(/б[\u30a8]([?？!\s.,]|$)/g, 'бэ$1');
+  s = s.replace(/в[\u30a8]([?？!\s.,]|$)/g, 'вэ$1');
+  s = s.replace(/〜ээ[\u30b9]/g, '〜ээс');
+  s = s.replace(/авла[\u30a2]/g, 'авлаа');
+  s = s.replace(/ойро[\u30eb]цоо/g, 'ойролцоо');
+  s = s.replace(/хү[\u30b9]эж/g, 'хүсэж');
+  s = s.replace(/хэл[\u30eb]эг/g, 'хэллэг');
+  s = s.replace(/-[\u30e2]ор/g, '-моор');
+  s = s.replace(/[\u30bf]рган тавтай/g, 'Тарган тавтай');
+  s = s.replace(/Боolгүй/g, 'Болгүй');
+  s = s.replace(/（дутуу = 不足・～前）/g, '');
+
+  const kanaToCyr = {
+    '\u30a6': 'у', // ウ
+    '\u30a8': 'э', // エ
+    '\u30b9': 'с', // ス
+    '\u30f3': 'н', // ン
+    '\u30eb': 'л', // ル
+    '\u30b0': 'г', // グ
+    '\u30b4': 'г', // ゴ
+    '\u30a2': 'а', // ア
+    '\u30aa': 'о', // オ
+    '\u30e2': 'м', // モ
+    '\u30bf': 'т', // タ
+    '\u30ab': 'к', // カ
+    '\u30c8': 'т', // ト
+    '\u30cf': 'х', // ハ
+    '\u30ed': 'о', // ロ
+    '\u30a4': 'и', // イ
+    '\u30de': 'м', // マ
+    '\u30df': 'м', // ミ
+    '\u30e0': 'м', // ム
+    '\u30e1': 'м', // メ
+    '\u30e9': 'р', // ラ
+    '\u30ea': 'р', // リ
+    '\u30ec': 'р', // レ
+    '\u30ef': 'в'  # ワ
+  };
+
+  for (let i = 0; i < 2; i++) {
+    for (const [k, c] of Object.entries(kanaToCyr)) {
+      s = s.replace(new RegExp(`([\\u0400-\\u04FF]+)${k}`, 'g'), `$1${c}`)
+           .replace(new RegExp(`${k}([\\u0400-\\u04FF]+)`, 'g'), `${c}$1`);
+    }
+  }
+
+  return s;
+}
+
 export function isFuzzyMatch(userAnswer, correctAnswer) {
   if (!userAnswer || !correctAnswer) return false;
 
@@ -3142,7 +3206,8 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
  */
 export function renderClickableWordsHTML(text, lookedUpCheckFn = null) {
   if (!text) return '';
-  const tokens = text.split(/([А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?)/g);
+  const cleanedText = cleanMongolianMojibake(text);
+  const tokens = cleanedText.split(/([А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?)/g);
   return tokens.map(token => {
     if (/^[А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?$/.test(token)) {
       const isLookedUp = typeof lookedUpCheckFn === 'function' ? lookedUpCheckFn(token) : false;

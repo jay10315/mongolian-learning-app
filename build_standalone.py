@@ -195,6 +195,11 @@ html_template = f"""<!DOCTYPE html>
 </html>
 """
 
+bundled_js_path = os.path.join(base_dir, "bundled.js")
+with open(bundled_js_path, 'w', encoding='utf-8') as f:
+    f.write(all_js)
+print("bundled.js bundled successfully, size:", os.path.getsize(bundled_js_path))
+
 output_path = os.path.join(base_dir, "index.html")
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(html_template)

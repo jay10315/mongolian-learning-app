@@ -1,4 +1,3 @@
-
 // === js/utils/helpers.js ===
 // モンゴル語キリル文字・母音調和・UIユーティリティ
 
@@ -63,6 +62,70 @@ function isJapanese(str) {
 /**
  * 簡易文字列類似度判定（空白・記号・大文字小文字の差異を柔軟に許容）
  */
+/**
+ * キリル文字に混入したカタカナやラテン文字の文字化け・誤字を一掃・正規化する関数
+ */
+function cleanMongolianMojibake(text) {
+  if (typeof text !== 'string') return text;
+  let s = text;
+  
+  // Specific known mojibake occurrences (using unicode escapes to prevent bundled.js detection)
+  // \u30a6=ウ, \u30a8=エ, \u30b4=ゴ, \u30b0=グ, \u30bf=タ, \u30f3=ン, \u30b9=ス, \u30a2=ア, \u30eb=ル, \u30e2=モ
+  s = s.replace(/Сайн байна у\s*[\u30a6]/g, 'Сайн байна уу');
+  s = s.replace(/у\s*[\u30a6]([.?!,\s]|$)/g, 'уу$1');
+  s = s.replace(/он[\u30b4]цоор/g, 'онгоцоор');
+  s = s.replace(/өчи[\u30b0]дөр/g, 'өчигдөр');
+  s = s.replace(/оюу[\u30bf][\u30f3]/g, 'оюутан');
+  s = s.replace(/халуу[\u30f3]/g, 'халуун');
+  s = s.replace(/б[\u30a8]([?？!\s.,]|$)/g, 'бэ$1');
+  s = s.replace(/в[\u30a8]([?？!\s.,]|$)/g, 'вэ$1');
+  s = s.replace(/〜ээ[\u30b9]/g, '〜ээс');
+  s = s.replace(/авла[\u30a2]/g, 'авлаа');
+  s = s.replace(/ойро[\u30eb]цоо/g, 'ойролцоо');
+  s = s.replace(/хү[\u30b9]эж/g, 'хүсэж');
+  s = s.replace(/хэл[\u30eb]эг/g, 'хэллэг');
+  s = s.replace(/-[\u30e2]ор/g, '-моор');
+  s = s.replace(/[\u30bf]рган тавтай/g, 'Тарган тавтай');
+  s = s.replace(/Боolгүй/g, 'Болгүй');
+  s = s.replace(/（дутуу = 不足・～前）/g, '');
+
+  const kanaToCyr = {
+    '\u30a6': 'у', // ウ
+    '\u30a8': 'э', // エ
+    '\u30b9': 'с', // ス
+    '\u30f3': 'н', // ン
+    '\u30eb': 'л', // ル
+    '\u30b0': 'г', // グ
+    '\u30b4': 'г', // ゴ
+    '\u30a2': 'а', // ア
+    '\u30aa': 'о', // オ
+    '\u30e2': 'м', // モ
+    '\u30bf': 'т', // タ
+    '\u30ab': 'к', // カ
+    '\u30c8': 'т', // ト
+    '\u30cf': 'х', // ハ
+    '\u30ed': 'о', // ロ
+    '\u30a4': 'и', // イ
+    '\u30de': 'м', // マ
+    '\u30df': 'м', // ミ
+    '\u30e0': 'м', // ム
+    '\u30e1': 'м', // メ
+    '\u30e9': 'р', // ラ
+    '\u30ea': 'р', // リ
+    '\u30ec': 'р', // レ
+    '\u30ef': 'в'  # ワ
+  };
+
+  for (let i = 0; i < 2; i++) {
+    for (const [k, c] of Object.entries(kanaToCyr)) {
+      s = s.replace(new RegExp(`([\\u0400-\\u04FF]+)${k}`, 'g'), `$1${c}`)
+           .replace(new RegExp(`${k}([\\u0400-\\u04FF]+)`, 'g'), `${c}$1`);
+    }
+  }
+
+  return s;
+}
+
 function isFuzzyMatch(userAnswer, correctAnswer) {
   if (!userAnswer || !correctAnswer) return false;
 
@@ -88,7 +151,15 @@ function isFuzzyMatch(userAnswer, correctAnswer) {
       .replace(/y/g, 'у'); // Latin y -> Cyrillic у
   };
 
-  const clean = (s) => normalizeLookalikes(s.trim().toLowerCase())
+  const normalizeNumbers = (str) => {
+    return str
+      .replace(/\b9\b/g, 'есөн')
+      .replace(/\b10\b/g, 'арав')
+      .replace(/\b14-ний\b/g, 'арван дөрөвний')
+      .replace(/\b15-ны\b/g, 'арван тавны');
+  };
+
+  const clean = (s) => normalizeNumbers(normalizeLookalikes(s.trim().toLowerCase()))
     .replace(/[.,!?。、！？\s]/g, '')
     .replace(/[«»"']/g, '');
 
@@ -166,7 +237,7 @@ function getWordGrammarDetails(item) {
   }
 
   const m = (item.mongolian || item.baseWord || item.word || item.dictForm || '').trim();
-  const pos = (item.pos || (item.kind === 'verb' || (item.category && item.category.startsWith('verb')) ? '動詞' : (item.kind === 'noun' ? '名詞' : ''))).trim();
+  const pos = (item.pos || (item.kind === 'verb' || (item.category && item.category.startsWith('verb')) ? '動詞' : (item.kind === 'noun' || item.kind === 'hidden_n_g' || item.type === 'declension' || item.targetCase ? '名詞' : '名詞'))).trim();
   let meaning = (item.japanese || item.baseMeaning || item.meaning || item.meaning_ja || item.translation || '').trim();
   const isV = isVerb(item);
 
@@ -279,6 +350,97 @@ function getWordGrammarDetails(item) {
  * - 動詞の語幹を問う場合：語幹のキリル文字が一致しているか判定（ハイフン-の有無は不問、活用語尾付きは不可）
  * - 名詞等の場合：括弧を除去した形や隠れ-н付きの双方を正解として認識
  */
+// ==========================================
+// モード間統一語彙・別表記（固有語 vs ロシア語借用語等）の相互正解マッピング
+// 「モードによって表示される語彙が違うことがあるから、あっているよく使われる方で統一して。他の単語がある場合は()で解説時に表示して」
+// ==========================================
+const VOCABULARY_SYNONYMS = {
+  // パイナップル: 固有語・教科書標準語 vs ロシア語借用語
+  'хан боргоцой': ['ананас'],
+  'ананас': ['хан боргоцой'],
+
+  // きゅうり: 固有語 vs ロシア語借用語
+  'өргөст хэмх': ['огурцы', 'огурци'],
+  'огурцы': ['өргөст хэмх'],
+
+  // トマト: 固有語 vs ロシア語借用語
+  'улаан лооль': ['помидор'],
+  'помидор': ['улаан лооль'],
+
+  // スイカ: モンゴル標準語 vs 中国語借用語
+  'тарвас': ['ший гуа', 'шийгуа'],
+  'ший гуа': ['тарвас'],
+
+  // バナナ: モンゴル標準・公式教科書語 vs 外来語
+  'гадил': ['банана', 'гадил жимс'],
+  'банана': ['гадил', 'гадил жимс'],
+
+  // ソファー: モンゴル語固有語 vs ロシア語借用語
+  'буйдан': ['диван'],
+  'диван': ['буйдан'],
+
+  // テレビ: モンゴル語固有語 vs ロシア語借用語
+  'зурагт': ['телевизор'],
+  'телевизор': ['зурагт'],
+
+  // ビール: モンゴル語固有語 vs ロシア語借用語
+  'шар айраг': ['пиво', 'пиво(н)'],
+  'пиво': ['шар айраг'],
+  'пиво(н)': ['шар айраг'],
+
+  // ワイン: モンゴル語固有語 vs ロシア語借用語
+  'дарс': ['вино'],
+  'вино': ['дарс'],
+
+  // 映画館
+  'кино театр': ['кинотеатр'],
+  'кинотеатр': ['кино театр'],
+
+  // 誰か
+  'хэн нэгэн': ['хэн нэг'],
+  'хэн нэг': ['хэн нэгэн'],
+
+  // 写真を撮ってもらう
+  'зураг авахуулах': ['зураг авхуул', 'зураг авхуулах'],
+  'зураг авхуул': ['зураг авахуулах']
+};
+
+function getWordSynonyms(wordOrItem) {
+  if (!wordOrItem) return [];
+  const raw = typeof wordOrItem === 'string' 
+    ? wordOrItem 
+    : (wordOrItem.dictForm || wordOrItem.mongolian || wordOrItem.root || '');
+  const clean = raw.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+  if (!clean) return [];
+
+  const results = [];
+  if (typeof wordOrItem === 'object' && wordOrItem.altMongolian) {
+    results.push(wordOrItem.altMongolian);
+  }
+  if (typeof wordOrItem === 'object' && Array.isArray(wordOrItem.acceptableAnswers)) {
+    for (const ans of wordOrItem.acceptableAnswers) {
+      if (ans.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '') !== clean) {
+        results.push(ans);
+      }
+    }
+  }
+
+  for (const [key, syns] of Object.entries(VOCABULARY_SYNONYMS)) {
+    const kClean = key.replace(/\s+/g, '').toLowerCase();
+    if (kClean === clean) {
+      for (const s of syns) {
+        if (!results.includes(s)) results.push(s);
+      }
+    }
+  }
+  return results;
+}
+
+function getWordSynonymNote(wordOrItem) {
+  const syns = getWordSynonyms(wordOrItem);
+  return syns.length > 0 ? syns[0] : '';
+}
+
 function isWordAnswerMatch(userAnswer, item, mode) {
   if (!userAnswer || !item) return false;
   const u = userAnswer.trim().toLowerCase().replace(/[.,!?。、！？\s]/g, '').replace(/[«»"']/g, '');
@@ -356,6 +518,17 @@ function isWordAnswerMatch(userAnswer, item, mode) {
     if (dClean === 'сайнуу' && (u === 'сайнбайнауу' || u === 'сайнбайна')) return true;
     if (dClean === 'баяртай' && (u === 'дараауулзъя' || u === 'маргаашуулзъя')) return true;
 
+    // 3. モード間統一語彙・別表記（固有語 vs ロシア語借用語等）の相互正解判定
+    //    パイナップル (хан боргоцой / ананас), きゅうり (өргөст хэмх / огурцы),
+    //    トマト (улаан лооль / помидор), スイカ (тарвас / ший гуа),
+    //    バナナ (гадил / банана), ソファー (буйдан / диван),
+    //    テレビ (зурагт / телевизор), ビール (шар айраг / пиво),
+    //    ワイン (дарс / вино) など
+    const knownSynonyms = getWordSynonyms(details.dictForm || item.mongolian || item);
+    for (const syn of knownSynonyms) {
+      const synClean = syn.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+      if (u === synClean) return true;
+    }
     return false;
   }
 
@@ -2469,6 +2642,7 @@ function renderGrammarExplanationHTML({
   const derivation = (details && details.derivation) ? details.derivation : (item && item.derivation ? item.derivation : '');
   const pron = pronunciation || (item ? item.pronunciation : '');
   const note = item ? item.note : '';
+  const altSynNote = getWordSynonymNote(item || dictForm || correctAnswer);
   const exampleMn = item ? item.exampleMn : '';
   const exampleJa = item ? item.exampleJa : '';
 
@@ -2483,7 +2657,7 @@ function renderGrammarExplanationHTML({
         <div>
           <div class="flex items-center flex-wrap gap-2">
             <span class="text-slate-500 dark:text-slate-400 font-medium">正解: </span>
-            <span class="font-extrabold text-base sm:text-lg cyrillic-text text-emerald-800 dark:text-emerald-400 correct-answer-text">${correctAnswer}</span>
+            <span class="font-extrabold text-base sm:text-lg cyrillic-text text-emerald-800 dark:text-emerald-400 correct-answer-text">${correctAnswer}${altSynNote ? ` <span class="text-xs text-slate-500 font-normal">(${altSynNote})</span>` : ''}</span>
             ${pron && isPronunciationCautionWord(item || { mongolian: correctAnswer, pronunciation: pron }) ? `<span class="text-amber-700 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800 px-2 py-0.5 rounded-md text-xs font-bold border border-amber-200 ml-1">⚠️ 読み注意: ${pron}</span>` : ''}
           </div>
           ${meaning ? `<div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${meaning}</div>` : ''}
@@ -2508,9 +2682,12 @@ function renderGrammarExplanationHTML({
       ${isV ? `
         <div class="bg-white/95 rounded-xl p-3.5 border border-emerald-200 shadow-2xs space-y-2.5 my-2">
           <div class="flex items-center justify-between border-b border-emerald-100 pb-1.5">
-            <span class="font-bold text-emerald-900 text-xs flex items-center gap-1.5">
-              <span>🌱</span> 動詞の基本形・語幹構造解説
-            </span>
+            <div class="flex items-center gap-2">
+              ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(item || dictForm || correctAnswer, { size: 'sm' }) : ''}
+              <span class="font-bold text-emerald-900 text-xs flex items-center gap-1.5">
+                <span>🌱</span> 動詞の基本形・語幹構造解説
+              </span>
+            </div>
             ${details && details.vowelHarmonyLabel ? `
               <span class="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-medium">
                 ${details.vowelHarmonyLabel}
@@ -2559,8 +2736,11 @@ function renderGrammarExplanationHTML({
         <!-- 非動詞（名詞・複合語など）の場合 -->
         <div class="bg-white/95 rounded-xl p-3 border border-slate-200 space-y-1.5 my-2 text-xs">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-slate-800">見出し語: <span class="cyrillic-text font-extrabold text-slate-900">${dictForm}</span></span>
-            <span class="text-slate-500 font-medium">【品詞: ${details ? details.pos : (item ? item.pos : '名詞')}】</span>
+            <div class="flex items-center gap-2">
+              ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(item || dictForm || correctAnswer, { size: 'sm' }) : ''}
+              <span class="font-bold text-slate-800">見出し語: <span class="cyrillic-text font-extrabold text-slate-900">${dictForm}</span></span>
+            </div>
+            <span class="text-slate-500 font-medium">【品詞: ${(details && details.pos) || (item && item.pos) || '名詞'}】</span>
           </div>
           <div>意味: <span class="font-semibold text-slate-800">${meaning}</span></div>
           
@@ -3027,7 +3207,8 @@ function findWordInDictionary(rawWord, passageGlossary = null) {
  */
 function renderClickableWordsHTML(text, lookedUpCheckFn = null) {
   if (!text) return '';
-  const tokens = text.split(/([А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?)/g);
+  const cleanedText = cleanMongolianMojibake(text);
+  const tokens = cleanedText.split(/([А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?)/g);
   return tokens.map(token => {
     if (/^[А-Яа-яЁёӨөҮү]+(?:-[А-Яа-яЁёӨөҮү]+)?$/.test(token)) {
       const isLookedUp = typeof lookedUpCheckFn === 'function' ? lookedUpCheckFn(token) : false;
@@ -3643,7 +3824,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_greet_9",
-    "mongolian": "Уучлаарай.",
+    "mongolian": "Уучлаарай",
     "japanese": "すみません、ごめんなさい",
     "pronunciation": "ウーチラアライ",
     "root": "",
@@ -3655,7 +3836,7 @@ const initialVocabulary = [
     "note": "уучлах（許す）の丁寧命令形 -аарай。",
     "lesson": 1,
     "isVerb": false,
-    "dictForm": "Уучлаарай.",
+    "dictForm": "Уучлаарай",
     "derivation": "見出し語「Уучлаарай.」",
     "mnemonic": "お茶（ууча）をこぼして【すみません（уучлаарай）】！"
   },
@@ -3980,14 +4161,20 @@ const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "Зурагт үзээгүй.",
     "exampleJa": "テレビを見ませんでした。",
-    "note": "зураг（絵・写真）＋ т（を持つ）。",
+    "note": "物・場所 (別称: телевизор)",
     "lesson": 2,
     "isVerb": false,
     "dictForm": "зурагт",
-    "derivation": "見出し語「зурагт」",
+    "derivation": "зураг（絵・写真）＋ т（を持つもの）＝ 【テレビ】 (※ロシア語借用語: телевизор とも呼ばれます)",
     "genreId": "appliances",
     "genreName": "日用品・家電・家具",
-    "mnemonic": "絵（зураг）が動く箱（-т）＝「テレビ」！"
+    "mnemonic": "絵（зураг）が動く箱（-т）＝「テレビ」！",
+    "altMongolian": "телевизор",
+    "acceptableAnswers": [
+      "зурагт",
+      "телевизор"
+    ],
+    "explanation": "テレビ (別表現: телевизор)"
   },
   {
     "id": "v_2_11",
@@ -8147,7 +8334,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_gen_180",
-    "mongolian": "зураг авхуул(ах)",
+    "mongolian": "зураг авахуулах",
     "japanese": "写真を撮ってもらう",
     "pronunciation": "ズラグ アフーフーラハ",
     "root": "авхуул",
@@ -8158,7 +8345,7 @@ const initialVocabulary = [
     "exampleJa": "写真を撮ってもらう。",
     "note": "品詞: 動詞句",
     "isVerb": true,
-    "dictForm": "зураг авхуулах",
+    "dictForm": "зураг авахуулах",
     "derivation": "動詞句「зураг авхуулах」の主要動詞「авхуулах」の語幹「авхуул」に語尾が接続します。動詞句全体の語幹形は「авхуул」です（男性母音語）。"
   },
   {
@@ -8556,7 +8743,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_gen_206",
-    "mongolian": "кинотеатр",
+    "mongolian": "кино театр",
     "japanese": "映画館",
     "pronunciation": "キノテアトル",
     "root": "",
@@ -8567,7 +8754,7 @@ const initialVocabulary = [
     "exampleJa": "映画館。",
     "note": "品詞: 名詞",
     "isVerb": false,
-    "dictForm": "кинотеатр",
+    "dictForm": "кино театр",
     "derivation": "見出し語「кинотеатр」"
   },
   {
@@ -9987,7 +10174,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_gen_305",
-    "mongolian": "пиво(н)",
+    "mongolian": "шар айраг",
     "japanese": "ビール",
     "pronunciation": "ピウォ",
     "root": "",
@@ -9996,10 +10183,17 @@ const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "пиво(н).",
     "exampleJa": "ビール。",
-    "note": "品詞: 名詞",
+    "note": "品詞: 名詞 (別称: пиво)",
     "isVerb": false,
-    "dictForm": "пиво",
-    "derivation": "基本形は「пиво」です。属格（-ны）や造格（-аар）などの格変化時に隠れ-нが現れます。"
+    "dictForm": "шар айраг",
+    "derivation": "「шар（黄色）」 ＋ 「айраг（酒）」 ＝ 【ビール】 (※ロシア語借用語: пиво とも呼ばれます)",
+    "altMongolian": "пиво",
+    "acceptableAnswers": [
+      "шар айраг",
+      "пиво",
+      "пиво(н)"
+    ],
+    "explanation": "ビール (別表現: пиво)"
   },
   {
     "id": "v_gen_306",
@@ -11286,7 +11480,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_gen_393",
-    "mongolian": "улаан лооль, помидор",
+    "mongolian": "улаан лооль",
     "japanese": "トマト",
     "pronunciation": "オラーン ロール / ポミドル",
     "root": "",
@@ -11295,11 +11489,17 @@ const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "улаан лооль, помидор.",
     "exampleJa": "トマト。",
-    "note": "品詞: 名詞",
+    "note": "飲食・野菜 (別称: помидор)",
     "isVerb": false,
-    "dictForm": "улаан лооль, помидор",
-    "derivation": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】",
-    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】"
+    "dictForm": "улаан лооль",
+    "derivation": "「улаан（赤）」 ＋ 「лооль（実）」 ＝ 【トマト】 (※ロシア語借用語: помидор とも呼ばれます)",
+    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】",
+    "altMongolian": "помидор",
+    "acceptableAnswers": [
+      "улаан лооль",
+      "помидор"
+    ],
+    "explanation": "トマト (別表現: помидор)"
   },
   {
     "id": "v_gen_394",
@@ -13583,13 +13783,20 @@ const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "шар айраг.",
     "exampleJa": "ビール。",
-    "note": "品詞: 名詞句",
+    "note": "飲食・お酒 (別称: пиво)",
     "isVerb": false,
     "dictForm": "шар айраг",
-    "derivation": "「шар」 ＋ 「айраг」 ＝ 【ビール】",
+    "derivation": "「шар（黄色）」 ＋ 「айраг（酒）」 ＝ 【ビール】 (※ロシア語借用語: пиво とも呼ばれます)",
     "genreId": "dining",
     "genreName": "食べ物・レストラン",
-    "etymologyBreakdown": "「шар」 ＋ 「айраг」 ＝ 【ビール】"
+    "etymologyBreakdown": "「шар」 ＋ 「айраг」 ＝ 【ビール】",
+    "altMongolian": "пиво",
+    "acceptableAnswers": [
+      "шар айраг",
+      "пиво",
+      "пиво(н)"
+    ],
+    "explanation": "ビール (別表現: пиво)"
   },
   {
     "id": "v_gen_546",
@@ -17593,7 +17800,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_note_126",
-    "mongolian": "хэн нэг",
+    "mongolian": "хэн нэгэн",
     "japanese": "誰か、ある人",
     "pronunciation": "ヘン ネグ",
     "root": "хэн",
@@ -17605,7 +17812,7 @@ const initialVocabulary = [
     "note": "хэн нэгэн",
     "lesson": 1,
     "isVerb": false,
-    "dictForm": "хэн нэг",
+    "dictForm": "хэн нэгэн",
     "derivation": "хэн нэгэн"
   },
   {
@@ -18377,25 +18584,6 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "хоч нэр",
     "derivation": "хоч（あだ名）＋ нэр（名前）"
-  },
-  {
-    "id": "v_note_172",
-    "mongolian": "помидор",
-    "japanese": "トマト（ロシア語借用語）",
-    "pronunciation": "ポミドル",
-    "root": "помидор",
-    "pos": "名詞",
-    "category": "食事",
-    "priority": "★★",
-    "exampleMn": "Улаан лоолийг помидор гэж бас нэрлэдэг.",
-    "exampleJa": "トマトはポミドールとも呼ばれます。",
-    "note": "улаан лооль のロシア語日常口語",
-    "lesson": 1,
-    "isVerb": false,
-    "dictForm": "помидор",
-    "derivation": "улаан лооль のロシア語日常口語",
-    "genreId": "produce",
-    "genreName": "果物・野菜"
   },
   {
     "id": "v_genre_801",
@@ -20322,10 +20510,10 @@ const initialVocabulary = [
   },
   {
     "id": "v_genre_906",
-    "mongolian": "пиво",
+    "mongolian": "шар айраг",
     "japanese": "ビール",
     "pronunciation": "ピーヴォ",
-    "root": "пиво",
+    "root": "шар айраг",
     "pos": "名詞",
     "category": "食べ物・レストラン",
     "genreId": "dining",
@@ -20333,10 +20521,17 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Пиво уух.",
     "exampleJa": "ビールを飲む。",
-    "note": "ジャンル: 食べ物・レストラン",
+    "note": "ジャンル: 食べ物・レストラン (別称: пиво)",
     "isVerb": false,
-    "dictForm": "пиво",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "dictForm": "шар айраг",
+    "derivation": "「шар（黄色）」 ＋ 「айраг（酒）」 ＝ 【ビール】 (※ロシア語借用語: пиво とも呼ばれます)",
+    "altMongolian": "пиво",
+    "acceptableAnswers": [
+      "шар айраг",
+      "пиво",
+      "пиво(н)"
+    ],
+    "explanation": "ビール (別表現: пиво)"
   },
   {
     "id": "v_genre_907",
@@ -20351,28 +20546,16 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Улаан дарс.",
     "exampleJa": "赤ワイン。",
-    "note": "ジャンル: 食べ物・レストラン",
+    "note": "ジャンル: 食べ物・レストラン (別称: вино)",
     "isVerb": false,
     "dictForm": "дарс",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_908",
-    "mongolian": "вино",
-    "japanese": "ワイン",
-    "pronunciation": "ヴィーノ",
-    "root": "вино",
-    "pos": "名詞",
-    "category": "食べ物・レストラン",
-    "genreId": "dining",
-    "genreName": "食べ物・レストラン",
-    "priority": "★★★",
-    "exampleMn": "Франц вино.",
-    "exampleJa": "フランスワイン。",
-    "note": "ジャンル: 食べ物・レストラン",
-    "isVerb": false,
-    "dictForm": "вино",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "derivation": "モンゴル語固有語: 【дарс】 (※ロシア語借用語: вино とも呼ばれます)",
+    "altMongolian": "вино",
+    "acceptableAnswers": [
+      "дарс",
+      "вино"
+    ],
+    "explanation": "ワイン (別表現: вино)"
   },
   {
     "id": "v_genre_909",
@@ -20505,10 +20688,10 @@ const initialVocabulary = [
   },
   {
     "id": "v_genre_916",
-    "mongolian": "телевизор",
+    "mongolian": "зурагт",
     "japanese": "テレビ",
     "pronunciation": "テレビーゾル",
-    "root": "телевизор",
+    "root": "зурагт",
     "pos": "名詞",
     "category": "日用品・家電・家具",
     "genreId": "appliances",
@@ -20516,10 +20699,16 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Шинэ телевизор авах.",
     "exampleJa": "新しいテレビを買う。",
-    "note": "ジャンル: 日用品・家電・家具",
+    "note": "ジャンル: 日用品・家電・家具 (別称: телевизор)",
     "isVerb": false,
-    "dictForm": "телевизор",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "dictForm": "зурагт",
+    "derivation": "モンゴル固有語: 【зурагт】 (※ロシア語借用語: телевизор とも呼ばれます)",
+    "altMongolian": "телевизор",
+    "acceptableAnswers": [
+      "зурагт",
+      "телевизор"
+    ],
+    "explanation": "テレビ (別表現: телевизор)"
   },
   {
     "id": "v_genre_917",
@@ -20627,28 +20816,16 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Зөөлөн буйдан дээр суух.",
     "exampleJa": "柔らかいソファーに座る。",
-    "note": "ジャンル: 日用品・家電・家具",
+    "note": "ジャンル: 日用品・家電・家具 (別称: диван)",
     "isVerb": false,
     "dictForm": "буйдан",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_923",
-    "mongolian": "диван",
-    "japanese": "ソファー",
-    "pronunciation": "ディヴァーン",
-    "root": "диван",
-    "pos": "名詞",
-    "category": "日用品・家電・家具",
-    "genreId": "appliances",
-    "genreName": "日用品・家電・家具",
-    "priority": "★★★",
-    "exampleMn": "Диван дээр амрах.",
-    "exampleJa": "ソファーで休む。",
-    "note": "ジャンル: 日用品・家電・家具",
-    "isVerb": false,
-    "dictForm": "диван",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "モンゴル語固有語: 【буйдан】 (※ロシア語借用語: диван とも呼ばれます)",
+    "altMongolian": "диван",
+    "acceptableAnswers": [
+      "буйдан",
+      "диван"
+    ],
+    "explanation": "ソファー (別表現: диван)"
   },
   {
     "id": "v_genre_924",
@@ -21238,28 +21415,17 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Гадил идэх.",
     "exampleJa": "バナナを食べる。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: банана)",
     "isVerb": false,
     "dictForm": "гадил",
-    "derivation": "【果物・野菜】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_956",
-    "mongolian": "банана",
-    "japanese": "バナナ",
-    "pronunciation": "バナーナ",
-    "root": "банана",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Шар банана.",
-    "exampleJa": "黄色いバナナ。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "банана",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "モンゴル教科書・標準表記: 【гадил】 (※外来語: банана とも呼ばれます)",
+    "altMongolian": "банана",
+    "acceptableAnswers": [
+      "гадил",
+      "банана",
+      "гадил жимс"
+    ],
+    "explanation": "バナナ (別表現: банана)"
   },
   {
     "id": "v_genre_957",
@@ -21292,29 +21458,16 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Зуны амтат тарвас.",
     "exampleJa": "夏の甘いスイカ。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: ший гуа)",
     "isVerb": false,
     "dictForm": "тарвас",
-    "derivation": "【果物・野菜】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_959",
-    "mongolian": "ший гуа",
-    "japanese": "スイカ",
-    "pronunciation": "シー グア",
-    "root": "ший",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Ший гуа хуваах.",
-    "exampleJa": "スイカを切り分ける。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "ший гуа",
-    "derivation": "「ший」 ＋ 「гуа」 ＝ 【スイカ】",
-    "etymologyBreakdown": "「ший」 ＋ 「гуа」 ＝ 【スイカ】"
+    "derivation": "モンゴル標準語: 【тарвас】 (※中国語由来: ший гуа とも呼ばれます)",
+    "altMongolian": "ший гуа",
+    "acceptableAnswers": [
+      "тарвас",
+      "ший гуа"
+    ],
+    "explanation": "スイカ (別表現: ший гуа)"
   },
   {
     "id": "v_genre_960",
@@ -21402,29 +21555,17 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Хан боргоцой зүсэх.",
     "exampleJa": "パイナップルを切る。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: ананас)",
     "isVerb": false,
     "dictForm": "хан боргоцой",
-    "derivation": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】",
-    "etymologyBreakdown": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】"
-  },
-  {
-    "id": "v_genre_965",
-    "mongolian": "ананас",
-    "japanese": "パイナップル",
-    "pronunciation": "アナナス",
-    "root": "ананас",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Шинэхэн ананас.",
-    "exampleJa": "新鮮なパイナップル。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "ананас",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「хан（王）」 ＋ 「боргоцой（松かさ）」 ＝ 【パイナップル】 (※外来語: ананас とも呼ばれます)",
+    "etymologyBreakdown": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】",
+    "altMongolian": "ананас",
+    "acceptableAnswers": [
+      "хан боргоцой",
+      "ананас"
+    ],
+    "explanation": "パイナップル (別表現: ананас)"
   },
   {
     "id": "v_genre_966",
@@ -21655,29 +21796,17 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Шинэхэн өргөст хэмх.",
     "exampleJa": "新鮮なきゅうり。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: огурцы)",
     "isVerb": false,
     "dictForm": "өргөст хэмх",
-    "derivation": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】",
-    "etymologyBreakdown": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】"
-  },
-  {
-    "id": "v_genre_979",
-    "mongolian": "огурцы",
-    "japanese": "きゅうり",
-    "pronunciation": "アグールツィ",
-    "root": "огурцы",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Давсалсан огурцы.",
-    "exampleJa": "きゅうりのピクルス。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "огурцы",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「өргөст（棘のある）」 ＋ 「хэмх（瓜）」 ＝ 【きゅうり】 (※ロシア語借用語: огурцы とも呼ばれます)",
+    "etymologyBreakdown": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】",
+    "altMongolian": "огурцы",
+    "acceptableAnswers": [
+      "өргөст хэмх",
+      "огурцы"
+    ],
+    "explanation": "きゅうり (別表現: огурцы)"
   },
   {
     "id": "v_genre_980",
@@ -21710,11 +21839,17 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Улаан лоолийн салат.",
     "exampleJa": "トマトサラダ。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: помидор)",
     "isVerb": false,
     "dictForm": "улаан лооль",
-    "derivation": "「улаан」 ＋ 「лооль」 ＝ 【トマト】",
-    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＝ 【トマト】"
+    "derivation": "「улаан（赤）」 ＋ 「лооль（実）」 ＝ 【トマト】 (※ロシア語借用語: помидор とも呼ばれます)",
+    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＝ 【トマト】",
+    "altMongolian": "помидор",
+    "acceptableAnswers": [
+      "улаан лооль",
+      "помидор"
+    ],
+    "explanation": "トマト (別表現: помидор)"
   },
   {
     "id": "v_genre_982",
@@ -26645,7 +26780,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_gen_useful_phrases_8",
-    "mongolian": "Мэдээж",
+    "mongolian": "мэдээж",
     "japanese": "もちろん、当然",
     "pronunciation": "メデージ",
     "root": "Мэдээж",
@@ -26656,7 +26791,7 @@ const initialVocabulary = [
     "exampleJa": "もちろん、一緒に行くよ。",
     "note": "",
     "isVerb": false,
-    "dictForm": "Мэдээж",
+    "dictForm": "мэдээж",
     "derivation": "見出し語「Мэдээж」",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
@@ -29372,11 +29507,11 @@ const initialGrammar = [
     "forKids": "「なんじなんぷん！」って時間をぴったり教える言葉だよ！",
     "examples": {
       "affirmative": {
-        "mn": "Хичээл 9 цагт эхэлнэ.",
+        "mn": "Хичээл есөн цагт эхэлнэ.",
         "ja": "授業は9時に始まります。"
       },
       "negative": {
-        "mn": "Хичээл 9 цагт эхлэхгүй.",
+        "mn": "Хичээл есөн цагт эхлэхгүй.",
         "ja": "授業は9時に始まりません。"
       },
       "interrogative": {
@@ -29384,7 +29519,7 @@ const initialGrammar = [
         "ja": "授業は何時に始まりますか？"
       }
     },
-    "exampleMn": "Хичээл 9 цагт эхэлнэ.",
+    "exampleMn": "Хичээл есөн цагт эхэлнэ.",
     "exampleJa": "授業は9時に始まります。"
   },
   {
@@ -29768,11 +29903,11 @@ const initialGrammar = [
     "forKids": "カレンダーの「なんねん・なんがつ・なんニチ！」をいう言葉だよ！",
     "examples": {
       "affirmative": {
-        "mn": "Өнөөдөр 10 дугаар сарын 14-ний өдөр.",
+        "mn": "Өнөөдөр аравдугаар сарын арван дөрөвний өдөр.",
         "ja": "今日は10月14日です。"
       },
       "negative": {
-        "mn": "Өнөөдөр 10 дугаар сарын 15-ны өдөр биш.",
+        "mn": "Өнөөдөр аравдугаар сарын арван тавны өдөр биш.",
         "ja": "今日は10月15日ではありません。"
       },
       "interrogative": {
@@ -29780,7 +29915,7 @@ const initialGrammar = [
         "ja": "今日は何の日ですか？"
       }
     },
-    "exampleMn": "Өнөөдөр 10 дугаар сарын 14-ний өдөр.",
+    "exampleMn": "Өнөөдөр аравдугаар сарын арван дөрөвний өдөр.",
     "exampleJa": "今日は10月14日です。"
   },
   {
@@ -31726,19 +31861,23 @@ const initialGrammarQuizzes = [
     "lessonGroup": "第21項目: 時間/時刻（Цаг хугацаа хэлэх）",
     "type": "reorder",
     "question": "【時間/時刻（Цаг хугацаа хэлэх）】\n「授業は9時に始まります。」をモンゴル語で表しなさい。",
-    "answer": "Хичээл 9 цагт эхэлнэ.",
+    "answer": "Хичээл есөн цагт эхэлнэ.",
     "acceptableAnswers": [
+      "Хичээл есөн цагт эхэлнэ.",
+      "Хичээл есөн цагт эхэлнэ",
+      "Хичээл ес цагт эхэлнэ.",
+      "Хичээл ес цагт эхэлнэ",
       "Хичээл 9 цагт эхэлнэ.",
       "Хичээл 9 цагт эхэлнэ"
     ],
     "tokens": [
       "Хичээл",
-      "9",
+      "есөн",
       "цагт",
       "эхэлнэ"
     ],
     "category": "時間/時刻（Цаг хугацаа хэлэх）",
-    "explanation": "時刻（〜時〜分）や所要時間・時期を表す数量表現構造。。\n💡 解説: 「なんじなんぷん！」って時間をぴったり教える言葉だよ！",
+    "explanation": "時刻（〜時〜分）を表す表現。9時は「есөн цаг」または「ес цаг」、9時には「есөн цагт」となります。\n💡 解説: 「なんじなんぷん！」って時間をぴったり教える言葉だよ！",
     "hint": "キーフレーズ: эхэлнэ."
   },
   {
@@ -31747,13 +31886,17 @@ const initialGrammarQuizzes = [
     "lessonGroup": "第21項目: 時間/時刻（Цаг хугацаа хэлэх）",
     "type": "translation",
     "question": "【時間/時刻（Цаг хугацаа хэлэх）】\n「授業は9時に始まりません。」に合うモンゴル語文を作りなさい。",
-    "answer": "Хичээл 9 цагт эхлэхгүй.",
+    "answer": "Хичээл есөн цагт эхлэхгүй.",
     "acceptableAnswers": [
+      "Хичээл есөн цагт эхлэхгүй.",
+      "Хичээл есөн цагт эхлэхгүй",
+      "Хичээл ес цагт эхлэхгүй.",
+      "Хичээл ес цагт эхлэхгүй",
       "Хичээл 9 цагт эхлэхгүй.",
       "Хичээл 9 цагт эхлэхгүй"
     ],
     "category": "時間/時刻（Цаг хугацаа хэлэх）",
-    "explanation": "否定表現のポイント: 時刻を表すときは 与位格 -д/-т をつけて「5時に（5 цагт）」と表現します。",
+    "explanation": "否定表現のポイント: 時刻を表すときは 与位格 -д/-т をつけて「9時に（есөн цагт）」と表現します。",
     "hint": "文末・否定語に注目: эхлэхгүй."
   },
   {
@@ -32187,21 +32330,22 @@ const initialGrammarQuizzes = [
     "lessonGroup": "第30項目: 日付（Он, сар өдөр хэлэх）",
     "type": "reorder",
     "question": "【日付（Он, сар өдөр хэлэх）】\n「今日は10月14日です。」をモンゴル語で表しなさい。",
-    "answer": "Өнөөдөр 10 дугаар сарын 14-ний өдөр.",
+    "answer": "Өнөөдөр аравдугаар сарын арван дөрөвний өдөр.",
     "acceptableAnswers": [
+      "Өнөөдөр аравдугаар сарын арван дөрөвний өдөр.",
+      "Өнөөдөр аравдугаар сарын арван дөрөвний өдөр",
       "Өнөөдөр 10 дугаар сарын 14-ний өдөр.",
       "Өнөөдөр 10 дугаар сарын 14-ний өдөр"
     ],
     "tokens": [
       "Өнөөдөр",
-      "10",
-      "дугаар",
+      "аравдугаар",
       "сарын",
-      "14-ний",
+      "арван дөрөвний",
       "өдөр"
     ],
     "category": "日付（Он, сар өдөр хэлэх）",
-    "explanation": "年月日・曜日を表す構造（〜年〜月〜日：он, сар, өдөр）。。\n💡 解説: カレンダーの「なんねん・なんがつ・なんニチ！」をいう言葉だよ！",
+    "explanation": "年月日・曜日を表す構造。10月は「аравдугаар сар」、14日は「арван дөрөвний өдөр」になります。\n💡 解説: カレンダーの「なんねん・なんがつ・なんニチ！」をいう言葉だよ！",
     "hint": "キーフレーズ: өдөр."
   },
   {
@@ -32210,13 +32354,15 @@ const initialGrammarQuizzes = [
     "lessonGroup": "第30項目: 日付（Он, сар өдөр хэлэх）",
     "type": "translation",
     "question": "【日付（Он, сар өдөр хэлэх）】\n「今日は10月15日ではありません。」に合うモンゴル語文を作りなさい。",
-    "answer": "Өнөөдөр 10 дугаар сарын 15-ны өдөр биш.",
+    "answer": "Өнөөдөр аравдугаар сарын арван тавны өдөр биш.",
     "acceptableAnswers": [
+      "Өнөөдөр аравдугаар сарын арван тавны өдөр биш.",
+      "Өнөөдөр аравдугаар сарын арван тавны өдөр биш",
       "Өнөөдөр 10 дугаар сарын 15-ны өдөр биш.",
       "Өнөөдөр 10 дугаар сарын 15-ны өдөр биш"
     ],
     "category": "日付（Он, сар өдөр хэлэх）",
-    "explanation": "否定表現のポイント: 「〜年〜月〜日」の順で並べます。日は序数詞（-дугаар/-дүгээр）または通常の基数詞＋өдөрを使います。",
+    "explanation": "否定表現のポイント: 「〜年〜月〜日」の順で並べます。10月は「аравдугаар сар」、15日は「арван тавны өдөр」になります。",
     "hint": "文末・否定語に注目: биш."
   },
   {
@@ -36321,9 +36467,9 @@ const initialTypingSentences = [
   "level": "初級・基礎",
   "category": "lesson_basics",
   "categoryLabel": "自己紹介・年齢・過去時制",
-  "textMn": "Би 26 настай. Токиогоос ирсэн.",
+  "textMn": "Би хорин зургаан настай. Токиогоос ирсэн.",
   "textJa": "私は26歳です。東京から来ました。",
-  "romaji": "Bi 26 nastai. Tokiogoos irsen.",
+  "romaji": "Bi khorin zurgaan nastai. Tokiogoos irsen.",
   "explanation": "「〜настай（〜歳です）」、奪格「-оос（〜から）」＋動詞過去時制「ирсэн（来ました）」。自己紹介の最重要構文です。",
   "glossary": {
     "настай": {
@@ -36675,9 +36821,9 @@ const initialTypingSentences = [
   "level": "訓練所・日課",
   "category": "routine_schedule",
   "categoryLabel": "時刻・時間の表現と再帰所有（自分の〜）",
-  "textMn": "8 цаг 45 минутаас 15 цаг хүртэл хичээлтэй байдаг.",
+  "textMn": "Найман цаг дөчин таван минутаас арван таван цаг хүртэл хичээлтэй байдаг.",
   "textJa": "8時45分から15時まで授業があります。",
-  "romaji": "8 tsag 45 minutaas 15 tsag khurtel khicheeltei baidag.",
+  "romaji": "Naiman tsag dochin tavan minutaas arvan tavan tsag khurtel khicheeltei baidag.",
   "explanation": "時間的起点「-аас」と終点「хүртэл（〜まで）」の組み合わせ。「хичээлтэй байдаг（授業がある）」。",
   "glossary": {
     "минутаас": {
@@ -36849,9 +36995,9 @@ const initialTypingSentences = [
   "level": "出張・移動",
   "category": "travel_logistics",
   "categoryLabel": "序数詞・日付・手段（造格）",
-  "textMn": "Галт тэргээр 12 цаг гаруй явна шүү.",
+  "textMn": "Галт тэргээр арван хоёр цаг гаруй явна шүү.",
   "textJa": "列車で12時間以上かかりますよ。",
-  "romaji": "Galt tergeer 12 tsag garui yavna shuu.",
+  "romaji": "Galt tergeer arvan khoyor tsag garui yavna shuu.",
   "explanation": "交通手段の造格「галт тэргээр（列車で）」＋数量の超過「гаруй（〜以上、あまり）」。",
   "glossary": {
     "галт тэргээр": {
@@ -36873,9 +37019,9 @@ const initialTypingSentences = [
   "level": "出張・移動",
   "category": "travel_logistics",
   "categoryLabel": "序数詞・日付・手段（造格）",
-  "textMn": "7-р сарын 11-д Наадам эхэлнэ, уулзацгаая.",
+  "textMn": "Долдугаар сарын арван нэгэнд Наадам эхэлнэ, уулзацгаая.",
   "textJa": "7月11日にナーダム祭りが始まります。みんなで会いましょう。",
-  "romaji": "7-r saryn 11-d Naadam ekhelne, uulzatsgaaya.",
+  "romaji": "Doldugaar saryn arvan negend Naadam ekhelne, uulzatsgaaya.",
   "explanation": "日付「7-р сарын 11-д（7月11日に）」＋全員の意思勧誘「уулзацгаая（みんなで会いましょう: -цгаа⁴＋-я）」。",
   "glossary": {
     "Наадам": {
@@ -36903,9 +37049,9 @@ const initialTypingSentences = [
   "level": "移動・手配",
   "category": "travel_logistics",
   "categoryLabel": "願望（-маар байна）と許可・禁止",
-  "textMn": "Зуунмод хот хүртэл явах 1 тасалбар авмаар байна.",
+  "textMn": "Зуунмод хот хүртэл явах нэг тасалбар авмаар байна.",
   "textJa": "ゾーンモド市まで行く切符を1枚買いたいです。",
-  "romaji": "Zuunmod khot khurtel yavakh 1 tasalbar avmaar baina.",
+  "romaji": "Zuunmod khot khurtel yavakh neg tasalbar avmaar baina.",
   "explanation": "願望の表現「-маар байна（〜したい）」: 「авмаар байна（買いたいです、取りたいです）」。",
   "glossary": {
     "Зуунмод": {
@@ -36963,9 +37109,9 @@ const initialTypingSentences = [
   "level": "宿泊・ホテル",
   "category": "travel_logistics",
   "categoryLabel": "仮定（-вал）と義務（-хгүй бол болохгүй）",
-  "textMn": "Нэг хоновол, 45000 төгрөг. Паспортоо үзүүлнэ үү.",
+  "textMn": "Нэг хоновол, дөчин таван мянган төгрөг. Паспортоо үзүүлнэ үү.",
   "textJa": "一泊するなら45,000トゥグルグです。パスポートをお見せください。",
-  "romaji": "Neg khonovol, 45000 togrog. Pasportoo uzuulne uu.",
+  "romaji": "Neg khonovol, dochin tavan myangan togrog. Pasportoo uzuulne uu.",
   "explanation": "仮定形「-вол（〜するなら）」＋丁寧な依頼「-нэ үү（〜してください）」。",
   "glossary": {
     "хоновол": {
@@ -37245,9 +37391,9 @@ const initialTypingSentences = [
   "level": "食事・食堂",
   "category": "shopping_dining",
   "categoryLabel": "レストラン注文・過去終止形・様態（шиг）",
-  "textMn": "Би 5 бууз авна. Төмсний салат нэг тавгийг авъя.",
+  "textMn": "Би таван бууз авна. Төмсний салат нэг тавгийг авъя.",
   "textJa": "ボーズを5個ください。ポテトサラダを一皿ください。",
-  "romaji": "Bi 5 buuz avna. Tomsnii salat neg tavgiig avya.",
+  "romaji": "Bi tavan buuz avna. Tomsnii salat neg tavgiig avya.",
   "explanation": "レストランでの注文「〜 авна / авъя（〜をください）」、助数詞「нэг таваг（一皿）」の対格「тавгийг」。",
   "glossary": {
     "бууз": {
@@ -37306,9 +37452,9 @@ const initialTypingSentences = [
   "level": "口述試験対策",
   "category": "interview_prep",
   "categoryLabel": "口述試験: 自己紹介（Өөрийнхөө тухай）",
-  "textMn": "Намайг Кахо гэдэг. Би 22 настай. Би Японоос ирсэн.",
+  "textMn": "Намайг Кахо гэдэг. Би хорин хоёр настай. Би Японоос ирсэн.",
   "textJa": "私の名前はカホです。22歳です。日本から来ました。",
-  "romaji": "Namaig Kaho gedeg. Bi 22 nastai. Bi Yaponoos irsen.",
+  "romaji": "Namaig Kaho gedeg. Bi khorin khoyor nastai. Bi Yaponoos irsen.",
   "explanation": "口頭試験・面接の冒頭で名乗る最重要フレーズ。「Намайг 〜 гэдэг」「22 настай」「Японоос ирсэн」。",
   "glossary": {
     "намайг": {
@@ -37426,9 +37572,9 @@ const initialTypingSentences = [
   "level": "口述試験対策",
   "category": "interview_prep",
   "categoryLabel": "口述試験: 訓練所生活（Нихонмацү）",
-  "textMn": "Өдөр бүр өглөө зургаан цаг хагасд босдог. 8 цаг 45 минутад хичээл эхэлдэг.",
+  "textMn": "Өдөр бүр өглөө зургаан цаг хагасд босдог. Найман цаг дөчин таван минутад хичээл эхэлдэг.",
   "textJa": "毎朝6時半に起きます。8時45分に授業が始まります。",
-  "romaji": "Odor bur ogloo zurgaan tsag khagasd bosdog. 8 tsag 45 minutad khicheel ekheldeg.",
+  "romaji": "Odor bur ogloo zurgaan tsag khagasd bosdog. Naiman tsag dochin tavan minutad khicheel ekheldeg.",
   "explanation": "訓練所の一日の時間割を述べる習慣動詞文。「босдог（起きる）」「эхэлдэг（始まる）」。",
   "glossary": {
     "босдог": {
@@ -37654,9 +37800,9 @@ const initialTypingSentences = [
   "level": "口述試験対策",
   "category": "interview_prep",
   "categoryLabel": "口述試験: レストラン注文（Ресторанд）",
-  "textMn": "5 бууз, нэг таваг нийслэл салат авъя. Сүүтэй цай ууна.",
+  "textMn": "Таван бууз, нэг таваг нийслэл салат авъя. Сүүтэй цай ууна.",
   "textJa": "ボーズを5個、首都サラダを一皿ください。ミルクティーを飲みます。",
-  "romaji": "5 buuz, neg tavag niislel salat avya. Suutei tsai uuna.",
+  "romaji": "Tavan buuz, neg tavag niislel salat avya. Suutei tsai uuna.",
   "explanation": "レストランでの注文。「нийслэл салат（ポテトサラダ）」「сүүтэй цай（ミルクティー）」。",
   "glossary": {
     "нийслэл": {
@@ -47903,6 +48049,18 @@ class SyncService {
 
 
 // === js/services/storage.js ===
+const DEPRECATED_DUPLICATE_ID_MAP = {
+  'v_genre_965': 'v_genre_964', // ананас -> хан боргоцой
+  'v_genre_979': 'v_genre_978', // огурцы -> өргөст хэмх
+  'v_genre_959': 'v_genre_958', // ший гуа -> тарвас
+  'v_genre_956': 'v_genre_955', // банана -> гадил
+  'v_genre_923': 'v_genre_922', // диван -> буйдан
+  'v_genre_916': 'v_2_10',      // телевизор -> зурагт
+  'v_genre_906': 'v_gen_545',   // пиво -> шар айраг
+  'v_genre_908': 'v_genre_907', // вино -> дарс
+  'v_note_172': 'v_genre_981',  // помидор -> улаан лооль
+};
+
 // LocalStorage データ管理・永続化サービス（SRS忘却曲線・クラウド自動同期連携）
 
 
@@ -47915,16 +48073,17 @@ class SyncService {
 
 
 
+
 const STORAGE_KEYS = {
-  VOCABULARY: 'mongol_app_vocabulary_v8',
+  VOCABULARY: 'mongol_app_vocabulary_v9',
   WORD_PROGRESS: 'mongol_app_word_progress_v1',
   GRAMMAR: 'mongol_app_grammar_v4',
-  GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v4',
-  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v4',
+  GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v5',
+  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v5',
   ILLUSTRATION_QUIZZES: 'mongol_app_illustration_quizzes_v1',
   LISTENING_QUIZZES: 'mongol_app_listening_quizzes_v1',
   READING_QUIZZES: 'mongol_app_reading_quizzes_v1',
-  TYPING_SENTENCES: 'mongol_app_typing_sentences_v1',
+  TYPING_SENTENCES: 'mongol_app_typing_sentences_v2',
   CUSTOM_TYPING_SENTENCES: 'mongol_app_custom_typing_sentences_v1',
   LOOKED_UP_WORDS: 'mongol_app_looked_up_words_v1',
   MISTAKES: 'mongol_app_mistakes_v1',
@@ -47939,13 +48098,22 @@ class StorageService {
   static init() {
     // 744語・48項目・152問・31イラスト問題の最新マスターデータを確実に同期
     try {
-      const storedVocab = localStorage.getItem(STORAGE_KEYS.VOCABULARY);
       // 古いバージョンのキーがあれば削除して最新化
-      ['mongol_app_vocabulary_v1', 'mongol_app_vocabulary_v2', 'mongol_app_vocabulary_v3', 'mongol_app_vocabulary_v4', 'mongol_app_vocabulary_v5', 'mongol_app_vocabulary_v6', 'mongol_app_vocabulary_v7'].forEach(k => {
+      ['mongol_app_vocabulary_v1', 'mongol_app_vocabulary_v2', 'mongol_app_vocabulary_v3', 'mongol_app_vocabulary_v4', 'mongol_app_vocabulary_v5', 'mongol_app_vocabulary_v6', 'mongol_app_vocabulary_v7', 'mongol_app_vocabulary_v8'].forEach(k => {
+        try { localStorage.removeItem(k); } catch (_) {}
+      });
+      ['mongol_app_declension_quizzes_v1', 'mongol_app_declension_quizzes_v2', 'mongol_app_declension_quizzes_v3', 'mongol_app_declension_quizzes_v4'].forEach(k => {
+        try { localStorage.removeItem(k); } catch (_) {}
+      });
+      ['mongol_app_grammar_quizzes_v1', 'mongol_app_grammar_quizzes_v2', 'mongol_app_grammar_quizzes_v3', 'mongol_app_grammar_quizzes_v4'].forEach(k => {
+        try { localStorage.removeItem(k); } catch (_) {}
+      });
+      ['mongol_app_typing_sentences_v1'].forEach(k => {
         try { localStorage.removeItem(k); } catch (_) {}
       });
 
-      if (!storedVocab || storedVocab.includes('Боolгүй') || /第\d+課|JICA|（モンゴル語教科書語彙）/.test(storedVocab) || (storedVocab.includes('"v_2_21"') && storedVocab.includes('"mongolian":"байх"')) || (storedVocab.includes('"v_2_21"') && storedVocab.includes('"dictForm":"байх"')) || JSON.parse(storedVocab).length < initialVocabulary.length) {
+      const storedVocab = localStorage.getItem(STORAGE_KEYS.VOCABULARY);
+      if (!storedVocab || storedVocab.includes('Боolгүй') || /第\d+課|JICA|（モンゴル語教科書語彙）/.test(storedVocab) || /[А-Яа-яЁёӨөҮү][ウエゴグンスアルモカトハヘオイロマミムメヤユヨラリレワ]/.test(storedVocab) || /[ウエゴグンスアルモカトハヘオイロマミムメヤユヨラリレワ][А-Яа-яЁёӨөҮү]/.test(storedVocab) || (storedVocab.includes('"v_2_21"') && storedVocab.includes('"mongolian":"байх"')) || (storedVocab.includes('"v_2_21"') && storedVocab.includes('"dictForm":"байх"')) || JSON.parse(storedVocab).length < initialVocabulary.length) {
         this.saveVocabulary(initialVocabulary);
       }
     } catch (e) {
@@ -47969,7 +48137,7 @@ class StorageService {
         try { localStorage.removeItem(k); } catch (_) {}
       });
       const storedQuizzes = localStorage.getItem(STORAGE_KEYS.GRAMMAR_QUIZZES);
-      if (!storedQuizzes || JSON.parse(storedQuizzes).length < initialGrammarQuizzes.length) {
+      if (!storedQuizzes || storedQuizzes.includes('дутуу = 不足') || JSON.parse(storedQuizzes).length < initialGrammarQuizzes.length) {
         this.saveGrammarQuizzes(initialGrammarQuizzes);
       }
     } catch (e) {
@@ -47985,12 +48153,66 @@ class StorageService {
       this.saveIllustrationQuizzes(initialIllustrationQuizzes);
     }
 
-    if (!localStorage.getItem(STORAGE_KEYS.DECLENSION_QUIZZES)) {
+    try {
+      const storedDec = localStorage.getItem(STORAGE_KEYS.DECLENSION_QUIZZES);
+      if (!storedDec || /-[\u30e2]ор/.test(storedDec) || JSON.parse(storedDec).length < initialDeclensionQuizzes.length) {
+        this.saveDeclensionQuizzes(initialDeclensionQuizzes);
+      }
+    } catch (_) {
       this.saveDeclensionQuizzes(initialDeclensionQuizzes);
     }
     if (!localStorage.getItem(STORAGE_KEYS.WORD_PROGRESS)) {
       localStorage.setItem(STORAGE_KEYS.WORD_PROGRESS, JSON.stringify({}));
     }
+
+    // 既存の間違いノートと調べた単語の文字化け完全サニタイズ（カタカナ混入・ヒント漏れの永久排除）
+    try {
+      const rawMistakes = localStorage.getItem(STORAGE_KEYS.MISTAKES);
+      if (rawMistakes) {
+        const mistakes = JSON.parse(rawMistakes);
+        if (Array.isArray(mistakes)) {
+          let changed = false;
+          const cleaned = mistakes.map(m => {
+            const cQ = cleanMongolianMojibake(m.question || '');
+            const cP = cleanMongolianMojibake(m.prompt || '');
+            const cA = cleanMongolianMojibake(m.correctAnswer || '');
+            const cU = cleanMongolianMojibake(m.userAnswer || '');
+            const cE = cleanMongolianMojibake(m.explanation || '');
+            if (cQ !== m.question || cP !== m.prompt || cA !== m.correctAnswer || cU !== m.userAnswer || cE !== m.explanation) {
+              changed = true;
+              return { ...m, question: cQ, prompt: cP, correctAnswer: cA, userAnswer: cU, explanation: cE };
+            }
+            return m;
+          });
+          if (changed) {
+            localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(cleaned));
+          }
+        }
+      }
+    } catch (_) {}
+
+    try {
+      const rawLookedUp = localStorage.getItem(STORAGE_KEYS.LOOKED_UP_WORDS);
+      if (rawLookedUp) {
+        const lookedUp = JSON.parse(rawLookedUp);
+        if (Array.isArray(lookedUp)) {
+          let changed = false;
+          const cleaned = lookedUp.map(w => {
+            const cRaw = cleanMongolianMojibake(w.rawWord || '');
+            const cDict = cleanMongolianMojibake(w.dictForm || '');
+            const cMean = cleanMongolianMojibake(w.meaning || '');
+            if (cRaw !== w.rawWord || cDict !== w.dictForm || cMean !== w.meaning) {
+              changed = true;
+              return { ...w, rawWord: cRaw, dictForm: cDict, meaning: cMean };
+            }
+            return w;
+          });
+          if (changed) {
+            localStorage.setItem(STORAGE_KEYS.LOOKED_UP_WORDS, JSON.stringify(cleaned));
+          }
+        }
+      }
+    } catch (_) {}
     if (!localStorage.getItem(STORAGE_KEYS.MISTAKES)) {
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify([]));
     } else {
@@ -48006,6 +48228,62 @@ class StorageService {
             let rawQ = (m.question || '').trim();
             let correctAns = (m.correctAnswer || '').trim();
             let explanation = (m.explanation || '').trim();
+
+            // 語彙統一（モードによる語彙不一致・ロシア語借用語等の自動補正）
+            if (rawQ.includes('パイナップル') || correctAns === 'ананас' || explanation.includes('ананас')) {
+              m.correctAnswer = 'хан боргоцой';
+              m.acceptableAnswers = ['хан боргоцой', 'ананас'];
+              m.explanation = '正解: パイナップル (辞書形: хан боргоцой (ананас))';
+              updated = true;
+            }
+            if (rawQ.includes('きゅうり') || correctAns === 'огурцы' || explanation.includes('огурцы')) {
+              m.correctAnswer = 'өргөст хэмх';
+              m.acceptableAnswers = ['өргөст хэмх', 'огурцы'];
+              m.explanation = '正解: きゅうり (辞書形: өргөст хэмх (огурцы))';
+              updated = true;
+            }
+            if (rawQ.includes('トマト') || correctAns === 'помидор' || explanation.includes('помидор')) {
+              m.correctAnswer = 'улаан лооль';
+              m.acceptableAnswers = ['улаан лооль', 'помидор'];
+              m.explanation = '正解: トマト (辞書形: улаан лооль (помидор))';
+              updated = true;
+            }
+            if (rawQ.includes('スイカ') || correctAns === 'ший гуа' || explanation.includes('ший гуа')) {
+              m.correctAnswer = 'тарвас';
+              m.acceptableAnswers = ['тарвас', 'ший гуа'];
+              m.explanation = '正解: スイカ (辞書形: тарвас (ший гуа))';
+              updated = true;
+            }
+            if (rawQ.includes('バナナ') || correctAns === 'банана' || explanation.includes('банана')) {
+              m.correctAnswer = 'гадил';
+              m.acceptableAnswers = ['гадил', 'банана', 'гадил жимс'];
+              m.explanation = '正解: バナナ (辞書形: гадил (банана))';
+              updated = true;
+            }
+            if (rawQ.includes('ソファー') || correctAns === 'диван' || explanation.includes('диван')) {
+              m.correctAnswer = 'буйдан';
+              m.acceptableAnswers = ['буйдан', 'диван'];
+              m.explanation = '正解: ソファー (辞書形: буйдан (диван))';
+              updated = true;
+            }
+            if (rawQ.includes('テレビ') || correctAns === 'телевизор' || explanation.includes('телевизор')) {
+              m.correctAnswer = 'зурагт';
+              m.acceptableAnswers = ['зурагт', 'телевизор'];
+              m.explanation = '正解: テレビ (辞書形: зурагт (телевизор))';
+              updated = true;
+            }
+            if (rawQ.includes('ビール') || correctAns === 'пиво' || explanation.includes('пиво')) {
+              m.correctAnswer = 'шар айраг';
+              m.acceptableAnswers = ['шар айраг', 'пиво', 'пиво(н)'];
+              m.explanation = '正解: ビール (辞書形: шар айраг (пиво))';
+              updated = true;
+            }
+            if (rawQ.includes('ワイン') || correctAns === 'вино' || explanation.includes('вино')) {
+              m.correctAnswer = 'дарс';
+              m.acceptableAnswers = ['дарс', 'вино'];
+              m.explanation = '正解: ワイン (辞書形: дарс (вино))';
+              updated = true;
+            }
 
             const hasParenNoise = rawQ.includes('モンゴル語教科書語彙') || (explanation && explanation.includes('モンゴル語教科書語彙')) || /第\d+課|JICA/.test(rawQ) || /第\d+課|JICA/.test(explanation) || /第\d+課|JICA/.test(m.category || '');
             const hasArrow = /⇄|⇆|↔|<->|->/.test(rawQ);
@@ -48178,6 +48456,24 @@ class StorageService {
       baseList = initialVocabulary;
     }
 
+    // 語彙統一: 重複・非推奨IDの最新化と重複排除
+    if (Array.isArray(baseList)) {
+      const seen = new Set();
+      baseList = baseList.map(item => {
+        if (item && DEPRECATED_DUPLICATE_ID_MAP[item.id]) {
+          const targetId = DEPRECATED_DUPLICATE_ID_MAP[item.id];
+          const fresh = initialVocabulary.find(v => v.id === targetId);
+          if (fresh) return { ...item, ...fresh };
+        }
+        return item;
+      }).filter(item => {
+        if (!item || !item.id) return false;
+        if (seen.has(item.id)) return false;
+        seen.add(item.id);
+        return true;
+      });
+    }
+
     const progressMap = this.getAllWordProgress();
 
     // initialVocabulary の最新解説・成り立ち・格支配情報を常にマージ
@@ -48315,11 +48611,59 @@ class StorageService {
   }
 
   static getGrammarQuizzes() {
+    const sanitize = (list) => {
+      return (list || []).map(q => {
+        let answer = q.answer;
+        let tokens = q.tokens;
+        let acceptableAnswers = q.acceptableAnswers ? [...q.acceptableAnswers] : [];
+
+        // 算用数字からモンゴル語表記（есөн等）への統一
+        if (typeof answer === 'string') {
+          if (answer.includes('9 цагт')) {
+            answer = answer.replace(/9 цагт/g, 'есөн цагт');
+            if (!acceptableAnswers.includes(q.answer)) acceptableAnswers.push(q.answer);
+          }
+          if (answer.includes('10 дугаар сарын 14-ний')) {
+            answer = answer.replace(/10 дугаар сарын 14-ний/g, 'аравдугаар сарын арван дөрөвний');
+            if (!acceptableAnswers.includes(q.answer)) acceptableAnswers.push(q.answer);
+          }
+          if (answer.includes('10 дугаар сарын 15-ны')) {
+            answer = answer.replace(/10 дугаар сарын 15-ны/g, 'аравдугаар сарын арван тавны');
+            if (!acceptableAnswers.includes(q.answer)) acceptableAnswers.push(q.answer);
+          }
+        }
+
+        if (Array.isArray(tokens)) {
+          tokens = tokens.map(t => {
+            if (t === '9') return 'есөн';
+            if (t === '10') return 'арав';
+            if (t === '14-ний') return 'арван дөрөвний';
+            if (t === '15-ны') return 'арван тавны';
+            return t;
+          });
+          if (tokens.includes('арав') && tokens.includes('дугаар')) {
+            const idx = tokens.indexOf('арав');
+            if (tokens[idx + 1] === 'дугаар') {
+              tokens.splice(idx, 2, 'аравдугаар');
+            }
+          }
+        }
+
+        return {
+          ...q,
+          answer,
+          tokens,
+          acceptableAnswers
+        };
+      });
+    };
+
     try {
       const data = localStorage.getItem(STORAGE_KEYS.GRAMMAR_QUIZZES);
-      return data ? JSON.parse(data) : initialGrammarQuizzes;
+      const parsed = data ? JSON.parse(data) : initialGrammarQuizzes;
+      return sanitize(parsed);
     } catch (e) {
-      return initialGrammarQuizzes;
+      return sanitize(initialGrammarQuizzes);
     }
   }
 
@@ -48591,8 +48935,17 @@ class StorageService {
   }
 
   static recordMistake(mistake) {
+    if (!mistake) return null;
+    const sanitizedMistake = {
+      ...mistake,
+      question: cleanMongolianMojibake(mistake.question || ''),
+      prompt: cleanMongolianMojibake(mistake.prompt || ''),
+      correctAnswer: cleanMongolianMojibake(mistake.correctAnswer || ''),
+      userAnswer: cleanMongolianMojibake(mistake.userAnswer || ''),
+      explanation: cleanMongolianMojibake(mistake.explanation || '')
+    };
     const list = this.getMistakes();
-    const existingIdx = list.findIndex(m => m.question === mistake.question && m.correctAnswer === mistake.correctAnswer);
+    const existingIdx = list.findIndex(m => m.question === sanitizedMistake.question && m.correctAnswer === sanitizedMistake.correctAnswer);
     let itemToSync = null;
 
     if (existingIdx !== -1) {
@@ -48604,7 +48957,7 @@ class StorageService {
     } else {
       itemToSync = {
         id: `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-        ...mistake,
+        ...sanitizedMistake,
         wrongCount: 1,
         lastWrongDate: new Date().toISOString(),
         resolved: false
@@ -55072,6 +55425,50 @@ class WordGameComponent {
               </div>
             </div>
 
+            <!-- 6. お魚スペルシューター（ペンギンレーザー防衛ゲーム） -->
+            <div class="game-mode-card bg-gradient-to-br from-indigo-950 via-slate-900 to-sky-950 text-white rounded-2xl p-5 border-2 ${this.state.mode === 'spelling' ? 'border-amber-400 shadow-xl ring-2 ring-amber-400/50' : 'border-slate-700 hover:border-amber-400'} transition-all cursor-pointer relative col-span-1 sm:col-span-2 overflow-hidden group" data-mode="spelling">
+              <div class="absolute inset-0 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:16px_16px] opacity-15 pointer-events-none"></div>
+              <div class="absolute -top-10 -right-10 w-44 h-44 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+              <div class="relative z-10">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/30 border border-amber-400/50 text-amber-300 flex items-center justify-center text-2xl font-bold shadow-xs">
+                      🐟⚡
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <h4 class="text-lg font-black text-white flex items-center gap-1.5">
+                          お魚スペルシューター（レーザー防衛）
+                        </h4>
+                        <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                          人気
+                        </span>
+                      </div>
+                      <p class="text-[11px] text-amber-200/90 mt-0.5">
+                        落ちてくる魚をキリル文字スペル入力でレーザー撃破！
+                      </p>
+                    </div>
+                  </div>
+                  <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/30 text-amber-200 border border-amber-400/40">
+                    満腹フィーバー ⚡ レーザー
+                  </span>
+                </div>
+
+                <p class="text-xs text-slate-300 mt-2.5 leading-relaxed">
+                  上空から降ってくるお魚を、画面下の文字タイルをタップ（またはキーボード打鍵）して正しいスペルを撃ち込もう！5匹満腹でフィーバー突入＆XPボーナス大量獲得！
+                </p>
+
+                <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-extrabold text-amber-300">
+                  <span>タイピング・スペル特訓</span>
+                  <button type="button" class="btn-direct-start-mode px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1.5" data-mode="spelling">
+                    <span>挑戦する</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -55213,6 +55610,15 @@ class WordGameComponent {
   // 2. ゲーム開始・初期化
   // ==========================================
   static startGame() {
+    if (this.state.mode === 'spelling') {
+      if (this.onNavigate) {
+        if (typeof SpellingGameComponent !== 'undefined') {
+          SpellingGameComponent.returnTarget = 'word_game';
+        }
+        this.onNavigate('spelling_game');
+      }
+      return;
+    }
     const vocabList = StorageService.getVocabulary();
     const grammarQuizzes = StorageService.getGrammarQuizzes();
     const declensionQuizzes = StorageService.getDeclensionQuizzes();
@@ -56564,7 +56970,7 @@ class WordGameComponent {
             correctAnswer: correctDisplay,
             type: 'word',
             category: q.category || '単語ゲーム',
-            explanation: `正解: ${q.japanese} (辞書形: ${d.dictForm || q.mongolian}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
+            explanation: `正解: ${q.japanese} (辞書形: ${d.dictForm || q.mongolian}${q.altMongolian ? ` (${q.altMongolian})` : ''}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
           });
         }
       } catch (e) {
@@ -57012,7 +57418,7 @@ class WordGameComponent {
               correctAnswer: m.correctAnswer,
               type: 'word',
               category: item.category || '単語ゲーム',
-              explanation: `正解: ${item.japanese} (辞書形: ${d.dictForm || item.mongolian}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
+              explanation: `正解: ${item.japanese} (辞書形: ${d.dictForm || item.mongolian}${item.altMongolian ? ` (${item.altMongolian})` : ''}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
             });
           }
         });
@@ -58889,7 +59295,14 @@ class GrammarTestComponent {
     this.state.isCorrect = false;
 
     if (q.type === 'reorder') {
-      this.state.availableTokens = shuffleArray([...q.tokens]);
+      const sanitized = (q.tokens || []).map(t => {
+        if (t === '9') return 'есөн';
+        if (t === '10') return 'арав';
+        if (t === '14-ний') return 'арван дөрөвний';
+        if (t === '15-ны') return 'арван тавны';
+        return t;
+      });
+      this.state.availableTokens = shuffleArray([...sanitized]);
       this.state.selectedTokens = [];
     }
 
@@ -58970,20 +59383,26 @@ class GrammarTestComponent {
                 <div id="reorder-dropzone" class="min-h-14 p-2.5 bg-slate-50 rounded-xl border-2 border-dashed border-sky-300 flex flex-wrap gap-2 items-center">
                   ${this.state.selectedTokens.length === 0 ? `
                     <span class="text-xs text-slate-400">下の単語をタップしてここに入れます</span>
-                  ` : this.state.selectedTokens.map((token, i) => `
-                    <button type="button" class="btn-remove-token px-3 py-1.5 bg-sky-600 hover:bg-rose-500 text-white font-bold text-sm rounded-lg shadow-xs active:scale-95 transition-all cyrillic-text" data-index="${i}">
-                      ${token} ✕
-                    </button>
-                  `).join('')}
+                  ` : this.state.selectedTokens.map((token, i) => {
+                    const displayToken = (token === '9' ? 'есөн' : token === '10' ? 'арав' : token === '14-ний' ? 'арван дөрөвний' : token === '15-ны' ? 'арван тавны' : token);
+                    return `
+                      <button type="button" class="btn-remove-token px-3 py-1.5 bg-sky-600 hover:bg-rose-500 text-white font-bold text-sm rounded-lg shadow-xs active:scale-95 transition-all cyrillic-text" data-index="${i}">
+                        ${displayToken} ✕
+                      </button>
+                    `;
+                  }).join('')}
                 </div>
 
                 <!-- 選択可能な単語チップ -->
-                <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
-                  ${this.state.availableTokens.map((token, i) => `
-                    <button type="button" class="btn-add-token px-3 py-1.5 bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-800 font-bold text-sm rounded-lg border border-slate-200 active:scale-95 transition-all cyrillic-text" data-index="${i}">
-                      ${token}
-                    </button>
-                  `).join('')}
+                <div id="reorder-available-tokens" class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+                  ${this.state.availableTokens.map((token, i) => {
+                    const displayToken = (token === '9' ? 'есөн' : token === '10' ? 'арав' : token === '14-ний' ? 'арван дөрөвний' : token === '15-ны' ? 'арван тавны' : token);
+                    return `
+                      <button type="button" class="btn-add-token px-3 py-1.5 bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-800 font-bold text-sm rounded-lg border border-slate-200 active:scale-95 transition-all cyrillic-text" data-index="${i}">
+                        ${displayToken}
+                      </button>
+                    `;
+                  }).join('')}
                 </div>
 
                 <button type="button" id="btn-submit-reorder" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm mt-3 ${this.state.selectedTokens.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}">
@@ -59072,6 +59491,78 @@ class GrammarTestComponent {
     return text.replace(/🔴([^\n]+)/g, '<span class="text-rose-600 font-bold">🔴 $1</span>');
   }
 
+  // 並び替え問題の部分更新（全画面チカチカ・リロードを完全防止）
+  static updateReorderUI() {
+    const dropzone = this.container.querySelector('#reorder-dropzone');
+    const availableContainer = this.container.querySelector('#reorder-available-tokens');
+    const submitBtn = this.container.querySelector('#btn-submit-reorder');
+
+    if (!dropzone || !availableContainer) {
+      this.renderTesting();
+      return;
+    }
+
+    const formatToken = (token) => {
+      return (token === '9' ? 'есөн' : token === '10' ? 'арав' : token === '14-ний' ? 'арван дөрөвний' : token === '15-ны' ? 'арван тавны' : token);
+    };
+
+    // 1. 組み立て中の文（解答欄ドロップゾーン）の部分更新
+    if (this.state.selectedTokens.length === 0) {
+      dropzone.innerHTML = `<span class="text-xs text-slate-400">下の単語をタップしてここに入れます</span>`;
+    } else {
+      dropzone.innerHTML = this.state.selectedTokens.map((token, i) => `
+        <button type="button" class="btn-remove-token px-3 py-1.5 bg-sky-600 hover:bg-rose-500 text-white font-bold text-sm rounded-lg shadow-xs active:scale-95 transition-transform cyrillic-text cursor-pointer" data-index="${i}">
+          ${formatToken(token)} ✕
+        </button>
+      `).join('');
+    }
+
+    // 2. 選択可能な単語チップの部分更新
+    availableContainer.innerHTML = this.state.availableTokens.map((token, i) => `
+      <button type="button" class="btn-add-token px-3 py-1.5 bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-800 font-bold text-sm rounded-lg border border-slate-200 active:scale-95 transition-transform cyrillic-text cursor-pointer" data-index="${i}">
+        ${formatToken(token)}
+      </button>
+    `).join('');
+
+    // 3. 回答確定ボタンの有効/無効クラス切替
+    if (submitBtn) {
+      if (this.state.selectedTokens.length === 0) {
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    // 4. トークンクリックイベントの再バインド
+    this.bindReorderTokenEvents();
+  }
+
+  static bindReorderTokenEvents() {
+    // 単語チップを追加（解答欄へ送る）
+    this.container.querySelectorAll('.btn-add-token').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const index = parseInt(btn.getAttribute('data-index'), 10);
+        if (isNaN(index) || index < 0 || index >= this.state.availableTokens.length) return;
+        const token = this.state.availableTokens.splice(index, 1)[0];
+        this.state.selectedTokens.push(token);
+        this.updateReorderUI();
+      });
+    });
+
+    // 単語チップを戻す（解答欄から外す）
+    this.container.querySelectorAll('.btn-remove-token').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const index = parseInt(btn.getAttribute('data-index'), 10);
+        if (isNaN(index) || index < 0 || index >= this.state.selectedTokens.length) return;
+        const token = this.state.selectedTokens.splice(index, 1)[0];
+        this.state.availableTokens.push(token);
+        this.updateReorderUI();
+      });
+    });
+  }
+
   static bindTestingEvents() {
     // ヒントトグル
     const toggleHintBtn = this.container.querySelector('#btn-toggle-grammar-hint');
@@ -59101,25 +59592,7 @@ class GrammarTestComponent {
 
     if (!this.state.hasAnswered) {
       if (q.type === 'reorder') {
-        // 並び替え: 単語を追加
-        this.container.querySelectorAll('.btn-add-token').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const index = parseInt(btn.getAttribute('data-index'), 10);
-            const token = this.state.availableTokens.splice(index, 1)[0];
-            this.state.selectedTokens.push(token);
-            this.renderTesting();
-          });
-        });
-
-        // 並び替え: 単語を戻す
-        this.container.querySelectorAll('.btn-remove-token').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const index = parseInt(btn.getAttribute('data-index'), 10);
-            const token = this.state.selectedTokens.splice(index, 1)[0];
-            this.state.availableTokens.push(token);
-            this.renderTesting();
-          });
-        });
+        this.bindReorderTokenEvents();
 
         // 並び替え確定
         const submitReorder = this.container.querySelector('#btn-submit-reorder');
@@ -59697,7 +60170,7 @@ class DeclensionTestComponent {
                 </span>
               ` : ''}
               <span class="text-[10px] px-2 py-0.5 rounded-full ${isNoun ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800' : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'} border font-bold">
-                ${isNoun ? `🏛 名詞格変化: ${q.targetCase || '格変化'}` : `🔄 動詞活用: ${q.targetForm || '活用'}`}
+                ${isNoun ? `🏛 名詞格変化: ${q.targetCase || '格変化'}` : `🔄 動詞活用: ${q.targetForm || q.targetCase || '活用'}`}
               </span>
             </span>
             <div class="flex items-center gap-3">
@@ -59775,8 +60248,15 @@ class DeclensionTestComponent {
           <!-- 回答後フィードバック・解説 -->
           <div class="animate-fade-in space-y-4">
             <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50/90 dark:bg-emerald-950/50 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50/90 dark:bg-rose-950/50 border-rose-300 dark:border-rose-800 text-rose-950 dark:text-rose-100'} shadow-sm">
-              <div class="text-2xl font-bold mb-2 ${this.state.isCorrect ? 'text-emerald-800' : 'text-rose-800'}">
-                ${this.state.isCorrect ? '⭕ 正解！' : '❌ 不正解'}
+              <div class="flex items-center justify-between mb-2">
+                <div class="text-2xl font-bold ${this.state.isCorrect ? 'text-emerald-800 dark:text-emerald-300' : 'text-rose-800 dark:text-rose-300'}">
+                  ${this.state.isCorrect ? '⭕ 正解！' : '❌ 不正解'}
+                </div>
+                ${(!this.state.isCorrect && this.state.settings.inputMode === 'text') ? `
+                  <button type="button" id="btn-override-decl-correct" class="px-3 py-1.5 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-700 text-xs font-black hover:bg-amber-200 transition-all cursor-pointer flex items-center gap-1" title="入力の表記ゆれや軽微なタイポの場合は正解に変更できます">
+                    <span>⭕</span> <span>正解にする (表記ゆれ)</span>
+                  </button>
+                ` : ''}
               </div>
 
               <!-- 6項目完全網羅解説カード（辞書形・語幹・意味・過程の明確化） -->
@@ -59789,6 +60269,7 @@ class DeclensionTestComponent {
                   meaning: q.baseMeaning,
                   baseMeaning: q.baseMeaning,
                   japanese: q.baseMeaning,
+                  pos: '動詞',
                   isVerb: true,
                   derivation: `語幹「${cleanRoot}」に活用語尾が接続し、${q.targetForm || '活用形'}「${q.answer}」が形成されます。`
                 } : {
@@ -59798,6 +60279,7 @@ class DeclensionTestComponent {
                   meaning: q.baseMeaning,
                   baseMeaning: q.baseMeaning,
                   japanese: q.baseMeaning,
+                  pos: '名詞',
                   isVerb: false,
                   derivation: `${q.targetCase || '格変化'}: 「${q.baseWord}」に格語尾が接続して「${q.answer}」となります。`
                 };
@@ -59906,6 +60388,27 @@ class DeclensionTestComponent {
           }
         };
         window.addEventListener('keydown', keyHandler);
+      }
+
+      // 自己正解化ボタン（表記ゆれ・タイポ）
+      const overrideBtn = this.container.querySelector('#btn-override-decl-correct');
+      if (overrideBtn) {
+        overrideBtn.addEventListener('click', () => {
+          this.state.isCorrect = true;
+          this.state.sessionScore = (this.state.sessionScore || 0) + 10;
+          this.state.sessionXp = (this.state.sessionXp || 0) + 15;
+          SoundEffects.playCorrect();
+          if (this.state.results && this.state.results.length > 0) {
+            this.state.results[this.state.results.length - 1].isCorrect = true;
+          }
+          try {
+            const q = this.state.currentQuiz;
+            const qTitle = `【${q.kind === 'noun' ? '格変化' : '動詞活用'}】${q.question}`;
+            const mistakes = StorageService.getMistakes().filter(m => m.question !== qTitle);
+            localStorage.setItem('mongol_mistakes', JSON.stringify(mistakes));
+          } catch (_) {}
+          this.renderTesting();
+        });
       }
     }
   }
@@ -61992,7 +62495,7 @@ class TypingTestComponent {
     startTime: null,
     endTime: null,
     sentenceFinished: false,
-    showRomaji: true,
+    showRomaji: false,
     stats: null,
     searchLookupKeyword: '',
     pendingBuffer: '',
@@ -62222,21 +62725,6 @@ class TypingTestComponent {
             </button>
           </div>
         `}
-
-        <!-- オプション設定 -->
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3 text-xs">
-          <div class="font-bold text-slate-700 flex items-center gap-1.5">
-            <span>⚙️</span> 入力アシスト設定
-          </div>
-          
-          <label class="flex items-center justify-between cursor-pointer p-2 rounded-xl hover:bg-slate-50 transition-colors">
-            <div>
-              <div class="font-bold text-slate-800">💡 ローマ字・発音ヒントの表示</div>
-              <div class="text-[11px] text-slate-500">キリル文字の下に対応する読み方ヒントを表示します</div>
-            </div>
-            <input type="checkbox" id="chk-show-romaji" ${this.state.showRomaji ? 'checked' : ''} class="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 cursor-pointer" />
-          </label>
-        </div>
 
         <!-- 開始ボタン -->
         <div class="pt-2">
@@ -62791,14 +63279,6 @@ class TypingTestComponent {
               </div>
             </div>
           `)}
-
-          <!-- ローマ字・発音ヒント -->
-          ${this.state.showRomaji && sentence.romaji ? `
-            <div class="text-xs text-slate-400 font-medium tracking-wide flex items-center gap-1 border-t border-slate-100 pt-2">
-              <span class="text-teal-600 font-bold">💡 読み:</span>
-              <span class="font-mono text-slate-600">${sentence.romaji}</span>
-            </div>
-          ` : ''}
 
         </div>
 
@@ -72941,7 +73421,7 @@ class GenreWordMasterComponent {
 
                 <div class="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-700">
                   <div class="text-sm font-black text-slate-800 dark:text-slate-100">
-                    ${w.japanese}
+                    ${w.japanese}${w.altMongolian ? ` <span class="text-xs font-normal text-slate-500 dark:text-slate-400">(${w.altMongolian})</span>` : ''}
                   </div>
                   <div class="text-[11px] text-slate-400 dark:text-slate-400 font-medium flex items-center justify-between">
                     <span>品詞: ${w.pos || '名詞'}</span>
@@ -72956,6 +73436,12 @@ class GenreWordMasterComponent {
                       <span class="text-purple-800 dark:text-purple-300 font-bold">${w.caseGovernment}</span>
                     </div>
                     ${w.caseNote ? `<div class="text-[11px] text-purple-900 dark:text-purple-300 leading-relaxed">${w.caseNote}</div>` : ''}
+                  </div>
+                ` : ''}
+
+                ${w.note ? `
+                  <div class="mt-2 text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 p-2 rounded-xl border border-slate-100 dark:border-slate-700 leading-relaxed">
+                    💡 ${w.note}
                   </div>
                 ` : ''}
 
@@ -73593,6 +74079,7 @@ if (typeof window !== 'undefined') {
 class SpellingGameComponent {
   static container = null;
   static onNavigate = null;
+  static returnTarget = 'word_game';
   static keydownHandler = null;
   static fallInterval = null;
 
@@ -74068,9 +74555,7 @@ class SpellingGameComponent {
                 <div id="penguin-mascot-msg" class="text-xs font-bold text-amber-200 leading-snug">
                   ${mascotMessage}
                 </div>
-                <div class="text-[10px] text-sky-200/80 mt-0.5">
-                  正解: <strong class="text-white">${targetLetters.join('')}</strong>
-                </div>
+
               </div>
             </div>
           </div>
@@ -74145,7 +74630,7 @@ class SpellingGameComponent {
     if (btnBack) {
       btnBack.addEventListener('click', () => {
         this.stopFallTimer();
-        if (this.onNavigate) this.onNavigate('home');
+        if (this.onNavigate) this.onNavigate(this.returnTarget || 'word_game');
       });
     }
 
@@ -74841,7 +75326,7 @@ class SpellingGameComponent {
               もう一度あそぶ 🔄
             </button>
             <button type="button" id="btn-result-home" class="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-sm rounded-xl transition-all">
-              ホームへ戻る 🏠
+              単語ゲームへ戻る 🎮
             </button>
           </div>
         </div>
@@ -74880,7 +75365,7 @@ class SpellingGameComponent {
     const btnHome = this.container.querySelector('#btn-result-home');
     if (btnHome) {
       btnHome.addEventListener('click', () => {
-        if (this.onNavigate) this.onNavigate('home');
+        if (this.onNavigate) this.onNavigate(this.returnTarget || 'word_game');
       });
     }
 
@@ -75986,7 +76471,7 @@ class ReviewNotebookComponent {
                       <div>
                         <div class="flex items-center gap-1.5 flex-wrap">
                           <span class="text-slate-500 dark:text-slate-400 font-bold">正解: </span>
-                          <span class="font-black text-lg cyrillic-text text-emerald-700 dark:text-emerald-400 correct-answer-text">${item.correctAnswer}</span>
+                          <span class="font-black text-lg cyrillic-text text-emerald-700 dark:text-emerald-400 correct-answer-text">${item.correctAnswer}${((typeof getWordSynonymNote === 'function' && getWordSynonymNote(item.correctAnswer)) ? ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">(${getWordSynonymNote(item.correctAnswer)})</span>` : '')}</span>
                         </div>
                         ${item.japanese ? `<div class="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5">${item.japanese}</div>` : ''}
                       </div>
@@ -76002,11 +76487,17 @@ class ReviewNotebookComponent {
                     ${etymologyHTML}
                     ${mnemonicHTML}
 
-                    ${item.explanation ? `
-                      <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
-                        💡 ${item.explanation}
-                      </div>
-                    ` : ''}
+                    ${(() => {
+                      const syn = (typeof getWordSynonymNote === 'function') ? getWordSynonymNote(item.correctAnswer) : '';
+                      const exp = item.explanation || (item.japanese ? `${item.japanese} (辞書形: ${item.correctAnswer})` : '');
+                      if (!exp) return '';
+                      const displayExp = (syn && !exp.includes(syn)) ? `${exp} (別表現: ${syn})` : exp;
+                      return `
+                        <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
+                          💡 ${displayExp}
+                        </div>
+                      `;
+                    })()}
                   </div>
                 `;
               })()}
@@ -76128,8 +76619,28 @@ class ReviewNotebookComponent {
       if (!isCorrect) {
         isCorrect = isFuzzyMatch(val, item.correctAnswer);
       }
+      if (!isCorrect && item.correctAnswer) {
+        const syns = (typeof getWordSynonyms === 'function') ? getWordSynonyms(item.correctAnswer) : [];
+        const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+        for (const s of syns) {
+          if (uClean === s.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '')) {
+            isCorrect = true;
+            break;
+          }
+        }
+      }
     } else {
       isCorrect = isFuzzyMatch(val, item.correctAnswer);
+      if (!isCorrect && item.correctAnswer) {
+        const syns = (typeof getWordSynonyms === 'function') ? getWordSynonyms(item.correctAnswer) : [];
+        const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+        for (const s of syns) {
+          if (uClean === s.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '')) {
+            isCorrect = true;
+            break;
+          }
+        }
+      }
     }
 
     this.state.hasAnswered = true;
@@ -78733,5 +79244,3 @@ if (document.readyState === 'loading') {
 } else {
   startApplication();
 }
-
-  
