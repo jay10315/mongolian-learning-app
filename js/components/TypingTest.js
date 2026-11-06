@@ -1503,7 +1503,18 @@ export class TypingTestComponent {
     SpeechService.speak(this.state.currentSentence.textMn);
 
     // XP加算
-    GamificationService.addXP(xp, 'タイピング一文完了');
+    // XP加算 (堅牢な安全ガード)
+    try {
+      if (typeof GamificationService !== 'undefined') {
+        if (typeof GamificationService.addXP === 'function') {
+          GamificationService.addXP(xp, 'タイピング一文完了');
+        } else if (typeof GamificationService.addXp === 'function') {
+          GamificationService.addXp(xp);
+        }
+      }
+    } catch (e) {
+      console.warn('GamificationService.addXP handled gracefully:', e);
+    }
 
     // 画面再描画（一文完了時和訳カードの表示）
     this.renderTyping();

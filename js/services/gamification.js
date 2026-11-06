@@ -464,6 +464,20 @@ export class GamificationService {
   }
 }
 
+// 多重エイリアス & プロトタイプ防護（あらゆる呼び出し形式に対応）
+GamificationService.addXP = function(amount = 0, desc = '') {
+  return GamificationService.addXp(amount);
+};
+GamificationService.prototype.addXP = function(amount = 0, desc = '') {
+  return GamificationService.addXp(amount);
+};
+GamificationService.prototype.addXp = function(amount = 0) {
+  return GamificationService.addXp(amount);
+};
+GamificationService.resetCombo = function() {
+  return GamificationService.resetSessionCombo();
+};
+
 if (typeof window !== 'undefined') {
   window.GamificationService = GamificationService;
 }
