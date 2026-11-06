@@ -49,6 +49,7 @@ export class Navbar {
       { id: 'japanese_test', label: '日本語訳テスト', icon: '🇯🇵' },
       { id: 'grammar_test', label: '文法テスト', icon: '📐' },
       { id: 'declension_test', label: '格変化・活用', icon: '⚡' },
+      { id: 'suffix_dojo', label: '語尾・助詞道場', icon: '⚡' },
       { id: 'roleplay', label: '会話ロールプレイ', icon: '🏕️' },
       { id: 'number_master', label: '数字マスター', icon: '🔢' },
       { id: 'shadowing_dictation', label: 'シャドーイング', icon: '🎙️' },

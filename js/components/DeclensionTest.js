@@ -90,6 +90,17 @@ export class DeclensionTestComponent {
                 <span>🔄 動詞の活用ドリル</span>
               </label>
             </div>
+
+            <!-- 語尾道場への導線バナー -->
+            <div class="mt-3 bg-gradient-to-r from-rose-50 to-amber-50 p-3 rounded-xl border border-rose-200 flex items-center justify-between text-xs">
+              <div class="space-y-0.5">
+                <span class="font-bold text-rose-900">⚡ 「г,р,сは -т」「н,м,в,лは бэ」などの語尾ルールを練習したい方へ</span>
+                <p class="text-[11px] text-slate-500">直感反射で解く「助詞・語尾ルール特訓道場」もおすすめ！</p>
+              </div>
+              <button type="button" id="btn-goto-suffix-dojo" class="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold shrink-0 shadow-2xs">
+                語尾道場へ ➜
+              </button>
+            </div>
           </div>
 
           <!-- 解答方式 -->
@@ -158,6 +169,13 @@ export class DeclensionTestComponent {
     this.container.querySelector('#btn-start-declension').addEventListener('click', () => {
       this.startTest();
     });
+
+    const dojoBtn = this.container.querySelector('#btn-goto-suffix-dojo');
+    if (dojoBtn) {
+      dojoBtn.addEventListener('click', () => {
+        if (this.onNavigate) this.onNavigate('suffix_dojo');
+      });
+    }
   }
 
   // --- 2. 開始 ---

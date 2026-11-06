@@ -25,6 +25,7 @@ import { CultureComponent } from './components/CultureQuiz.js';
 import { WordFamilyComponent } from './components/WordFamilyQuiz.js';
 import { PenguinExpeditionComponent } from './components/PenguinExpedition.js';
 import { SpellingGameComponent } from './components/SpellingGame.js';
+import { SuffixRuleDojoComponent } from './components/SuffixRuleDojo.js';
 
 class App {
   static currentTab = 'home';
@@ -141,6 +142,9 @@ class App {
         break;
       case 'word_family':
         WordFamilyComponent.render(mainContainer, onNavigate);
+        break;
+      case 'suffix_dojo':
+        SuffixRuleDojoComponent.render(mainContainer, onNavigate);
         break;
       case 'expedition':
         PenguinExpeditionComponent.render(mainContainer, onNavigate);

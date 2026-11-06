@@ -468,6 +468,30 @@ export class HomeComponent {
               </div>
             </div>
 
+            <!-- 助詞・語尾ルール特訓道場カード -->
+            <div class="bg-gradient-to-br from-rose-500/10 via-amber-500/5 to-orange-500/10 rounded-xl p-5 border-2 border-rose-400 hover:border-rose-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="suffix_dojo">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-amber-500 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    ⚡
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-rose-600 text-white shadow-2xs">
+                    新登場 ⚡ 語尾道場
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-rose-700 transition-colors flex items-center gap-1.5">
+                  助詞・語尾ルール特訓道場
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  「与位格でг,р,сは -т」「疑問詞でн,м,в,лは бэ」「уу/үүの母音調和」など迷いやすい音韻ルールを反射でマスター！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-rose-200/60 flex items-center justify-between text-xs font-black text-rose-700">
+                <span>道場に入門する</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- リスニング問題（新機能・穴埋め/ディクテーション/数字特化） -->
             <div class="bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-sky-500/10 rounded-xl p-5 border-2 border-teal-400 hover:border-teal-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="listening_test">
               <div>
