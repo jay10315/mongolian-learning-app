@@ -103,13 +103,33 @@ export class ShadowingDictationComponent {
             </div>
           </div>
 
-          <!-- 日本語の文意 -->
-          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-center">
-            <div class="text-[11px] font-bold text-slate-400 mb-0.5">日本語訳</div>
-            <div class="text-sm sm:text-base font-bold text-slate-800">
-              ${textJa}
+          <!-- 日本語の文意（ディクテーション時は判定後に表示して耳だけのテストを徹底） -->
+          ${this.state.mode === 'shadowing' || this.state.isChecked ? `
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-center">
+              <div class="text-[11px] font-bold text-slate-400 mb-0.5">日本語訳</div>
+              <div class="text-sm sm:text-base font-bold text-slate-800">
+                ${textJa}
+              </div>
             </div>
-          </div>
+          ` : `
+            <!-- ディクテーション入力中: 和訳は隠して耳だけでリスニング挑戦！ -->
+            <div class="bg-purple-50/50 p-3.5 rounded-xl border border-purple-200 text-center space-y-1.5">
+              <div class="text-xs font-black text-purple-900 flex items-center justify-center gap-1.5">
+                <span>🎧</span> 耳だけで集中リスニング！
+              </div>
+              <div class="text-[11px] text-purple-700 font-medium">
+                上の「🔊 通常速」「🐢 ゆっくり」を聴いて書き取ってください（※和訳は判定後に表示されます）
+              </div>
+              <details class="text-left pt-1">
+                <summary class="text-[11px] font-bold text-purple-600 hover:text-purple-800 cursor-pointer text-center select-none">
+                  💡 どうしても分からない時だけ和訳ヒントを見る
+                </summary>
+                <div class="mt-2 p-2.5 bg-white rounded-lg border border-purple-200 text-xs font-bold text-slate-800 text-center">
+                  ${textJa}
+                </div>
+              </details>
+            </div>
+          `}
 
           ${this.state.mode === 'shadowing' ? `
             <!-- シャドーイングモード: テキスト表示と音読プロンプト -->
@@ -152,6 +172,10 @@ export class ShadowingDictationComponent {
               </div>
               <div class="text-base font-black text-slate-900 cyrillic-text">
                 ${textMn}
+              </div>
+              <div class="text-xs font-bold text-slate-600 pt-1 border-t border-slate-200 flex items-center gap-1.5">
+                <span class="text-slate-400">和訳:</span>
+                <span>${textJa}</span>
               </div>
             </div>
           ` : ''}
