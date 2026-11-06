@@ -671,16 +671,22 @@ export class ReviewNotebookComponent {
               ${(() => {
                 const matchedWord = parsed.matchedWord;
 
-                if (matchedWord && parsed.isVerb) {
+                // 単語情報がある場合：動詞・名詞・複合語問わず詳細解説＆成り立ちHTMLを完全展開
+                if (matchedWord) {
                   return renderGrammarExplanationHTML({
                     correctAnswer: item.correctAnswer,
                     userAnswer: this.state.userAnswer,
                     isCorrect: this.state.isCorrect,
                     item: matchedWord,
                     grammarExplanation: item.explanation,
-                    isVerbQuestion: true
+                    isVerbQuestion: parsed.isVerb
                   });
                 }
+
+                // マッチ単語がない場合のフォールバック（成り立ち解析つき）
+                const etymologyHTML = (typeof getWordEtymologyHTML === 'function')
+                  ? getWordEtymologyHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
+                  : '';
 
                 return `
                   <div class="space-y-2 text-xs sm:text-sm">
@@ -695,6 +701,8 @@ export class ReviewNotebookComponent {
                         <span class="font-semibold line-through">${this.state.userAnswer}</span>
                       </div>
                     ` : ''}
+
+                    ${etymologyHTML}
 
                     ${item.explanation ? `
                       <div class="p-3 bg-white/90 rounded-xl border border-slate-200 text-slate-700 text-xs">

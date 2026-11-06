@@ -414,6 +414,74 @@ function isListeningAnswerMatch(userAnswer, quizItem, mode = 'blank') {
  * 5. 必要な場合は動詞の活用や文法の説明
  * 6. 語幹から正解の形が作られる過程
  */
+/**
+ * 単語の成り立ち・語の構成（2語以上の複合語、派生語、接尾辞結合）を解析してHTMLカードを生成
+ */
+function getWordEtymologyHTML(item, targetWord) {
+  if (!item && !targetWord) return '';
+
+  const mn = ((item && (item.mongolian || item.dictForm)) || targetWord || '').trim();
+  const ja = ((item && item.japanese) || '').trim();
+  const deriv = (item && (item.etymologyBreakdown || item.derivation)) || '';
+  const note = (item && item.note) || '';
+
+  let breakdown = '';
+
+  // 1. 明示的な分解式（「＋」または「+」を含む場合）
+  if (deriv && (deriv.includes('＋') || deriv.includes('+') || deriv.includes('＝') || deriv.includes('='))) {
+    breakdown = deriv;
+  } else if (note && (note.includes('＋') || note.includes('+') || note.includes('構成:'))) {
+    breakdown = note;
+  } else if (deriv && (deriv.includes('語幹') || deriv.includes('接尾辞') || deriv.includes('派生'))) {
+    breakdown = deriv;
+  }
+
+  // 2. スペースを含む複合語（一語以上で成り立っている単語）の動的補完
+  if (!breakdown && mn.includes(' ')) {
+    const tokens = mn.replace(/[\(\)\,\.\/\?]/g, ' ').split(/\s+/).filter(Boolean);
+    if (tokens.length >= 2) {
+      // initialVocabulary または内部辞書からトークンを検索
+      let vocabList = [];
+      try {
+        if (typeof initialVocabulary !== 'undefined') vocabList = initialVocabulary;
+        else if (typeof StorageService !== 'undefined') vocabList = StorageService.getVocabulary();
+      } catch (_) {}
+
+      const parts = tokens.map(t => {
+        const cleanT = t.toLowerCase();
+        let meaning = '';
+        if (vocabList && vocabList.length > 0) {
+          const match = vocabList.find(w => (w.mongolian || '').toLowerCase() === cleanT || (w.dictForm || '').toLowerCase() === cleanT);
+          if (match && match.japanese) {
+            meaning = match.japanese.split(/[、,（(]/)[0].trim();
+          }
+        }
+        return meaning ? `「${t}（${meaning}）」` : `「${t}」`;
+      });
+
+      breakdown = parts.join(' ＋ ') + (ja ? ` ＝ 【${ja}】` : '');
+    }
+  }
+
+  if (!breakdown) return '';
+
+  return `
+    <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/70 border border-amber-300/80 text-xs space-y-1.5 shadow-2xs etymology-breakdown-card">
+      <div class="font-black text-amber-950 flex items-center gap-1.5">
+        <span>🧩</span> 単語の成り立ち・構成:
+      </div>
+      <div class="font-bold text-slate-900 leading-relaxed cyrillic-text text-xs sm:text-sm pl-2 border-l-2 border-amber-400">
+        ${breakdown}
+      </div>
+    </div>
+  `;
+}
+
+if (typeof window !== 'undefined') {
+  window.getWordEtymologyHTML = getWordEtymologyHTML;
+}
+
+
 function renderGrammarExplanationHTML({
   correctAnswer,
   userAnswer = '',
@@ -522,15 +590,18 @@ function renderGrammarExplanationHTML({
           ` : ''}
         </div>
       ` : `
-        <!-- 非動詞（名詞など）の場合 -->
+        <!-- 非動詞（名詞・複合語など）の場合 -->
         <div class="bg-white/95 rounded-xl p-3 border border-slate-200 space-y-1.5 my-2 text-xs">
           <div class="flex items-center justify-between">
             <span class="font-bold text-slate-800">見出し語: <span class="cyrillic-text font-extrabold text-slate-900">${dictForm}</span></span>
             <span class="text-slate-500 font-medium">【品詞: ${details ? details.pos : (item ? item.pos : '名詞')}】</span>
           </div>
           <div>意味: <span class="font-semibold text-slate-800">${meaning}</span></div>
-          ${derivation ? `<div class="text-slate-600 pt-1 border-t border-slate-100">💡 ${derivation}</div>` : ''}
-          ${(grammarExplanation || rule || note) ? `
+          
+          <!-- 単語の成り立ち・構成カード（2語以上の複合語、派生語） -->
+          ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(item, correctAnswer) : (derivation ? `<div class="text-slate-600 pt-1 border-t border-slate-100">💡 ${derivation}</div>` : '')}
+
+          ${(grammarExplanation || rule || note) && !(item && (item.etymologyBreakdown || item.derivation || '').includes(note)) ? `
             <div class="text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 mt-1">
               ${grammarExplanation || note || rule}
             </div>
@@ -992,7 +1063,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "харилцан яриа",
-    "derivation": "見出し語「харилцан яриа」"
+    "derivation": "「харилцан（相互に・互いに（動詞 харилцах の副動詞））」 ＋ 「яриа（対話・おしゃべり（動詞 ярих ＋ -аа））」 ＝ 【会話】",
+    "etymologyBreakdown": "「харилцан（相互に・互いに（動詞 харилцах の副動詞））」 ＋ 「яриа（対話・おしゃべり（動詞 ярих ＋ -аа））」 ＝ 【会話】"
   },
   {
     "id": "v_1_2",
@@ -1111,7 +1183,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "би ч бас",
-    "derivation": "見出し語「би ч бас」"
+    "derivation": "「би」 ＋ 「ч（〜も・〜でも（強調））」 ＋ 「бас」 ＝ 【私も】",
+    "etymologyBreakdown": "「би」 ＋ 「ч（〜も・〜でも（強調））」 ＋ 「бас」 ＝ 【私も】"
   },
   {
     "id": "v_1_9",
@@ -1198,7 +1271,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "япон хүн",
-    "derivation": "見出し語「япон хүн」"
+    "derivation": "「япон」 ＋ 「хүн」 ＝ 【日本人】",
+    "etymologyBreakdown": "「япон」 ＋ 「хүн」 ＝ 【日本人】"
   },
   {
     "id": "v_1_14",
@@ -1215,7 +1289,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "монгол хүн",
-    "derivation": "見出し語「монгол хүн」"
+    "derivation": "「монгол」 ＋ 「хүн」 ＝ 【モンゴル人】",
+    "etymologyBreakdown": "「монгол」 ＋ 「хүн」 ＝ 【モンゴル人】"
   },
   {
     "id": "v_1_15",
@@ -1232,7 +1307,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "бид, бид нар",
-    "derivation": "見出し語「бид, бид нар」"
+    "derivation": "「бид」 ＋ 「бид」 ＋ 「нар」 ＝ 【私達】",
+    "etymologyBreakdown": "「бид」 ＋ 「бид」 ＋ 「нар」 ＝ 【私達】"
   },
   {
     "id": "v_1_16",
@@ -1249,7 +1325,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "та нар",
-    "derivation": "見出し語「та нар」"
+    "derivation": "「та」 ＋ 「нар」 ＝ 【あなた達】",
+    "etymologyBreakdown": "「та」 ＋ 「нар」 ＝ 【あなた達】"
   },
   {
     "id": "v_1_17",
@@ -1266,7 +1343,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "энэ хүн",
-    "derivation": "見出し語「энэ хүн」"
+    "derivation": "「энэ」 ＋ 「хүн」 ＝ 【この人】",
+    "etymologyBreakdown": "「энэ」 ＋ 「хүн」 ＝ 【この人】"
   },
   {
     "id": "v_2_17",
@@ -1300,7 +1378,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "тэд, тэд нар",
-    "derivation": "見出し語「тэд, тэд нар」"
+    "derivation": "「тэд」 ＋ 「тэд」 ＋ 「нар」 ＝ 【その人達、彼ら】",
+    "etymologyBreakdown": "「тэд」 ＋ 「тэд」 ＋ 「нар」 ＝ 【その人達、彼ら】"
   },
   {
     "id": "v_greet_1",
@@ -1317,7 +1396,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Сайн уу? / Сайн байна уу?",
-    "derivation": "見出し語「Сайн уу? / Сайн байна уу?」"
+    "derivation": "「сайн」 ＋ 「уу」 ＋ 「сайн」 ＋ 「байна（いる・ある（現在進行））」 ＋ 「уу」 ＝ 【こんにちは、お元気ですか】",
+    "etymologyBreakdown": "「сайн」 ＋ 「уу」 ＋ 「сайн」 ＋ 「байна（いる・ある（現在進行））」 ＋ 「уу」 ＝ 【こんにちは、お元気ですか】"
   },
   {
     "id": "v_greet_2",
@@ -1334,7 +1414,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Сайн байцгаана уу?",
-    "derivation": "見出し語「Сайн байцгаана уу?」"
+    "derivation": "「сайн」 ＋ 「байцгаана」 ＋ 「уу」 ＝ 【皆さん、こんにちは】",
+    "etymologyBreakdown": "「сайн」 ＋ 「байцгаана」 ＋ 「уу」 ＝ 【皆さん、こんにちは】"
   },
   {
     "id": "v_greet_3",
@@ -1368,7 +1449,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Сонин сайхан юу байна вэ?",
-    "derivation": "見出し語「Сонин сайхан юу байна вэ?」"
+    "derivation": "「сонин」 ＋ 「сайхан」 ＋ 「юу（何）」 ＋ 「байна（いる・ある（現在進行））」 ＋ 「вэ」 ＝ 【最近どうですか（何か変わったことありますか）】",
+    "etymologyBreakdown": "「сонин」 ＋ 「сайхан」 ＋ 「юу（何）」 ＋ 「байна（いる・ある（現在進行））」 ＋ 「вэ」 ＝ 【最近どうですか（何か変わったことありますか）】"
   },
   {
     "id": "v_greet_5",
@@ -1385,7 +1467,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Юмгүй тайван.",
-    "derivation": "見出し語「Юмгүй тайван.」"
+    "derivation": "「юмгүй」 ＋ 「тайван」 ＝ 【相変わらずです（特に変わりなく平穏です）】",
+    "etymologyBreakdown": "「юмгүй」 ＋ 「тайван」 ＝ 【相変わらずです（特に変わりなく平穏です）】"
   },
   {
     "id": "v_greet_6",
@@ -1419,7 +1502,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Их баярлалаа. / Маш их баярлалаа.",
-    "derivation": "見出し語「Их баярлалаа. / Маш их баярлалаа.」"
+    "derivation": "「их（大きい・高等の・大学）」 ＋ 「баярлалаа（ありがとう（баяр ＋ -лалаа））」 ＋ 「маш（とても・極めて）」 ＋ 「их（大きい・高等の・大学）」 ＋ 「баярлалаа（ありがとう（баяр ＋ -лалаа））」 ＝ 【ありがとうございます / どうもありがとうございます】",
+    "etymologyBreakdown": "「их（大きい・高等の・大学）」 ＋ 「баярлалаа（ありがとう（баяр ＋ -лалаа））」 ＋ 「маш（とても・極めて）」 ＋ 「их（大きい・高等の・大学）」 ＋ 「баярлалаа（ありがとう（баяр ＋ -лалаа））」 ＝ 【ありがとうございます / どうもありがとうございます】"
   },
   {
     "id": "v_greet_8",
@@ -1436,7 +1520,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Зүгээр, зүгээр.",
-    "derivation": "見出し語「Зүгээр, зүгээр.」"
+    "derivation": "「зүгээр（ただ・普通・大丈夫）」 ＋ 「зүгээр（ただ・普通・大丈夫）」 ＝ 【どういたしまして、平気です】",
+    "etymologyBreakdown": "「зүгээр（ただ・普通・大丈夫）」 ＋ 「зүгээр（ただ・普通・大丈夫）」 ＝ 【どういたしまして、平気です】"
   },
   {
     "id": "v_greet_9",
@@ -1487,7 +1572,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Дараа уулзъя.",
-    "derivation": "見出し語「Дараа уулзъя.」"
+    "derivation": "「дараа」 ＋ 「уулзъя」 ＝ 【また会いましょう】",
+    "etymologyBreakdown": "「дараа」 ＋ 「уулзъя」 ＝ 【また会いましょう】"
   },
   {
     "id": "v_greet_12",
@@ -1504,7 +1590,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Маргааш уулзъя.",
-    "derivation": "見出し語「Маргааш уулзъя.」"
+    "derivation": "「маргааш」 ＋ 「уулзъя」 ＝ 【また明日会いましょう】",
+    "etymologyBreakdown": "「маргааш」 ＋ 「уулзъя」 ＝ 【また明日会いましょう】"
   },
   {
     "id": "v_greet_13",
@@ -1521,7 +1608,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Сайхан танилцлаа.",
-    "derivation": "見出し語「Сайхан танилцлаа.」"
+    "derivation": "「сайхан」 ＋ 「танилцлаа」 ＝ 【お会いできて嬉しいです（短い形）】",
+    "etymologyBreakdown": "「сайхан」 ＋ 「танилцлаа」 ＝ 【お会いできて嬉しいです（短い形）】"
   },
   {
     "id": "v_greet_14",
@@ -1538,7 +1626,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Танилцсандаа баяртай байна.",
-    "derivation": "見出し語「Танилцсандаа баяртай байна.」"
+    "derivation": "「танилцсандаа」 ＋ 「баяртай」 ＋ 「байна（いる・ある（現在進行））」 ＝ 【お会いできて嬉しいです（丁寧・長い形）】",
+    "etymologyBreakdown": "「танилцсандаа」 ＋ 「баяртай」 ＋ 「байна（いる・ある（現在進行））」 ＝ 【お会いできて嬉しいです（丁寧・長い形）】"
   },
   {
     "id": "v_greet_15",
@@ -1572,7 +1661,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Тийм. / Тийм ээ.",
-    "derivation": "見出し語「Тийм. / Тийм ээ.」"
+    "derivation": "「тийм（そう・その通り）」 ＋ 「тийм（そう・その通り）」 ＋ 「ээ」 ＝ 【はい、そうです】",
+    "etymologyBreakdown": "「тийм（そう・その通り）」 ＋ 「тийм（そう・その通り）」 ＋ 「ээ」 ＝ 【はい、そうです】"
   },
   {
     "id": "v_greet_17",
@@ -1589,7 +1679,8 @@ const initialVocabulary = [
     "lesson": 1,
     "isVerb": false,
     "dictForm": "Үгүй. / Үгүй ээ.",
-    "derivation": "見出し語「Үгүй. / Үгүй ээ.」"
+    "derivation": "「үгүй」 ＋ 「үгүй」 ＋ 「ээ」 ＝ 【いいえ】",
+    "etymologyBreakdown": "「үгүй」 ＋ 「үгүй」 ＋ 「ээ」 ＝ 【いいえ】"
   },
   {
     "id": "v_2_1",
@@ -2864,7 +2955,8 @@ const initialVocabulary = [
     "lesson": 6,
     "isVerb": false,
     "dictForm": "өдөр бүр",
-    "derivation": "見出し語「өдөр бүр」"
+    "derivation": "「өдөр」 ＋ 「бүр」 ＝ 【毎日】",
+    "etymologyBreakdown": "「өдөр」 ＋ 「бүр」 ＝ 【毎日】"
   },
   {
     "id": "v_6_2",
@@ -2966,7 +3058,8 @@ const initialVocabulary = [
     "lesson": 7,
     "isVerb": false,
     "dictForm": "гэр бүл",
-    "derivation": "見出し語「гэр бүл」"
+    "derivation": "「гэр（家・家庭）」 ＋ 「бүл（家族・構成員）」 ＝ 【家族】",
+    "etymologyBreakdown": "「гэр（家・家庭）」 ＋ 「бүл（家族・構成員）」 ＝ 【家族】"
   },
   {
     "id": "v_7_2",
@@ -3315,7 +3408,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "ажлын хамтрагч",
-    "derivation": "見出し語「ажлын хамтрагч」"
+    "derivation": "「ажлын」 ＋ 「хамтрагч」 ＝ 【同僚、仕事仲間】",
+    "etymologyBreakdown": "「ажлын」 ＋ 「хамтрагч」 ＝ 【同僚、仕事仲間】"
   },
   {
     "id": "v_gen_11",
@@ -3413,7 +3507,8 @@ const initialVocabulary = [
     "note": "品詞: 副詞",
     "isVerb": false,
     "dictForm": "аль хэдийн",
-    "derivation": "見出し語「аль хэдийн」"
+    "derivation": "「аль（どちら）」 ＋ 「хэдийн」 ＝ 【もう、すでに】",
+    "etymologyBreakdown": "「аль（どちら）」 ＋ 「хэдийн」 ＝ 【もう、すでに】"
   },
   {
     "id": "v_gen_18",
@@ -3477,7 +3572,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "амралтын өдөр",
-    "derivation": "見出し語「амралтын өдөр」"
+    "derivation": "「амралтын」 ＋ 「өдөр」 ＝ 【休日、休みの日】",
+    "etymologyBreakdown": "「амралтын」 ＋ 「өдөр」 ＝ 【休日、休みの日】"
   },
   {
     "id": "v_gen_22",
@@ -3751,7 +3847,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "баасан гараг",
-    "derivation": "見出し語「баасан гараг」"
+    "derivation": "「баасан」 ＋ 「гараг」 ＝ 【金曜日】",
+    "etymologyBreakdown": "「баасан」 ＋ 「гараг」 ＝ 【金曜日】"
   },
   {
     "id": "v_gen_40",
@@ -3783,7 +3880,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "бага сургууль",
-    "derivation": "見出し語「бага сургууль」"
+    "derivation": "「бага（小さい・初等の）」 ＋ 「сургууль（学校（動詞 сурах［学ぶ］＋ -гууль））」 ＝ 【小学校】",
+    "etymologyBreakdown": "「бага（小さい・初等の）」 ＋ 「сургууль（学校（動詞 сурах［学ぶ］＋ -гууль））」 ＝ 【小学校】"
   },
   {
     "id": "v_gen_43",
@@ -3895,7 +3993,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "баруун тал",
-    "derivation": "見出し語「баруун тал」"
+    "derivation": "「баруун（右・西）」 ＋ 「тал（側・方面）」 ＝ 【右側、西側】",
+    "etymologyBreakdown": "「баруун（右・西）」 ＋ 「тал（側・方面）」 ＝ 【右側、西側】"
   },
   {
     "id": "v_gen_52",
@@ -3927,7 +4026,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "бие засах газар",
-    "derivation": "見出し語「бие засах газар」"
+    "derivation": "「бие（身体・体）」 ＋ 「засах（整える・用を足す）」 ＋ 「газар（場所・官公庁・局）」 ＝ 【お手洗い、トイレ】",
+    "etymologyBreakdown": "「бие（身体・体）」 ＋ 「засах（整える・用を足す）」 ＋ 「газар（場所・官公庁・局）」 ＝ 【お手洗い、トイレ】"
   },
   {
     "id": "v_gen_54",
@@ -3943,7 +4043,8 @@ const initialVocabulary = [
     "note": "品詞: 表現",
     "isVerb": false,
     "dictForm": "бие тааруухан",
-    "derivation": "見出し語「бие тааруухан」"
+    "derivation": "「бие（身体・体）」 ＋ 「тааруухан」 ＝ 【体調がすぐれない】",
+    "etymologyBreakdown": "「бие（身体・体）」 ＋ 「тааруухан」 ＝ 【体調がすぐれない】"
   },
   {
     "id": "v_gen_55",
@@ -3975,7 +4076,8 @@ const initialVocabulary = [
     "note": "品詞: 助詞",
     "isVerb": false,
     "dictForm": "биз дээ",
-    "derivation": "見出し語「биз дээ」"
+    "derivation": "「биз」 ＋ 「дээ」 ＝ 【〜でしょう、〜ですよね】",
+    "etymologyBreakdown": "「биз」 ＋ 「дээ」 ＝ 【〜でしょう、〜ですよね】"
   },
   {
     "id": "v_gen_57",
@@ -3991,7 +4093,8 @@ const initialVocabulary = [
     "note": "品詞: 助詞",
     "isVerb": false,
     "dictForm": "бил үү?",
-    "derivation": "見出し語「бил үү?」"
+    "derivation": "「бил」 ＋ 「үү（〜ですか（疑問助詞））」 ＝ 【〜でしたっけ？（確認）】",
+    "etymologyBreakdown": "「бил」 ＋ 「үү（〜ですか（疑問助詞））」 ＝ 【〜でしたっけ？（確認）】"
   },
   {
     "id": "v_gen_58",
@@ -4023,7 +4126,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "бичвэр, текст",
-    "derivation": "見出し語「бичвэр, текст」"
+    "derivation": "「бичвэр」 ＋ 「текст」 ＝ 【テキスト、文章】",
+    "etymologyBreakdown": "「бичвэр」 ＋ 「текст」 ＝ 【テキスト、文章】"
   },
   {
     "id": "v_gen_60",
@@ -4071,7 +4175,8 @@ const initialVocabulary = [
     "note": "品詞: 助詞",
     "isVerb": false,
     "dictForm": "болов уу?",
-    "derivation": "見出し語「болов уу?」"
+    "derivation": "「болов」 ＋ 「уу」 ＝ 【〜でしょうか（推量）】",
+    "etymologyBreakdown": "「болов」 ＋ 「уу」 ＝ 【〜でしょうか（推量）】"
   },
   {
     "id": "v_gen_63",
@@ -4087,7 +4192,8 @@ const initialVocabulary = [
     "note": "依頼や提案に対して「もちろん構いませんよ」と快諾する定番表現。",
     "isVerb": false,
     "dictForm": "Бололгүй яах вэ.",
-    "derivation": "見出し語「Бололгүй яах вэ。」"
+    "derivation": "「бололгүй」 ＋ 「яах」 ＋ 「вэ」 ＝ 【もちろんいいですよ、構いませんとも】",
+    "etymologyBreakdown": "「бололгүй」 ＋ 「яах」 ＋ 「вэ」 ＝ 【もちろんいいですよ、構いませんとも】"
   },
   {
     "id": "v_gen_64",
@@ -4151,7 +4257,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "борооны улирал",
-    "derivation": "見出し語「борооны улирал」"
+    "derivation": "「борооны」 ＋ 「улирал（季節・四半期）」 ＝ 【雨季】",
+    "etymologyBreakdown": "「борооны」 ＋ 「улирал（季節・四半期）」 ＝ 【雨季】"
   },
   {
     "id": "v_gen_68",
@@ -4311,7 +4418,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "бүтэн сайн өдөр",
-    "derivation": "見出し語「бүтэн сайн өдөр」"
+    "derivation": "「бүтэн」 ＋ 「сайн」 ＋ 「өдөр」 ＝ 【日曜日（全吉日）】",
+    "etymologyBreakdown": "「бүтэн」 ＋ 「сайн」 ＋ 「өдөр」 ＝ 【日曜日（全吉日）】"
   },
   {
     "id": "v_gen_78",
@@ -4327,7 +4435,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "бүх нутаг",
-    "derivation": "見出し語「бүх нутаг」"
+    "derivation": "「бүх」 ＋ 「нутаг」 ＝ 【全地域、全国】",
+    "etymologyBreakdown": "「бүх」 ＋ 「нутаг」 ＝ 【全地域、全国】"
   },
   {
     "id": "v_gen_79",
@@ -4411,7 +4520,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "бямба гараг",
-    "derivation": "見出し語「бямба гараг」"
+    "derivation": "「бямба」 ＋ 「гараг」 ＝ 【土曜日】",
+    "etymologyBreakdown": "「бямба」 ＋ 「гараг」 ＝ 【土曜日】"
   },
   {
     "id": "v_gen_84",
@@ -4523,9 +4633,10 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "газрын зураг",
-    "derivation": "見出し語「газрын зураг」",
+    "derivation": "「газрын」 ＋ 「зураг」 ＝ 【地図】",
     "genreId": "school",
-    "genreName": "学校・文房具・教室"
+    "genreName": "学校・文房具・教室",
+    "etymologyBreakdown": "「газрын」 ＋ 「зураг」 ＝ 【地図】"
   },
   {
     "id": "v_gen_91",
@@ -4557,7 +4668,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "Гандан хийд",
-    "derivation": "見出し語「Гандан хийд」"
+    "derivation": "「гандан」 ＋ 「хийд」 ＝ 【ガンダン寺院】",
+    "etymologyBreakdown": "「гандан」 ＋ 「хийд」 ＝ 【ガンダン寺院】"
   },
   {
     "id": "v_gen_93",
@@ -4671,7 +4783,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "гуравдахь өдөр",
-    "derivation": "見出し語「гуравдахь өдөр」"
+    "derivation": "「гуравдахь」 ＋ 「өдөр」 ＝ 【水曜日（第3日）】",
+    "etymologyBreakdown": "「гуравдахь」 ＋ 「өдөр」 ＝ 【水曜日（第3日）】"
   },
   {
     "id": "v_gen_100",
@@ -4755,7 +4868,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "гэр бүлийнхэн",
-    "derivation": "見出し語「гэр бүлийнхэн」"
+    "derivation": "「гэр（家・家庭）」 ＋ 「бүлийнхэн」 ＝ 【家族のみんな】",
+    "etymologyBreakdown": "「гэр（家・家庭）」 ＋ 「бүлийнхэн」 ＝ 【家族のみんな】"
   },
   {
     "id": "v_gen_107",
@@ -4771,7 +4885,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "гэрийн ажил",
-    "derivation": "見出し語「гэрийн ажил」"
+    "derivation": "「гэрийн」 ＋ 「ажил」 ＝ 【家事】",
+    "etymologyBreakdown": "「гэрийн」 ＋ 「ажил」 ＝ 【家事】"
   },
   {
     "id": "v_gen_108",
@@ -4837,7 +4952,8 @@ const initialVocabulary = [
     "note": "品詞: 後置詞・連語",
     "isVerb": false,
     "dictForm": "гэх мэт",
-    "derivation": "見出し語「гэх мэт」"
+    "derivation": "「гэх」 ＋ 「мэт」 ＝ 【〜など】",
+    "etymologyBreakdown": "「гэх」 ＋ 「мэт」 ＝ 【〜など】"
   },
   {
     "id": "v_gen_112",
@@ -4885,7 +5001,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "даваа гараг",
-    "derivation": "見出し語「даваа гараг」"
+    "derivation": "「даваа」 ＋ 「гараг」 ＝ 【月曜日】",
+    "etymologyBreakdown": "「даваа」 ＋ 「гараг」 ＝ 【月曜日】"
   },
   {
     "id": "v_gen_115",
@@ -4997,7 +5114,8 @@ const initialVocabulary = [
     "note": "品詞: 副詞・接続詞",
     "isVerb": false,
     "dictForm": "дараа нь",
-    "derivation": "見出し語「дараа нь」"
+    "derivation": "「дараа」 ＋ 「нь（その（所属・焦点））」 ＝ 【その後、次に】",
+    "etymologyBreakdown": "「дараа」 ＋ 「нь（その（所属・焦点））」 ＝ 【その後、次に】"
   },
   {
     "id": "v_gen_123",
@@ -5013,7 +5131,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "дараагийн буудал",
-    "derivation": "見出し語「дараагийн буудал」"
+    "derivation": "「дараагийн」 ＋ 「буудал（停留所・乗り場・駅）」 ＝ 【次の停留所、次の駅】",
+    "etymologyBreakdown": "「дараагийн」 ＋ 「буудал（停留所・乗り場・駅）」 ＝ 【次の停留所、次の駅】"
   },
   {
     "id": "v_gen_124",
@@ -5045,7 +5164,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "Дархан хот",
-    "derivation": "見出し語「Дархан хот」"
+    "derivation": "「дархан」 ＋ 「хот（都市・街）」 ＝ 【ダルハン市】",
+    "etymologyBreakdown": "「дархан」 ＋ 「хот（都市・街）」 ＝ 【ダルハン市】"
   },
   {
     "id": "v_gen_126",
@@ -5079,7 +5199,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "дасгал хөдөлгөөн",
-    "derivation": "見出し語「дасгал хөдөлгөөн」"
+    "derivation": "「дасгал」 ＋ 「хөдөлгөөн」 ＝ 【運動、体操】",
+    "etymologyBreakdown": "「дасгал」 ＋ 「хөдөлгөөн」 ＝ 【運動、体操】"
   },
   {
     "id": "v_gen_128",
@@ -5095,7 +5216,8 @@ const initialVocabulary = [
     "note": "品詞: 連語",
     "isVerb": false,
     "dictForm": "дахиад нэг",
-    "derivation": "見出し語「дахиад нэг」"
+    "derivation": "「дахиад」 ＋ 「нэг」 ＝ 【もう一つ、もう一度】",
+    "etymologyBreakdown": "「дахиад」 ＋ 「нэг」 ＝ 【もう一つ、もう一度】"
   },
   {
     "id": "v_gen_129",
@@ -5111,7 +5233,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "долоо хоног",
-    "derivation": "見出し語「долоо хоног」"
+    "derivation": "「долоо」 ＋ 「хоног」 ＝ 【1週間、週】",
+    "etymologyBreakdown": "「долоо」 ＋ 「хоног」 ＝ 【1週間、週】"
   },
   {
     "id": "v_gen_130",
@@ -5127,7 +5250,8 @@ const initialVocabulary = [
     "note": "品詞: 副詞",
     "isVerb": false,
     "dictForm": "дөнгж сая",
-    "derivation": "見出し語「дөнгж сая」"
+    "derivation": "「дөнгж」 ＋ 「сая」 ＝ 【たった今、先ほど】",
+    "etymologyBreakdown": "「дөнгж」 ＋ 「сая」 ＝ 【たった今、先ほど】"
   },
   {
     "id": "v_gen_131",
@@ -5143,7 +5267,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "дөрөвдэх өдөр",
-    "derivation": "見出し語「дөрөвдэх өдөр」"
+    "derivation": "「дөрөвдэх」 ＋ 「өдөр」 ＝ 【木曜日（第4日）】",
+    "etymologyBreakdown": "「дөрөвдэх」 ＋ 「өдөр」 ＝ 【木曜日（第4日）】"
   },
   {
     "id": "v_gen_132",
@@ -5209,7 +5334,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "дунд сургууль",
-    "derivation": "見出し語「дунд сургууль」"
+    "derivation": "「дунд（中・中間）」 ＋ 「сургууль（学校（動詞 сурах［学ぶ］＋ -гууль））」 ＝ 【中学校、小中高一貫校】",
+    "etymologyBreakdown": "「дунд（中・中間）」 ＋ 「сургууль（学校（動詞 сурах［学ぶ］＋ -гууль））」 ＝ 【中学校、小中高一貫校】"
   },
   {
     "id": "v_gen_138",
@@ -5681,7 +5807,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "золбин нохой",
-    "derivation": "見出し語「золбин нохой」"
+    "derivation": "「золбин」 ＋ 「нохой」 ＝ 【野良犬】",
+    "etymologyBreakdown": "「золбин」 ＋ 「нохой」 ＝ 【野良犬】"
   },
   {
     "id": "v_gen_169",
@@ -5697,7 +5824,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "зоогийн газар",
-    "derivation": "見出し語「зоогийн газар」"
+    "derivation": "「зоогийн」 ＋ 「газар（場所・官公庁・局）」 ＝ 【食堂、レストラン】",
+    "etymologyBreakdown": "「зоогийн」 ＋ 「газар（場所・官公庁・局）」 ＝ 【食堂、レストラン】"
   },
   {
     "id": "v_gen_170",
@@ -5729,7 +5857,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "зочид буудал",
-    "derivation": "見出し語「зочид буудал」"
+    "derivation": "「зочид」 ＋ 「буудал（停留所・乗り場・駅）」 ＝ 【ホテル、旅館】",
+    "etymologyBreakdown": "「зочид」 ＋ 「буудал（停留所・乗り場・駅）」 ＝ 【ホテル、旅館】"
   },
   {
     "id": "v_gen_172",
@@ -5907,7 +6036,8 @@ const initialVocabulary = [
     "note": "ウランバートルの南約30kmにあるトゥブ（中央）県の県都。",
     "isVerb": false,
     "dictForm": "Зуунмод хот",
-    "derivation": "見出し語「Зуунмод хот」"
+    "derivation": "「зуунмод」 ＋ 「хот（都市・街）」 ＝ 【ズウンモド市】",
+    "etymologyBreakdown": "「зуунмод」 ＋ 「хот（都市・街）」 ＝ 【ズウンモド市】"
   },
   {
     "id": "v_gen_184",
@@ -5923,7 +6053,8 @@ const initialVocabulary = [
     "note": "品詞: 慣用句",
     "isVerb": false,
     "dictForm": "Зүгээр ээ, болсон.",
-    "derivation": "見出し語「Зүгээр ээ, болсон。」"
+    "derivation": "「зүгээр（ただ・普通・大丈夫）」 ＋ 「ээ」 ＋ 「болсон」 ＝ 【大丈夫ですよ、すみました。】",
+    "etymologyBreakdown": "「зүгээр（ただ・普通・大丈夫）」 ＋ 「ээ」 ＋ 「болсон」 ＝ 【大丈夫ですよ、すみました。】"
   },
   {
     "id": "v_gen_185",
@@ -6085,7 +6216,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "ирэх долоо хоног",
-    "derivation": "見出し語「ирэх долоо хоног」"
+    "derivation": "「ирэх」 ＋ 「долоо」 ＋ 「хоног」 ＝ 【来週】",
+    "etymologyBreakdown": "「ирэх」 ＋ 「долоо」 ＋ 「хоног」 ＝ 【来週】"
   },
   {
     "id": "v_gen_195",
@@ -6133,7 +6265,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "их дэлгүүр",
-    "derivation": "見出し語「их дэлгүүр」"
+    "derivation": "「их（大きい・高等の・大学）」 ＋ 「дэлгүүр（店舗・商店）」 ＝ 【デパート、百貨店】",
+    "etymologyBreakdown": "「их（大きい・高等の・大学）」 ＋ 「дэлгүүр（店舗・商店）」 ＝ 【デパート、百貨店】"
   },
   {
     "id": "v_gen_198",
@@ -6149,7 +6282,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "их сургууль",
-    "derivation": "見出し語「их сургууль」"
+    "derivation": "「их（大きい・高等の・大学）」 ＋ 「сургууль（学校（動詞 сурах［学ぶ］＋ -гууль））」 ＝ 【大学】",
+    "etymologyBreakdown": "「их（大きい・高等の・大学）」 ＋ 「сургууль（学校（動詞 сурах［学ぶ］＋ -гууль））」 ＝ 【大学】"
   },
   {
     "id": "v_gen_199",
@@ -6197,7 +6331,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "калпис ундаа",
-    "derivation": "見出し語「калпис ундаа」"
+    "derivation": "「калпис」 ＋ 「ундаа」 ＝ 【カルピス飲料】",
+    "etymologyBreakdown": "「калпис」 ＋ 「ундаа」 ＝ 【カルピス飲料】"
   },
   {
     "id": "v_gen_202",
@@ -6309,7 +6444,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "кредит карт",
-    "derivation": "見出し語「кредит карт」"
+    "derivation": "「кредит」 ＋ 「карт」 ＝ 【クレジットカード】",
+    "etymologyBreakdown": "「кредит」 ＋ 「карт」 ＝ 【クレジットカード】"
   },
   {
     "id": "v_gen_210",
@@ -6357,7 +6493,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "лхагва гараг",
-    "derivation": "見出し語「лхагва гараг」"
+    "derivation": "「лхагва」 ＋ 「гараг」 ＝ 【水曜日】",
+    "etymologyBreakdown": "「лхагва」 ＋ 「гараг」 ＝ 【水曜日】"
   },
   {
     "id": "v_gen_213",
@@ -6517,7 +6654,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "морин хуур",
-    "derivation": "見出し語「морин хуур」"
+    "derivation": "「морин（馬の（形容詞形））」 ＋ 「хуур（琴・弦楽器）」 ＝ 【馬頭琴（モリンホール）】",
+    "etymologyBreakdown": "「морин（馬の（形容詞形））」 ＋ 「хуур（琴・弦楽器）」 ＝ 【馬頭琴（モリンホール）】"
   },
   {
     "id": "v_gen_224",
@@ -6677,7 +6815,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "мягмар гараг",
-    "derivation": "見出し語「мягмар гараг」"
+    "derivation": "「мягмар」 ＋ 「гараг」 ＝ 【火曜日】",
+    "etymologyBreakdown": "「мягмар」 ＋ 「гараг」 ＝ 【火曜日】"
   },
   {
     "id": "v_gen_234",
@@ -6693,7 +6832,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "Наадам /баяр/",
-    "derivation": "見出し語「Наадам /баяр/」"
+    "derivation": "「наадам」 ＋ 「баяр（祝い・祝日・喜び）」 ＝ 【ナーダム祭（モンゴルの大祭）】",
+    "etymologyBreakdown": "「наадам」 ＋ 「баяр（祝い・祝日・喜び）」 ＝ 【ナーダム祭（モンゴルの大祭）】"
   },
   {
     "id": "v_gen_236",
@@ -6789,7 +6929,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "Нихонмацү сургалтын төв",
-    "derivation": "見出し語「Нихонмацү сургалтын төв」"
+    "derivation": "「нихонмацү」 ＋ 「сургалтын」 ＋ 「төв（中心・センター）」 ＝ 【二本松訓練所】",
+    "etymologyBreakdown": "「нихонмацү」 ＋ 「сургалтын」 ＋ 「төв（中心・センター）」 ＝ 【二本松訓練所】"
   },
   {
     "id": "v_gen_242",
@@ -6821,7 +6962,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "ногооны зах",
-    "derivation": "見出し語「ногооны зах」"
+    "derivation": "「ногооны」 ＋ 「зах」 ＝ 【野菜市場】",
+    "etymologyBreakdown": "「ногооны」 ＋ 「зах」 ＝ 【野菜市場】"
   },
   {
     "id": "v_gen_245",
@@ -6933,7 +7075,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "нэгдэх өдөр",
-    "derivation": "見出し語「нэгдэх өдөр」"
+    "derivation": "「нэгдэх」 ＋ 「өдөр」 ＝ 【月曜日（第1日）】",
+    "etymologyBreakdown": "「нэгдэх」 ＋ 「өдөр」 ＝ 【月曜日（第1日）】"
   },
   {
     "id": "v_gen_252",
@@ -6949,7 +7092,8 @@ const initialVocabulary = [
     "note": "品詞: 助数詞・連語",
     "isVerb": false,
     "dictForm": "нэг таваг",
-    "derivation": "見出し語「нэг таваг」"
+    "derivation": "「нэг」 ＋ 「таваг（皿・プレート）」 ＝ 【1皿（食事の注文単位）】",
+    "etymologyBreakdown": "「нэг」 ＋ 「таваг（皿・プレート）」 ＝ 【1皿（食事の注文単位）】"
   },
   {
     "id": "v_gen_253",
@@ -6965,7 +7109,8 @@ const initialVocabulary = [
     "note": "品詞: 助数詞・連語",
     "isVerb": false,
     "dictForm": "нэг хоног",
-    "derivation": "見出し語「нэг хоног」"
+    "derivation": "「нэг」 ＋ 「хоног」 ＝ 【丸1日、一昼夜】",
+    "etymologyBreakdown": "「нэг」 ＋ 「хоног」 ＝ 【丸1日、一昼夜】"
   },
   {
     "id": "v_gen_254",
@@ -7029,7 +7174,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "ням гараг",
-    "derivation": "見出し語「ням гараг」"
+    "derivation": "「ням」 ＋ 「гараг」 ＝ 【日曜日】",
+    "etymologyBreakdown": "「ням」 ＋ 「гараг」 ＝ 【日曜日】"
   },
   {
     "id": "v_gen_259",
@@ -7399,7 +7545,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "өвчин намдаах эм",
-    "derivation": "見出し語「өвчин намдаах эм」"
+    "derivation": "「өвчин」 ＋ 「намдаах」 ＋ 「эм（薬）」 ＝ 【痛み止め、鎮痛剤】",
+    "etymologyBreakdown": "「өвчин」 ＋ 「намдаах」 ＋ 「эм（薬）」 ＝ 【痛み止め、鎮痛剤】"
   },
   {
     "id": "v_gen_285",
@@ -7463,7 +7610,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "өдөр, хоног",
-    "derivation": "見出し語「өдөр, хоног」"
+    "derivation": "「өдөр」 ＋ 「хоног」 ＝ 【日数、月日】",
+    "etymologyBreakdown": "「өдөр」 ＋ 「хоног」 ＝ 【日数、月日】"
   },
   {
     "id": "v_gen_290",
@@ -7575,7 +7723,8 @@ const initialVocabulary = [
     "note": "өнгөрсөн（過ぎた）＋ долоо хоног（1週間）。",
     "isVerb": false,
     "dictForm": "өнгөрсөн долоо хоног",
-    "derivation": "見出し語「өнгөрсөн долоо хоног」"
+    "derivation": "「өнгөрсөн」 ＋ 「долоо」 ＋ 「хоног」 ＝ 【先週】",
+    "etymologyBreakdown": "「өнгөрсөн」 ＋ 「долоо」 ＋ 「хоног」 ＝ 【先週】"
   },
   {
     "id": "v_gen_297",
@@ -7703,7 +7852,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "пүрэв гараг",
-    "derivation": "見出し語「пүрэв гараг」"
+    "derivation": "「пүрэв」 ＋ 「гараг」 ＝ 【木曜日】",
+    "etymologyBreakdown": "「пүрэв」 ＋ 「гараг」 ＝ 【木曜日】"
   },
   {
     "id": "v_gen_307",
@@ -7751,7 +7901,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "сагсан бөмбөг",
-    "derivation": "見出し語「сагсан бөмбөг」"
+    "derivation": "「сагсан」 ＋ 「бөмбөг」 ＝ 【バスケットボール】",
+    "etymologyBreakdown": "「сагсан」 ＋ 「бөмбөг」 ＝ 【バスケットボール】"
   },
   {
     "id": "v_gen_310",
@@ -7767,7 +7918,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "сайн дурын гишүүн",
-    "derivation": "見出し語「сайн дурын гишүүн」"
+    "derivation": "「сайн」 ＋ 「дурын」 ＋ 「гишүүн」 ＝ 【ボランティア隊員（協力隊員）】",
+    "etymologyBreakdown": "「сайн」 ＋ 「дурын」 ＋ 「гишүүн」 ＝ 【ボランティア隊員（協力隊員）】"
   },
   {
     "id": "v_gen_311",
@@ -7783,7 +7935,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "сайхан санаа",
-    "derivation": "見出し語「сайхан санаа」"
+    "derivation": "「сайхан」 ＋ 「санаа」 ＝ 【良いアイデア、素敵な考え】",
+    "etymologyBreakdown": "「сайхан」 ＋ 「санаа」 ＝ 【良いアイデア、素敵な考え】"
   },
   {
     "id": "v_gen_312",
@@ -7911,7 +8064,8 @@ const initialVocabulary = [
     "note": "「何か新しいこと・変わったことはある？」の挨拶。",
     "isVerb": false,
     "dictForm": "сонин хачин",
-    "derivation": "見出し語「сонин хачин」"
+    "derivation": "「сонин」 ＋ 「хачин」 ＝ 【珍しいこと、変わったこと、近況】",
+    "etymologyBreakdown": "「сонин」 ＋ 「хачин」 ＝ 【珍しいこと、変わったこと、近況】"
   },
   {
     "id": "v_gen_323",
@@ -8007,7 +8161,8 @@ const initialVocabulary = [
     "note": "сул（空いている）＋ өрөө（部屋）。ホテル等で使う。",
     "isVerb": false,
     "dictForm": "сул өрөө",
-    "derivation": "見出し語「сул өрөө」"
+    "derivation": "「сул」 ＋ 「өрөө」 ＝ 【空き部屋、空室】",
+    "etymologyBreakdown": "「сул」 ＋ 「өрөө」 ＝ 【空き部屋、空室】"
   },
   {
     "id": "v_gen_329",
@@ -8023,7 +8178,8 @@ const initialVocabulary = [
     "note": "сул（空いている）＋ суудал（座席）。バスや飛行機で使う。",
     "isVerb": false,
     "dictForm": "сул суудал",
-    "derivation": "見出し語「сул суудал」"
+    "derivation": "「сул」 ＋ 「суудал」 ＝ 【空席、空いている席】",
+    "etymologyBreakdown": "「сул」 ＋ 「суудал」 ＝ 【空席、空いている席】"
   },
   {
     "id": "v_gen_330",
@@ -8087,7 +8243,8 @@ const initialVocabulary = [
     "note": "学習用の書籍。",
     "isVerb": false,
     "dictForm": "сурах бичиг",
-    "derivation": "見出し語「сурах бичиг」"
+    "derivation": "「сурах」 ＋ 「бичиг（書物・文書・文字）」 ＝ 【教科書、テキスト】",
+    "etymologyBreakdown": "「сурах」 ＋ 「бичиг（書物・文書・文字）」 ＝ 【教科書、テキスト】"
   },
   {
     "id": "v_gen_334",
@@ -8119,7 +8276,8 @@ const initialVocabulary = [
     "note": "сургалт（研修）＋ -гүй（ない）＋ үед（時に）。",
     "isVerb": false,
     "dictForm": "сургалтгүй үед",
-    "derivation": "見出し語「сургалтгүй үед」"
+    "derivation": "「сургалтгүй」 ＋ 「үед」 ＝ 【研修・授業がない時】",
+    "etymologyBreakdown": "「сургалтгүй」 ＋ 「үед」 ＝ 【研修・授業がない時】"
   },
   {
     "id": "v_gen_337",
@@ -8185,7 +8343,8 @@ const initialVocabulary = [
     "note": "ウランバートル中心部にある政府宮殿前の巨大広場。",
     "isVerb": false,
     "dictForm": "Сүхбаатарын талбай",
-    "derivation": "見出し語「Сүхбаатарын талбай」"
+    "derivation": "「сүхбаатарын」 ＋ 「талбай」 ＝ 【スフバートル広場】",
+    "etymologyBreakdown": "「сүхбаатарын」 ＋ 「талбай」 ＝ 【スフバートル広場】"
   },
   {
     "id": "v_gen_341",
@@ -8217,7 +8376,8 @@ const initialVocabulary = [
     "note": "モンゴル北部、ロシア国境に接する農業が盛んな県。",
     "isVerb": false,
     "dictForm": "Сэлэнгэ аймаг",
-    "derivation": "見出し語「Сэлэнгэ аймаг」"
+    "derivation": "「сэлэнгэ」 ＋ 「аймаг」 ＝ 【セレンゲ県】",
+    "etymologyBreakdown": "「сэлэнгэ」 ＋ 「аймаг」 ＝ 【セレンゲ県】"
   },
   {
     "id": "v_gen_343",
@@ -8233,7 +8393,8 @@ const initialVocabulary = [
     "note": "トゥブ県にある郡。",
     "isVerb": false,
     "dictForm": "Сэргэлэн сум",
-    "derivation": "見出し語「Сэргэлэн сум」"
+    "derivation": "「сэргэлэн」 ＋ 「сум」 ＝ 【セルゲレン郡】",
+    "etymologyBreakdown": "「сэргэлэн」 ＋ 「сум」 ＝ 【セルゲレン郡】"
   },
   {
     "id": "v_gen_344",
@@ -8281,7 +8442,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "тавдахь өдөр",
-    "derivation": "見出し語「тавдахь өдөр」"
+    "derivation": "「тавдахь」 ＋ 「өдөр」 ＝ 【金曜日（第5日）】",
+    "etymologyBreakdown": "「тавдахь」 ＋ 「өдөр」 ＝ 【金曜日（第5日）】"
   },
   {
     "id": "v_gen_348",
@@ -8393,7 +8555,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "таксины зогсоол",
-    "derivation": "見出し語「таксины зогсоол」"
+    "derivation": "「таксины」 ＋ 「зогсоол」 ＝ 【タクシー乗り場】",
+    "etymologyBreakdown": "「таксины」 ＋ 「зогсоол」 ＝ 【タクシー乗り場】"
   },
   {
     "id": "v_gen_356",
@@ -8425,7 +8588,8 @@ const initialVocabulary = [
     "note": "тамхи（煙草）の属格 ＋ цэг（点・場所）。",
     "isVerb": false,
     "dictForm": "тамхины цэг",
-    "derivation": "見出し語「тамхины цэг」"
+    "derivation": "「тамхины」 ＋ 「цэг」 ＝ 【喫煙所、喫煙スペース】",
+    "etymologyBreakdown": "「тамхины」 ＋ 「цэг」 ＝ 【喫煙所、喫煙スペース】"
   },
   {
     "id": "v_gen_358",
@@ -8491,7 +8655,8 @@ const initialVocabulary = [
     "note": "тийм（そうだ）＋ 疑問助詞 үү。",
     "isVerb": false,
     "dictForm": "Тийм үү?",
-    "derivation": "見出し語「Тийм үү?」"
+    "derivation": "「тийм（そう・その通り）」 ＋ 「үү（〜ですか（疑問助詞））」 ＝ 【そうですか？、本当ですか？】",
+    "etymologyBreakdown": "「тийм（そう・その通り）」 ＋ 「үү（〜ですか（疑問助詞））」 ＝ 【そうですか？、本当ですか？】"
   },
   {
     "id": "v_gen_362",
@@ -8621,7 +8786,8 @@ const initialVocabulary = [
     "note": "ウランバートルを取り囲む中央県。",
     "isVerb": false,
     "dictForm": "Төв аймаг",
-    "derivation": "見出し語「Төв аймаг」"
+    "derivation": "「төв（中心・センター）」 ＋ 「аймаг」 ＝ 【トゥブ県（中央県）】",
+    "etymologyBreakdown": "「төв（中心・センター）」 ＋ 「аймаг」 ＝ 【トゥブ県（中央県）】"
   },
   {
     "id": "v_gen_371",
@@ -8717,7 +8883,8 @@ const initialVocabulary = [
     "note": "төрсөн（生まれた）＋ нутаг（土地・故郷）。",
     "isVerb": false,
     "dictForm": "төрсөн нутаг",
-    "derivation": "見出し語「төрсөн нутаг」"
+    "derivation": "「төрсөн」 ＋ 「нутаг」 ＝ 【生まれ故郷、出身地】",
+    "etymologyBreakdown": "「төрсөн」 ＋ 「нутаг」 ＝ 【生まれ故郷、出身地】"
   },
   {
     "id": "v_gen_377",
@@ -8733,7 +8900,8 @@ const initialVocabulary = [
     "note": "Төрсөн өдрийн баяр хүргэе! で「お誕生日おめでとう！」。",
     "isVerb": false,
     "dictForm": "төрсөн өдөр",
-    "derivation": "見出し語「төрсөн өдөр」"
+    "derivation": "「төрсөн」 ＋ 「өдөр」 ＝ 【誕生日】",
+    "etymologyBreakdown": "「төрсөн」 ＋ 「өдөр」 ＝ 【誕生日】"
   },
   {
     "id": "v_gen_378",
@@ -8911,7 +9079,8 @@ const initialVocabulary = [
     "note": "品詞: 形容詞",
     "isVerb": false,
     "dictForm": "ув улаан",
-    "derivation": "見出し語「ув улаан」"
+    "derivation": "「ув」 ＋ 「улаан」 ＝ 【真っ赤な】",
+    "etymologyBreakdown": "「ув」 ＋ 「улаан」 ＝ 【真っ赤な】"
   },
   {
     "id": "v_gen_391",
@@ -8959,7 +9128,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "улаан лооль, помидор",
-    "derivation": "見出し語「улаан лооль, помидор」"
+    "derivation": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】",
+    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】"
   },
   {
     "id": "v_gen_394",
@@ -9087,7 +9257,8 @@ const initialVocabulary = [
     "note": "水泳用のプール。",
     "isVerb": false,
     "dictForm": "усан бассейн",
-    "derivation": "見出し語「усан бассейн」"
+    "derivation": "「усан」 ＋ 「бассейн」 ＝ 【プール、水泳プール】",
+    "etymologyBreakdown": "「усан」 ＋ 「бассейн」 ＝ 【プール、水泳プール】"
   },
   {
     "id": "v_gen_402",
@@ -9135,7 +9306,8 @@ const initialVocabulary = [
     "note": "утас（電話）の属格 ＋ дугаар（番号）。",
     "isVerb": false,
     "dictForm": "утасны дугаар",
-    "derivation": "見出し語「утасны дугаар」"
+    "derivation": "「утасны」 ＋ 「дугаар」 ＝ 【電話番号】",
+    "etymologyBreakdown": "「утасны」 ＋ 「дугаар」 ＝ 【電話番号】"
   },
   {
     "id": "v_gen_405",
@@ -9263,7 +9435,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句・副詞",
     "isVerb": false,
     "dictForm": "үдээс хойш",
-    "derivation": "見出し語「үдээс хойш」"
+    "derivation": "「үдээс」 ＋ 「хойш」 ＝ 【午後】",
+    "etymologyBreakdown": "「үдээс」 ＋ 「хойш」 ＝ 【午後】"
   },
   {
     "id": "v_gen_413",
@@ -9393,7 +9566,8 @@ const initialVocabulary = [
     "note": "買い物で値段の高さに驚くときの感嘆表現。",
     "isVerb": false,
     "dictForm": "үнэтэй юм аа",
-    "derivation": "見出し語「үнэтэй юм аа」"
+    "derivation": "「үнэтэй」 ＋ 「юм（こと・もの）」 ＋ 「аа」 ＝ 【高いですねえ！】",
+    "etymologyBreakdown": "「үнэтэй」 ＋ 「юм（こと・もの）」 ＋ 「аа」 ＝ 【高いですねえ！】"
   },
   {
     "id": "v_gen_421",
@@ -9617,7 +9791,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "хагас сайн өдөр",
-    "derivation": "見出し語「хагас сайн өдөр」"
+    "derivation": "「хагас」 ＋ 「сайн」 ＋ 「өдөр」 ＝ 【土曜日（半吉日）】",
+    "etymologyBreakdown": "「хагас」 ＋ 「сайн」 ＋ 「өдөр」 ＝ 【土曜日（半吉日）】"
   },
   {
     "id": "v_gen_435",
@@ -9713,7 +9888,8 @@ const initialVocabulary = [
     "note": "халуун（熱い）＋ рашаан（薬水・鉱泉・温泉）。",
     "isVerb": false,
     "dictForm": "халуун рашаан",
-    "derivation": "見出し語「халуун рашаан」"
+    "derivation": "「халуун」 ＋ 「рашаан」 ＝ 【温泉、鉱泉】",
+    "etymologyBreakdown": "「халуун」 ＋ 「рашаан」 ＝ 【温泉、鉱泉】"
   },
   {
     "id": "v_gen_441",
@@ -9921,7 +10097,8 @@ const initialVocabulary = [
     "note": "хасах（引く・マイナス）＋ 30 ＋ хэм（度）。",
     "isVerb": false,
     "dictForm": "хасах 30 хэм",
-    "derivation": "見出し語「хасах 30 хэм」"
+    "derivation": "「хасах」 ＋ 「30」 ＋ 「хэм」 ＝ 【マイナス30度（氷点下30℃）】",
+    "etymologyBreakdown": "「хасах」 ＋ 「30」 ＋ 「хэм」 ＝ 【マイナス30度（氷点下30℃）】"
   },
   {
     "id": "v_gen_457",
@@ -9971,7 +10148,8 @@ const initialVocabulary = [
     "note": "口語でよく使われる火曜日の言い方。",
     "isVerb": false,
     "dictForm": "хоёрдахь өдөр",
-    "derivation": "見出し語「хоёрдахь өдөр」"
+    "derivation": "「хоёрдахь」 ＋ 「өдөр」 ＝ 【火曜日（週の2日目）】",
+    "etymologyBreakdown": "「хоёрдахь」 ＋ 「өдөр」 ＝ 【火曜日（週の2日目）】"
   },
   {
     "id": "v_gen_460",
@@ -10131,7 +10309,8 @@ const initialVocabulary = [
     "note": "都市の行政庁舎。",
     "isVerb": false,
     "dictForm": "хотын захиргаа",
-    "derivation": "見出し語「хотын захиргаа」"
+    "derivation": "「хотын（街の（хот ＋ 属格 -ын））」 ＋ 「захиргаа」 ＝ 【市役所、市庁舎】",
+    "etymologyBreakdown": "「хотын（街の（хот ＋ 属格 -ын））」 ＋ 「захиргаа」 ＝ 【市役所、市庁舎】"
   },
   {
     "id": "v_gen_471",
@@ -10195,7 +10374,8 @@ const initialVocabulary = [
     "note": "хөл（足）＋ бөмбөг（ボール）。",
     "isVerb": false,
     "dictForm": "хөл бөмбөг",
-    "derivation": "見出し語「хөл бөмбөг」"
+    "derivation": "「хөл（足）」 ＋ 「бөмбөг」 ＝ 【サッカー】",
+    "etymologyBreakdown": "「хөл（足）」 ＋ 「бөмбөг」 ＝ 【サッカー】"
   },
   {
     "id": "v_gen_475",
@@ -10323,7 +10503,8 @@ const initialVocabulary = [
     "note": "хурал（会議）の属格 ＋ танхим（ホール・室）。",
     "isVerb": false,
     "dictForm": "хурлын танхим",
-    "derivation": "見出し語「хурлын танхим」"
+    "derivation": "「хурлын」 ＋ 「танхим」 ＝ 【会議室、大会議場】",
+    "etymologyBreakdown": "「хурлын」 ＋ 「танхим」 ＝ 【会議室、大会議場】"
   },
   {
     "id": "v_gen_483",
@@ -10421,7 +10602,8 @@ const initialVocabulary = [
     "note": "国の人口。",
     "isVerb": false,
     "dictForm": "хүн ам",
-    "derivation": "見出し語「хүн ам」"
+    "derivation": "「хүн」 ＋ 「ам」 ＝ 【人口】",
+    "etymologyBreakdown": "「хүн」 ＋ 「ам」 ＝ 【人口】"
   },
   {
     "id": "v_gen_490",
@@ -10469,7 +10651,8 @@ const initialVocabulary = [
     "note": "食料品を売るお店。",
     "isVerb": false,
     "dictForm": "хүнсний дэлгүүр",
-    "derivation": "見出し語「хүнсний дэлгүүр」"
+    "derivation": "「хүнсний（食料の（хүнс ＋ 属格 -ний））」 ＋ 「дэлгүүр（店舗・商店）」 ＝ 【食料品店、スーパーマーケット】",
+    "etymologyBreakdown": "「хүнсний（食料の（хүнс ＋ 属格 -ний））」 ＋ 「дэлгүүр（店舗・商店）」 ＝ 【食料品店、スーパーマーケット】"
   },
   {
     "id": "v_gen_493",
@@ -10533,7 +10716,8 @@ const initialVocabulary = [
     "note": "モンゴルでは国民の祝日で盛大に祝われる。",
     "isVerb": false,
     "dictForm": "Хүүхдийн баяр",
-    "derivation": "見出し語「Хүүхдийн баяр」"
+    "derivation": "「хүүхдийн」 ＋ 「баяр（祝い・祝日・喜び）」 ＝ 【子どもの日（6月1日）】",
+    "etymologyBreakdown": "「хүүхдийн」 ＋ 「баяр（祝い・祝日・喜び）」 ＝ 【子どもの日（6月1日）】"
   },
   {
     "id": "v_gen_497",
@@ -10581,7 +10765,8 @@ const initialVocabulary = [
     "note": "曜日を尋ねる日常会話の疑問表現。",
     "isVerb": false,
     "dictForm": "хэддэх өдөр",
-    "derivation": "見出し語「хэддэх өдөр」"
+    "derivation": "「хэддэх」 ＋ 「өдөр」 ＝ 【何曜日（口語）】",
+    "etymologyBreakdown": "「хэддэх」 ＋ 「өдөр」 ＝ 【何曜日（口語）】"
   },
   {
     "id": "v_gen_500",
@@ -10629,7 +10814,8 @@ const initialVocabulary = [
     "note": "気温やアルコール度数を表す。",
     "isVerb": false,
     "dictForm": "хэм, градус",
-    "derivation": "見出し語「хэм, градус」"
+    "derivation": "「хэм」 ＋ 「градус」 ＝ 【度、気温、度数】",
+    "etymologyBreakdown": "「хэм」 ＋ 「градус」 ＝ 【度、気温、度数】"
   },
   {
     "id": "v_gen_507",
@@ -10645,7 +10831,8 @@ const initialVocabulary = [
     "note": "程度や量を尋ねる表現。",
     "isVerb": false,
     "dictForm": "хэр зэрэг",
-    "derivation": "見出し語「хэр зэрэг」"
+    "derivation": "「хэр」 ＋ 「зэрэг（レベル・段階・級）」 ＝ 【どのくらい、どの程度】",
+    "etymologyBreakdown": "「хэр」 ＋ 「зэрэг（レベル・段階・級）」 ＝ 【どのくらい、どの程度】"
   },
   {
     "id": "v_gen_508",
@@ -10823,7 +11010,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "цаг агаар",
-    "derivation": "見出し語「цаг агаар」"
+    "derivation": "「цаг」 ＋ 「агаар」 ＝ 【天気、気候】",
+    "etymologyBreakdown": "「цаг」 ＋ 「агаар」 ＝ 【天気、気候】"
   },
   {
     "id": "v_gen_520",
@@ -10839,7 +11027,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "цаг агаарын мэдээ",
-    "derivation": "見出し語「цаг агаарын мэдээ」"
+    "derivation": "「цаг」 ＋ 「агаарын（空気の・航空の（агаар ＋ 属格 -ын））」 ＋ 「мэдээ」 ＝ 【天気予報】",
+    "etymologyBreakdown": "「цаг」 ＋ 「агаарын（空気の・航空の（агаар ＋ 属格 -ын））」 ＋ 「мэдээ」 ＝ 【天気予報】"
   },
   {
     "id": "v_gen_521",
@@ -10855,7 +11044,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "цагаан будаа",
-    "derivation": "見出し語「цагаан будаа」"
+    "derivation": "「цагаан（白い）」 ＋ 「будаа」 ＝ 【白米、ご飯】",
+    "etymologyBreakdown": "「цагаан（白い）」 ＋ 「будаа」 ＝ 【白米、ご飯】"
   },
   {
     "id": "v_gen_522",
@@ -10871,7 +11061,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "цагаан идээ",
-    "derivation": "見出し語「цагаан идээ」"
+    "derivation": "「цагаан（白い）」 ＋ 「идээ」 ＝ 【乳製品（ツァガーン・イデー）】",
+    "etymologyBreakdown": "「цагаан（白い）」 ＋ 「идээ」 ＝ 【乳製品（ツァガーン・イデー）】"
   },
   {
     "id": "v_gen_523",
@@ -10887,7 +11078,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞",
     "isVerb": false,
     "dictForm": "Цагаан сар",
-    "derivation": "見出し語「Цагаан сар」"
+    "derivation": "「цагаан（白い）」 ＋ 「сар（月・お月様）」 ＝ 【ツァガーン・サル（旧正月）】",
+    "etymologyBreakdown": "「цагаан（白い）」 ＋ 「сар（月・お月様）」 ＝ 【ツァガーン・サル（旧正月）】"
   },
   {
     "id": "v_gen_524",
@@ -10919,7 +11111,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "цагийн хуваарь",
-    "derivation": "見出し語「цагийн хуваарь」"
+    "derivation": "「цагийн」 ＋ 「хуваарь」 ＝ 【スケジュール、時刻表】",
+    "etymologyBreakdown": "「цагийн」 ＋ 「хуваарь」 ＝ 【スケジュール、時刻表】"
   },
   {
     "id": "v_gen_527",
@@ -10935,7 +11128,8 @@ const initialVocabulary = [
     "note": "庶民的なモンゴル料理食堂。",
     "isVerb": false,
     "dictForm": "цайны газар",
-    "derivation": "見出し語「цайны газар」"
+    "derivation": "「цайны」 ＋ 「газар（場所・官公庁・局）」 ＝ 【食堂、カフェ、軽食堂】",
+    "etymologyBreakdown": "「цайны」 ＋ 「газар（場所・官公庁・局）」 ＝ 【食堂、カフェ、軽食堂】"
   },
   {
     "id": "v_gen_528",
@@ -11211,9 +11405,10 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "шар айраг",
-    "derivation": "見出し語「шар айраг」",
+    "derivation": "「шар」 ＋ 「айраг」 ＝ 【ビール】",
     "genreId": "dining",
-    "genreName": "食べ物・レストラン"
+    "genreName": "食べ物・レストラン",
+    "etymologyBreakdown": "「шар」 ＋ 「айраг」 ＝ 【ビール】"
   },
   {
     "id": "v_gen_546",
@@ -11293,7 +11488,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "шинэ жил",
-    "derivation": "見出し語「шинэ жил」"
+    "derivation": "「шинэ」 ＋ 「жил」 ＝ 【新年、お正月】",
+    "etymologyBreakdown": "「шинэ」 ＋ 「жил」 ＝ 【新年、お正月】"
   },
   {
     "id": "v_gen_552",
@@ -11357,7 +11553,8 @@ const initialVocabulary = [
     "note": "乗り継ぎのないフライト。",
     "isVerb": false,
     "dictForm": "шууд нислэг",
-    "derivation": "見出し語「шууд нислэг」"
+    "derivation": "「шууд」 ＋ 「нислэг」 ＝ 【直行便】",
+    "etymologyBreakdown": "「шууд」 ＋ 「нислэг」 ＝ 【直行便】"
   },
   {
     "id": "v_gen_556",
@@ -11485,7 +11682,8 @@ const initialVocabulary = [
     "note": "品詞: 名詞句",
     "isVerb": false,
     "dictForm": "эмийн жор",
-    "derivation": "見出し語「эмийн жор」"
+    "derivation": "「эмийн（薬の（эм ＋ 属格 -ийн））」 ＋ 「жор」 ＝ 【処方箋】",
+    "etymologyBreakdown": "「эмийн（薬の（эм ＋ 属格 -ийн））」 ＋ 「жор」 ＝ 【処方箋】"
   },
   {
     "id": "v_gen_565",
@@ -11597,7 +11795,8 @@ const initialVocabulary = [
     "note": "энэ（この）＋ долоо хоног（1週間）。",
     "isVerb": false,
     "dictForm": "энэ долоо хоног",
-    "derivation": "見出し語「энэ долоо хоног」"
+    "derivation": "「энэ」 ＋ 「долоо」 ＋ 「хоног」 ＝ 【今週】",
+    "etymologyBreakdown": "「энэ」 ＋ 「долоо」 ＋ 「хоног」 ＝ 【今週】"
   },
   {
     "id": "v_gen_574",
@@ -11613,7 +11812,8 @@ const initialVocabulary = [
     "note": "世界有数の銅鉱山を擁するモンゴル第2の都市。",
     "isVerb": false,
     "dictForm": "Эрдэнэт хот",
-    "derivation": "見出し語「Эрдэнэт хот」"
+    "derivation": "「эрдэнэт」 ＋ 「хот（都市・街）」 ＝ 【エルデネット市】",
+    "etymologyBreakdown": "「эрдэнэт」 ＋ 「хот（都市・街）」 ＝ 【エルデネット市】"
   },
   {
     "id": "v_gen_575",
@@ -11645,7 +11845,8 @@ const initialVocabulary = [
     "note": "Эрүүл мэндийн яам（保健省）。",
     "isVerb": false,
     "dictForm": "эрүүл мэнд",
-    "derivation": "見出し語「эрүүл мэнд」"
+    "derivation": "「эрүүл」 ＋ 「мэнд」 ＝ 【健康、ヘルス】",
+    "etymologyBreakdown": "「эрүүл」 ＋ 「мэнд」 ＝ 【健康、ヘルス】"
   },
   {
     "id": "v_gen_577",
@@ -11853,7 +12054,8 @@ const initialVocabulary = [
     "note": "品詞: 接続詞",
     "isVerb": false,
     "dictForm": "яагаад гэвэл",
-    "derivation": "見出し語「яагаад гэвэл」"
+    "derivation": "「яагаад」 ＋ 「гэвэл」 ＝ 【なぜなら、というのも】",
+    "etymologyBreakdown": "「яагаад」 ＋ 「гэвэл」 ＝ 【なぜなら、というのも】"
   },
   {
     "id": "v_gen_591",
@@ -11885,7 +12087,8 @@ const initialVocabulary = [
     "note": "品詞: 挨拶・表現",
     "isVerb": false,
     "dictForm": "Яасан бэ?",
-    "derivation": "見出し語「Яасан бэ?」"
+    "derivation": "「яасан」 ＋ 「бэ」 ＝ 【どうしましたか？何があったの？】",
+    "etymologyBreakdown": "「яасан」 ＋ 「бэ」 ＝ 【どうしましたか？何があったの？】"
   },
   {
     "id": "v_gen_593",
@@ -11997,7 +12200,8 @@ const initialVocabulary = [
     "note": "曜日の尋ね方。",
     "isVerb": false,
     "dictForm": "ямар гараг",
-    "derivation": "見出し語「ямар гараг」"
+    "derivation": "「ямар」 ＋ 「гараг」 ＝ 【何曜日（正式・暦）】",
+    "etymologyBreakdown": "「ямар」 ＋ 「гараг」 ＝ 【何曜日（正式・暦）】"
   },
   {
     "id": "v_gen_600",
@@ -12013,7 +12217,8 @@ const initialVocabulary = [
     "note": "不特定の対象を表す。",
     "isVerb": false,
     "dictForm": "ямар нэг",
-    "derivation": "見出し語「ямар нэг」"
+    "derivation": "「ямар」 ＋ 「нэг」 ＝ 【何かしらの、ある〜】",
+    "etymologyBreakdown": "「ямар」 ＋ 「нэг」 ＝ 【何かしらの、ある〜】"
   },
   {
     "id": "v_gen_601",
@@ -12029,7 +12234,8 @@ const initialVocabulary = [
     "note": "価格を尋ねる。",
     "isVerb": false,
     "dictForm": "ямар үнэтэй",
-    "derivation": "見出し語「ямар үнэтэй」"
+    "derivation": "「ямар」 ＋ 「үнэтэй」 ＝ 【どのくらいの値段、いくらの価格】",
+    "etymologyBreakdown": "「ямар」 ＋ 「үнэтэй」 ＝ 【どのくらいの値段、いくらの価格】"
   },
   {
     "id": "v_gen_602",
@@ -12045,7 +12251,8 @@ const initialVocabulary = [
     "note": "様々な種類の。",
     "isVerb": false,
     "dictForm": "янз бүрийн",
-    "derivation": "見出し語「янз бүрийн」"
+    "derivation": "「янз」 ＋ 「бүрийн」 ＝ 【さまざまな、色々な、多種多様な】",
+    "etymologyBreakdown": "「янз」 ＋ 「бүрийн」 ＝ 【さまざまな、色々な、多種多様な】"
   },
   {
     "id": "v_gen_603",
@@ -12406,7 +12613,8 @@ const initialVocabulary = [
     "note": "үд（正午）から өмнө（前）。",
     "isVerb": false,
     "dictForm": "үдээс өмнө",
-    "derivation": "見出し語「үдээс өмнө」"
+    "derivation": "「үдээс」 ＋ 「өмнө（南・前）」 ＝ 【午前、お昼前】",
+    "etymologyBreakdown": "「үдээс」 ＋ 「өмнө（南・前）」 ＝ 【午前、お昼前】"
   },
   {
     "id": "v_gen_654",
@@ -12422,7 +12630,8 @@ const initialVocabulary = [
     "note": "口語表現の木曜日。",
     "isVerb": false,
     "dictForm": "дөрөвдэхь өдөр",
-    "derivation": "見出し語「дөрөвдэхь өдөр」"
+    "derivation": "「дөрөвдэхь」 ＋ 「өдөр」 ＝ 【木曜日（週の4日目）】",
+    "etymologyBreakdown": "「дөрөвдэхь」 ＋ 「өдөр」 ＝ 【木曜日（週の4日目）】"
   },
   {
     "id": "v_gen_661",
@@ -12438,7 +12647,8 @@ const initialVocabulary = [
     "note": "男性全般。",
     "isVerb": false,
     "dictForm": "эрэгтэй хүн",
-    "derivation": "見出し語「эрэгтэй хүн」"
+    "derivation": "「эрэгтэй」 ＋ 「хүн」 ＝ 【男の人、男性】",
+    "etymologyBreakdown": "「эрэгтэй」 ＋ 「хүн」 ＝ 【男の人、男性】"
   },
   {
     "id": "v_gen_662",
@@ -12454,7 +12664,8 @@ const initialVocabulary = [
     "note": "女性全般。",
     "isVerb": false,
     "dictForm": "эмэгтэй хүн",
-    "derivation": "見出し語「эмэгтэй хүн」"
+    "derivation": "「эмэгтэй」 ＋ 「хүн」 ＝ 【女の人、女性】",
+    "etymologyBreakdown": "「эмэгтэй」 ＋ 「хүн」 ＝ 【女の人、女性】"
   },
   {
     "id": "v_gen_664",
@@ -12518,7 +12729,8 @@ const initialVocabulary = [
     "note": "галт（火の）＋ тэрэг（車輪・荷車）。モンゴル縦断鉄道。",
     "isVerb": false,
     "dictForm": "галт тэрэг",
-    "derivation": "見出し語「галт тэрэг」"
+    "derivation": "「галт（火を持つ・蒸気の（гал ＋ 接尾辞 -т））」 ＋ 「тэрэг（荷車・車両・車）」 ＝ 【列車、汽車、電車】",
+    "etymologyBreakdown": "「галт（火を持つ・蒸気の（гал ＋ 接尾辞 -т））」 ＋ 「тэрэг（荷車・車両・車）」 ＝ 【列車、汽車、電車】"
   },
   {
     "id": "v_gen_676",
@@ -12550,7 +12762,8 @@ const initialVocabulary = [
     "note": "モンゴル国の正式名称。",
     "isVerb": false,
     "dictForm": "Монгол улс",
-    "derivation": "見出し語「Монгол улс」"
+    "derivation": "「монгол」 ＋ 「улс」 ＝ 【モンゴル国】",
+    "etymologyBreakdown": "「монгол」 ＋ 「улс」 ＝ 【モンゴル国】"
   },
   {
     "id": "v_gen_678",
@@ -12566,7 +12779,8 @@ const initialVocabulary = [
     "note": "日本の言語。",
     "isVerb": false,
     "dictForm": "Япон хэл",
-    "derivation": "見出し語「Япон хэл」"
+    "derivation": "「япон」 ＋ 「хэл」 ＝ 【日本語】",
+    "etymologyBreakdown": "「япон」 ＋ 「хэл」 ＝ 【日本語】"
   },
   {
     "id": "v_gen_679",
@@ -12918,7 +13132,8 @@ const initialVocabulary = [
     "note": "品詞: 数詞",
     "isVerb": false,
     "dictForm": "арван нэг",
-    "derivation": "見出し語「арван нэг」"
+    "derivation": "「арван」 ＋ 「нэг」 ＝ 【11（十一）】",
+    "etymologyBreakdown": "「арван」 ＋ 「нэг」 ＝ 【11（十一）】"
   },
   {
     "id": "v_gen_716",
@@ -12934,7 +13149,8 @@ const initialVocabulary = [
     "note": "品詞: 数詞",
     "isVerb": false,
     "dictForm": "арван хоёр",
-    "derivation": "見出し語「арван хоёр」"
+    "derivation": "「арван」 ＋ 「хоёр」 ＝ 【12（十二）】",
+    "etymologyBreakdown": "「арван」 ＋ 「хоёр」 ＝ 【12（十二）】"
   },
   {
     "id": "v_gen_717",
@@ -12966,7 +13182,8 @@ const initialVocabulary = [
     "note": "品詞: 数詞",
     "isVerb": false,
     "dictForm": "хорин нэг",
-    "derivation": "見出し語「хорин нэг」"
+    "derivation": "「хорин」 ＋ 「нэг」 ＝ 【21（二十一）】",
+    "etymologyBreakdown": "「хорин」 ＋ 「нэг」 ＝ 【21（二十一）】"
   },
   {
     "id": "v_gen_719",
@@ -12998,7 +13215,8 @@ const initialVocabulary = [
     "note": "品詞: 数詞",
     "isVerb": false,
     "dictForm": "гучин нэг",
-    "derivation": "見出し語「гучин нэг」"
+    "derivation": "「гучин」 ＋ 「нэг」 ＝ 【31（三十一）】",
+    "etymologyBreakdown": "「гучин」 ＋ 「нэг」 ＝ 【31（三十一）】"
   },
   {
     "id": "v_gen_721",
@@ -13030,7 +13248,8 @@ const initialVocabulary = [
     "note": "品詞: 数詞",
     "isVerb": false,
     "dictForm": "дөчин хоёр",
-    "derivation": "見出し語「дөчин хоёр」"
+    "derivation": "「дөчин」 ＋ 「хоёр」 ＝ 【42（四十二）】",
+    "etymologyBreakdown": "「дөчин」 ＋ 「хоёр」 ＝ 【42（四十二）】"
   },
   {
     "id": "v_gen_723",
@@ -13142,7 +13361,8 @@ const initialVocabulary = [
     "dictForm": "гар өргөх",
     "root": "гар өргө",
     "id": "v_note_1",
-    "derivation": "見出し語「гар өргөх」"
+    "derivation": "「гар（手）」 ＋ 「өргөх」 ＝ 【手を挙げる】",
+    "etymologyBreakdown": "「гар（手）」 ＋ 「өргөх」 ＝ 【手を挙げる】"
   },
   {
     "mongolian": "дээс тоглох",
@@ -13158,7 +13378,8 @@ const initialVocabulary = [
     "dictForm": "дээс тоглох",
     "root": "дээс тогло",
     "id": "v_note_2",
-    "derivation": "見出し語「дээс тоглох」"
+    "derivation": "「дээс」 ＋ 「тоглох」 ＝ 【縄跳びをする】",
+    "etymologyBreakdown": "「дээс」 ＋ 「тоглох」 ＝ 【縄跳びをする】"
   },
   {
     "mongolian": "авирах",
@@ -13205,7 +13426,8 @@ const initialVocabulary = [
     "dictForm": "насанд хүрэх",
     "root": "насанд хүр",
     "id": "v_note_5",
-    "derivation": "見出し語「насанд хүрэх」"
+    "derivation": "「насанд」 ＋ 「хүрэх」 ＝ 【成人する、大人になる】",
+    "etymologyBreakdown": "「насанд」 ＋ 「хүрэх」 ＝ 【成人する、大人になる】"
   },
   {
     "mongolian": "сонгох",
@@ -13285,7 +13507,8 @@ const initialVocabulary = [
     "dictForm": "нойр хүрэх",
     "root": "нойр хүр",
     "id": "v_note_10",
-    "derivation": "見出し語「нойр хүрэх」"
+    "derivation": "「нойр」 ＋ 「хүрэх」 ＝ 【眠くなる、眠気をもよおす】",
+    "etymologyBreakdown": "「нойр」 ＋ 「хүрэх」 ＝ 【眠くなる、眠気をもよおす】"
   },
   {
     "mongolian": "буцаах",
@@ -13317,7 +13540,8 @@ const initialVocabulary = [
     "dictForm": "зураг авахуулах",
     "root": "зураг авахуул",
     "id": "v_note_12",
-    "derivation": "見出し語「зураг авахуулах」"
+    "derivation": "「зураг」 ＋ 「авахуулах」 ＝ 【写真を撮ってもらう】",
+    "etymologyBreakdown": "「зураг」 ＋ 「авахуулах」 ＝ 【写真を撮ってもらう】"
   },
   {
     "mongolian": "өнжүүлэх",
@@ -13381,7 +13605,8 @@ const initialVocabulary = [
     "dictForm": "амьтан тэжээх",
     "root": "амьтан тэжээ",
     "id": "v_note_16",
-    "derivation": "見出し語「амьтан тэжээх」"
+    "derivation": "「амьтан」 ＋ 「тэжээх」 ＝ 【動物を飼う、飼育する】",
+    "etymologyBreakdown": "「амьтан」 ＋ 「тэжээх」 ＝ 【動物を飼う、飼育する】"
   },
   {
     "mongolian": "эмнэлэгт хэвтэх",
@@ -13397,7 +13622,8 @@ const initialVocabulary = [
     "dictForm": "эмнэлэгт хэвтэх",
     "root": "эмнэлэгт хэвт",
     "id": "v_note_17",
-    "derivation": "見出し語「эмнэлэгт хэвтэх」"
+    "derivation": "「эмнэлэгт」 ＋ 「хэвтэх」 ＝ 【入院する】",
+    "etymologyBreakdown": "「эмнэлэгт」 ＋ 「хэвтэх」 ＝ 【入院する】"
   },
   {
     "mongolian": "таргалах",
@@ -13461,7 +13687,8 @@ const initialVocabulary = [
     "dictForm": "хөлс гарах",
     "root": "хөлс гар",
     "id": "v_note_21",
-    "derivation": "見出し語「хөлс гарах」"
+    "derivation": "「хөлс」 ＋ 「гарах」 ＝ 【汗が出る、汗をかく】",
+    "etymologyBreakdown": "「хөлс」 ＋ 「гарах」 ＝ 【汗が出る、汗をかく】"
   },
   {
     "mongolian": "маск зүүх",
@@ -13477,7 +13704,8 @@ const initialVocabulary = [
     "dictForm": "маск зүүх",
     "root": "маск зүү",
     "id": "v_note_22",
-    "derivation": "見出し語「маск зүүх」"
+    "derivation": "「маск」 ＋ 「зүүх」 ＝ 【マスクをつける】",
+    "etymologyBreakdown": "「маск」 ＋ 「зүүх」 ＝ 【マスクをつける】"
   },
   {
     "mongolian": "илтгэл тавих",
@@ -13493,7 +13721,8 @@ const initialVocabulary = [
     "dictForm": "илтгэл тавих",
     "root": "илтгэл тавь",
     "id": "v_note_23",
-    "derivation": "見出し語「илтгэл тавих」"
+    "derivation": "「илтгэл」 ＋ 「тавих」 ＝ 【発表する、プレゼンテーションをする】",
+    "etymologyBreakdown": "「илтгэл」 ＋ 「тавих」 ＝ 【発表する、プレゼンテーションをする】"
   },
   {
     "mongolian": "байрны мөнгө шилжүүлэх",
@@ -13509,7 +13738,8 @@ const initialVocabulary = [
     "dictForm": "байрны мөнгө шилжүүлэх",
     "root": "байрны мөнгө шилжүүл",
     "id": "v_note_24",
-    "derivation": "見出し語「байрны мөнгө шилжүүлэх」"
+    "derivation": "「байрны（アパートの（байр ＋ 属格 -ны））」 ＋ 「мөнгө（お金・銀）」 ＋ 「шилжүүлэх」 ＝ 【家賃を振り込む】",
+    "etymologyBreakdown": "「байрны（アパートの（байр ＋ 属格 -ны））」 ＋ 「мөнгө（お金・銀）」 ＋ 「шилжүүлэх」 ＝ 【家賃を振り込む】"
   },
   {
     "mongolian": "вакцин хийлгэх",
@@ -13525,7 +13755,8 @@ const initialVocabulary = [
     "dictForm": "вакцин хийлгэх",
     "root": "вакцин хийлгэ",
     "id": "v_note_25",
-    "derivation": "見出し語「вакцин хийлгэх」"
+    "derivation": "「вакцин」 ＋ 「хийлгэх」 ＝ 【ワクチンを接種する】",
+    "etymologyBreakdown": "「вакцин」 ＋ 「хийлгэх」 ＝ 【ワクチンを接種する】"
   },
   {
     "mongolian": "хаалгаа түгжих",
@@ -13541,7 +13772,8 @@ const initialVocabulary = [
     "dictForm": "хаалгаа түгжих",
     "root": "хаалгаа түгж",
     "id": "v_note_26",
-    "derivation": "見出し語「хаалгаа түгжих」"
+    "derivation": "「хаалгаа」 ＋ 「түгжих」 ＝ 【ドアに鍵をかける】",
+    "etymologyBreakdown": "「хаалгаа」 ＋ 「түгжих」 ＝ 【ドアに鍵をかける】"
   },
   {
     "mongolian": "сургуульд орох",
@@ -13557,7 +13789,8 @@ const initialVocabulary = [
     "dictForm": "сургуульд орох",
     "root": "сургуульд ор",
     "id": "v_note_27",
-    "derivation": "見出し語「сургуульд орох」"
+    "derivation": "「сургуульд」 ＋ 「орох」 ＝ 【入学する、学校に入る】",
+    "etymologyBreakdown": "「сургуульд」 ＋ 「орох」 ＝ 【入学する、学校に入る】"
   },
   {
     "mongolian": "мөнгө солих",
@@ -13573,7 +13806,8 @@ const initialVocabulary = [
     "dictForm": "мөнгө солих",
     "root": "мөнгө соль",
     "id": "v_note_28",
-    "derivation": "見出し語「мөнгө солих」"
+    "derivation": "「мөнгө（お金・銀）」 ＋ 「солих」 ＝ 【両替する】",
+    "etymologyBreakdown": "「мөнгө（お金・銀）」 ＋ 「солих」 ＝ 【両替する】"
   },
   {
     "mongolian": "нум сум",
@@ -13588,7 +13822,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "нум сум",
     "id": "v_note_29",
-    "derivation": "見出し語「нум сум」"
+    "derivation": "「нум」 ＋ 「сум」 ＝ 【弓矢】",
+    "etymologyBreakdown": "「нум」 ＋ 「сум」 ＝ 【弓矢】"
   },
   {
     "mongolian": "зөөлөн тоглоом",
@@ -13603,7 +13838,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "зөөлөн тоглоом",
     "id": "v_note_30",
-    "derivation": "見出し語「зөөлөн тоглоом」"
+    "derivation": "「зөөлөн」 ＋ 「тоглоом」 ＝ 【ぬいぐるみ】",
+    "etymologyBreakdown": "「зөөлөн」 ＋ 「тоглоом」 ＝ 【ぬいぐるみ】"
   },
   {
     "mongolian": "хөвөн чихэр",
@@ -13618,7 +13854,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "хөвөн чихэр",
     "id": "v_note_31",
-    "derivation": "見出し語「хөвөн чихэр」"
+    "derivation": "「хөвөн」 ＋ 「чихэр」 ＝ 【綿菓子、わたあめ】",
+    "etymologyBreakdown": "「хөвөн」 ＋ 「чихэр」 ＝ 【綿菓子、わたあめ】"
   },
   {
     "mongolian": "үзэм",
@@ -13648,7 +13885,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "эрүүл хоол",
     "id": "v_note_33",
-    "derivation": "見出し語「эрүүл хоол」"
+    "derivation": "「эрүүл」 ＋ 「хоол」 ＝ 【健康食、ヘルシーな食事】",
+    "etymologyBreakdown": "「эрүүл」 ＋ 「хоол」 ＝ 【健康食、ヘルシーな食事】"
   },
   {
     "mongolian": "шөлтэй хоол",
@@ -13663,7 +13901,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "шөлтэй хоол",
     "id": "v_note_34",
-    "derivation": "見出し語「шөлтэй хоол」"
+    "derivation": "「шөлтэй」 ＋ 「хоол」 ＝ 【スープ料理、温かい汁物・鍋】",
+    "etymologyBreakdown": "「шөлтэй」 ＋ 「хоол」 ＝ 【スープ料理、温かい汁物・鍋】"
   },
   {
     "mongolian": "далайн байцаа",
@@ -13678,7 +13917,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "далайн байцаа",
     "id": "v_note_35",
-    "derivation": "見出し語「далайн байцаа」"
+    "derivation": "「далайн」 ＋ 「байцаа」 ＝ 【海苔、ワカメ、海藻】",
+    "etymologyBreakdown": "「далайн」 ＋ 「байцаа」 ＝ 【海苔、ワカメ、海藻】"
   },
   {
     "mongolian": "шилтэй архи",
@@ -13693,7 +13933,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "шилтэй архи",
     "id": "v_note_36",
-    "derivation": "見出し語「шилтэй архи」"
+    "derivation": "「шилтэй」 ＋ 「архи」 ＝ 【瓶入りの酒、ボトルウォッカ】",
+    "etymologyBreakdown": "「шилтэй」 ＋ 「архи」 ＝ 【瓶入りの酒、ボトルウォッカ】"
   },
   {
     "mongolian": "цонхны шил",
@@ -13708,7 +13949,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "цонхны шил",
     "id": "v_note_37",
-    "derivation": "見出し語「цонхны шил」"
+    "derivation": "「цонхны」 ＋ 「шил」 ＝ 【窓ガラス】",
+    "etymologyBreakdown": "「цонхны」 ＋ 「шил」 ＝ 【窓ガラス】"
   },
   {
     "mongolian": "овог нэр",
@@ -13723,7 +13965,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "овог нэр",
     "id": "v_note_38",
-    "derivation": "見出し語「овог нэр」"
+    "derivation": "「овог」 ＋ 「нэр」 ＝ 【姓名、苗字と名前】",
+    "etymologyBreakdown": "「овог」 ＋ 「нэр」 ＝ 【姓名、苗字と名前】"
   },
   {
     "mongolian": "заан",
@@ -13753,7 +13996,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "бэлэн хоол",
     "id": "v_note_40",
-    "derivation": "見出し語「бэлэн хоол」"
+    "derivation": "「бэлэн」 ＋ 「хоол」 ＝ 【出来合いの料理、お惣菜】",
+    "etymologyBreakdown": "「бэлэн」 ＋ 「хоол」 ＝ 【出来合いの料理、お惣菜】"
   },
   {
     "mongolian": "авч явдаг хоол",
@@ -13768,7 +14012,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "авч явдаг хоол",
     "id": "v_note_41",
-    "derivation": "見出し語「авч явдаг хоол」"
+    "derivation": "「авч」 ＋ 「явдаг」 ＋ 「хоол」 ＝ 【持ち帰り料理、お弁当、テイクアウト】",
+    "etymologyBreakdown": "「авч」 ＋ 「явдаг」 ＋ 「хоол」 ＝ 【持ち帰り料理、お弁当、テイクアウト】"
   },
   {
     "mongolian": "зам засвар",
@@ -13783,7 +14028,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "зам засвар",
     "id": "v_note_42",
-    "derivation": "見出し語「зам засвар」"
+    "derivation": "「зам」 ＋ 「засвар」 ＝ 【道路修理、道路工事】",
+    "etymologyBreakdown": "「зам」 ＋ 「засвар」 ＝ 【道路修理、道路工事】"
   },
   {
     "mongolian": "хаан",
@@ -13828,7 +14074,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "шүдний чигчлүүр",
     "id": "v_note_45",
-    "derivation": "見出し語「шүдний чигчлүүр」"
+    "derivation": "「шүдний」 ＋ 「чигчлүүр」 ＝ 【爪楊枝、ようじ】",
+    "etymologyBreakdown": "「шүдний」 ＋ 「чигчлүүр」 ＝ 【爪楊枝、ようじ】"
   },
   {
     "mongolian": "хулс",
@@ -13858,7 +14105,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "төрийн дуулал",
     "id": "v_note_47",
-    "derivation": "見出し語「төрийн дуулал」"
+    "derivation": "「төрийн」 ＋ 「дуулал」 ＝ 【国歌】",
+    "etymologyBreakdown": "「төрийн」 ＋ 「дуулал」 ＝ 【国歌】"
   },
   {
     "mongolian": "амтлагч",
@@ -13903,7 +14151,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "цайны ёслол",
     "id": "v_note_50",
-    "derivation": "見出し語「цайны ёслол」"
+    "derivation": "「цайны」 ＋ 「ёслол」 ＝ 【茶道】",
+    "etymologyBreakdown": "「цайны」 ＋ 「ёслол」 ＝ 【茶道】"
   },
   {
     "mongolian": "манан",
@@ -13933,7 +14182,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "хурдан галт тэрэг",
     "id": "v_note_52",
-    "derivation": "見出し語「хурдан галт тэрэг」"
+    "derivation": "「хурдан」 ＋ 「галт（火を持つ・蒸気の（гал ＋ 接尾辞 -т））」 ＋ 「тэрэг（荷車・車両・車）」 ＝ 【新幹線、特急列車、高速鉄道】",
+    "etymologyBreakdown": "「хурдан」 ＋ 「галт（火を持つ・蒸気の（гал ＋ 接尾辞 -т））」 ＋ 「тэрэг（荷車・車両・車）」 ＝ 【新幹線、特急列車、高速鉄道】"
   },
   {
     "mongolian": "тогоруу",
@@ -13963,7 +14213,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "алтан зул",
     "id": "v_note_54",
-    "derivation": "見出し語「алтан зул」"
+    "derivation": "「алтан」 ＋ 「зул」 ＝ 【チューリップ】",
+    "etymologyBreakdown": "「алтан」 ＋ 「зул」 ＝ 【チューリップ】"
   },
   {
     "mongolian": "хөзөр",
@@ -13993,7 +14244,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "дэлхийн хоёрдугаар дайн",
     "id": "v_note_56",
-    "derivation": "見出し語「дэлхийн хоёрдугаар дайн」"
+    "derivation": "「дэлхийн」 ＋ 「хоёрдугаар」 ＋ 「дайн」 ＝ 【第二次世界大戦】",
+    "etymologyBreakdown": "「дэлхийн」 ＋ 「хоёрдугаар」 ＋ 「дайн」 ＝ 【第二次世界大戦】"
   },
   {
     "mongolian": "хүнсний зах",
@@ -14008,7 +14260,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "хүнсний зах",
     "id": "v_note_57",
-    "derivation": "見出し語「хүнсний зах」"
+    "derivation": "「хүнсний（食料の（хүнс ＋ 属格 -ний））」 ＋ 「зах」 ＝ 【食品市場、生鮮マーケット】",
+    "etymologyBreakdown": "「хүнсний（食料の（хүнс ＋ 属格 -ний））」 ＋ 「зах」 ＝ 【食品市場、生鮮マーケット】"
   },
   {
     "mongolian": "сайхны хэрэгсэл",
@@ -14023,7 +14276,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "сайхны хэрэгсэл",
     "id": "v_note_58",
-    "derivation": "見出し語「сайхны хэрэгсэл」"
+    "derivation": "「сайхны」 ＋ 「хэрэгсэл」 ＝ 【化粧品、コスメ】",
+    "etymologyBreakdown": "「сайхны」 ＋ 「хэрэгсэл」 ＝ 【化粧品、コスメ】"
   },
   {
     "mongolian": "гэрийн хаяг",
@@ -14038,7 +14292,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "гэрийн хаяг",
     "id": "v_note_59",
-    "derivation": "見出し語「гэрийн хаяг」"
+    "derivation": "「гэрийн」 ＋ 「хаяг」 ＝ 【自宅住所】",
+    "etymologyBreakdown": "「гэрийн」 ＋ 「хаяг」 ＝ 【自宅住所】"
   },
   {
     "mongolian": "энгийн гадаад паспорт",
@@ -14053,7 +14308,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "энгийн гадаад паспорт",
     "id": "v_note_60",
-    "derivation": "見出し語「энгийн гадаад паспорт」"
+    "derivation": "「энгийн」 ＋ 「гадаад」 ＋ 「паспорт」 ＝ 【一般旅券、通常パスポート】",
+    "etymologyBreakdown": "「энгийн」 ＋ 「гадаад」 ＋ 「паспорт」 ＝ 【一般旅券、通常パスポート】"
   },
   {
     "mongolian": "чемодан",
@@ -14083,7 +14339,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "өдөр өнжүүлэх төв",
     "id": "v_note_62",
-    "derivation": "見出し語「өдөр өнжүүлэх төв」"
+    "derivation": "「өдөр」 ＋ 「өнжүүлэх」 ＋ 「төв（中心・センター）」 ＝ 【デイケアセンター、学童保育所】",
+    "etymologyBreakdown": "「өдөр」 ＋ 「өнжүүлэх」 ＋ 「төв（中心・センター）」 ＝ 【デイケアセンター、学童保育所】"
   },
   {
     "mongolian": "улаан түрс",
@@ -14098,7 +14355,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "улаан түрс",
     "id": "v_note_63",
-    "derivation": "見出し語「улаан түрс」"
+    "derivation": "「улаан」 ＋ 「түрс」 ＝ 【イクラ、赤キャビア】",
+    "etymologyBreakdown": "「улаан」 ＋ 「түрс」 ＝ 【イクラ、赤キャビア】"
   },
   {
     "mongolian": "эрүүл мэндийн даатгалын үнэмлэх",
@@ -14113,7 +14371,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "эрүүл мэндийн даатгалын үнэмлэх",
     "id": "v_note_64",
-    "derivation": "見出し語「эрүүл мэндийн даатгалын үнэмлэх」"
+    "derivation": "「эрүүл」 ＋ 「мэндийн」 ＋ 「даатгалын」 ＋ 「үнэмлэх」 ＝ 【健康保険証】",
+    "etymologyBreakdown": "「эрүүл」 ＋ 「мэндийн」 ＋ 「даатгалын」 ＋ 「үнэмлэх」 ＝ 【健康保険証】"
   },
   {
     "mongolian": "ногоочин",
@@ -14143,7 +14402,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "тахианы дэгдээхэй",
     "id": "v_note_66",
-    "derivation": "見出し語「тахианы дэгдээхэй」"
+    "derivation": "「тахианы」 ＋ 「дэгдээхэй」 ＝ 【ヒヨコ、ひな鳥】",
+    "etymologyBreakdown": "「тахианы」 ＋ 「дэгдээхэй」 ＝ 【ヒヨコ、ひな鳥】"
   },
   {
     "mongolian": "яст мэлхий",
@@ -14158,7 +14418,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "яст мэлхий",
     "id": "v_note_67",
-    "derivation": "見出し語「яст мэлхий」"
+    "derivation": "「яст」 ＋ 「мэлхий」 ＝ 【カメ、亀】",
+    "etymologyBreakdown": "「яст」 ＋ 「мэлхий」 ＝ 【カメ、亀】"
   },
   {
     "mongolian": "туулай",
@@ -14203,7 +14464,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "гадаад харилцааны яам",
     "id": "v_note_70",
-    "derivation": "見出し語「гадаад харилцааны яам」"
+    "derivation": "「гадаад」 ＋ 「харилцааны」 ＋ 「яам」 ＝ 【外務省】",
+    "etymologyBreakdown": "「гадаад」 ＋ 「харилцааны」 ＋ 「яам」 ＝ 【外務省】"
   },
   {
     "mongolian": "гэр хороолол",
@@ -14218,7 +14480,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "гэр хороолол",
     "id": "v_note_71",
-    "derivation": "見出し語「гэр хороолол」"
+    "derivation": "「гэр（家・家庭）」 ＋ 「хороолол」 ＝ 【ゲル地区】",
+    "etymologyBreakdown": "「гэр（家・家庭）」 ＋ 「хороолол」 ＝ 【ゲル地区】"
   },
   {
     "mongolian": "байрны хороолол",
@@ -14233,7 +14496,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "байрны хороолол",
     "id": "v_note_72",
-    "derivation": "見出し語「байрны хороолол」"
+    "derivation": "「байрны（アパートの（байр ＋ 属格 -ны））」 ＋ 「хороолол」 ＝ 【アパート街、団地地区】",
+    "etymologyBreakdown": "「байрны（アパートの（байр ＋ 属格 -ны））」 ＋ 「хороолол」 ＝ 【アパート街、団地地区】"
   },
   {
     "mongolian": "сүлжээ дэлгүүр",
@@ -14248,7 +14512,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "сүлжээ дэлгүүр",
     "id": "v_note_73",
-    "derivation": "見出し語「сүлжээ дэлгүүр」"
+    "derivation": "「сүлжээ」 ＋ 「дэлгүүр（店舗・商店）」 ＝ 【チェーン店、スーパーのチェーン】",
+    "etymologyBreakdown": "「сүлжээ」 ＋ 「дэлгүүр（店舗・商店）」 ＝ 【チェーン店、スーパーのチェーン】"
   },
   {
     "mongolian": "өндөр настан",
@@ -14263,7 +14528,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "өндөр настан",
     "id": "v_note_74",
-    "derivation": "見出し語「өндөр настан」"
+    "derivation": "「өндөр」 ＋ 「настан」 ＝ 【高齢者、お年寄り】",
+    "etymologyBreakdown": "「өндөр」 ＋ 「настан」 ＝ 【高齢者、お年寄り】"
   },
   {
     "mongolian": "адуу",
@@ -14368,7 +14634,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "шинийн нэгэн",
     "id": "v_note_81",
-    "derivation": "見出し語「шинийн нэгэн」"
+    "derivation": "「шинийн」 ＋ 「нэгэн」 ＝ 【旧正月元日、ツァガーンサルの初日】",
+    "etymologyBreakdown": "「шинийн」 ＋ 「нэгэн」 ＝ 【旧正月元日、ツァガーンサルの初日】"
   },
   {
     "mongolian": "зурагтай ном",
@@ -14383,7 +14650,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "зурагтай ном",
     "id": "v_note_82",
-    "derivation": "見出し語「зурагтай ном」"
+    "derivation": "「зурагтай」 ＋ 「ном（本・書物）」 ＝ 【絵本、図鑑】",
+    "etymologyBreakdown": "「зурагтай」 ＋ 「ном（本・書物）」 ＝ 【絵本、図鑑】"
   },
   {
     "mongolian": "хурдан морь",
@@ -14398,7 +14666,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "хурдан морь",
     "id": "v_note_83",
-    "derivation": "見出し語「хурдан морь」"
+    "derivation": "「хурдан」 ＋ 「морь（馬）」 ＝ 【俊足の競走馬、足の速い馬】",
+    "etymologyBreakdown": "「хурдан」 ＋ 「морь（馬）」 ＝ 【俊足の競走馬、足の速い馬】"
   },
   {
     "mongolian": "гар чийдэн",
@@ -14413,7 +14682,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "гар чийдэн",
     "id": "v_note_84",
-    "derivation": "見出し語「гар чийдэн」"
+    "derivation": "「гар（手）」 ＋ 「чийдэн」 ＝ 【懐中電灯、ハンドライト】",
+    "etymologyBreakdown": "「гар（手）」 ＋ 「чийдэн」 ＝ 【懐中電灯、ハンドライト】"
   },
   {
     "mongolian": "бэлэн мөнгө",
@@ -14428,7 +14698,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "бэлэн мөнгө",
     "id": "v_note_85",
-    "derivation": "見出し語「бэлэн мөнгө」"
+    "derivation": "「бэлэн」 ＋ 「мөнгө（お金・銀）」 ＝ 【現金、キャッシュ】",
+    "etymologyBreakdown": "「бэлэн」 ＋ 「мөнгө（お金・銀）」 ＝ 【現金、キャッシュ】"
   },
   {
     "mongolian": "цэцгийн тоосны харшил",
@@ -14443,7 +14714,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "цэцгийн тоосны харшил",
     "id": "v_note_86",
-    "derivation": "見出し語「цэцгийн тоосны харшил」"
+    "derivation": "「цэцгийн（花の（цэцэг ＋ 属格 -ийн））」 ＋ 「тоосны（粉塵の・花粉の（тоос ＋ 属格 -ны））」 ＋ 「харшил（アレルギー・拒絶反応）」 ＝ 【花粉症】",
+    "etymologyBreakdown": "「цэцгийн（花の（цэцэг ＋ 属格 -ийн））」 ＋ 「тоосны（粉塵の・花粉の（тоос ＋ 属格 -ны））」 ＋ 「харшил（アレルギー・拒絶反応）」 ＝ 【花粉症】"
   },
   {
     "mongolian": "үндэсний хувцас",
@@ -14458,7 +14730,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "үндэсний хувцас",
     "id": "v_note_87",
-    "derivation": "見出し語「үндэсний хувцас」"
+    "derivation": "「үндэсний（民族の・国民の（үндэс ＋ 属格 -ний））」 ＋ 「хувцас」 ＝ 【民族衣装（デール）】",
+    "etymologyBreakdown": "「үндэсний（民族の・国民の（үндэс ＋ 属格 -ний））」 ＋ 「хувцас」 ＝ 【民族衣装（デール）】"
   },
   {
     "mongolian": "банштай цай",
@@ -14473,7 +14746,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "банштай цай",
     "id": "v_note_88",
-    "derivation": "見出し語「банштай цай」"
+    "derivation": "「банштай」 ＋ 「цай」 ＝ 【バンシ入りミルクティー（モンゴル伝統軽食・鍋）】",
+    "etymologyBreakdown": "「банштай」 ＋ 「цай」 ＝ 【バンシ入りミルクティー（モンゴル伝統軽食・鍋）】"
   },
   {
     "mongolian": "гурилтай шөл",
@@ -14488,7 +14762,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "гурилтай шөл",
     "id": "v_note_89",
-    "derivation": "見出し語「гурилтай шөл」"
+    "derivation": "「гурилтай」 ＋ 「шөл」 ＝ 【モンゴル風手延べうどんスープ】",
+    "etymologyBreakdown": "「гурилтай」 ＋ 「шөл」 ＝ 【モンゴル風手延べうどんスープ】"
   },
   {
     "mongolian": "цахилгаан шат",
@@ -14503,7 +14778,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "цахилгаан шат",
     "id": "v_note_90",
-    "derivation": "見出し語「цахилгаан шат」"
+    "derivation": "「цахилгаан（電気）」 ＋ 「шат（階段）」 ＝ 【エレベーター、エスカレーター】",
+    "etymologyBreakdown": "「цахилгаан（電気）」 ＋ 「шат（階段）」 ＝ 【エレベーター、エスカレーター】"
   },
   {
     "mongolian": "чихэрлэг",
@@ -14533,7 +14809,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "биед муу",
     "id": "v_note_92",
-    "derivation": "見出し語「биед муу」"
+    "derivation": "「биед」 ＋ 「муу」 ＝ 【体に悪い、健康に良くない】",
+    "etymologyBreakdown": "「биед」 ＋ 「муу」 ＝ 【体に悪い、健康に良くない】"
   },
   {
     "mongolian": "аймаар",
@@ -14668,7 +14945,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "цав цагаан",
     "id": "v_note_101",
-    "derivation": "見出し語「цав цагаан」"
+    "derivation": "「цав」 ＋ 「цагаан（白い）」 ＝ 【真っ白な、純白の】",
+    "etymologyBreakdown": "「цав」 ＋ 「цагаан（白い）」 ＝ 【真っ白な、純白の】"
   },
   {
     "mongolian": "хав хар",
@@ -14683,7 +14961,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "хав хар",
     "id": "v_note_102",
-    "derivation": "見出し語「хав хар」"
+    "derivation": "「хав」 ＋ 「хар」 ＝ 【真っ黒な】",
+    "etymologyBreakdown": "「хав」 ＋ 「хар」 ＝ 【真っ黒な】"
   },
   {
     "mongolian": "намхан",
@@ -14773,7 +15052,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "аль болох",
     "id": "v_note_108",
-    "derivation": "見出し語「аль болох」"
+    "derivation": "「аль（どちら）」 ＋ 「болох」 ＝ 【できるだけ、なるべく】",
+    "etymologyBreakdown": "「аль（どちら）」 ＋ 「болох」 ＝ 【できるだけ、なるべく】"
   },
   {
     "mongolian": "ялангуяа",
@@ -14851,7 +15131,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "түүнээс бусад нь",
     "id": "v_note_113",
-    "derivation": "見出し語「түүнээс бусад нь」"
+    "derivation": "「түүнээс」 ＋ 「бусад」 ＋ 「нь（その（所属・焦点））」 ＝ 【それ以外は】",
+    "etymologyBreakdown": "「түүнээс」 ＋ 「бусад」 ＋ 「нь（その（所属・焦点））」 ＝ 【それ以外は】"
   },
   {
     "mongolian": "тийм ээ, яг тийм",
@@ -14866,7 +15147,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "тийм ээ, яг тийм",
     "id": "v_note_114",
-    "derivation": "見出し語「тийм ээ, яг тийм」"
+    "derivation": "「тийм（そう・その通り）」 ＋ 「ээ」 ＋ 「яг」 ＋ 「тийм（そう・その通り）」 ＝ 【うん、まさにその通り】",
+    "etymologyBreakdown": "「тийм（そう・その通り）」 ＋ 「ээ」 ＋ 「яг」 ＋ 「тийм（そう・その通り）」 ＝ 【うん、まさにその通り】"
   },
   {
     "mongolian": "би ч бас тэгж бодсон",
@@ -14881,7 +15163,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "би ч бас тэгж бодсон",
     "id": "v_note_115",
-    "derivation": "見出し語「би ч бас тэгж бодсон」"
+    "derivation": "「би」 ＋ 「ч（〜も・〜でも（強調））」 ＋ 「бас」 ＋ 「тэгж」 ＋ 「бодсон」 ＝ 【私もそう思いました】",
+    "etymologyBreakdown": "「би」 ＋ 「ч（〜も・〜でも（強調））」 ＋ 「бас」 ＋ 「тэгж」 ＋ 「бодсон」 ＝ 【私もそう思いました】"
   },
   {
     "mongolian": "тэр үед",
@@ -14896,7 +15179,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "тэр үед",
     "id": "v_note_116",
-    "derivation": "見出し語「тэр үед」"
+    "derivation": "「тэр」 ＋ 「үед」 ＝ 【その時、当時】",
+    "etymologyBreakdown": "「тэр」 ＋ 「үед」 ＝ 【その時、当時】"
   },
   {
     "mongolian": "тэрнээс болоод",
@@ -14911,7 +15195,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "тэрнээс болоод",
     "id": "v_note_117",
-    "derivation": "見出し語「тэрнээс болоод」"
+    "derivation": "「тэрнээс」 ＋ 「болоод」 ＝ 【そのせいで、それが原因で】",
+    "etymologyBreakdown": "「тэрнээс」 ＋ 「болоод」 ＝ 【そのせいで、それが原因で】"
   },
   {
     "mongolian": "биеэ бодоорой",
@@ -14926,7 +15211,8 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "биеэ бодоорой",
     "id": "v_note_118",
-    "derivation": "見出し語「биеэ бодоорой」"
+    "derivation": "「биеэ」 ＋ 「бодоорой」 ＝ 【お体に気をつけて、ご自愛ください】",
+    "etymologyBreakdown": "「биеэ」 ＋ 「бодоорой」 ＝ 【お体に気をつけて、ご自愛ください】"
   },
   {
     "id": "v_tb_01",
@@ -16099,7 +16385,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "гарын шуу",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "「гарын」 ＋ 「шуу」 ＝ 【前腕・腕】",
+    "etymologyBreakdown": "「гарын」 ＋ 「шуу」 ＝ 【前腕・腕】"
   },
   {
     "id": "v_genre_812",
@@ -16171,7 +16458,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "гарын алга",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "「гарын」 ＋ 「алга」 ＝ 【手のひら】",
+    "etymologyBreakdown": "「гарын」 ＋ 「алга」 ＝ 【手のひら】"
   },
   {
     "id": "v_genre_816",
@@ -16243,7 +16531,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "хөлийн өсгий",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "「хөлийн（足の（хөл ＋ 属格 -ийн））」 ＋ 「өсгий（踵（かかと））」 ＝ 【かかと】",
+    "etymologyBreakdown": "「хөлийн（足の（хөл ＋ 属格 -ийн））」 ＋ 「өсгий（踵（かかと））」 ＝ 【かかと】"
   },
   {
     "id": "v_genre_820",
@@ -16261,7 +16550,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "хөлийн ул",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "「хөлийн（足の（хөл ＋ 属格 -ийн））」 ＋ 「ул」 ＝ 【足の裏】",
+    "etymologyBreakdown": "「хөлийн（足の（хөл ＋ 属格 -ийн））」 ＋ 「ул」 ＝ 【足の裏】"
   },
   {
     "id": "v_genre_821",
@@ -16279,7 +16569,8 @@ const initialVocabulary = [
     "note": "ジャンル: 身体の部位",
     "isVerb": false,
     "dictForm": "хөлийн хуруу",
-    "derivation": "【身体の部位】の基本語彙です。"
+    "derivation": "「хөлийн（足の（хөл ＋ 属格 -ийн））」 ＋ 「хуруу」 ＝ 【足の指】",
+    "etymologyBreakdown": "「хөлийн（足の（хөл ＋ 属格 -ийн））」 ＋ 「хуруу」 ＝ 【足の指】"
   },
   {
     "id": "v_genre_822",
@@ -16549,7 +16840,8 @@ const initialVocabulary = [
     "note": "ジャンル: 学校・文房具・教室",
     "isVerb": false,
     "dictForm": "самбар арчигч",
-    "derivation": "【学校・文房具・教室】の基本語彙です。"
+    "derivation": "「самбар」 ＋ 「арчигч」 ＝ 【黒板消し】",
+    "etymologyBreakdown": "「самбар」 ＋ 「арчигч」 ＝ 【黒板消し】"
   },
   {
     "id": "v_genre_837",
@@ -16585,7 +16877,8 @@ const initialVocabulary = [
     "note": "ジャンル: 学校・文房具・教室",
     "isVerb": false,
     "dictForm": "номын тавиур",
-    "derivation": "【学校・文房具・教室】の基本語彙です。"
+    "derivation": "「номын（本の（ном ＋ 属格 -ын））」 ＋ 「тавиур」 ＝ 【本棚】",
+    "etymologyBreakdown": "「номын（本の（ном ＋ 属格 -ын））」 ＋ 「тавиур」 ＝ 【本棚】"
   },
   {
     "id": "v_genre_839",
@@ -16639,7 +16932,8 @@ const initialVocabulary = [
     "note": "ジャンル: 学校・文房具・教室",
     "isVerb": false,
     "dictForm": "үдээсний машин",
-    "derivation": "【学校・文房具・教室】の基本語彙です。"
+    "derivation": "「үдээсний」 ＋ 「машин（機械・自動車）」 ＝ 【ホッチキス】",
+    "etymologyBreakdown": "「үдээсний」 ＋ 「машин（機械・自動車）」 ＝ 【ホッチキス】"
   },
   {
     "id": "v_genre_842",
@@ -16675,7 +16969,8 @@ const initialVocabulary = [
     "note": "ジャンル: 学校・文房具・教室",
     "isVerb": false,
     "dictForm": "өнгийн харандаа",
-    "derivation": "【学校・文房具・教室】の基本語彙です。"
+    "derivation": "「өнгийн」 ＋ 「харандаа」 ＝ 【色鉛筆】",
+    "etymologyBreakdown": "「өнгийн」 ＋ 「харандаа」 ＝ 【色鉛筆】"
   },
   {
     "id": "v_genre_844",
@@ -16693,7 +16988,8 @@ const initialVocabulary = [
     "note": "ジャンル: 学校・文房具・教室",
     "isVerb": false,
     "dictForm": "үзэгний сав",
-    "derivation": "【学校・文房具・教室】の基本語彙です。"
+    "derivation": "「үзэгний」 ＋ 「сав」 ＝ 【筆箱・ペンケース】",
+    "etymologyBreakdown": "「үзэгний」 ＋ 「сав」 ＝ 【筆箱・ペンケース】"
   },
   {
     "id": "v_genre_845",
@@ -16801,7 +17097,8 @@ const initialVocabulary = [
     "note": "ジャンル: 衣類・服飾品",
     "isVerb": false,
     "dictForm": "дотуур хувцас",
-    "derivation": "【衣類・服飾品】の基本語彙です。"
+    "derivation": "「дотуур」 ＋ 「хувцас」 ＝ 【下着・インナー】",
+    "etymologyBreakdown": "「дотуур」 ＋ 「хувцас」 ＝ 【下着・インナー】"
   },
   {
     "id": "v_genre_851",
@@ -16873,7 +17170,8 @@ const initialVocabulary = [
     "note": "ジャンル: 衣類・服飾品",
     "isVerb": false,
     "dictForm": "хөхний даруулга",
-    "derivation": "【衣類・服飾品】の基本語彙です。"
+    "derivation": "「хөхний」 ＋ 「даруулга」 ＝ 【ブラジャー】",
+    "etymologyBreakdown": "「хөхний」 ＋ 「даруулга」 ＝ 【ブラジャー】"
   },
   {
     "id": "v_genre_855",
@@ -16891,7 +17189,8 @@ const initialVocabulary = [
     "note": "ジャンル: 衣類・服飾品",
     "isVerb": false,
     "dictForm": "унтлагын хувцас",
-    "derivation": "【衣類・服飾品】の基本語彙です。"
+    "derivation": "「унтлагын」 ＋ 「хувцас」 ＝ 【パジャマ・寝巻き】",
+    "etymologyBreakdown": "「унтлагын」 ＋ 「хувцас」 ＝ 【パジャマ・寝巻き】"
   },
   {
     "id": "v_genre_856",
@@ -16981,7 +17280,8 @@ const initialVocabulary = [
     "note": "ジャンル: 衣類・服飾品",
     "isVerb": false,
     "dictForm": "ноосон цамц",
-    "derivation": "【衣類・服飾品】の基本語彙です。"
+    "derivation": "「ноосон」 ＋ 「цамц」 ＝ 【セーター・ニット】",
+    "etymologyBreakdown": "「ноосон」 ＋ 「цамц」 ＝ 【セーター・ニット】"
   },
   {
     "id": "v_genre_861",
@@ -17395,7 +17695,8 @@ const initialVocabulary = [
     "note": "ジャンル: 衣類・服飾品",
     "isVerb": false,
     "dictForm": "нүдний шил",
-    "derivation": "【衣類・服飾品】の基本語彙です。"
+    "derivation": "「нүдний」 ＋ 「шил」 ＝ 【眼鏡】",
+    "etymologyBreakdown": "「нүдний」 ＋ 「шил」 ＝ 【眼鏡】"
   },
   {
     "id": "v_genre_884",
@@ -17647,7 +17948,8 @@ const initialVocabulary = [
     "note": "ジャンル: 食べ物・レストラン",
     "isVerb": false,
     "dictForm": "жимсний чанамал",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "derivation": "「жимсний」 ＋ 「чанамал」 ＝ 【ジャム】",
+    "etymologyBreakdown": "「жимсний」 ＋ 「чанамал」 ＝ 【ジャム】"
   },
   {
     "id": "v_genre_898",
@@ -17953,7 +18255,8 @@ const initialVocabulary = [
     "note": "ジャンル: 食べ物・レストラン",
     "isVerb": false,
     "dictForm": "сүүтэй цай",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "derivation": "「сүүтэй」 ＋ 「цай」 ＝ 【スーテイ・ツァイ（伝統ミルクティー）】",
+    "etymologyBreakdown": "「сүүтэй」 ＋ 「цай」 ＝ 【スーテイ・ツァイ（伝統ミルクティー）】"
   },
   {
     "id": "v_genre_915",
@@ -18007,7 +18310,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "шарах шүүгээ",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「шарах」 ＋ 「шүүгээ」 ＝ 【オーブン】",
+    "etymologyBreakdown": "「шарах」 ＋ 「шүүгээ」 ＝ 【オーブン】"
   },
   {
     "id": "v_genre_918",
@@ -18061,7 +18365,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "систем хөгжим",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「систем」 ＋ 「хөгжим」 ＝ 【オーディオコンポ・ステレオ】",
+    "etymologyBreakdown": "「систем」 ＋ 「хөгжим」 ＝ 【オーディオコンポ・ステレオ】"
   },
   {
     "id": "v_genre_921",
@@ -18133,7 +18438,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "зөөлөн сандал",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「зөөлөн」 ＋ 「сандал」 ＝ 【アームチェア・安楽椅子】",
+    "etymologyBreakdown": "「зөөлөн」 ＋ 「сандал」 ＝ 【アームチェア・安楽椅子】"
   },
   {
     "id": "v_genre_925",
@@ -18205,7 +18511,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "будаа агшаагч",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「будаа」 ＋ 「агшаагч」 ＝ 【炊飯器】",
+    "etymologyBreakdown": "「будаа」 ＋ 「агшаагч」 ＝ 【炊飯器】"
   },
   {
     "id": "v_genre_929",
@@ -18223,7 +18530,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "ус буцалгагч",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「ус（水）」 ＋ 「буцалгагч（沸騰させる器具（動詞 буцалгах［沸かす］＋接尾辞 -гч））」 ＝ 【電気ケトル・湯沸かし器】",
+    "etymologyBreakdown": "「ус（水）」 ＋ 「буцалгагч（沸騰させる器具（動詞 буцалгах［沸かす］＋接尾辞 -гч））」 ＝ 【電気ケトル・湯沸かし器】"
   },
   {
     "id": "v_genre_930",
@@ -18241,7 +18549,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "хайруулын таваг",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「хайруулын」 ＋ 「таваг（皿・プレート）」 ＝ 【フライパン】",
+    "etymologyBreakdown": "「хайруулын」 ＋ 「таваг（皿・プレート）」 ＝ 【フライパン】"
   },
   {
     "id": "v_genre_931",
@@ -18277,7 +18586,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "халуун сав",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「халуун」 ＋ 「сав」 ＝ 【魔法瓶・保温ポット】",
+    "etymologyBreakdown": "「халуун」 ＋ 「сав」 ＝ 【魔法瓶・保温ポット】"
   },
   {
     "id": "v_genre_933",
@@ -18331,7 +18641,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "үсний сэнс",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「үсний」 ＋ 「сэнс」 ＝ 【ヘアドライヤー】",
+    "etymologyBreakdown": "「үсний」 ＋ 「сэнс」 ＝ 【ヘアドライヤー】"
   },
   {
     "id": "v_genre_936",
@@ -18367,7 +18678,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "ширээний гэрэл",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「ширээний」 ＋ 「гэрэл」 ＝ 【デスクライト・卓上スタンド】",
+    "etymologyBreakdown": "「ширээний」 ＋ 「гэрэл」 ＝ 【デスクライト・卓上スタンド】"
   },
   {
     "id": "v_genre_938",
@@ -18385,7 +18697,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "сахлын машин",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「сахлын」 ＋ 「машин（機械・自動車）」 ＝ 【電気シェーバー・髭剃り】",
+    "etymologyBreakdown": "「сахлын」 ＋ 「машин（機械・自動車）」 ＝ 【電気シェーバー・髭剃り】"
   },
   {
     "id": "v_genre_939",
@@ -18403,7 +18716,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "угаалгын нунтаг",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「угаалгын（洗濯の（угаалга ＋ 属格 -ын））」 ＋ 「нунтаг」 ＝ 【洗濯洗剤・粉石鹸】",
+    "etymologyBreakdown": "「угаалгын（洗濯の（угаалга ＋ 属格 -ын））」 ＋ 「нунтаг」 ＝ 【洗濯洗剤・粉石鹸】"
   },
   {
     "id": "v_genre_940",
@@ -18421,7 +18735,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "нолийн цаас",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「нолийн」 ＋ 「цаас」 ＝ 【トイレットペーパー】",
+    "etymologyBreakdown": "「нолийн」 ＋ 「цаас」 ＝ 【トイレットペーパー】"
   },
   {
     "id": "v_genre_941",
@@ -18565,7 +18880,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "угаалгын машин",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「угаалгын（洗濯の（угаалга ＋ 属格 -ын））」 ＋ 「машин（機械・自動車）」 ＝ 【洗濯機】",
+    "etymologyBreakdown": "「угаалгын（洗濯の（угаалга ＋ 属格 -ын））」 ＋ 「машин（機械・自動車）」 ＝ 【洗濯機】"
   },
   {
     "id": "v_genre_949",
@@ -18583,7 +18899,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "хогийн сав",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「хогийн」 ＋ 「сав」 ＝ 【ゴミ箱】",
+    "etymologyBreakdown": "「хогийн」 ＋ 「сав」 ＝ 【ゴミ箱】"
   },
   {
     "id": "v_genre_950",
@@ -18655,7 +18972,8 @@ const initialVocabulary = [
     "note": "ジャンル: 日用品・家電・家具",
     "isVerb": false,
     "dictForm": "тоос сорогч",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "「тоос（埃・チリ・粉塵）」 ＋ 「сорогч（吸う器具（動詞 сорох［吸う］＋接尾辞 -гч［器具］））」 ＝ 【掃除機】",
+    "etymologyBreakdown": "「тоос（埃・チリ・粉塵）」 ＋ 「сорогч（吸う器具（動詞 сорох［吸う］＋接尾辞 -гч［器具］））」 ＝ 【掃除機】"
   },
   {
     "id": "v_genre_954",
@@ -18763,7 +19081,8 @@ const initialVocabulary = [
     "note": "ジャンル: 果物・野菜",
     "isVerb": false,
     "dictForm": "ший гуа",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「ший」 ＋ 「гуа」 ＝ 【スイカ】",
+    "etymologyBreakdown": "「ший」 ＋ 「гуа」 ＝ 【スイカ】"
   },
   {
     "id": "v_genre_960",
@@ -18835,7 +19154,8 @@ const initialVocabulary = [
     "note": "ジャンル: 果物・野菜",
     "isVerb": false,
     "dictForm": "усан үзэм",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「усан」 ＋ 「үзэм」 ＝ 【ぶどう】",
+    "etymologyBreakdown": "「усан」 ＋ 「үзэм」 ＝ 【ぶどう】"
   },
   {
     "id": "v_genre_964",
@@ -18853,7 +19173,8 @@ const initialVocabulary = [
     "note": "ジャンル: 果物・野菜",
     "isVerb": false,
     "dictForm": "хан боргоцой",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】",
+    "etymologyBreakdown": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】"
   },
   {
     "id": "v_genre_965",
@@ -19105,7 +19426,8 @@ const initialVocabulary = [
     "note": "ジャンル: 果物・野菜",
     "isVerb": false,
     "dictForm": "өргөст хэмх",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】",
+    "etymologyBreakdown": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】"
   },
   {
     "id": "v_genre_979",
@@ -19159,7 +19481,8 @@ const initialVocabulary = [
     "note": "ジャンル: 果物・野菜",
     "isVerb": false,
     "dictForm": "улаан лооль",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「улаан」 ＋ 「лооль」 ＝ 【トマト】",
+    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＝ 【トマト】"
   },
   {
     "id": "v_genre_982",
@@ -19231,7 +19554,8 @@ const initialVocabulary = [
     "note": "ジャンル: 方位・方角",
     "isVerb": false,
     "dictForm": "зүүн хойд",
-    "derivation": "【方位・方角】の基本語彙です。"
+    "derivation": "「зүүн（左・東）」 ＋ 「хойд（北・後）」 ＝ 【北東】",
+    "etymologyBreakdown": "「зүүн（左・東）」 ＋ 「хойд（北・後）」 ＝ 【北東】"
   },
   {
     "id": "v_genre_986",
@@ -19267,7 +19591,8 @@ const initialVocabulary = [
     "note": "ジャンル: 方位・方角",
     "isVerb": false,
     "dictForm": "зүүн урд",
-    "derivation": "【方位・方角】の基本語彙です。"
+    "derivation": "「зүүн（左・東）」 ＋ 「урд」 ＝ 【南東】",
+    "etymologyBreakdown": "「зүүн（左・東）」 ＋ 「урд」 ＝ 【南東】"
   },
   {
     "id": "v_genre_988",
@@ -19303,7 +19628,8 @@ const initialVocabulary = [
     "note": "ジャンル: 方位・方角",
     "isVerb": false,
     "dictForm": "баруун урд",
-    "derivation": "【方位・方角】の基本語彙です。"
+    "derivation": "「баруун（右・西）」 ＋ 「урд」 ＝ 【南西】",
+    "etymologyBreakdown": "「баруун（右・西）」 ＋ 「урд」 ＝ 【南西】"
   },
   {
     "id": "v_genre_990",
@@ -19339,7 +19665,8 @@ const initialVocabulary = [
     "note": "ジャンル: 方位・方角",
     "isVerb": false,
     "dictForm": "баруун хойд",
-    "derivation": "【方位・方角】の基本語彙です。"
+    "derivation": "「баруун（右・西）」 ＋ 「хойд（北・後）」 ＝ 【北西】",
+    "etymologyBreakdown": "「баруун（右・西）」 ＋ 「хойд（北・後）」 ＝ 【北西】"
   },
   {
     "id": "v_genre_992",
@@ -19357,7 +19684,8 @@ const initialVocabulary = [
     "note": "ジャンル: 方位・方角",
     "isVerb": false,
     "dictForm": "зүг чиг",
-    "derivation": "【方位・方角】の基本語彙です。"
+    "derivation": "「зүг」 ＋ 「чиг」 ＝ 【方位・方角・方向】",
+    "etymologyBreakdown": "「зүг」 ＋ 「чиг」 ＝ 【方位・方角・方向】"
   },
   {
     "id": "v_genre_993",
@@ -19571,11 +19899,12 @@ const initialVocabulary = [
     "note": "гэмт хэрэгтэн（犯罪者・犯人）",
     "isVerb": false,
     "dictForm": "гэмт хэрэг",
-    "derivation": "見出し語「гэмт хэрэг」",
+    "derivation": "「гэмт」 ＋ 「хэрэг」 ＝ 【犯罪、罪過】",
     "genreId": "law_crime",
     "genreName": "犯罪・法・正義",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「гэмт」 ＋ 「хэрэг」 ＝ 【犯罪、罪過】"
   },
   {
     "id": "v_gen_law_crime_4",
@@ -19911,11 +20240,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "аюулгүй байдал",
-    "derivation": "見出し語「аюулгүй байдал」",
+    "derivation": "「аюулгүй」 ＋ 「байдал」 ＝ 【治安、安全、セキュリティ】",
     "genreId": "law_crime",
     "genreName": "犯罪・法・正義",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「аюулгүй」 ＋ 「байдал」 ＝ 【治安、安全、セキュリティ】"
   },
   {
     "id": "v_gen_education_1",
@@ -19931,11 +20261,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "их сургууль",
-    "derivation": "見出し語「их сургууль」",
+    "derivation": "「их（大きい・高等の・大学）」 ＋ 「сургууль（学校（動詞 сурах［学ぶ］＋ -гууль））」 ＝ 【大学】",
     "genreId": "education",
     "genreName": "教育・大学・学問",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「их（大きい・高等の・大学）」 ＋ 「сургууль（学校（動詞 сурах［学ぶ］＋ -гууль））」 ＝ 【大学】"
   },
   {
     "id": "v_gen_education_2",
@@ -20211,11 +20542,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "сургалтын төлбөр",
-    "derivation": "見出し語「сургалтын төлбөр」",
+    "derivation": "「сургалтын」 ＋ 「төлбөр」 ＝ 【授業料、学費】",
     "genreId": "education",
     "genreName": "教育・大学・学問",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「сургалтын」 ＋ 「төлбөр」 ＝ 【授業料、学費】"
   },
   {
     "id": "v_gen_education_16",
@@ -20251,11 +20583,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "дотуур байр",
-    "derivation": "見出し語「дотуур байр」",
+    "derivation": "「дотуур」 ＋ 「байр（住まい・アパート）」 ＝ 【学生寮、寄宿舎】",
     "genreId": "education",
     "genreName": "教育・大学・学問",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「дотуур」 ＋ 「байр（住まい・アパート）」 ＝ 【学生寮、寄宿舎】"
   },
   {
     "id": "v_gen_education_18",
@@ -20271,11 +20604,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "гэрийн даалгавар",
-    "derivation": "見出し語「гэрийн даалгавар」",
+    "derivation": "「гэрийн」 ＋ 「даалгавар」 ＝ 【宿題】",
     "genreId": "education",
     "genreName": "教育・大学・学問",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「гэрийн」 ＋ 「даалгавар」 ＝ 【宿題】"
   },
   {
     "id": "v_gen_education_19",
@@ -20331,11 +20665,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "баяр баясгалан",
-    "derivation": "見出し語「баяр баясгалан」",
+    "derivation": "「баяр（祝い・祝日・喜び）」 ＋ 「баясгалан」 ＝ 【喜び、幸福感】",
     "genreId": "emotions",
     "genreName": "感情・心理・気持ち",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「баяр（祝い・祝日・喜び）」 ＋ 「баясгалан」 ＝ 【喜び、幸福感】"
   },
   {
     "id": "v_gen_emotions_2",
@@ -20571,11 +20906,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": true,
     "dictForm": "санаа зовох",
-    "derivation": "見出し語「санаа зовох」",
+    "derivation": "「санаа」 ＋ 「зовох」 ＝ 【心配する、気をもむ】",
     "genreId": "emotions",
     "genreName": "感情・心理・気持ち",
     "caseGovernment": "与位格（〜д / 〜т）支配",
-    "caseNote": "心配の対象を与位格で示します。"
+    "caseNote": "心配の対象を与位格で示します。",
+    "etymologyBreakdown": "「санаа」 ＋ 「зовох」 ＝ 【心配する、気をもむ】"
   },
   {
     "id": "v_gen_emotions_14",
@@ -20691,11 +21027,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "сэтгэл хангалуун",
-    "derivation": "見出し語「сэтгэл хангалуун」",
+    "derivation": "「сэтгэл」 ＋ 「хангалуун」 ＝ 【満足している、納得の】",
     "genreId": "emotions",
     "genreName": "感情・心理・気持ち",
     "caseGovernment": "与位格（〜д / 〜т）支配",
-    "caseNote": "満足する対象を与位格で示します。"
+    "caseNote": "満足する対象を与位格で示します。",
+    "etymologyBreakdown": "「сэтгэл」 ＋ 「хангалуун」 ＝ 【満足している、納得の】"
   },
   {
     "id": "v_gen_emotions_20",
@@ -20731,11 +21068,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "цаг агаар",
-    "derivation": "見出し語「цаг агаар」",
+    "derivation": "「цаг」 ＋ 「агаар」 ＝ 【天気、気象】",
     "genreId": "weather",
     "genreName": "天気・気候・自然現象",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「цаг」 ＋ 「агаар」 ＝ 【天気、気象】"
   },
   {
     "id": "v_gen_weather_2",
@@ -21091,11 +21429,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "аадар бороо",
-    "derivation": "見出し語「аадар бороо」",
+    "derivation": "「аадар」 ＋ 「бороо」 ＝ 【土砂降り、豪雨】",
     "genreId": "weather",
     "genreName": "天気・気候・自然現象",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「аадар」 ＋ 「бороо」 ＝ 【土砂降り、豪雨】"
   },
   {
     "id": "v_gen_weather_20",
@@ -21231,11 +21570,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "бид нар",
-    "derivation": "見出し語「бид нар」",
+    "derivation": "「бид」 ＋ 「нар」 ＝ 【私たち全員（一人称複数）】",
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「бид」 ＋ 「нар」 ＝ 【私たち全員（一人称複数）】"
   },
   {
     "id": "v_gen_pronouns_7",
@@ -21271,11 +21611,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "та нар",
-    "derivation": "見出し語「та нар」",
+    "derivation": "「та」 ＋ 「нар」 ＝ 【あなたたち、皆様（二人称複数）】",
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「та」 ＋ 「нар」 ＝ 【あなたたち、皆様（二人称複数）】"
   },
   {
     "id": "v_gen_pronouns_9",
@@ -21311,11 +21652,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "тэд нар",
-    "derivation": "見出し語「тэд нар」",
+    "derivation": "「тэд」 ＋ 「нар」 ＝ 【彼ら全員（三人称複数）】",
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「тэд」 ＋ 「нар」 ＝ 【彼ら全員（三人称複数）】"
   },
   {
     "id": "v_gen_pronouns_11",
@@ -21391,11 +21733,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "бие биенээ",
-    "derivation": "見出し語「бие биенээ」",
+    "derivation": "「бие（身体・体）」 ＋ 「биенээ」 ＝ 【お互いを（相互代名詞）】",
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「бие（身体・体）」 ＋ 「биенээ」 ＝ 【お互いを（相互代名詞）】"
   },
   {
     "id": "v_gen_pronouns_15",
@@ -21411,11 +21754,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "бие биедээ",
-    "derivation": "見出し語「бие биедээ」",
+    "derivation": "「бие（身体・体）」 ＋ 「биедээ」 ＝ 【お互いに（相互与位格）】",
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「бие（身体・体）」 ＋ 「биедээ」 ＝ 【お互いに（相互与位格）】"
   },
   {
     "id": "v_gen_pronouns_16",
@@ -21431,11 +21775,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "хэн нэгэн",
-    "derivation": "見出し語「хэн нэгэн」",
+    "derivation": "「хэн」 ＋ 「нэгэн」 ＝ 【誰か、ある人】",
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「хэн」 ＋ 「нэгэн」 ＝ 【誰か、ある人】"
   },
   {
     "id": "v_gen_pronouns_17",
@@ -21451,11 +21796,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "хэн ч",
-    "derivation": "見出し語「хэн ч」",
+    "derivation": "「хэн」 ＋ 「ч（〜も・〜でも（強調））」 ＝ 【誰も（否定文で使用）】",
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「хэн」 ＋ 「ч（〜も・〜でも（強調））」 ＝ 【誰も（否定文で使用）】"
   },
   {
     "id": "v_gen_pronouns_18",
@@ -21471,11 +21817,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "юу ч",
-    "derivation": "見出し語「юу ч」",
+    "derivation": "「юу（何）」 ＋ 「ч（〜も・〜でも（強調））」 ＝ 【何も（否定文で使用）】",
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「юу（何）」 ＋ 「ч（〜も・〜でも（強調））」 ＝ 【何も（否定文で使用）】"
   },
   {
     "id": "v_gen_pronouns_19",
@@ -21491,11 +21838,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "ямар нэгэн",
-    "derivation": "見出し語「ямар нэгэн」",
+    "derivation": "「ямар」 ＋ 「нэгэн」 ＝ 【何か、ある種の】",
     "genreId": "pronouns",
     "genreName": "人称代名詞・自分",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「ямар」 ＋ 「нэгэн」 ＝ 【何か、ある種の】"
   },
   {
     "id": "v_gen_pronouns_20",
@@ -21991,11 +22339,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "эмийн сан",
-    "derivation": "見出し語「эмийн сан」",
+    "derivation": "「эмийн（薬の（эм ＋ 属格 -ийн））」 ＋ 「сан（宝庫・基金・保管所）」 ＝ 【薬局、ドラッグストア】",
     "genreId": "places",
     "genreName": "場所・施設・街",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「эмийн（薬の（эм ＋ 属格 -ийн））」 ＋ 「сан（宝庫・基金・保管所）」 ＝ 【薬局、ドラッグストア】"
   },
   {
     "id": "v_gen_places_3",
@@ -22071,11 +22420,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "нисэх буудал",
-    "derivation": "見出し語「нисэх буудал」",
+    "derivation": "「нисэх（飛ぶ（動詞原形））」 ＋ 「буудал（停留所・乗り場・駅）」 ＝ 【空港】",
     "genreId": "places",
     "genreName": "場所・施設・街",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「нисэх（飛ぶ（動詞原形））」 ＋ 「буудал（停留所・乗り場・駅）」 ＝ 【空港】"
   },
   {
     "id": "v_gen_places_7",
@@ -22131,11 +22481,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "номын сан",
-    "derivation": "見出し語「номын сан」",
+    "derivation": "「номын（本の（ном ＋ 属格 -ын））」 ＋ 「сан（宝庫・基金・保管所）」 ＝ 【図書館】",
     "genreId": "places",
     "genreName": "場所・施設・街",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「номын（本の（ном ＋ 属格 -ын））」 ＋ 「сан（宝庫・基金・保管所）」 ＝ 【図書館】"
   },
   {
     "id": "v_gen_places_10",
@@ -22171,11 +22522,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "цэцэрлэгт хүрээлэн",
-    "derivation": "見出し語「цэцэрлэгт хүрээлэн」",
+    "derivation": "「цэцэрлэгт」 ＋ 「хүрээлэн（公園・研究所・サークル）」 ＝ 【公園】",
     "genreId": "places",
     "genreName": "場所・施設・街",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「цэцэрлэгт」 ＋ 「хүрээлэн（公園・研究所・サークル）」 ＝ 【公園】"
   },
   {
     "id": "v_gen_places_12",
@@ -22191,11 +22543,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "элчин сайдын яам",
-    "derivation": "見出し語「элчин сайдын яам」",
+    "derivation": "「элчин」 ＋ 「сайдын」 ＋ 「яам」 ＝ 【大使館】",
     "genreId": "places",
     "genreName": "場所・施設・街",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「элчин」 ＋ 「сайдын」 ＋ 「яам」 ＝ 【大使館】"
   },
   {
     "id": "v_gen_places_13",
@@ -22231,11 +22584,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "зочид буудал",
-    "derivation": "見出し語「зочид буудал」",
+    "derivation": "「зочид」 ＋ 「буудал（停留所・乗り場・駅）」 ＝ 【ホテル、旅館】",
     "genreId": "places",
     "genreName": "場所・施設・街",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「зочид」 ＋ 「буудал（停留所・乗り場・駅）」 ＝ 【ホテル、旅館】"
   },
   {
     "id": "v_gen_places_15",
@@ -22251,11 +22605,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "кино театр",
-    "derivation": "見出し語「кино театр」",
+    "derivation": "「кино」 ＋ 「театр」 ＝ 【映画館】",
     "genreId": "places",
     "genreName": "場所・施設・街",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「кино」 ＋ 「театр」 ＝ 【映画館】"
   },
   {
     "id": "v_gen_places_16",
@@ -22311,11 +22666,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "төв талбай",
-    "derivation": "見出し語「төв талбай」",
+    "derivation": "「төв（中心・センター）」 ＋ 「талбай」 ＝ 【中央広場】",
     "genreId": "places",
     "genreName": "場所・施設・街",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「төв（中心・センター）」 ＋ 「талбай」 ＝ 【中央広場】"
   },
   {
     "id": "v_gen_places_19",
@@ -23171,11 +23527,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "Фүжи уул",
-    "derivation": "見出し語「Фүжи уул」",
+    "derivation": "「фүжи」 ＋ 「уул」 ＝ 【富士山】",
     "genreId": "japan_culture",
     "genreName": "日本文化・日本紹介",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「фүжи」 ＋ 「уул」 ＝ 【富士山】"
   },
   {
     "id": "v_gen_japan_culture_2",
@@ -23311,11 +23668,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "цайны ёслол",
-    "derivation": "見出し語「цайны ёслол」",
+    "derivation": "「цайны」 ＋ 「ёслол」 ＝ 【茶道、お茶の儀式】",
     "genreId": "japan_culture",
     "genreName": "日本文化・日本紹介",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「цайны」 ＋ 「ёслол」 ＝ 【茶道、お茶の儀式】"
   },
   {
     "id": "v_gen_japan_culture_9",
@@ -23391,11 +23749,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "сүм хийд",
-    "derivation": "見出し語「сүм хийд」",
+    "derivation": "「сүм」 ＋ 「хийд」 ＝ 【神社、寺院】",
     "genreId": "japan_culture",
     "genreName": "日本文化・日本紹介",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「сүм」 ＋ 「хийд」 ＝ 【神社、寺院】"
   },
   {
     "id": "v_gen_japan_culture_13",
@@ -23491,11 +23850,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "ногоон цай",
-    "derivation": "見出し語「ногоон цай」",
+    "derivation": "「ногоон」 ＋ 「цай」 ＝ 【緑茶、日本茶】",
     "genreId": "japan_culture",
     "genreName": "日本文化・日本紹介",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「ногоон」 ＋ 「цай」 ＝ 【緑茶、日本茶】"
   },
   {
     "id": "v_gen_japan_culture_18",
@@ -23551,11 +23911,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "морин хуур",
-    "derivation": "見出し語「морин хуур」",
+    "derivation": "「морин（馬の（形容詞形））」 ＋ 「хуур（琴・弦楽器）」 ＝ 【馬頭琴】",
     "genreId": "music",
     "genreName": "音楽・芸能・楽器",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「морин（馬の（形容詞形））」 ＋ 「хуур（琴・弦楽器）」 ＝ 【馬頭琴】"
   },
   {
     "id": "v_gen_music_3",
@@ -23591,11 +23952,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "уртын дуу",
-    "derivation": "見出し語「уртын дуу」",
+    "derivation": "「уртын」 ＋ 「дуу」 ＝ 【オルティンドー（長唄）】",
     "genreId": "music",
     "genreName": "音楽・芸能・楽器",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「уртын」 ＋ 「дуу」 ＝ 【オルティンドー（長唄）】"
   },
   {
     "id": "v_gen_music_5",
@@ -23711,11 +24073,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "хөгжмийн зэмсэг",
-    "derivation": "見出し語「хөгжмийн зэмсэг」",
+    "derivation": "「хөгжмийн」 ＋ 「зэмсэг」 ＝ 【楽器】",
     "genreId": "music",
     "genreName": "音楽・芸能・楽器",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「хөгжмийн」 ＋ 「зэмсэг」 ＝ 【楽器】"
   },
   {
     "id": "v_gen_music_11",
@@ -23751,11 +24114,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "найрал хөгжим",
-    "derivation": "見出し語「найрал хөгжим」",
+    "derivation": "「найрал」 ＋ 「хөгжим」 ＝ 【オーケストラ、管弦楽団】",
     "genreId": "music",
     "genreName": "音楽・芸能・楽器",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「найрал」 ＋ 「хөгжим」 ＝ 【オーケストラ、管弦楽団】"
   },
   {
     "id": "v_gen_music_13",
@@ -23851,11 +24215,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "дуу бичлэг",
-    "derivation": "見出し語「дуу бичлэг」",
+    "derivation": "「дуу」 ＋ 「бичлэг」 ＝ 【録音、レコーディング】",
     "genreId": "music",
     "genreName": "音楽・芸能・楽器",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「дуу」 ＋ 「бичлэг」 ＝ 【録音、レコーディング】"
   },
   {
     "id": "v_gen_music_18",
@@ -23871,11 +24236,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "яруу найраг",
-    "derivation": "見出し語「яруу найраг」",
+    "derivation": "「яруу」 ＋ 「найраг」 ＝ 【詩、ポエトリー】",
     "genreId": "music",
     "genreName": "音楽・芸能・楽器",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「яруу」 ＋ 「найраг」 ＝ 【詩、ポエトリー】"
   },
   {
     "id": "v_gen_useful_phrases_1",
@@ -23911,11 +24277,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "Зүгээр зүгээр",
-    "derivation": "見出し語「Зүгээр зүгээр」",
+    "derivation": "「зүгээр（ただ・普通・大丈夫）」 ＋ 「зүгээр（ただ・普通・大丈夫）」 ＝ 【どういたしまして、大丈夫ですよ】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「зүгээр（ただ・普通・大丈夫）」 ＋ 「зүгээр（ただ・普通・大丈夫）」 ＝ 【どういたしまして、大丈夫ですよ】"
   },
   {
     "id": "v_gen_useful_phrases_3",
@@ -23991,11 +24358,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "Та таалан соёрхоно уу",
-    "derivation": "見出し語「Та таалан соёрхоно уу」",
+    "derivation": "「та」 ＋ 「таалан」 ＋ 「соёрхоно」 ＋ 「уу」 ＝ 【どうぞお納めください、お召し上がりください】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「та」 ＋ 「таалан」 ＋ 「соёрхоно」 ＋ 「уу」 ＝ 【どうぞお納めください、お召し上がりください】"
   },
   {
     "id": "v_gen_useful_phrases_7",
@@ -24011,11 +24379,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "Тэгэлгүй яахав",
-    "derivation": "見出し語「Тэгэлгүй яахав」",
+    "derivation": "「тэгэлгүй」 ＋ 「яахав」 ＝ 【もちろんですとも！、そうに決まっています】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「тэгэлгүй」 ＋ 「яахав」 ＝ 【もちろんですとも！、そうに決まっています】"
   },
   {
     "id": "v_gen_useful_phrases_8",
@@ -24051,11 +24420,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "Тийм үү?",
-    "derivation": "見出し語「Тийм үү?」",
+    "derivation": "「тийм（そう・その通り）」 ＋ 「үү（〜ですか（疑問助詞））」 ＝ 【そうなんですか？、本当ですか？】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「тийм（そう・その通り）」 ＋ 「үү（〜ですか（疑問助詞））」 ＝ 【そうなんですか？、本当ですか？】"
   },
   {
     "id": "v_gen_useful_phrases_10",
@@ -24071,11 +24441,12 @@ const initialVocabulary = [
     "note": "会話で最も頻繁に使う自然な相槌。",
     "isVerb": false,
     "dictForm": "Аан, тийм үү",
-    "derivation": "見出し語「Аан, тийм үү」",
+    "derivation": "「аан（ああ（感嘆詞））」 ＋ 「тийм（そう・その通り）」 ＋ 「үү（〜ですか（疑問助詞））」 ＝ 【あぁ、なるほど、そうなんですね】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「аан（ああ（感嘆詞））」 ＋ 「тийм（そう・その通り）」 ＋ 「үү（〜ですか（疑問助詞））」 ＝ 【あぁ、なるほど、そうなんですね】"
   },
   {
     "id": "v_gen_useful_phrases_11",
@@ -24091,11 +24462,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "Гуйж байна",
-    "derivation": "見出し語「Гуйж байна」",
+    "derivation": "「гуйж」 ＋ 「байна（いる・ある（現在進行））」 ＝ 【お願いします、どうか頼みます】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「гуйж」 ＋ 「байна（いる・ある（現在進行））」 ＝ 【お願いします、どうか頼みます】"
   },
   {
     "id": "v_gen_useful_phrases_12",
@@ -24131,11 +24503,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "Сайхан амраарай",
-    "derivation": "見出し語「Сайхан амраарай」",
+    "derivation": "「сайхан」 ＋ 「амраарай」 ＝ 【おやすみなさい、良い休暇を】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「сайхан」 ＋ 「амраарай」 ＝ 【おやすみなさい、良い休暇を】"
   },
   {
     "id": "v_gen_useful_phrases_14",
@@ -24151,11 +24524,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "Сайхан хооллоорой",
-    "derivation": "見出し語「Сайхан хооллоорой」",
+    "derivation": "「сайхан」 ＋ 「хооллоорой」 ＝ 【美味しく召し上がれ、いただきます】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「сайхан」 ＋ 「хооллоорой」 ＝ 【美味しく召し上がれ、いただきます】"
   },
   {
     "id": "v_gen_useful_phrases_15",
@@ -24211,11 +24585,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "За яахав",
-    "derivation": "見出し語「За яахав」",
+    "derivation": "「за」 ＋ 「яахав」 ＝ 【まあいいか、仕方ないね】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「за」 ＋ 「яахав」 ＝ 【まあいいか、仕方ないね】"
   },
   {
     "id": "v_gen_useful_phrases_18",
@@ -24231,11 +24606,12 @@ const initialVocabulary = [
     "note": "返答は「Тайван（変わりないよ・平和だよ）」が定番。",
     "isVerb": false,
     "dictForm": "Юу байна?",
-    "derivation": "見出し語「Юу байна?」",
+    "derivation": "「юу（何）」 ＋ 「байна（いる・ある（現在進行））」 ＝ 【最近どう？、何か変わったことある？】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「юу（何）」 ＋ 「байна（いる・ある（現在進行））」 ＝ 【最近どう？、何か変わったことある？】"
   },
   {
     "id": "v_gen_useful_phrases_19",
@@ -24251,11 +24627,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "Тайван даа",
-    "derivation": "見出し語「Тайван даа」",
+    "derivation": "「тайван」 ＋ 「даа」 ＝ 【変わりないよ、平穏だよ】",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「тайван」 ＋ 「даа」 ＝ 【変わりないよ、平穏だよ】"
   },
   {
     "id": "v_gen_useful_phrases_20",
@@ -24351,11 +24728,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "хамт олон",
-    "derivation": "見出し語「хамт олон」",
+    "derivation": "「хамт」 ＋ 「олон」 ＝ 【同僚たち、職場の仲間】",
     "genreId": "business",
     "genreName": "ビジネス・仕事・経済",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「хамт」 ＋ 「олон」 ＝ 【同僚たち、職場の仲間】"
   },
   {
     "id": "v_gen_business_5",
@@ -24491,11 +24869,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "хөрөнгө оруулалт",
-    "derivation": "見出し語「хөрөнгө оруулалт」",
+    "derivation": "「хөрөнгө」 ＋ 「оруулалт」 ＝ 【投資、出資】",
     "genreId": "business",
     "genreName": "ビジネス・仕事・経済",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「хөрөнгө」 ＋ 「оруулалт」 ＝ 【投資、出資】"
   },
   {
     "id": "v_gen_business_12",
@@ -24751,11 +25130,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "толгой өвдөх",
-    "derivation": "見出し語「толгой өвдөх」",
+    "derivation": "「толгой」 ＋ 「өвдөх」 ＝ 【頭痛がする、頭が痛い】",
     "genreId": "medical",
     "genreName": "医療・健康・病院",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「толгой」 ＋ 「өвдөх」 ＝ 【頭痛がする、頭が痛い】"
   },
   {
     "id": "v_gen_medical_9",
@@ -24811,11 +25191,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "түргэн тусламж",
-    "derivation": "見出し語「түргэн тусламж」",
+    "derivation": "「түргэн」 ＋ 「тусламж（援助・手当・レスキュー（動詞 туслах［助ける］＋ -мж））」 ＝ 【救急車、救命救急】",
     "genreId": "medical",
     "genreName": "医療・健康・病院",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「түргэн」 ＋ 「тусламж（援助・手当・レスキュー（動詞 туслах［助ける］＋ -мж））」 ＝ 【救急車、救命救急】"
   },
   {
     "id": "v_gen_medical_12",
@@ -24851,11 +25232,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "цусны даралт",
-    "derivation": "見出し語「цусны даралт」",
+    "derivation": "「цусны」 ＋ 「даралт」 ＝ 【血圧】",
     "genreId": "medical",
     "genreName": "医療・健康・病院",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「цусны」 ＋ 「даралт」 ＝ 【血圧】"
   },
   {
     "id": "v_gen_medical_14",
@@ -24871,11 +25253,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "шүдний эмч",
-    "derivation": "見出し語「шүдний эмч」",
+    "derivation": "「шүдний」 ＋ 「эмч」 ＝ 【歯科医、歯医者】",
     "genreId": "medical",
     "genreName": "医療・健康・病院",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「шүдний」 ＋ 「эмч」 ＝ 【歯科医、歯医者】"
   },
   {
     "id": "v_gen_medical_15",
@@ -24891,11 +25274,12 @@ const initialVocabulary = [
     "note": "",
     "isVerb": false,
     "dictForm": "эрүүл мэнд",
-    "derivation": "見出し語「эрүүл мэнд」",
+    "derivation": "「эрүүл」 ＋ 「мэнд」 ＝ 【健康】",
     "genreId": "medical",
     "genreName": "医療・健康・病院",
     "caseGovernment": "",
-    "caseNote": ""
+    "caseNote": "",
+    "etymologyBreakdown": "「эрүүл」 ＋ 「мэнд」 ＝ 【健康】"
   },
   {
     "id": "v_gen_medical_16",
@@ -45501,14 +45885,24 @@ class StorageService {
 
     const progressMap = this.getAllWordProgress();
 
+    // initialVocabulary の最新解説・成り立ち・格支配情報を常にマージ
+    const initMap = {};
+    if (typeof initialVocabulary !== 'undefined' && Array.isArray(initialVocabulary)) {
+      for (const iv of initialVocabulary) {
+        if (iv.id) initMap[iv.id] = iv;
+      }
+    }
+
     // 各単語に現在のSRS進捗と保持率メタデータを付与
     return baseList.map(item => {
+      const freshMeta = initMap[item.id] || {};
+      const mergedItem = { ...item, ...freshMeta };
       const prog = progressMap[item.id] || { srsLevel: 0, intervalDays: 0, studyCount: 0, correctCount: 0, wrongCount: 0, accuracy: 0 };
       const retentionData = SrsService.calculateRetention(prog);
       const masteryMeta = SrsService.getMasteryMeta(prog.srsLevel);
 
       return {
-        ...item,
+        ...mergedItem,
         srsLevel: prog.srsLevel || 0,
         intervalDays: prog.intervalDays || 0,
         nextReviewDate: prog.nextReviewDate || null,
@@ -70422,16 +70816,22 @@ class ReviewNotebookComponent {
               ${(() => {
                 const matchedWord = parsed.matchedWord;
 
-                if (matchedWord && parsed.isVerb) {
+                // 単語情報がある場合：動詞・名詞・複合語問わず詳細解説＆成り立ちHTMLを完全展開
+                if (matchedWord) {
                   return renderGrammarExplanationHTML({
                     correctAnswer: item.correctAnswer,
                     userAnswer: this.state.userAnswer,
                     isCorrect: this.state.isCorrect,
                     item: matchedWord,
                     grammarExplanation: item.explanation,
-                    isVerbQuestion: true
+                    isVerbQuestion: parsed.isVerb
                   });
                 }
+
+                // マッチ単語がない場合のフォールバック（成り立ち解析つき）
+                const etymologyHTML = (typeof getWordEtymologyHTML === 'function')
+                  ? getWordEtymologyHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
+                  : '';
 
                 return `
                   <div class="space-y-2 text-xs sm:text-sm">
@@ -70446,6 +70846,8 @@ class ReviewNotebookComponent {
                         <span class="font-semibold line-through">${this.state.userAnswer}</span>
                       </div>
                     ` : ''}
+
+                    ${etymologyHTML}
 
                     ${item.explanation ? `
                       <div class="p-3 bg-white/90 rounded-xl border border-slate-200 text-slate-700 text-xs">

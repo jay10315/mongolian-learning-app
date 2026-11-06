@@ -375,3 +375,23 @@ body.theme-lavender .bg-white {
   border-color: #ddd6fe !important;
 }
 
+
+
+/* 成り立ち・構成カード（ナイトモード・ダークテーマ最適化） */
+body.theme-dark .etymology-breakdown-card,
+body.theme-forest .etymology-breakdown-card,
+body.theme-ocean .etymology-breakdown-card {
+  background: #251b12 !important;
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  color: #fef3c7 !important;
+}
+
+body.theme-dark .etymology-breakdown-card .text-amber-950,
+body.theme-dark .etymology-breakdown-card .text-amber-900 {
+  color: #fde68a !important;
+}
+
+body.theme-dark .etymology-breakdown-card .text-slate-900,
+body.theme-dark .etymology-breakdown-card .text-slate-800 {
+  color: #ffffff !important;
+}

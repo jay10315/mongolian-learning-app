@@ -50,7 +50,8 @@ tests = [
     'test_pronunciation_caution_display.py',
     'test_railway_sugoroku_feature.py',
     'test_user_requested_expressions.py',
-    'test_night_mode_feedback.py'
+    'test_night_mode_feedback.py',
+    'test_compound_etymology_display.py'
 ]
 
 for t in tests:

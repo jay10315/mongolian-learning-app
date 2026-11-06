@@ -275,14 +275,24 @@ export class StorageService {
 
     const progressMap = this.getAllWordProgress();
 
+    // initialVocabulary の最新解説・成り立ち・格支配情報を常にマージ
+    const initMap = {};
+    if (typeof initialVocabulary !== 'undefined' && Array.isArray(initialVocabulary)) {
+      for (const iv of initialVocabulary) {
+        if (iv.id) initMap[iv.id] = iv;
+      }
+    }
+
     // 各単語に現在のSRS進捗と保持率メタデータを付与
     return baseList.map(item => {
+      const freshMeta = initMap[item.id] || {};
+      const mergedItem = { ...item, ...freshMeta };
       const prog = progressMap[item.id] || { srsLevel: 0, intervalDays: 0, studyCount: 0, correctCount: 0, wrongCount: 0, accuracy: 0 };
       const retentionData = SrsService.calculateRetention(prog);
       const masteryMeta = SrsService.getMasteryMeta(prog.srsLevel);
 
       return {
-        ...item,
+        ...mergedItem,
         srsLevel: prog.srsLevel || 0,
         intervalDays: prog.intervalDays || 0,
         nextReviewDate: prog.nextReviewDate || null,

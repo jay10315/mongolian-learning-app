@@ -412,6 +412,74 @@ export function isListeningAnswerMatch(userAnswer, quizItem, mode = 'blank') {
  * 5. 必要な場合は動詞の活用や文法の説明
  * 6. 語幹から正解の形が作られる過程
  */
+/**
+ * 単語の成り立ち・語の構成（2語以上の複合語、派生語、接尾辞結合）を解析してHTMLカードを生成
+ */
+export function getWordEtymologyHTML(item, targetWord) {
+  if (!item && !targetWord) return '';
+
+  const mn = ((item && (item.mongolian || item.dictForm)) || targetWord || '').trim();
+  const ja = ((item && item.japanese) || '').trim();
+  const deriv = (item && (item.etymologyBreakdown || item.derivation)) || '';
+  const note = (item && item.note) || '';
+
+  let breakdown = '';
+
+  // 1. 明示的な分解式（「＋」または「+」を含む場合）
+  if (deriv && (deriv.includes('＋') || deriv.includes('+') || deriv.includes('＝') || deriv.includes('='))) {
+    breakdown = deriv;
+  } else if (note && (note.includes('＋') || note.includes('+') || note.includes('構成:'))) {
+    breakdown = note;
+  } else if (deriv && (deriv.includes('語幹') || deriv.includes('接尾辞') || deriv.includes('派生'))) {
+    breakdown = deriv;
+  }
+
+  // 2. スペースを含む複合語（一語以上で成り立っている単語）の動的補完
+  if (!breakdown && mn.includes(' ')) {
+    const tokens = mn.replace(/[\(\)\,\.\/\?]/g, ' ').split(/\s+/).filter(Boolean);
+    if (tokens.length >= 2) {
+      // initialVocabulary または内部辞書からトークンを検索
+      let vocabList = [];
+      try {
+        if (typeof initialVocabulary !== 'undefined') vocabList = initialVocabulary;
+        else if (typeof StorageService !== 'undefined') vocabList = StorageService.getVocabulary();
+      } catch (_) {}
+
+      const parts = tokens.map(t => {
+        const cleanT = t.toLowerCase();
+        let meaning = '';
+        if (vocabList && vocabList.length > 0) {
+          const match = vocabList.find(w => (w.mongolian || '').toLowerCase() === cleanT || (w.dictForm || '').toLowerCase() === cleanT);
+          if (match && match.japanese) {
+            meaning = match.japanese.split(/[、,（(]/)[0].trim();
+          }
+        }
+        return meaning ? `「${t}（${meaning}）」` : `「${t}」`;
+      });
+
+      breakdown = parts.join(' ＋ ') + (ja ? ` ＝ 【${ja}】` : '');
+    }
+  }
+
+  if (!breakdown) return '';
+
+  return `
+    <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/70 border border-amber-300/80 text-xs space-y-1.5 shadow-2xs etymology-breakdown-card">
+      <div class="font-black text-amber-950 flex items-center gap-1.5">
+        <span>🧩</span> 単語の成り立ち・構成:
+      </div>
+      <div class="font-bold text-slate-900 leading-relaxed cyrillic-text text-xs sm:text-sm pl-2 border-l-2 border-amber-400">
+        ${breakdown}
+      </div>
+    </div>
+  `;
+}
+
+if (typeof window !== 'undefined') {
+  window.getWordEtymologyHTML = getWordEtymologyHTML;
+}
+
+
 export function renderGrammarExplanationHTML({
   correctAnswer,
   userAnswer = '',
@@ -520,15 +588,18 @@ export function renderGrammarExplanationHTML({
           ` : ''}
         </div>
       ` : `
-        <!-- 非動詞（名詞など）の場合 -->
+        <!-- 非動詞（名詞・複合語など）の場合 -->
         <div class="bg-white/95 rounded-xl p-3 border border-slate-200 space-y-1.5 my-2 text-xs">
           <div class="flex items-center justify-between">
             <span class="font-bold text-slate-800">見出し語: <span class="cyrillic-text font-extrabold text-slate-900">${dictForm}</span></span>
             <span class="text-slate-500 font-medium">【品詞: ${details ? details.pos : (item ? item.pos : '名詞')}】</span>
           </div>
           <div>意味: <span class="font-semibold text-slate-800">${meaning}</span></div>
-          ${derivation ? `<div class="text-slate-600 pt-1 border-t border-slate-100">💡 ${derivation}</div>` : ''}
-          ${(grammarExplanation || rule || note) ? `
+          
+          <!-- 単語の成り立ち・構成カード（2語以上の複合語、派生語） -->
+          ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(item, correctAnswer) : (derivation ? `<div class="text-slate-600 pt-1 border-t border-slate-100">💡 ${derivation}</div>` : '')}
+
+          ${(grammarExplanation || rule || note) && !(item && (item.etymologyBreakdown || item.derivation || '').includes(note)) ? `
             <div class="text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 mt-1">
               ${grammarExplanation || note || rule}
             </div>
