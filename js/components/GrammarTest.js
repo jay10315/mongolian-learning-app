@@ -290,7 +290,7 @@ export class GrammarTestComponent {
                 </div>
 
                 <!-- 選択可能な単語チップ -->
-                <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+                <div id="reorder-available-tokens" class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
                   ${this.state.availableTokens.map((token, i) => {
                     const displayToken = (token === '9' ? 'есөн' : token === '10' ? 'арав' : token === '14-ний' ? 'арван дөрөвний' : token === '15-ны' ? 'арван тавны' : token);
                     return `
@@ -387,6 +387,78 @@ export class GrammarTestComponent {
     return text.replace(/🔴([^\n]+)/g, '<span class="text-rose-600 font-bold">🔴 $1</span>');
   }
 
+  // 並び替え問題の部分更新（全画面チカチカ・リロードを完全防止）
+  static updateReorderUI() {
+    const dropzone = this.container.querySelector('#reorder-dropzone');
+    const availableContainer = this.container.querySelector('#reorder-available-tokens');
+    const submitBtn = this.container.querySelector('#btn-submit-reorder');
+
+    if (!dropzone || !availableContainer) {
+      this.renderTesting();
+      return;
+    }
+
+    const formatToken = (token) => {
+      return (token === '9' ? 'есөн' : token === '10' ? 'арав' : token === '14-ний' ? 'арван дөрөвний' : token === '15-ны' ? 'арван тавны' : token);
+    };
+
+    // 1. 組み立て中の文（解答欄ドロップゾーン）の部分更新
+    if (this.state.selectedTokens.length === 0) {
+      dropzone.innerHTML = `<span class="text-xs text-slate-400">下の単語をタップしてここに入れます</span>`;
+    } else {
+      dropzone.innerHTML = this.state.selectedTokens.map((token, i) => `
+        <button type="button" class="btn-remove-token px-3 py-1.5 bg-sky-600 hover:bg-rose-500 text-white font-bold text-sm rounded-lg shadow-xs active:scale-95 transition-transform cyrillic-text cursor-pointer" data-index="${i}">
+          ${formatToken(token)} ✕
+        </button>
+      `).join('');
+    }
+
+    // 2. 選択可能な単語チップの部分更新
+    availableContainer.innerHTML = this.state.availableTokens.map((token, i) => `
+      <button type="button" class="btn-add-token px-3 py-1.5 bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-800 font-bold text-sm rounded-lg border border-slate-200 active:scale-95 transition-transform cyrillic-text cursor-pointer" data-index="${i}">
+        ${formatToken(token)}
+      </button>
+    `).join('');
+
+    // 3. 回答確定ボタンの有効/無効クラス切替
+    if (submitBtn) {
+      if (this.state.selectedTokens.length === 0) {
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    // 4. トークンクリックイベントの再バインド
+    this.bindReorderTokenEvents();
+  }
+
+  static bindReorderTokenEvents() {
+    // 単語チップを追加（解答欄へ送る）
+    this.container.querySelectorAll('.btn-add-token').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const index = parseInt(btn.getAttribute('data-index'), 10);
+        if (isNaN(index) || index < 0 || index >= this.state.availableTokens.length) return;
+        const token = this.state.availableTokens.splice(index, 1)[0];
+        this.state.selectedTokens.push(token);
+        this.updateReorderUI();
+      });
+    });
+
+    // 単語チップを戻す（解答欄から外す）
+    this.container.querySelectorAll('.btn-remove-token').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const index = parseInt(btn.getAttribute('data-index'), 10);
+        if (isNaN(index) || index < 0 || index >= this.state.selectedTokens.length) return;
+        const token = this.state.selectedTokens.splice(index, 1)[0];
+        this.state.availableTokens.push(token);
+        this.updateReorderUI();
+      });
+    });
+  }
+
   static bindTestingEvents() {
     // ヒントトグル
     const toggleHintBtn = this.container.querySelector('#btn-toggle-grammar-hint');
@@ -416,25 +488,7 @@ export class GrammarTestComponent {
 
     if (!this.state.hasAnswered) {
       if (q.type === 'reorder') {
-        // 並び替え: 単語を追加
-        this.container.querySelectorAll('.btn-add-token').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const index = parseInt(btn.getAttribute('data-index'), 10);
-            const token = this.state.availableTokens.splice(index, 1)[0];
-            this.state.selectedTokens.push(token);
-            this.renderTesting();
-          });
-        });
-
-        // 並び替え: 単語を戻す
-        this.container.querySelectorAll('.btn-remove-token').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const index = parseInt(btn.getAttribute('data-index'), 10);
-            const token = this.state.selectedTokens.splice(index, 1)[0];
-            this.state.availableTokens.push(token);
-            this.renderTesting();
-          });
-        });
+        this.bindReorderTokenEvents();
 
         // 並び替え確定
         const submitReorder = this.container.querySelector('#btn-submit-reorder');
