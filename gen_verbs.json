@@ -1,0 +1,215 @@
+{
+  "total_gen_verbs": 176,
+  "samples": [
+    {
+      "id": "v_gen_2",
+      "mongolian": "ав(ах)",
+      "japanese": "取る、買う、もらう",
+      "pos": "動詞",
+      "root": "ав-"
+    },
+    {
+      "id": "v_gen_3",
+      "mongolian": "автобус(н)",
+      "japanese": "バス",
+      "pos": "名詞",
+      "root": "автобус(н)"
+    },
+    {
+      "id": "v_gen_4",
+      "mongolian": "автобуснаас буу(х)",
+      "japanese": "バスから降りる",
+      "pos": "動詞句",
+      "root": "буу-"
+    },
+    {
+      "id": "v_gen_5",
+      "mongolian": "авч яв(ах)",
+      "japanese": "持っていく、連れていく",
+      "pos": "動詞句",
+      "root": "яв-"
+    },
+    {
+      "id": "v_gen_8",
+      "mongolian": "ажилла(х)",
+      "japanese": "働く、仕事をする",
+      "pos": "動詞",
+      "root": "ажилла-"
+    },
+    {
+      "id": "v_gen_15",
+      "mongolian": "алх(ах)",
+      "japanese": "歩く",
+      "pos": "動詞",
+      "root": "алх-"
+    },
+    {
+      "id": "v_gen_20",
+      "mongolian": "амра(х), амар",
+      "japanese": "休む、休暇を取る",
+      "pos": "動詞",
+      "root": "амар-"
+    },
+    {
+      "id": "v_gen_22",
+      "mongolian": "амс(ах)",
+      "japanese": "味わう、味見する",
+      "pos": "動詞",
+      "root": "амс-"
+    },
+    {
+      "id": "v_gen_25",
+      "mongolian": "амьдра(х), амьдар",
+      "japanese": "暮らす、生きる",
+      "pos": "動詞",
+      "root": "амьдар-"
+    },
+    {
+      "id": "v_gen_30",
+      "mongolian": "архи(н)",
+      "japanese": "ウォッカ、酒",
+      "pos": "名詞",
+      "root": "архи(н)"
+    },
+    {
+      "id": "v_gen_31",
+      "mongolian": "арч(их)",
+      "japanese": "拭く、ぬぐう",
+      "pos": "動詞",
+      "root": "арч-"
+    },
+    {
+      "id": "v_gen_34",
+      "mongolian": "ах дүү(г)",
+      "japanese": "兄弟",
+      "pos": "名詞句",
+      "root": "ах дүү(г)"
+    },
+    {
+      "id": "v_gen_38",
+      "mongolian": "аяга(н)",
+      "japanese": "お茶碗、カップ、湯呑み",
+      "pos": "名詞",
+      "root": "аяга(н)"
+    },
+    {
+      "id": "v_gen_40",
+      "mongolian": "баг бол(ох)",
+      "japanese": "チーム・グループになる",
+      "pos": "動詞句",
+      "root": "бол-"
+    },
+    {
+      "id": "v_gen_44",
+      "mongolian": "бай(х)",
+      "japanese": "ある、いる、〜である",
+      "pos": "動詞",
+      "root": "бай-"
+    },
+    {
+      "id": "v_gen_46",
+      "mongolian": "байшин(г)",
+      "japanese": "建物、家、ビル",
+      "pos": "名詞",
+      "root": "байшин(г)"
+    },
+    {
+      "id": "v_gen_48",
+      "mongolian": "банк(н)",
+      "japanese": "銀行",
+      "pos": "名詞",
+      "root": "банк(н)"
+    },
+    {
+      "id": "v_gen_49",
+      "mongolian": "баригд(ах)",
+      "japanese": "建設される、捕まる",
+      "pos": "動詞",
+      "root": "баригд-"
+    },
+    {
+      "id": "v_gen_58",
+      "mongolian": "бич(их)",
+      "japanese": "書く",
+      "pos": "動詞",
+      "root": "бич-"
+    },
+    {
+      "id": "v_gen_60",
+      "mongolian": "бол(ох)",
+      "japanese": "なる、良い、できる",
+      "pos": "動詞",
+      "root": "бол-"
+    },
+    {
+      "id": "v_gen_64",
+      "mongolian": "болчихлоо",
+      "japanese": "できました、完了しました",
+      "pos": "動詞形",
+      "root": ""
+    },
+    {
+      "id": "v_gen_66",
+      "mongolian": "бороо ор(ох)",
+      "japanese": "雨が降る",
+      "pos": "動詞句",
+      "root": "ор-"
+    },
+    {
+      "id": "v_gen_68",
+      "mongolian": "бос(ох)",
+      "japanese": "起きる、立ち上がる",
+      "pos": "動詞",
+      "root": "бос-"
+    },
+    {
+      "id": "v_gen_70",
+      "mongolian": "бөх барилд(ах)",
+      "japanese": "モンゴル相撲を取る",
+      "pos": "動詞句",
+      "root": "барилд-"
+    },
+    {
+      "id": "v_gen_71",
+      "mongolian": "бууз(н)",
+      "japanese": "ボーズ（モンゴル風蒸し餃子）",
+      "pos": "名詞",
+      "root": "бууз(н)"
+    },
+    {
+      "id": "v_gen_72",
+      "mongolian": "буу(х)",
+      "japanese": "降りる、下車する",
+      "pos": "動詞",
+      "root": "буу-"
+    },
+    {
+      "id": "v_gen_73",
+      "mongolian": "буц(ах)",
+      "japanese": "帰る、戻る",
+      "pos": "動詞",
+      "root": "буц-"
+    },
+    {
+      "id": "v_gen_75",
+      "mongolian": "бүс(н)",
+      "japanese": "帯、ベルト",
+      "pos": "名詞",
+      "root": "бүс(н)"
+    },
+    {
+      "id": "v_gen_76",
+      "mongolian": "бүс бүслэ(х), бүсэл",
+      "japanese": "帯を締める",
+      "pos": "動詞句",
+      "root": "бүсэл-"
+    },
+    {
+      "id": "v_gen_79",
+      "mongolian": "бэлд(эх)",
+      "japanese": "準備する、用意する",
+      "pos": "動詞",
+      "root": "бэлд-"
+    }
+  ]
+}

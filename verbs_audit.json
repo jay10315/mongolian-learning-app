@@ -1,0 +1,145 @@
+{
+  "total_verbs": 206,
+  "samples": [
+    {
+      "id": "v_2_20",
+      "mongolian": "байна",
+      "japanese": "ある、いる",
+      "pos": "動詞",
+      "root": "бай-"
+    },
+    {
+      "id": "v_2_21",
+      "mongolian": "байхгүй",
+      "japanese": "ない、いない",
+      "pos": "動詞",
+      "root": ""
+    },
+    {
+      "id": "v_3_1",
+      "mongolian": "идэх",
+      "japanese": "食べる",
+      "pos": "動詞",
+      "root": "ид-"
+    },
+    {
+      "id": "v_3_2",
+      "mongolian": "уух",
+      "japanese": "飲む",
+      "pos": "動詞",
+      "root": "уу-"
+    },
+    {
+      "id": "v_3_3",
+      "mongolian": "унших",
+      "japanese": "読む",
+      "pos": "動詞",
+      "root": "унш-"
+    },
+    {
+      "id": "v_3_4",
+      "mongolian": "сонсох",
+      "japanese": "聞く",
+      "pos": "動詞",
+      "root": "сонс-"
+    },
+    {
+      "id": "v_3_5",
+      "mongolian": "хийх",
+      "japanese": "する、作る、入れる",
+      "pos": "動詞",
+      "root": "хий-"
+    },
+    {
+      "id": "v_3_6",
+      "mongolian": "үзэх",
+      "japanese": "見る、試す",
+      "pos": "動詞",
+      "root": "үз-"
+    },
+    {
+      "id": "v_3_7",
+      "mongolian": "орох",
+      "japanese": "入る、（雨や雪が）降る",
+      "pos": "動詞",
+      "root": "ор-"
+    },
+    {
+      "id": "v_3_8",
+      "mongolian": "өгөх",
+      "japanese": "あげる、くれる",
+      "pos": "動詞",
+      "root": "өг-"
+    },
+    {
+      "id": "v_3_9",
+      "mongolian": "бичих",
+      "japanese": "書く",
+      "pos": "動詞",
+      "root": "бич-"
+    },
+    {
+      "id": "v_3_10",
+      "mongolian": "явах",
+      "japanese": "行く",
+      "pos": "動詞",
+      "root": "яв-"
+    },
+    {
+      "id": "v_3_11",
+      "mongolian": "ирэх",
+      "japanese": "来る",
+      "pos": "動詞",
+      "root": "ир-"
+    },
+    {
+      "id": "v_3_12",
+      "mongolian": "авах",
+      "japanese": "買う、もらう、取る",
+      "pos": "動詞",
+      "root": "ав-"
+    },
+    {
+      "id": "v_3_13",
+      "mongolian": "гарах",
+      "japanese": "出る、出発する",
+      "pos": "動詞",
+      "root": "гар-"
+    },
+    {
+      "id": "v_5_6",
+      "mongolian": "босох",
+      "japanese": "起きる、立つ",
+      "pos": "動詞",
+      "root": "бос-"
+    },
+    {
+      "id": "v_5_7",
+      "mongolian": "унтах",
+      "japanese": "寝る",
+      "pos": "動詞",
+      "root": "унт-"
+    },
+    {
+      "id": "v_5_8",
+      "mongolian": "харих",
+      "japanese": "（家に・自国に）帰る",
+      "pos": "動詞",
+      "root": "хари-"
+    },
+    {
+      "id": "v_6_2",
+      "mongolian": "унтраах",
+      "japanese": "（電気などを）消す",
+      "pos": "動詞",
+      "root": "унтраа-"
+    },
+    {
+      "id": "v_6_3",
+      "mongolian": "нээх",
+      "japanese": "開ける",
+      "pos": "動詞",
+      "root": "нээ-"
+    }
+  ]
+}

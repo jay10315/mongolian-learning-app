@@ -1,0 +1,22 @@
+function startApplication() {
+  try {
+    App.init();
+  } catch (err) {
+    console.error('Fatal initialization error:', err);
+    const mainEl = document.getElementById('main-content') || document.body;
+    mainEl.innerHTML = `
+      <div style="padding: 24px; color: #991b1b; background: #fee2e2; border-radius: 12px; margin: 20px; font-family: sans-serif;">
+        <h2 style="font-weight: bold; margin-bottom: 8px;">初期化エラーが発生しました:</h2>
+        <pre style="background: white; padding: 12px; border-radius: 8px; border: 1px solid #fca5a5; overflow-x: auto;">${err.stack || err.message || err}</pre>
+      </div>
+    `;
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startApplication);
+} else {
+  startApplication();
+}
+
+  </script>

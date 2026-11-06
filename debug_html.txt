@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#059669">
+  <meta name="description" content="モンゴル語の単語・文法・格変化・活用を効率よく学べるWebアプリ（JICA教科書準拠）">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <!-- SCRIPT -->
+  
+  <!-- iOS PWA対応 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="モンゴル語ノート">
+  <link rel="apple-touch-icon" href="./icon-192.svg">
+  
+  <link rel="manifest" href="./manifest.json">
+  <title>Монгол хэл｜モンゴル語学習ノート</title>
+
+  <!-- Tailwind CSS CDN（オンライン時） -->
+  <!-- SCRIPT -->
+  <!-- SCRIPT -->
+
+  <!-- アプリ独自スタイル（オフライン・ローカルでも完全動作） -->
+  <!-- STYLE -->
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-emerald-100 selection:text-emerald-900">
+
+  <!-- ヘッダーコンテナ -->
+  <div id="app-header"></div>
+
+  <!-- メインコンテンツ領域 -->
+  <main id="main-content" class="flex-1 w-full pb-16 md:pb-8"></main>
+
+  <!-- スマホ用ボトム固定ナビゲーション -->
+  <div id="mobile-bottom-nav"></div>
+
+  <!-- アプリケーション本体スクリプト（完全自立型・CORS制限ゼロ） -->
+  <!-- SCRIPT -->
+</body>
+</html>

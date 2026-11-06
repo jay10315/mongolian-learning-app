@@ -1,0 +1,457 @@
+{
+  "verbs_count": 176,
+  "verb_samples": [
+    {
+      "id": "v_2_20",
+      "mongolian": "байна",
+      "dictForm": "байна",
+      "root": "бай",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "ある、いる"
+    },
+    {
+      "id": "v_2_21",
+      "mongolian": "байхгүй",
+      "dictForm": "байхгүй",
+      "root": "байхгүй",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "ない、いない"
+    },
+    {
+      "id": "v_3_1",
+      "mongolian": "идэх",
+      "dictForm": "идэх",
+      "root": "ид",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "食べる"
+    },
+    {
+      "id": "v_3_2",
+      "mongolian": "уух",
+      "dictForm": "уух",
+      "root": "уу",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "飲む"
+    },
+    {
+      "id": "v_3_3",
+      "mongolian": "унших",
+      "dictForm": "унших",
+      "root": "унш",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "読む"
+    },
+    {
+      "id": "v_3_4",
+      "mongolian": "сонсох",
+      "dictForm": "сонсох",
+      "root": "сонс",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "聞く"
+    },
+    {
+      "id": "v_3_5",
+      "mongolian": "хийх",
+      "dictForm": "хийх",
+      "root": "хий",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "する、作る、入れる"
+    },
+    {
+      "id": "v_3_6",
+      "mongolian": "үзэх",
+      "dictForm": "үзэх",
+      "root": "үз",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "見る、試す"
+    },
+    {
+      "id": "v_3_7",
+      "mongolian": "орох",
+      "dictForm": "орох",
+      "root": "ор",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "入る、（雨や雪が）降る"
+    },
+    {
+      "id": "v_3_8",
+      "mongolian": "өгөх",
+      "dictForm": "өгөх",
+      "root": "өг",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "あげる、くれる"
+    },
+    {
+      "id": "v_3_9",
+      "mongolian": "бичих",
+      "dictForm": "бичих",
+      "root": "бич",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "書く"
+    },
+    {
+      "id": "v_3_10",
+      "mongolian": "явах",
+      "dictForm": "явах",
+      "root": "яв",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "行く"
+    },
+    {
+      "id": "v_3_11",
+      "mongolian": "ирэх",
+      "dictForm": "ирэх",
+      "root": "ир",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "来る"
+    },
+    {
+      "id": "v_3_12",
+      "mongolian": "авах",
+      "dictForm": "авах",
+      "root": "ав",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "買う、もらう、取る"
+    },
+    {
+      "id": "v_3_13",
+      "mongolian": "гарах",
+      "dictForm": "гарах",
+      "root": "гар",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "出る、出発する"
+    },
+    {
+      "id": "v_5_6",
+      "mongolian": "босох",
+      "dictForm": "босох",
+      "root": "бос",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "起きる、立つ"
+    },
+    {
+      "id": "v_5_7",
+      "mongolian": "унтах",
+      "dictForm": "унтах",
+      "root": "унт",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "寝る"
+    },
+    {
+      "id": "v_5_8",
+      "mongolian": "харих",
+      "dictForm": "харих",
+      "root": "хари",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "（家に・自国に）帰る"
+    },
+    {
+      "id": "v_6_2",
+      "mongolian": "унтраах",
+      "dictForm": "унтраах",
+      "root": "унтраа",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "（電気などを）消す"
+    },
+    {
+      "id": "v_6_3",
+      "mongolian": "нээх",
+      "dictForm": "нээх",
+      "root": "нээ",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "開ける"
+    },
+    {
+      "id": "v_6_4",
+      "mongolian": "хаах",
+      "dictForm": "хаах",
+      "root": "хаа",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "閉める"
+    },
+    {
+      "id": "v_6_5",
+      "mongolian": "гүйх",
+      "dictForm": "гүйх",
+      "root": "гүй",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "走る"
+    },
+    {
+      "id": "v_6_6",
+      "mongolian": "угаах",
+      "dictForm": "угаах",
+      "root": "угаа",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "洗う、磨く"
+    },
+    {
+      "id": "v_7_3",
+      "mongolian": "цэвэрлэх",
+      "dictForm": "цэвэрлэх",
+      "root": "цэвэрлэ",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "掃除する、綺麗にする"
+    },
+    {
+      "id": "v_10_1",
+      "mongolian": "мэдэх",
+      "dictForm": "мэдэх",
+      "root": "мэд",
+      "is_verb": true,
+      "pos": "動詞",
+      "japanese": "知る、分かる"
+    }
+  ],
+  "non_verb_samples": [
+    {
+      "id": "v_2_2",
+      "mongolian": "цаас(н)",
+      "dictForm": "цаас",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "紙"
+    },
+    {
+      "id": "v_num_3",
+      "mongolian": "гурав (名詞前: гурван)",
+      "dictForm": "гурав",
+      "root": "",
+      "is_verb": false,
+      "pos": "数詞",
+      "japanese": "3（みっつ）"
+    },
+    {
+      "id": "v_num_4",
+      "mongolian": "дөрөв (名詞前: дөрвөн)",
+      "dictForm": "дөрөв",
+      "root": "",
+      "is_verb": false,
+      "pos": "数詞",
+      "japanese": "4（よっつ）"
+    },
+    {
+      "id": "v_num_5",
+      "mongolian": "тав (名詞前: таван)",
+      "dictForm": "тав",
+      "root": "",
+      "is_verb": false,
+      "pos": "数詞",
+      "japanese": "5（いつつ）"
+    },
+    {
+      "id": "v_num_6",
+      "mongolian": "зургаа (名詞前: зургаан)",
+      "dictForm": "зургаа",
+      "root": "",
+      "is_verb": false,
+      "pos": "数詞",
+      "japanese": "6（むっつ）"
+    },
+    {
+      "id": "v_num_7",
+      "mongolian": "долоо (名詞前: долоон)",
+      "dictForm": "долоо",
+      "root": "",
+      "is_verb": false,
+      "pos": "数詞",
+      "japanese": "7（ななつ）"
+    },
+    {
+      "id": "v_num_8",
+      "mongolian": "найм (名詞前: найман)",
+      "dictForm": "найм",
+      "root": "",
+      "is_verb": false,
+      "pos": "数詞",
+      "japanese": "8（やっつ）"
+    },
+    {
+      "id": "v_num_9",
+      "mongolian": "ес (名詞前: есөн)",
+      "dictForm": "ес",
+      "root": "",
+      "is_verb": false,
+      "pos": "数詞",
+      "japanese": "9（ここのつ）"
+    },
+    {
+      "id": "v_num_10",
+      "mongolian": "арав (名詞前: арван)",
+      "dictForm": "арав",
+      "root": "",
+      "is_verb": false,
+      "pos": "数詞",
+      "japanese": "10（とお）"
+    },
+    {
+      "id": "v_3_14",
+      "mongolian": "хоол(н)",
+      "dictForm": "хоол",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "料理、ご飯"
+    },
+    {
+      "id": "v_3_15",
+      "mongolian": "цай(н)",
+      "dictForm": "цай",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "お茶"
+    },
+    {
+      "id": "v_3_20",
+      "mongolian": "талх(н)",
+      "dictForm": "талх",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "パン"
+    },
+    {
+      "id": "v_4_2",
+      "mongolian": "хэл(н)",
+      "dictForm": "хэл",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "言語、言葉、舌"
+    },
+    {
+      "id": "v_4_3",
+      "mongolian": "цүнх(н)",
+      "dictForm": "цүнх",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "鞄、バッグ"
+    },
+    {
+      "id": "v_12_1",
+      "mongolian": "онгоц(н)",
+      "dictForm": "онгоц",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "飛行機、船"
+    },
+    {
+      "id": "v_gen_3",
+      "mongolian": "автобус(н)",
+      "dictForm": "автобус",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "バス"
+    },
+    {
+      "id": "v_gen_30",
+      "mongolian": "архи(н)",
+      "dictForm": "архи",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "ウォッカ、酒"
+    },
+    {
+      "id": "v_gen_34",
+      "mongolian": "ах дүү(г)",
+      "dictForm": "ах дүү",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞句",
+      "japanese": "兄弟"
+    },
+    {
+      "id": "v_gen_38",
+      "mongolian": "аяга(н)",
+      "dictForm": "аяга",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "お茶碗、カップ、湯呑み"
+    },
+    {
+      "id": "v_gen_45",
+      "mongolian": "байрны мөнгө(н)",
+      "dictForm": "байрны мөнгө",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞句",
+      "japanese": "家賃"
+    },
+    {
+      "id": "v_gen_46",
+      "mongolian": "байшин(г)",
+      "dictForm": "байшин",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "建物、家、ビル"
+    },
+    {
+      "id": "v_gen_48",
+      "mongolian": "банк(н)",
+      "dictForm": "банк",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "銀行"
+    },
+    {
+      "id": "v_gen_55",
+      "mongolian": "биеийн тамирын заал(н)",
+      "dictForm": "биеийн тамирын заал",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞句",
+      "japanese": "体育館、ジム"
+    },
+    {
+      "id": "v_gen_71",
+      "mongolian": "бууз(н)",
+      "dictForm": "бууз",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "ボーズ（モンゴル風蒸し餃子）"
+    },
+    {
+      "id": "v_gen_75",
+      "mongolian": "бүс(н)",
+      "dictForm": "бүс",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "帯、ベルト"
+    }
+  ]
+}

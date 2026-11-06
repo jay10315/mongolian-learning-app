@@ -1,0 +1,5861 @@
+{
+  "e65566f6dc36f5df24e81e0aee89eff8": {
+    "text": "харилцан яриа",
+    "file": "e65566f6dc36f5df24e81e0aee89eff8.mp3",
+    "size": 11376,
+    "label": "会話",
+    "category": "vocab"
+  },
+  "ab21b9a39f9f6f0137ade4d9705d3876": {
+    "text": "Харилцан яриа уншаарай",
+    "file": "ab21b9a39f9f6f0137ade4d9705d3876.mp3",
+    "size": 13824,
+    "label": "会話文を読んでください。",
+    "category": "example"
+  },
+  "aa88a71ac390e7ca34dc423b662e7807": {
+    "text": "би",
+    "file": "aa88a71ac390e7ca34dc423b662e7807.mp3",
+    "size": 11232,
+    "label": "私",
+    "category": "vocab"
+  },
+  "cf6601605b06edab0b5a8a609638e603": {
+    "text": "Би япон хүн",
+    "file": "cf6601605b06edab0b5a8a609638e603.mp3",
+    "size": 11232,
+    "label": "私は日本人です。",
+    "category": "example"
+  },
+  "f54479427440ec0e39ba65da0f2cdbfd": {
+    "text": "миний",
+    "file": "f54479427440ec0e39ba65da0f2cdbfd.mp3",
+    "size": 11232,
+    "label": "私の",
+    "category": "vocab"
+  },
+  "30d194847e5d9dbde1718920660cb3c2": {
+    "text": "Таны нэр хэн бэ",
+    "file": "30d194847e5d9dbde1718920660cb3c2.mp3",
+    "size": 12528,
+    "label": "あなたのお名前は何ですか？",
+    "category": "example"
+  },
+  "ffa57c13044eef25b729122d8e58c852": {
+    "text": "таны",
+    "file": "ffa57c13044eef25b729122d8e58c852.mp3",
+    "size": 11232,
+    "label": "あなたの（年上）",
+    "category": "vocab"
+  },
+  "cbf0cce5efb2abad829e20f4982df362": {
+    "text": "та",
+    "file": "cbf0cce5efb2abad829e20f4982df362.mp3",
+    "size": 11232,
+    "label": "あなた（年上・敬意）",
+    "category": "vocab"
+  },
+  "db065be7c3ae17b54264cd698bc00317": {
+    "text": "чи",
+    "file": "db065be7c3ae17b54264cd698bc00317.mp3",
+    "size": 11232,
+    "label": "あなた（年下・親しい人）",
+    "category": "vocab"
+  },
+  "f55e4c2bad85b3793ab7e1022f1f136a": {
+    "text": "Миний нэр Золбоо",
+    "file": "f55e4c2bad85b3793ab7e1022f1f136a.mp3",
+    "size": 12384,
+    "label": "私の名前はゾルボーです。",
+    "category": "example"
+  },
+  "94f5e1966a7c110261d174dc722ef04d": {
+    "text": "Та багш уу",
+    "file": "94f5e1966a7c110261d174dc722ef04d.mp3",
+    "size": 11232,
+    "label": "あなたは先生ですか？",
+    "category": "example"
+  },
+  "a8bfb1765a6a3d7f7719390703183b95": {
+    "text": "чиний",
+    "file": "a8bfb1765a6a3d7f7719390703183b95.mp3",
+    "size": 11232,
+    "label": "あなたの（年下）",
+    "category": "vocab"
+  },
+  "736213d63fbfb7c6a548440eb2022bc2": {
+    "text": "хэн",
+    "file": "736213d63fbfb7c6a548440eb2022bc2.mp3",
+    "size": 11232,
+    "label": "誰",
+    "category": "vocab"
+  },
+  "cc59346abf672ddcb7f7b990038533b2": {
+    "text": "Чи оюутан уу",
+    "file": "cc59346abf672ddcb7f7b990038533b2.mp3",
+    "size": 11232,
+    "label": "君は学生？",
+    "category": "example"
+  },
+  "4604cda21d406e019971f34484ecad57": {
+    "text": "Чиний ном энд байна",
+    "file": "4604cda21d406e019971f34484ecad57.mp3",
+    "size": 12816,
+    "label": "君の本はここにあるよ。",
+    "category": "example"
+  },
+  "f1b2ea20dd0c889794aa3d6bab5a48f2": {
+    "text": "би ч бас",
+    "file": "f1b2ea20dd0c889794aa3d6bab5a48f2.mp3",
+    "size": 11232,
+    "label": "私も",
+    "category": "vocab"
+  },
+  "11b5fecc828734b0a9e64dbf262ab8fa": {
+    "text": "Би ч бас танилцсандаа баяртай байна",
+    "file": "11b5fecc828734b0a9e64dbf262ab8fa.mp3",
+    "size": 16704,
+    "label": "私もお会いできて嬉しいです。",
+    "category": "example"
+  },
+  "035cc32c71f77a6a996ed10f45dd9d72": {
+    "text": "нэр",
+    "file": "035cc32c71f77a6a996ed10f45dd9d72.mp3",
+    "size": 11232,
+    "label": "名前",
+    "category": "vocab"
+  },
+  "95a15aa886a1274a982e1830d4681d1d": {
+    "text": "багш",
+    "file": "95a15aa886a1274a982e1830d4681d1d.mp3",
+    "size": 11232,
+    "label": "先生・教師",
+    "category": "vocab"
+  },
+  "9f6b7716a8cb6df177d2b93e9dc29f47": {
+    "text": "оюутан",
+    "file": "9f6b7716a8cb6df177d2b93e9dc29f47.mp3",
+    "size": 11232,
+    "label": "学生・大学生",
+    "category": "vocab"
+  },
+  "540f49816041b5dd7aa7c15541cb8d9a": {
+    "text": "Тэр багш",
+    "file": "540f49816041b5dd7aa7c15541cb8d9a.mp3",
+    "size": 11232,
+    "label": "彼は先生です。",
+    "category": "example"
+  },
+  "6e0e9f9f63b844f97c3f206d5035ec14": {
+    "text": "Тэр хүн хэн бэ",
+    "file": "6e0e9f9f63b844f97c3f206d5035ec14.mp3",
+    "size": 12240,
+    "label": "あの人は誰ですか？",
+    "category": "example"
+  },
+  "3828501f0f7c9af0dcb7603b3f8daf13": {
+    "text": "Би багш биш оюутан",
+    "file": "3828501f0f7c9af0dcb7603b3f8daf13.mp3",
+    "size": 12528,
+    "label": "私は先生ではなく学生です。",
+    "category": "example"
+  },
+  "99b59688813001a48e80e0de74ce6903": {
+    "text": "япон хүн",
+    "file": "99b59688813001a48e80e0de74ce6903.mp3",
+    "size": 11232,
+    "label": "日本人",
+    "category": "vocab"
+  },
+  "40163d2fec7a9105a7c524f13afb73b1": {
+    "text": "монгол хүн",
+    "file": "40163d2fec7a9105a7c524f13afb73b1.mp3",
+    "size": 11232,
+    "label": "モンゴル人",
+    "category": "vocab"
+  },
+  "fd690937e2edc3e409ed0ec34adfc3d2": {
+    "text": "бид бид нар",
+    "file": "fd690937e2edc3e409ed0ec34adfc3d2.mp3",
+    "size": 11232,
+    "label": "私達",
+    "category": "vocab"
+  },
+  "626913f93ec2abd00244d5ed6034be8a": {
+    "text": "Тэр монгол хүн",
+    "file": "626913f93ec2abd00244d5ed6034be8a.mp3",
+    "size": 11232,
+    "label": "あの人はモンゴル人です。",
+    "category": "example"
+  },
+  "1c289229ea6ccce5a93cfb5070bf4fe4": {
+    "text": "Бид нар япон хүн",
+    "file": "1c289229ea6ccce5a93cfb5070bf4fe4.mp3",
+    "size": 11952,
+    "label": "私達は日本人です。",
+    "category": "example"
+  },
+  "49ab781904768210b1363a6d0e892d1d": {
+    "text": "та нар",
+    "file": "49ab781904768210b1363a6d0e892d1d.mp3",
+    "size": 11232,
+    "label": "あなた達",
+    "category": "vocab"
+  },
+  "44fbdeee0ad8960c687d76da2079428d": {
+    "text": "энэ хүн",
+    "file": "44fbdeee0ad8960c687d76da2079428d.mp3",
+    "size": 11232,
+    "label": "この人",
+    "category": "vocab"
+  },
+  "d03f9973dbd43044f4704d47117e5c6f": {
+    "text": "тэр",
+    "file": "d03f9973dbd43044f4704d47117e5c6f.mp3",
+    "size": 11232,
+    "label": "それ、あれ、その、あの",
+    "category": "vocab"
+  },
+  "86d424c7a4bc73098352582f946b850e": {
+    "text": "Та нар оюутан уу",
+    "file": "86d424c7a4bc73098352582f946b850e.mp3",
+    "size": 11808,
+    "label": "あなた達は学生ですか？",
+    "category": "example"
+  },
+  "e943c2a0f3af0ae45ddad3f3ab25463e": {
+    "text": "Энэ хүн таны оюутан",
+    "file": "e943c2a0f3af0ae45ddad3f3ab25463e.mp3",
+    "size": 13104,
+    "label": "この人はあなたの学生です。",
+    "category": "example"
+  },
+  "a0183a8d95b872b8d169d458767fb8ec": {
+    "text": "тэд тэд нар",
+    "file": "a0183a8d95b872b8d169d458767fb8ec.mp3",
+    "size": 11232,
+    "label": "その人達、彼ら",
+    "category": "vocab"
+  },
+  "6fe2f0831c31ed3e974c7fd0a64cf5d6": {
+    "text": "Тэд нар миний багш нар",
+    "file": "6fe2f0831c31ed3e974c7fd0a64cf5d6.mp3",
+    "size": 13680,
+    "label": "その人達は私の先生達です。",
+    "category": "example"
+  },
+  "ae3e500363b5112f7486ee174fdf18f6": {
+    "text": "Сайн байцгаана уу",
+    "file": "ae3e500363b5112f7486ee174fdf18f6.mp3",
+    "size": 11664,
+    "label": "皆さん、こんにちは",
+    "category": "vocab"
+  },
+  "676643fc8c7500c43055289a627df10d": {
+    "text": "Сайн уу / Сайн байна уу",
+    "file": "676643fc8c7500c43055289a627df10d.mp3",
+    "size": 13248,
+    "label": "こんにちは、お元気ですか",
+    "category": "vocab"
+  },
+  "13877ee0bbf78aca226062f80dda06a6": {
+    "text": "сайн",
+    "file": "13877ee0bbf78aca226062f80dda06a6.mp3",
+    "size": 11232,
+    "label": "良い、元気な、優れている",
+    "category": "vocab"
+  },
+  "8cc79959db0ed69ca6bcb7ebc6a21563": {
+    "text": "Сайн байна уу Та сайн байна уу",
+    "file": "8cc79959db0ed69ca6bcb7ebc6a21563.mp3",
+    "size": 15120,
+    "label": "こんにちは、お元気ですか？",
+    "category": "example"
+  },
+  "553da4b41318b7a02242810b3c764a8f": {
+    "text": "Бүгдээрээ сайн байцгаана уу",
+    "file": "553da4b41318b7a02242810b3c764a8f.mp3",
+    "size": 14112,
+    "label": "みなさん、こんにちは！",
+    "category": "example"
+  },
+  "9c033658dbb143b3fa6f179c60b35b2f": {
+    "text": "Юмгүй тайван",
+    "file": "9c033658dbb143b3fa6f179c60b35b2f.mp3",
+    "size": 11232,
+    "label": "相変わらずです（特に変わりなく平穏です）",
+    "category": "vocab"
+  },
+  "b9bd153f97ea2c21251dc769fd689123": {
+    "text": "Сонин сайхан юу байна вэ — Юмгүй тайван",
+    "file": "b9bd153f97ea2c21251dc769fd689123.mp3",
+    "size": 19296,
+    "label": "最近どうですか？ — 相変わらず穏やかです。",
+    "category": "example"
+  },
+  "b02b19bb878cdb4ddbc2b026fb7d0610": {
+    "text": "— Сайн байна уу — Сайн",
+    "file": "b02b19bb878cdb4ddbc2b026fb7d0610.mp3",
+    "size": 13104,
+    "label": "— お元気ですか？ — 元気です。",
+    "category": "example"
+  },
+  "92a0b3f4c8bc1ea14132c29368a46a95": {
+    "text": "Баярлалаа",
+    "file": "92a0b3f4c8bc1ea14132c29368a46a95.mp3",
+    "size": 11232,
+    "label": "ありがとう",
+    "category": "vocab"
+  },
+  "e536827d30a7a8d6f5627097b3edf1dd": {
+    "text": "Юмгүй тайван байна",
+    "file": "e536827d30a7a8d6f5627097b3edf1dd.mp3",
+    "size": 11952,
+    "label": "特に変わりなく平穏です。",
+    "category": "example"
+  },
+  "dc7276dbdd1111e2ab7ce48170ba5639": {
+    "text": "Сонин сайхан юу байна вэ",
+    "file": "dc7276dbdd1111e2ab7ce48170ba5639.mp3",
+    "size": 14688,
+    "label": "最近どうですか（何か変わったことありますか）",
+    "category": "vocab"
+  },
+  "5517628a40dddfba379dc98b4ec1b92c": {
+    "text": "Их баярлалаа",
+    "file": "5517628a40dddfba379dc98b4ec1b92c.mp3",
+    "size": 11232,
+    "label": "どうもありがとうございます。",
+    "category": "example"
+  },
+  "5cfe479204153ae9df5195e694815ffb": {
+    "text": "Танд их баярлалаа",
+    "file": "5cfe479204153ae9df5195e694815ffb.mp3",
+    "size": 12528,
+    "label": "あなたにとても感謝しています。",
+    "category": "example"
+  },
+  "7aa4aaea400e652a97eb64e61355eb3b": {
+    "text": "Их баярлалаа / Маш их баярлалаа",
+    "file": "7aa4aaea400e652a97eb64e61355eb3b.mp3",
+    "size": 15840,
+    "label": "ありがとうございます / どうもありがとうございます",
+    "category": "vocab"
+  },
+  "7932ca7d723b3717f58dafb4e73f1558": {
+    "text": "Зүгээр зүгээр",
+    "file": "7932ca7d723b3717f58dafb4e73f1558.mp3",
+    "size": 11232,
+    "label": "どういたしまして、平気です",
+    "category": "vocab"
+  },
+  "45f328dd30e3dd28378df40293f0a79e": {
+    "text": "Уучлаарай",
+    "file": "45f328dd30e3dd28378df40293f0a79e.mp3",
+    "size": 11232,
+    "label": "すみません、ごめんなさい",
+    "category": "vocab"
+  },
+  "83f73ad8fd3f8c0fd0f42c32eecedceb": {
+    "text": "— Баярлалаа — Зүгээр зүгээр",
+    "file": "83f73ad8fd3f8c0fd0f42c32eecedceb.mp3",
+    "size": 14256,
+    "label": "— ありがとう。 — どういたしまして。",
+    "category": "example"
+  },
+  "ed69351c297d27d7f05117ce43878eec": {
+    "text": "Уучлаарай энэ хэний цүнх вэ",
+    "file": "ed69351c297d27d7f05117ce43878eec.mp3",
+    "size": 15984,
+    "label": "すみません、これは誰の鞄ですか？",
+    "category": "example"
+  },
+  "48e59792ff765c2464d5dd15c9bb2d2d": {
+    "text": "Баяртай",
+    "file": "48e59792ff765c2464d5dd15c9bb2d2d.mp3",
+    "size": 11232,
+    "label": "さようなら",
+    "category": "vocab"
+  },
+  "bd93392cdc61b4d88ba73d4a494150e0": {
+    "text": "Дараа уулзъя",
+    "file": "bd93392cdc61b4d88ba73d4a494150e0.mp3",
+    "size": 11232,
+    "label": "また会いましょう",
+    "category": "vocab"
+  },
+  "61c2825ef3627ffa00d27cfaa7a69ee8": {
+    "text": "За баяртай Маргааш уулзъя",
+    "file": "61c2825ef3627ffa00d27cfaa7a69ee8.mp3",
+    "size": 14976,
+    "label": "では、さようなら。また明日会いましょう。",
+    "category": "example"
+  },
+  "aec523a1dc92b281dc40ceffc131fe63": {
+    "text": "Баяртай дараа уулзъя",
+    "file": "aec523a1dc92b281dc40ceffc131fe63.mp3",
+    "size": 13248,
+    "label": "さようなら、また後で会いましょう。",
+    "category": "example"
+  },
+  "45d34c916320b7b1ba8a4b23785106d3": {
+    "text": "Маргааш уулзъя",
+    "file": "45d34c916320b7b1ba8a4b23785106d3.mp3",
+    "size": 11664,
+    "label": "また明日会いましょう",
+    "category": "vocab"
+  },
+  "be5029f9894d6f9f7781f8ee5777ab27": {
+    "text": "Сайхан танилцлаа",
+    "file": "be5029f9894d6f9f7781f8ee5777ab27.mp3",
+    "size": 12528,
+    "label": "お会いできて嬉しいです（短い形）",
+    "category": "vocab"
+  },
+  "3c7753b2f2607b5b6f8e2c3e19d21999": {
+    "text": "Танилцъя Сайхан танилцлаа",
+    "file": "3c7753b2f2607b5b6f8e2c3e19d21999.mp3",
+    "size": 14832,
+    "label": "はじめまして。お会いできて嬉しいです。",
+    "category": "example"
+  },
+  "46e182532260b01edbdd5b5f6c05d379": {
+    "text": "За маргааш уулзъя",
+    "file": "46e182532260b01edbdd5b5f6c05d379.mp3",
+    "size": 12528,
+    "label": "じゃあ、また明日会おう。",
+    "category": "example"
+  },
+  "462eaa68988f6a1a10814f865d5160ad": {
+    "text": "За",
+    "file": "462eaa68988f6a1a10814f865d5160ad.mp3",
+    "size": 11232,
+    "label": "はい（命令やお願いへの返事、了解）",
+    "category": "vocab"
+  },
+  "0ebdab1359ea47b22ace447e5ed5b96d": {
+    "text": "Танилцсандаа баяртай байна",
+    "file": "0ebdab1359ea47b22ace447e5ed5b96d.mp3",
+    "size": 14400,
+    "label": "お会いできて嬉しいです（丁寧・長い形）",
+    "category": "vocab"
+  },
+  "d1d02c50d9456da59f3848a40ba34420": {
+    "text": "За тэгье",
+    "file": "d1d02c50d9456da59f3848a40ba34420.mp3",
+    "size": 11232,
+    "label": "はい、そうしましょう。",
+    "category": "example"
+  },
+  "2dc23a9aa9d1e78e9483c0b14573392a": {
+    "text": "Тийм / Тийм ээ",
+    "file": "2dc23a9aa9d1e78e9483c0b14573392a.mp3",
+    "size": 11232,
+    "label": "はい、そうです",
+    "category": "vocab"
+  },
+  "06f605bcd812c81d819ad9c7b80ce0b5": {
+    "text": "Үгүй / Үгүй ээ",
+    "file": "06f605bcd812c81d819ad9c7b80ce0b5.mp3",
+    "size": 11232,
+    "label": "いいえ",
+    "category": "vocab"
+  },
+  "e9c281546f826c591d4600e613d84b4f": {
+    "text": "юу",
+    "file": "e9c281546f826c591d4600e613d84b4f.mp3",
+    "size": 11232,
+    "label": "何",
+    "category": "vocab"
+  },
+  "bae8c8e316a0e1a25e76172308aa5139": {
+    "text": "Тийм ээ энэ харандаа",
+    "file": "bae8c8e316a0e1a25e76172308aa5139.mp3",
+    "size": 13104,
+    "label": "はい、これは鉛筆です。",
+    "category": "example"
+  },
+  "84096330e2ff94c235d3b611a15acdba": {
+    "text": "Үгүй энэ миний ном биш",
+    "file": "84096330e2ff94c235d3b611a15acdba.mp3",
+    "size": 13968,
+    "label": "いいえ、これは私の本ではありません。",
+    "category": "example"
+  },
+  "b7c0cb324dc8897d337c1d63eeaee879": {
+    "text": "Энэ юу вэ",
+    "file": "b7c0cb324dc8897d337c1d63eeaee879.mp3",
+    "size": 11232,
+    "label": "これは何ですか？",
+    "category": "example"
+  },
+  "9bc87b5728bf63096ad8189b6101018a": {
+    "text": "цаас",
+    "file": "9bc87b5728bf63096ad8189b6101018a.mp3",
+    "size": 11232,
+    "label": "紙",
+    "category": "vocab"
+  },
+  "addf345a09f5b16ac625105745511ee6": {
+    "text": "дэвтэр",
+    "file": "addf345a09f5b16ac625105745511ee6.mp3",
+    "size": 11232,
+    "label": "ノート",
+    "category": "vocab"
+  },
+  "ef197a155622b145a61fde51fab7ae39": {
+    "text": "Энд цаас байна",
+    "file": "ef197a155622b145a61fde51fab7ae39.mp3",
+    "size": 11664,
+    "label": "ここに紙があります。",
+    "category": "example"
+  },
+  "d7b5a434d5bda7cdc1a26a5f6cb00fbf": {
+    "text": "толь бичиг",
+    "file": "d7b5a434d5bda7cdc1a26a5f6cb00fbf.mp3",
+    "size": 11232,
+    "label": "辞書",
+    "category": "vocab"
+  },
+  "03b2e13fb13684d05d77b75452aa9017": {
+    "text": "харандаа",
+    "file": "03b2e13fb13684d05d77b75452aa9017.mp3",
+    "size": 11232,
+    "label": "鉛筆",
+    "category": "vocab"
+  },
+  "1873514f47eea19b822962e2c9177a7e": {
+    "text": "Энэ дөрвөн дэвтэр",
+    "file": "1873514f47eea19b822962e2c9177a7e.mp3",
+    "size": 12096,
+    "label": "これは4冊のノートです。",
+    "category": "example"
+  },
+  "149677d3248c611277ec942a75ac3d83": {
+    "text": "баллуур",
+    "file": "149677d3248c611277ec942a75ac3d83.mp3",
+    "size": 11232,
+    "label": "消しゴム",
+    "category": "vocab"
+  },
+  "8515d8dd5c124b50bea80ee0cb45fc5c": {
+    "text": "Надад толь бичиг байгаа",
+    "file": "8515d8dd5c124b50bea80ee0cb45fc5c.mp3",
+    "size": 13392,
+    "label": "私は辞書を持っています。",
+    "category": "example"
+  },
+  "05930606e6d3fda3499535890bc64fa8": {
+    "text": "Энэ харандаа юу",
+    "file": "05930606e6d3fda3499535890bc64fa8.mp3",
+    "size": 11520,
+    "label": "これは鉛筆ですか？",
+    "category": "example"
+  },
+  "05ce01f3ee9ac25a6019d5d596e23acb": {
+    "text": "сонин",
+    "file": "05ce01f3ee9ac25a6019d5d596e23acb.mp3",
+    "size": 11232,
+    "label": "新聞（またはニュース・面白いこと）",
+    "category": "vocab"
+  },
+  "ce5f56ecbb92eb33ec3081a357be15ee": {
+    "text": "Энэ сонин",
+    "file": "ce5f56ecbb92eb33ec3081a357be15ee.mp3",
+    "size": 11232,
+    "label": "これは新聞です。",
+    "category": "example"
+  },
+  "f1529d10a421ba9e191c0f35ee06a84e": {
+    "text": "ном",
+    "file": "f1529d10a421ba9e191c0f35ee06a84e.mp3",
+    "size": 11232,
+    "label": "本",
+    "category": "vocab"
+  },
+  "52d9ec328e544423c6a875cc2ca16968": {
+    "text": "Ширээн дээр баллуур байна",
+    "file": "52d9ec328e544423c6a875cc2ca16968.mp3",
+    "size": 13824,
+    "label": "机の上に消しゴムがあります。",
+    "category": "example"
+  },
+  "d07bb792fc0675286b7c5ea5b54a4ca3": {
+    "text": "Энэ ном уу",
+    "file": "d07bb792fc0675286b7c5ea5b54a4ca3.mp3",
+    "size": 11232,
+    "label": "これは本ですか？",
+    "category": "example"
+  },
+  "66c66e19e2ddbb77575b1437a769ad67": {
+    "text": "сэтгүүл",
+    "file": "66c66e19e2ddbb77575b1437a769ad67.mp3",
+    "size": 11232,
+    "label": "雑誌",
+    "category": "vocab"
+  },
+  "b77cb0aef15f03c545c046f154dc8a29": {
+    "text": "зурагт",
+    "file": "b77cb0aef15f03c545c046f154dc8a29.mp3",
+    "size": 11232,
+    "label": "テレビ",
+    "category": "vocab"
+  },
+  "d743045ba208089457e23fdea4ce867e": {
+    "text": "Энэ ном биш сэтгүүл",
+    "file": "d743045ba208089457e23fdea4ce867e.mp3",
+    "size": 13104,
+    "label": "これは本ではなく、雑誌です。",
+    "category": "example"
+  },
+  "be62cba5207b53bef68afabb0425683a": {
+    "text": "самбар",
+    "file": "be62cba5207b53bef68afabb0425683a.mp3",
+    "size": 11232,
+    "label": "黒板・掲示板",
+    "category": "vocab"
+  },
+  "2fa014cfc4a3f2fff806d0b241b970d7": {
+    "text": "Зурагт үзээгүй",
+    "file": "2fa014cfc4a3f2fff806d0b241b970d7.mp3",
+    "size": 11520,
+    "label": "テレビを見ませんでした。",
+    "category": "example"
+  },
+  "f03665fd8fdf63b011bbb0db2663ecd2": {
+    "text": "Энд самбар байна",
+    "file": "f03665fd8fdf63b011bbb0db2663ecd2.mp3",
+    "size": 11664,
+    "label": "ここに黒板があります。",
+    "category": "example"
+  },
+  "7248a28a07143175c80bfbea2621e50b": {
+    "text": "шүүгээ",
+    "file": "7248a28a07143175c80bfbea2621e50b.mp3",
+    "size": 11232,
+    "label": "棚、タンス、戸棚",
+    "category": "vocab"
+  },
+  "1616ef1b0bac192e1cdf1dcf136b2b46": {
+    "text": "сандал",
+    "file": "1616ef1b0bac192e1cdf1dcf136b2b46.mp3",
+    "size": 11232,
+    "label": "椅子",
+    "category": "vocab"
+  },
+  "278bb4fd4e8ed8b2044384e019377f69": {
+    "text": "Энэ шүүгээ юү",
+    "file": "278bb4fd4e8ed8b2044384e019377f69.mp3",
+    "size": 11232,
+    "label": "これは棚ですか？",
+    "category": "example"
+  },
+  "a656322a5aa5082a12728174b1b985a5": {
+    "text": "ширээ",
+    "file": "a656322a5aa5082a12728174b1b985a5.mp3",
+    "size": 11232,
+    "label": "机、テーブル",
+    "category": "vocab"
+  },
+  "474cc4efd4a92820bad2dbe61f076451": {
+    "text": "компьютер",
+    "file": "474cc4efd4a92820bad2dbe61f076451.mp3",
+    "size": 11232,
+    "label": "コンピュータ",
+    "category": "vocab"
+  },
+  "2464f79cc83f80bf228ac7649e4859c5": {
+    "text": "Энд нэг ч ширээ алга",
+    "file": "2464f79cc83f80bf228ac7649e4859c5.mp3",
+    "size": 12816,
+    "label": "ここに机が1つもありません。",
+    "category": "example"
+  },
+  "d2f26fc9d6273e476eb827d521d31dfd": {
+    "text": "энэ",
+    "file": "d2f26fc9d6273e476eb827d521d31dfd.mp3",
+    "size": 11232,
+    "label": "これ、この",
+    "category": "vocab"
+  },
+  "f8176cba6b1d528f0717871a74077d0e": {
+    "text": "Энд нэг л сандал байна",
+    "file": "f8176cba6b1d528f0717871a74077d0e.mp3",
+    "size": 13536,
+    "label": "ここに椅子が1脚だけあります。",
+    "category": "example"
+  },
+  "f84231cd074271012a0b8324169494e2": {
+    "text": "Энэ ном",
+    "file": "f84231cd074271012a0b8324169494e2.mp3",
+    "size": 11232,
+    "label": "これは本です。",
+    "category": "example"
+  },
+  "7f093907ed548d4e59b85537685fc8a0": {
+    "text": "Тэр шинэ компьютер",
+    "file": "7f093907ed548d4e59b85537685fc8a0.mp3",
+    "size": 11808,
+    "label": "あれは新しいコンピュータです。",
+    "category": "example"
+  },
+  "ad64c2abe716234c0178da16e6ef3aff": {
+    "text": "энд",
+    "file": "ad64c2abe716234c0178da16e6ef3aff.mp3",
+    "size": 11232,
+    "label": "ここに",
+    "category": "vocab"
+  },
+  "bd802930b391f132f78da47204cbb526": {
+    "text": "тэнд",
+    "file": "bd802930b391f132f78da47204cbb526.mp3",
+    "size": 11232,
+    "label": "そこに、あそこに",
+    "category": "vocab"
+  },
+  "16aad9beb93177c965a30c9b20fb2529": {
+    "text": "Тэнд багш байна",
+    "file": "16aad9beb93177c965a30c9b20fb2529.mp3",
+    "size": 11232,
+    "label": "あそこに先生がいます。",
+    "category": "example"
+  },
+  "a37360e0ea598ab2ee2e7ede5e805111": {
+    "text": "байна",
+    "file": "a37360e0ea598ab2ee2e7ede5e805111.mp3",
+    "size": 11232,
+    "label": "ある、いる",
+    "category": "vocab"
+  },
+  "e4be373cf8485ae622424c1ca98211bc": {
+    "text": "Энд ном байна",
+    "file": "e4be373cf8485ae622424c1ca98211bc.mp3",
+    "size": 11376,
+    "label": "ここに本があります。",
+    "category": "example"
+  },
+  "62ce1c52ef7009d2e6b1badc144ca942": {
+    "text": "алга",
+    "file": "62ce1c52ef7009d2e6b1badc144ca942.mp3",
+    "size": 11232,
+    "label": "ない、いない（見当たらない）",
+    "category": "vocab"
+  },
+  "1e56b217695e0cb583e6e238b67d2be3": {
+    "text": "байхгүй",
+    "file": "1e56b217695e0cb583e6e238b67d2be3.mp3",
+    "size": 11232,
+    "label": "ない、いない",
+    "category": "vocab"
+  },
+  "521967c1ffaaeb09ec5a170306d924fb": {
+    "text": "Тэнд оюутан байхгүй",
+    "file": "521967c1ffaaeb09ec5a170306d924fb.mp3",
+    "size": 12384,
+    "label": "そこに学生はいません。",
+    "category": "example"
+  },
+  "bf0f89dceb7482cbb4f39dd140c860f4": {
+    "text": "хэдэн",
+    "file": "bf0f89dceb7482cbb4f39dd140c860f4.mp3",
+    "size": 11232,
+    "label": "いくつの、何（名詞の前）",
+    "category": "vocab"
+  },
+  "1ff90153e9fec7c3b839aa413d0aead8": {
+    "text": "Энд харандаа алга",
+    "file": "1ff90153e9fec7c3b839aa413d0aead8.mp3",
+    "size": 12528,
+    "label": "ここに鉛筆がありません。",
+    "category": "example"
+  },
+  "c2a64dd21eed03a83e35a21e18269ebd": {
+    "text": "нэг",
+    "file": "c2a64dd21eed03a83e35a21e18269ebd.mp3",
+    "size": 11232,
+    "label": "1（ひとつ）",
+    "category": "vocab"
+  },
+  "90ed9c1363a91d7d854e6932668f99e5": {
+    "text": "хоёр",
+    "file": "90ed9c1363a91d7d854e6932668f99e5.mp3",
+    "size": 11232,
+    "label": "2（ふたつ）",
+    "category": "vocab"
+  },
+  "f29ba10b9639ea6a9c256f6f184f6d04": {
+    "text": "гурав",
+    "file": "f29ba10b9639ea6a9c256f6f184f6d04.mp3",
+    "size": 11232,
+    "label": "3（みっつ）",
+    "category": "vocab"
+  },
+  "4b180b41541a9c66490270db68c4235c": {
+    "text": "Энд нэг сандал байна",
+    "file": "4b180b41541a9c66490270db68c4235c.mp3",
+    "size": 13104,
+    "label": "ここに椅子が1つあります。",
+    "category": "example"
+  },
+  "36c53676675964edb66fd7943724270b": {
+    "text": "Тэнд хэдэн сандал байна вэ",
+    "file": "36c53676675964edb66fd7943724270b.mp3",
+    "size": 14976,
+    "label": "そこに椅子は何脚ありますか？",
+    "category": "example"
+  },
+  "dd9163b4f32522c57c92bd83461d0800": {
+    "text": "Энд хоёр самбар байна",
+    "file": "dd9163b4f32522c57c92bd83461d0800.mp3",
+    "size": 13248,
+    "label": "ここに黒板が2つあります。",
+    "category": "example"
+  },
+  "866e7ed46b631dba3fd0f14769f828b3": {
+    "text": "дөрөв",
+    "file": "866e7ed46b631dba3fd0f14769f828b3.mp3",
+    "size": 11232,
+    "label": "4（よっつ）",
+    "category": "vocab"
+  },
+  "859f627ab99bad22c5ece6c9643cffb0": {
+    "text": "тав",
+    "file": "859f627ab99bad22c5ece6c9643cffb0.mp3",
+    "size": 11232,
+    "label": "5（いつつ）",
+    "category": "vocab"
+  },
+  "aa007d451fc9f4d949f7c5ab97fafa87": {
+    "text": "Энд гурван сандал байна",
+    "file": "aa007d451fc9f4d949f7c5ab97fafa87.mp3",
+    "size": 13536,
+    "label": "ここに椅子が3脚あります。",
+    "category": "example"
+  },
+  "fbf027e3c795835a1c5c3a2fc372d240": {
+    "text": "зургаа",
+    "file": "fbf027e3c795835a1c5c3a2fc372d240.mp3",
+    "size": 11232,
+    "label": "6（むっつ）",
+    "category": "vocab"
+  },
+  "ee373b1fa504027d54101716964c84b5": {
+    "text": "Тэнд дөрвөн дэвтэр байна",
+    "file": "ee373b1fa504027d54101716964c84b5.mp3",
+    "size": 13248,
+    "label": "あそこに4冊のノートがあります。",
+    "category": "example"
+  },
+  "e88b40aab8e7958d24b8f700ad90fe12": {
+    "text": "Энд таван оюутан байна",
+    "file": "e88b40aab8e7958d24b8f700ad90fe12.mp3",
+    "size": 13104,
+    "label": "ここに5人の学生がいます。",
+    "category": "example"
+  },
+  "56aa05411196488c21cd52ee27896ab6": {
+    "text": "долоо",
+    "file": "56aa05411196488c21cd52ee27896ab6.mp3",
+    "size": 11232,
+    "label": "7（ななつ）",
+    "category": "vocab"
+  },
+  "b4b27f4f9e70e4c0d107f7314e0998ca": {
+    "text": "Зургаан ном байна",
+    "file": "b4b27f4f9e70e4c0d107f7314e0998ca.mp3",
+    "size": 11376,
+    "label": "6冊の本があります。",
+    "category": "example"
+  },
+  "84ef21c551e553434ff23bc74b794df4": {
+    "text": "найм",
+    "file": "84ef21c551e553434ff23bc74b794df4.mp3",
+    "size": 11232,
+    "label": "8（やっつ）",
+    "category": "vocab"
+  },
+  "b0b07eaf7631ba8f0fad5043109586f8": {
+    "text": "ес",
+    "file": "b0b07eaf7631ba8f0fad5043109586f8.mp3",
+    "size": 11232,
+    "label": "9（ここのつ）",
+    "category": "vocab"
+  },
+  "c59a021a0f2ce71ba6f61045bbf99831": {
+    "text": "Энд долоон ном байна",
+    "file": "c59a021a0f2ce71ba6f61045bbf99831.mp3",
+    "size": 12816,
+    "label": "ここに本が7冊あります。",
+    "category": "example"
+  },
+  "8fc3a01d217511c9f85c9e5881699886": {
+    "text": "арав",
+    "file": "8fc3a01d217511c9f85c9e5881699886.mp3",
+    "size": 11232,
+    "label": "10（とお）",
+    "category": "vocab"
+  },
+  "790118ef5b35f78d6d77ee8b0fe3d7d5": {
+    "text": "Тэнд найман оюутан байна",
+    "file": "790118ef5b35f78d6d77ee8b0fe3d7d5.mp3",
+    "size": 13104,
+    "label": "あそこに8人の学生がいます。",
+    "category": "example"
+  },
+  "56381749812a216cc0570ce4c9fd2578": {
+    "text": "Есөн харандаа байна",
+    "file": "56381749812a216cc0570ce4c9fd2578.mp3",
+    "size": 12240,
+    "label": "9本の鉛筆があります。",
+    "category": "example"
+  },
+  "2a798e783a8188b73832d1615db0f971": {
+    "text": "идэх",
+    "file": "2a798e783a8188b73832d1615db0f971.mp3",
+    "size": 11232,
+    "label": "食べる",
+    "category": "vocab"
+  },
+  "bdfc44a279ddc7dd00c2f5179e2864f0": {
+    "text": "Энд арван дэвтэр байна",
+    "file": "bdfc44a279ddc7dd00c2f5179e2864f0.mp3",
+    "size": 13536,
+    "label": "ここに10冊のノートがあります。",
+    "category": "example"
+  },
+  "57618a4450b7724da2b37ee2c833c6d8": {
+    "text": "уух",
+    "file": "57618a4450b7724da2b37ee2c833c6d8.mp3",
+    "size": 11232,
+    "label": "飲む",
+    "category": "vocab"
+  },
+  "c2e5ff271f010dfd1b1abe37807c96e5": {
+    "text": "Хүйтэн цай уугаагүй",
+    "file": "c2e5ff271f010dfd1b1abe37807c96e5.mp3",
+    "size": 12960,
+    "label": "冷たいお茶を飲みませんでした。",
+    "category": "example"
+  },
+  "47c132b83a2be5805c62fda302290946": {
+    "text": "унших",
+    "file": "47c132b83a2be5805c62fda302290946.mp3",
+    "size": 11232,
+    "label": "読む",
+    "category": "vocab"
+  },
+  "24c374e77eaf9e0b327ae1741ab9e620": {
+    "text": "сонсох",
+    "file": "24c374e77eaf9e0b327ae1741ab9e620.mp3",
+    "size": 11232,
+    "label": "聞く",
+    "category": "vocab"
+  },
+  "289bc132348256142608f10c1e5f2488": {
+    "text": "Амттай монгол хоол идсэн",
+    "file": "289bc132348256142608f10c1e5f2488.mp3",
+    "size": 14688,
+    "label": "美味しいモンゴル料理を食べました。",
+    "category": "example"
+  },
+  "1c9174b6860a9d1a12a1908a6ebdd975": {
+    "text": "Би өчигдөр ном уншсан",
+    "file": "1c9174b6860a9d1a12a1908a6ebdd975.mp3",
+    "size": 13680,
+    "label": "私は昨日、本を読みました。",
+    "category": "example"
+  },
+  "a61dfdd3cf7107058aa3540884f2873f": {
+    "text": "Ээж япон дуу сонсдог",
+    "file": "a61dfdd3cf7107058aa3540884f2873f.mp3",
+    "size": 13824,
+    "label": "母は日本の歌を聞きます。",
+    "category": "example"
+  },
+  "2ecb1cf26dec197767dad3f57ecefeca": {
+    "text": "үзэх",
+    "file": "2ecb1cf26dec197767dad3f57ecefeca.mp3",
+    "size": 11232,
+    "label": "見る、試す",
+    "category": "vocab"
+  },
+  "32098506998722a8fb7869c8d6714d83": {
+    "text": "орох",
+    "file": "32098506998722a8fb7869c8d6714d83.mp3",
+    "size": 11232,
+    "label": "入る、（雨や雪が）降る",
+    "category": "vocab"
+  },
+  "4d30d769c5518c2b065b4e81d7e18ea9": {
+    "text": "хийх",
+    "file": "4d30d769c5518c2b065b4e81d7e18ea9.mp3",
+    "size": 11232,
+    "label": "する、作る、入れる",
+    "category": "vocab"
+  },
+  "c4bea6b99f3e577bf1bee762a2e47bd4": {
+    "text": "Чи юу хийсэн бэ",
+    "file": "c4bea6b99f3e577bf1bee762a2e47bd4.mp3",
+    "size": 12096,
+    "label": "あなたは何をしましたか？",
+    "category": "example"
+  },
+  "ba528cd77eadc2258e4ba3a1886c270d": {
+    "text": "өгөх",
+    "file": "ba528cd77eadc2258e4ba3a1886c270d.mp3",
+    "size": 11232,
+    "label": "あげる、くれる",
+    "category": "vocab"
+  },
+  "f58d17301a52485c506754406a8058a5": {
+    "text": "бичих",
+    "file": "f58d17301a52485c506754406a8058a5.mp3",
+    "size": 11232,
+    "label": "書く",
+    "category": "vocab"
+  },
+  "27684c8ccd769d66e4e400b4b252bce0": {
+    "text": "Бороо орсон",
+    "file": "27684c8ccd769d66e4e400b4b252bce0.mp3",
+    "size": 11232,
+    "label": "雨が降りました。",
+    "category": "example"
+  },
+  "b5ea1736588be41f31e5595d77773942": {
+    "text": "явах",
+    "file": "b5ea1736588be41f31e5595d77773942.mp3",
+    "size": 11232,
+    "label": "行く",
+    "category": "vocab"
+  },
+  "7e66d95b513c6baa83e11e501e90834e": {
+    "text": "Ээждээ цэцэг өгсөн",
+    "file": "7e66d95b513c6baa83e11e501e90834e.mp3",
+    "size": 13104,
+    "label": "母に花をあげました。",
+    "category": "example"
+  },
+  "067af9179aa303370c9e4c5b82ca8672": {
+    "text": "Оюутан самбарт үг бичсэн",
+    "file": "067af9179aa303370c9e4c5b82ca8672.mp3",
+    "size": 14400,
+    "label": "学生は黒板に単語を書きました。",
+    "category": "example"
+  },
+  "51059433af5605378e322b4b78ed1e41": {
+    "text": "ирэх",
+    "file": "51059433af5605378e322b4b78ed1e41.mp3",
+    "size": 11232,
+    "label": "来る",
+    "category": "vocab"
+  },
+  "2770f567ee12599dee821b7aaa57e3b2": {
+    "text": "авах",
+    "file": "2770f567ee12599dee821b7aaa57e3b2.mp3",
+    "size": 11232,
+    "label": "買う、もらう、取る",
+    "category": "vocab"
+  },
+  "8405ebd3b4bf675e2af15f56394aed19": {
+    "text": "Би Монгол руу явмаар байна",
+    "file": "8405ebd3b4bf675e2af15f56394aed19.mp3",
+    "size": 13968,
+    "label": "私はモンゴルに行きたいです。",
+    "category": "example"
+  },
+  "38a7f6af50124f4268e7fa16a9fdc7f1": {
+    "text": "Би Японоос ирсэн",
+    "file": "38a7f6af50124f4268e7fa16a9fdc7f1.mp3",
+    "size": 11952,
+    "label": "私は日本から来ました。",
+    "category": "example"
+  },
+  "de213abba10e68347643c74f40682979": {
+    "text": "гарах",
+    "file": "de213abba10e68347643c74f40682979.mp3",
+    "size": 11232,
+    "label": "出る、出発する",
+    "category": "vocab"
+  },
+  "2d76a96e0e4e4fe3ba9dfd8c7b1901c3": {
+    "text": "хоол",
+    "file": "2d76a96e0e4e4fe3ba9dfd8c7b1901c3.mp3",
+    "size": 11232,
+    "label": "料理、ご飯",
+    "category": "vocab"
+  },
+  "511482504edeeab00da29e56001e9c0a": {
+    "text": "Би найзаас ном авсан",
+    "file": "511482504edeeab00da29e56001e9c0a.mp3",
+    "size": 13392,
+    "label": "友達から本をもらいました（買いました）。",
+    "category": "example"
+  },
+  "962c7859ba6718d06210ebd6ee068443": {
+    "text": "цай",
+    "file": "962c7859ba6718d06210ebd6ee068443.mp3",
+    "size": 11232,
+    "label": "お茶",
+    "category": "vocab"
+  },
+  "20d3f97ae59017944fcd9515c070067e": {
+    "text": "амттай",
+    "file": "20d3f97ae59017944fcd9515c070067e.mp3",
+    "size": 11232,
+    "label": "美味しい",
+    "category": "vocab"
+  },
+  "81997a135de52a080376bce4c299ae58": {
+    "text": "Гэрээс гарахдаа гэрэл унтраагаарай",
+    "file": "81997a135de52a080376bce4c299ae58.mp3",
+    "size": 16704,
+    "label": "家を出るとき、電気を消してください。",
+    "category": "example"
+  },
+  "b783b922ecf26c95adc4560428ae6dfd": {
+    "text": "хүйтэн",
+    "file": "b783b922ecf26c95adc4560428ae6dfd.mp3",
+    "size": 11232,
+    "label": "冷たい、寒い",
+    "category": "vocab"
+  },
+  "e0667af3ef546cd05d0f1c348a555493": {
+    "text": "Энэ хоол маш амттай",
+    "file": "e0667af3ef546cd05d0f1c348a555493.mp3",
+    "size": 13392,
+    "label": "この料理はとても美味しいです。",
+    "category": "example"
+  },
+  "ce45583ea3e9b778610fe192eb311cfa": {
+    "text": "найз",
+    "file": "ce45583ea3e9b778610fe192eb311cfa.mp3",
+    "size": 11232,
+    "label": "友達",
+    "category": "vocab"
+  },
+  "503c14a78763f78c73d852a139c2b200": {
+    "text": "Өнөөдөр маш хүйтэн байна",
+    "file": "503c14a78763f78c73d852a139c2b200.mp3",
+    "size": 13248,
+    "label": "今日はとても寒いです。",
+    "category": "example"
+  },
+  "00e006ce09c1ed4689dbaf8b20ac9d8e": {
+    "text": "дэлгүүр",
+    "file": "00e006ce09c1ed4689dbaf8b20ac9d8e.mp3",
+    "size": 11232,
+    "label": "店、ショップ",
+    "category": "vocab"
+  },
+  "24b304acedc1fa7a2990a2e7d3af0d4d": {
+    "text": "талх",
+    "file": "24b304acedc1fa7a2990a2e7d3af0d4d.mp3",
+    "size": 11232,
+    "label": "パン",
+    "category": "vocab"
+  },
+  "910d236afd9bce827b191e07eda869ec": {
+    "text": "Би найзтай хамт кино үзнэ",
+    "file": "910d236afd9bce827b191e07eda869ec.mp3",
+    "size": 15120,
+    "label": "私は友達と一緒に映画を見ます。",
+    "category": "example"
+  },
+  "0e3d833a2d64830c07d758ba17e70ef7": {
+    "text": "Дэлгүүрээс талх авсан",
+    "file": "0e3d833a2d64830c07d758ba17e70ef7.mp3",
+    "size": 12672,
+    "label": "店でパンを買いました。",
+    "category": "example"
+  },
+  "f5e26b386d3f5d380f7fe16ad6c34e5c": {
+    "text": "сургууль",
+    "file": "f5e26b386d3f5d380f7fe16ad6c34e5c.mp3",
+    "size": 11232,
+    "label": "学校",
+    "category": "vocab"
+  },
+  "a98c18353c9d92995e3b0d88d7c9fa49": {
+    "text": "Талх идсэн",
+    "file": "a98c18353c9d92995e3b0d88d7c9fa49.mp3",
+    "size": 11232,
+    "label": "パンを食べました。",
+    "category": "example"
+  },
+  "263559662e3ed86a621d41ed88abfd1d": {
+    "text": "Би сургуульд явахдаа автобусанд суудаг",
+    "file": "263559662e3ed86a621d41ed88abfd1d.mp3",
+    "size": 17280,
+    "label": "学校に行くとき、バスに乗ります。",
+    "category": "example"
+  },
+  "8d825cd719cb500a2e17906ba6c9197a": {
+    "text": "хэл",
+    "file": "8d825cd719cb500a2e17906ba6c9197a.mp3",
+    "size": 11232,
+    "label": "言語、言葉、舌",
+    "category": "vocab"
+  },
+  "b1bc63c6cd36306be7a7c224218e489c": {
+    "text": "цүнх",
+    "file": "b1bc63c6cd36306be7a7c224218e489c.mp3",
+    "size": 11232,
+    "label": "鞄、バッグ",
+    "category": "vocab"
+  },
+  "142b186484ae2f94f88f2ce821797174": {
+    "text": "дээр",
+    "file": "142b186484ae2f94f88f2ce821797174.mp3",
+    "size": 11232,
+    "label": "〜の上に",
+    "category": "vocab"
+  },
+  "45b41f0c2516ee239dd934a6932562bc": {
+    "text": "Энэ багшийн цүнх",
+    "file": "45b41f0c2516ee239dd934a6932562bc.mp3",
+    "size": 11808,
+    "label": "これは先生の鞄です。",
+    "category": "example"
+  },
+  "ef89abdf735734de96eab74bed479ce9": {
+    "text": "Би япон хэлний багш",
+    "file": "ef89abdf735734de96eab74bed479ce9.mp3",
+    "size": 12672,
+    "label": "私は日本語の先生です。",
+    "category": "example"
+  },
+  "60e4ce5a6062f70fc7c6bb4480cb5cfb": {
+    "text": "доор",
+    "file": "60e4ce5a6062f70fc7c6bb4480cb5cfb.mp3",
+    "size": 11232,
+    "label": "〜の下に",
+    "category": "vocab"
+  },
+  "decdc97429d7f4723eee3345831a6519": {
+    "text": "Ширээн дээр ном байна",
+    "file": "decdc97429d7f4723eee3345831a6519.mp3",
+    "size": 12816,
+    "label": "机の上に本があります。",
+    "category": "example"
+  },
+  "91af3c1ae5fc50ed39f356bad8c2439e": {
+    "text": "дотор",
+    "file": "91af3c1ae5fc50ed39f356bad8c2439e.mp3",
+    "size": 11232,
+    "label": "〜の中に",
+    "category": "vocab"
+  },
+  "37890253797eb5886176dba07bb1fba8": {
+    "text": "гадаа",
+    "file": "37890253797eb5886176dba07bb1fba8.mp3",
+    "size": 11232,
+    "label": "〜の外に、屋外に",
+    "category": "vocab"
+  },
+  "64af03e05ca0078c9fbbcabac305a8ea": {
+    "text": "Сандлын доор муур байна",
+    "file": "64af03e05ca0078c9fbbcabac305a8ea.mp3",
+    "size": 13968,
+    "label": "椅子の下に猫がいます。",
+    "category": "example"
+  },
+  "d3d0436d945c0c6314f38e8994a4c9ba": {
+    "text": "Цүнхэн дотор толь бичиг байна",
+    "file": "d3d0436d945c0c6314f38e8994a4c9ba.mp3",
+    "size": 14976,
+    "label": "鞄の中に辞書があります。",
+    "category": "example"
+  },
+  "58bbbf6b2e9b0f5ac024ccbe118ee82a": {
+    "text": "Өрөөний гадаа хэн байна вэ",
+    "file": "58bbbf6b2e9b0f5ac024ccbe118ee82a.mp3",
+    "size": 14544,
+    "label": "部屋の外には誰がいますか？",
+    "category": "example"
+  },
+  "ca94c5dcf449af6c87a4972deb1fabd6": {
+    "text": "өмнө",
+    "file": "ca94c5dcf449af6c87a4972deb1fabd6.mp3",
+    "size": 11232,
+    "label": "〜の前に（場所・時間）",
+    "category": "vocab"
+  },
+  "74036ae629929c506aa6b14f665d4fd8": {
+    "text": "хойно",
+    "file": "74036ae629929c506aa6b14f665d4fd8.mp3",
+    "size": 11232,
+    "label": "〜の後ろに",
+    "category": "vocab"
+  },
+  "269c64408dc20148497bd5269719af61": {
+    "text": "Хоолны өмнө гар угаагаарай",
+    "file": "269c64408dc20148497bd5269719af61.mp3",
+    "size": 14544,
+    "label": "食事の前に手を洗ってください。",
+    "category": "example"
+  },
+  "78b5cf12e8d560f73eb6816fced6db65": {
+    "text": "хажууд",
+    "file": "78b5cf12e8d560f73eb6816fced6db65.mp3",
+    "size": 11232,
+    "label": "〜の隣に、横に",
+    "category": "vocab"
+  },
+  "fa40162de668343d4b17bfcd3eee7907": {
+    "text": "Байшингийн хойно мод байна",
+    "file": "fa40162de668343d4b17bfcd3eee7907.mp3",
+    "size": 13824,
+    "label": "建物の後ろに木があります。",
+    "category": "example"
+  },
+  "7649ea0c3585614a5b5c7b84dba5100b": {
+    "text": "хооронд",
+    "file": "7649ea0c3585614a5b5c7b84dba5100b.mp3",
+    "size": 11232,
+    "label": "〜の間に",
+    "category": "vocab"
+  },
+  "b458191fda1375a7f7d48cc1532e6600": {
+    "text": "өнөөдөр",
+    "file": "b458191fda1375a7f7d48cc1532e6600.mp3",
+    "size": 11232,
+    "label": "今日",
+    "category": "vocab"
+  },
+  "b9a41be1c52e6a7ee6db5f5a24a31714": {
+    "text": "Сургуулийн хажууд банк байхгүй",
+    "file": "b9a41be1c52e6a7ee6db5f5a24a31714.mp3",
+    "size": 16272,
+    "label": "学校の隣に銀行はありません。",
+    "category": "example"
+  },
+  "4d7f90f6dd483170e504627e9d1dcc8f": {
+    "text": "өчигдөр",
+    "file": "4d7f90f6dd483170e504627e9d1dcc8f.mp3",
+    "size": 11232,
+    "label": "昨日",
+    "category": "vocab"
+  },
+  "dde6f88d72919305132edcaccc3163e8": {
+    "text": "Хоёр байшингийн хооронд зам байна",
+    "file": "dde6f88d72919305132edcaccc3163e8.mp3",
+    "size": 16128,
+    "label": "2つの建物の間に道があります。",
+    "category": "example"
+  },
+  "ad29df74281c6e4e686b5d890568e01a": {
+    "text": "Өнөөдөр юу хийх вэ",
+    "file": "ad29df74281c6e4e686b5d890568e01a.mp3",
+    "size": 12672,
+    "label": "今日は何をしますか？",
+    "category": "example"
+  },
+  "5b7d99548d1d95b5334b6794efa839fe": {
+    "text": "маргааш",
+    "file": "5b7d99548d1d95b5334b6794efa839fe.mp3",
+    "size": 11232,
+    "label": "明日",
+    "category": "vocab"
+  },
+  "0adb8918aac39628a35a50054b882965": {
+    "text": "Өчигдөр юу хийсэн бэ",
+    "file": "0adb8918aac39628a35a50054b882965.mp3",
+    "size": 13392,
+    "label": "昨日は何をしましたか？",
+    "category": "example"
+  },
+  "f28713d806399a5749057cf8e1198bf9": {
+    "text": "хэзээ",
+    "file": "f28713d806399a5749057cf8e1198bf9.mp3",
+    "size": 11232,
+    "label": "いつ",
+    "category": "vocab"
+  },
+  "7b0feecbb6718dcb7bef0e615daf80cd": {
+    "text": "гэр",
+    "file": "7b0feecbb6718dcb7bef0e615daf80cd.mp3",
+    "size": 11232,
+    "label": "家、ゲル",
+    "category": "vocab"
+  },
+  "7a017bca0f2f86591700f54c79f5caea": {
+    "text": "Энэ бороо хэзээ намдах бол",
+    "file": "7a017bca0f2f86591700f54c79f5caea.mp3",
+    "size": 14832,
+    "label": "この雨はいつ止むかな？",
+    "category": "example"
+  },
+  "211dd250f6fd738ffe988af0dbacf3c5": {
+    "text": "босох",
+    "file": "211dd250f6fd738ffe988af0dbacf3c5.mp3",
+    "size": 11232,
+    "label": "起きる、立つ",
+    "category": "vocab"
+  },
+  "12bf3234c80cf9f57b5bbccbf4ae1528": {
+    "text": "Би гэртээ харьсан",
+    "file": "12bf3234c80cf9f57b5bbccbf4ae1528.mp3",
+    "size": 11232,
+    "label": "私は自分の家に帰りました。",
+    "category": "example"
+  },
+  "a233072244eb7629c3802633c4d33345": {
+    "text": "унтах",
+    "file": "a233072244eb7629c3802633c4d33345.mp3",
+    "size": 11232,
+    "label": "寝る",
+    "category": "vocab"
+  },
+  "d08268b26d3ab6e15b2e2e4c98765b87": {
+    "text": "Өдөр бүр эрт босохгүй бол болохгүй",
+    "file": "d08268b26d3ab6e15b2e2e4c98765b87.mp3",
+    "size": 17568,
+    "label": "毎日早く起きなければなりません。",
+    "category": "example"
+  },
+  "e04fe7d27118ab179a39f38a04906079": {
+    "text": "Эрт унтсан нь дээр",
+    "file": "e04fe7d27118ab179a39f38a04906079.mp3",
+    "size": 12096,
+    "label": "早く寝たほうがいいです。",
+    "category": "example"
+  },
+  "b1b85a5fcfb76bbc0d34c6284c1f55af": {
+    "text": "харих",
+    "file": "b1b85a5fcfb76bbc0d34c6284c1f55af.mp3",
+    "size": 11232,
+    "label": "（家に・自国に）帰る",
+    "category": "vocab"
+  },
+  "f53344f1b9d2ab14d0518060781af17c": {
+    "text": "хамт",
+    "file": "f53344f1b9d2ab14d0518060781af17c.mp3",
+    "size": 11232,
+    "label": "一緒に",
+    "category": "vocab"
+  },
+  "cee19a70148712d6e650471a3087dd85": {
+    "text": "өдөр бүр",
+    "file": "cee19a70148712d6e650471a3087dd85.mp3",
+    "size": 11232,
+    "label": "毎日",
+    "category": "vocab"
+  },
+  "3fa82040778ff7c99950f3e3fbacfa54": {
+    "text": "Ажил дууссан учраас гэртээ харьсан",
+    "file": "3fa82040778ff7c99950f3e3fbacfa54.mp3",
+    "size": 16704,
+    "label": "仕事が終わったので家に帰りました。",
+    "category": "example"
+  },
+  "c2c0abf17c220d06fc959dacaeaedbb5": {
+    "text": "унтраах",
+    "file": "c2c0abf17c220d06fc959dacaeaedbb5.mp3",
+    "size": 11232,
+    "label": "（電気などを）消す",
+    "category": "vocab"
+  },
+  "f848918f80e382861211c1dbbadb3515": {
+    "text": "Найзтай хамт кино үзнэ",
+    "file": "f848918f80e382861211c1dbbadb3515.mp3",
+    "size": 14256,
+    "label": "友達と一緒に映画を見ます。",
+    "category": "example"
+  },
+  "552c3a3d8daa6ed9796642cc9e622bd0": {
+    "text": "Та өдөр бүр юу хийдэг вэ",
+    "file": "552c3a3d8daa6ed9796642cc9e622bd0.mp3",
+    "size": 14976,
+    "label": "あなたは毎日何をしていますか？",
+    "category": "example"
+  },
+  "952ed13348b6159731ee32c58b70fa49": {
+    "text": "Ангийн гэрэл унтраагаарай",
+    "file": "952ed13348b6159731ee32c58b70fa49.mp3",
+    "size": 14544,
+    "label": "教室の電気を消してください。",
+    "category": "example"
+  },
+  "8fb34eef782766461aa6bf326e33a288": {
+    "text": "хаах",
+    "file": "8fb34eef782766461aa6bf326e33a288.mp3",
+    "size": 11232,
+    "label": "閉める",
+    "category": "vocab"
+  },
+  "2db674a453c18cebccfa099f34f66550": {
+    "text": "нээх",
+    "file": "2db674a453c18cebccfa099f34f66550.mp3",
+    "size": 11232,
+    "label": "開ける",
+    "category": "vocab"
+  },
+  "38506a41b85fc3f86e133c228dfac95c": {
+    "text": "Цонх нээгээрэй",
+    "file": "38506a41b85fc3f86e133c228dfac95c.mp3",
+    "size": 11664,
+    "label": "窓を開けてください。",
+    "category": "example"
+  },
+  "2ac09ea9b3bf2fdc7a6ca7c085484106": {
+    "text": "Хаалга хаагаарай",
+    "file": "2ac09ea9b3bf2fdc7a6ca7c085484106.mp3",
+    "size": 11952,
+    "label": "ドアを閉めてください。",
+    "category": "example"
+  },
+  "6c681d6700c25ac6ad14898da211f76d": {
+    "text": "угаах",
+    "file": "6c681d6700c25ac6ad14898da211f76d.mp3",
+    "size": 11232,
+    "label": "洗う、磨く",
+    "category": "vocab"
+  },
+  "4a6b4ff064b8342487a12f909247c446": {
+    "text": "гүйх",
+    "file": "4a6b4ff064b8342487a12f909247c446.mp3",
+    "size": 11232,
+    "label": "走る",
+    "category": "vocab"
+  },
+  "552f3fddd8b37787681c4515b98a23e4": {
+    "text": "Өглөө бүр гүйдэг",
+    "file": "552f3fddd8b37787681c4515b98a23e4.mp3",
+    "size": 11952,
+    "label": "毎朝走ります。",
+    "category": "example"
+  },
+  "8049b7f9cb63901440cd7b23eff5b4f9": {
+    "text": "гэр бүл",
+    "file": "8049b7f9cb63901440cd7b23eff5b4f9.mp3",
+    "size": 11232,
+    "label": "家族",
+    "category": "vocab"
+  },
+  "c0857e12edb547c4503a154897aa9627": {
+    "text": "цэвэрлэх",
+    "file": "c0857e12edb547c4503a154897aa9627.mp3",
+    "size": 11232,
+    "label": "掃除する、綺麗にする",
+    "category": "vocab"
+  },
+  "756da1e161bd781cf86bc26336597b4c": {
+    "text": "Манай гэр бүл тавуулаа амьдардаг",
+    "file": "756da1e161bd781cf86bc26336597b4c.mp3",
+    "size": 16272,
+    "label": "うちの家族は5人で暮らしています。",
+    "category": "example"
+  },
+  "217ed95119f8bd92f4b9beeb96888058": {
+    "text": "намайг",
+    "file": "217ed95119f8bd92f4b9beeb96888058.mp3",
+    "size": 11232,
+    "label": "私を（биの対格）",
+    "category": "vocab"
+  },
+  "a6cfb24cf90b845d7baf10300a650437": {
+    "text": "мэдэх",
+    "file": "a6cfb24cf90b845d7baf10300a650437.mp3",
+    "size": 11232,
+    "label": "知る、分かる",
+    "category": "vocab"
+  },
+  "daa40c87003b5a796927239277cf9b75": {
+    "text": "Намайг Болд гэдэг",
+    "file": "daa40c87003b5a796927239277cf9b75.mp3",
+    "size": 12096,
+    "label": "私の名前はボルドと申します。",
+    "category": "example"
+  },
+  "5aea0ab364e6cb861576df2f2581fa5d": {
+    "text": "чадах",
+    "file": "5aea0ab364e6cb861576df2f2581fa5d.mp3",
+    "size": 11232,
+    "label": "できる（能力）",
+    "category": "vocab"
+  },
+  "1b72064897982e63ecbc9a09524543d9": {
+    "text": "Найз миний өрөөг цэвэрлэсэн",
+    "file": "1b72064897982e63ecbc9a09524543d9.mp3",
+    "size": 14832,
+    "label": "友達が私の部屋を掃除してくれました。",
+    "category": "example"
+  },
+  "7ee54f48aafbabe2cbc8dd56b992a519": {
+    "text": "дуртай",
+    "file": "7ee54f48aafbabe2cbc8dd56b992a519.mp3",
+    "size": 11232,
+    "label": "好き",
+    "category": "vocab"
+  },
+  "80c1066b61e900edad934b6a4f9256b3": {
+    "text": "Би монгол хэл мэднэ",
+    "file": "80c1066b61e900edad934b6a4f9256b3.mp3",
+    "size": 13392,
+    "label": "私はモンゴル語が分かります（できます）。",
+    "category": "example"
+  },
+  "6d4a07c5b8f3b66cb2e0ad2a0e798c1a": {
+    "text": "дургүй",
+    "file": "6d4a07c5b8f3b66cb2e0ad2a0e798c1a.mp3",
+    "size": 11232,
+    "label": "嫌い",
+    "category": "vocab"
+  },
+  "80b2dcaa4d87adc656d7f1f870b5616c": {
+    "text": "Чи зураг зурж чадах уу",
+    "file": "80b2dcaa4d87adc656d7f1f870b5616c.mp3",
+    "size": 13392,
+    "label": "君は絵が描けますか？",
+    "category": "example"
+  },
+  "c0cc6780d703459c1a34a93c5b6ef8c4": {
+    "text": "онгоц",
+    "file": "c0cc6780d703459c1a34a93c5b6ef8c4.mp3",
+    "size": 11232,
+    "label": "飛行機、船",
+    "category": "vocab"
+  },
+  "4d14d77d328adaf7a2af6a5cf55bc3cb": {
+    "text": "Би хөгжимд дуртай",
+    "file": "4d14d77d328adaf7a2af6a5cf55bc3cb.mp3",
+    "size": 12672,
+    "label": "私は音楽が好きです。",
+    "category": "example"
+  },
+  "53e70cf42f5c785599e90c52cac17b2f": {
+    "text": "Багш түүхий мах идэх дургүй",
+    "file": "53e70cf42f5c785599e90c52cac17b2f.mp3",
+    "size": 15264,
+    "label": "先生は生肉を食べるのが嫌いです。",
+    "category": "example"
+  },
+  "c597c316f5f7c8b9a7a50bd142a28106": {
+    "text": "болно",
+    "file": "c597c316f5f7c8b9a7a50bd142a28106.mp3",
+    "size": 11232,
+    "label": "〜してもよい（許可）",
+    "category": "vocab"
+  },
+  "a6a724fa385d4834cff721ab7f87c754": {
+    "text": "болохгүй",
+    "file": "a6a724fa385d4834cff721ab7f87c754.mp3",
+    "size": 11232,
+    "label": "〜してはいけない（禁止）",
+    "category": "vocab"
+  },
+  "cae59a3f732acd801bf4d4844b341a6c": {
+    "text": "Энд тамхи татаж болох уу — Болно",
+    "file": "cae59a3f732acd801bf4d4844b341a6c.mp3",
+    "size": 16704,
+    "label": "ここでタバコを吸ってもいいですか？ — いいですよ。",
+    "category": "example"
+  },
+  "88567a44f5a7c12409415b042d06f02a": {
+    "text": "Бид Монгол руу онゴцоор явна",
+    "file": "88567a44f5a7c12409415b042d06f02a.mp3",
+    "size": 14544,
+    "label": "私達はモンゴルへ飛行機で行きます。",
+    "category": "example"
+  },
+  "047f0d8e099a76389b2e1711a202af58": {
+    "text": "давтах",
+    "file": "047f0d8e099a76389b2e1711a202af58.mp3",
+    "size": 11232,
+    "label": "復習する、繰り返す",
+    "category": "vocab"
+  },
+  "a8905bb76d00c10326029505963e841d": {
+    "text": "Энд тамхи татаж болохгүй",
+    "file": "a8905bb76d00c10326029505963e841d.mp3",
+    "size": 14544,
+    "label": "ここでタバコを吸ってはいけません。",
+    "category": "example"
+  },
+  "e6e741677f851ac5f3fa5c65332a276d": {
+    "text": "өлсөх",
+    "file": "e6e741677f851ac5f3fa5c65332a276d.mp3",
+    "size": 11232,
+    "label": "お腹が空く",
+    "category": "vocab"
+  },
+  "e25468b9c5c7b47b0aff44a60387171d": {
+    "text": "Өнөөдөр хичээлээ давтахгүй бол болохгүй",
+    "file": "e25468b9c5c7b47b0aff44a60387171d.mp3",
+    "size": 18144,
+    "label": "今日、授業の復習をしなければなりません。",
+    "category": "example"
+  },
+  "530b36b5b045ad81ed540e3ecd84a355": {
+    "text": "аав",
+    "file": "530b36b5b045ad81ed540e3ecd84a355.mp3",
+    "size": 11232,
+    "label": "お父さん、父",
+    "category": "vocab"
+  },
+  "8f4fc836bd5c609306468e1bad1e4488": {
+    "text": "Би өлсөөд байна",
+    "file": "8f4fc836bd5c609306468e1bad1e4488.mp3",
+    "size": 11376,
+    "label": "お腹がすいています。",
+    "category": "example"
+  },
+  "d4ad1d3d9e2e788682ccee391c331198": {
+    "text": "ав",
+    "file": "d4ad1d3d9e2e788682ccee391c331198.mp3",
+    "size": 11232,
+    "label": "取る、買う、もらう",
+    "category": "vocab"
+  },
+  "a9f7e8d0c4cb762cfb982f6ed58b7e2a": {
+    "text": "автобус",
+    "file": "a9f7e8d0c4cb762cfb982f6ed58b7e2a.mp3",
+    "size": 11232,
+    "label": "バス",
+    "category": "vocab"
+  },
+  "7afec45d7901d07d540408c0b4dde72e": {
+    "text": "адилхан",
+    "file": "7afec45d7901d07d540408c0b4dde72e.mp3",
+    "size": 11232,
+    "label": "同じ、似ている",
+    "category": "vocab"
+  },
+  "ef1ed18814e65089b6217e69d67ec0f7": {
+    "text": "автобуснаас буу",
+    "file": "ef1ed18814e65089b6217e69d67ec0f7.mp3",
+    "size": 12096,
+    "label": "バスから降りる",
+    "category": "vocab"
+  },
+  "7d4c70991842eb2d4a73d1ec34c8f4ea": {
+    "text": "ажил",
+    "file": "7d4c70991842eb2d4a73d1ec34c8f4ea.mp3",
+    "size": 11232,
+    "label": "仕事",
+    "category": "vocab"
+  },
+  "539672efd78b176e071ff5214912beb5": {
+    "text": "авч яв",
+    "file": "539672efd78b176e071ff5214912beb5.mp3",
+    "size": 11232,
+    "label": "持っていく、連れていく",
+    "category": "vocab"
+  },
+  "c58edc794bbebb460f44d342dcdbb2a0": {
+    "text": "ажилтан",
+    "file": "c58edc794bbebb460f44d342dcdbb2a0.mp3",
+    "size": 11232,
+    "label": "従業員、職員",
+    "category": "vocab"
+  },
+  "981fed87a1f69258d7389798c3ace6b1": {
+    "text": "ажилла",
+    "file": "981fed87a1f69258d7389798c3ace6b1.mp3",
+    "size": 11232,
+    "label": "働く、仕事をする",
+    "category": "vocab"
+  },
+  "19543e1662d1be1e61da3b29d3409a00": {
+    "text": "Ази",
+    "file": "19543e1662d1be1e61da3b29d3409a00.mp3",
+    "size": 11232,
+    "label": "アジア",
+    "category": "vocab"
+  },
+  "3a67cb320bb3df36516cf1a6338544a5": {
+    "text": "айраг",
+    "file": "3a67cb320bb3df36516cf1a6338544a5.mp3",
+    "size": 11232,
+    "label": "馬乳酒（アイラグ）",
+    "category": "vocab"
+  },
+  "38324c25912a09bff83aeaecca9e0d45": {
+    "text": "аймаг",
+    "file": "38324c25912a09bff83aeaecca9e0d45.mp3",
+    "size": 11232,
+    "label": "アイマグ（県）",
+    "category": "vocab"
+  },
+  "4ff15742bb8e9dafe3ecc5d45c7c943d": {
+    "text": "алх",
+    "file": "4ff15742bb8e9dafe3ecc5d45c7c943d.mp3",
+    "size": 11232,
+    "label": "歩く",
+    "category": "vocab"
+  },
+  "34430bf88522e4c1c49479eb2feeb3f3": {
+    "text": "аль",
+    "file": "34430bf88522e4c1c49479eb2feeb3f3.mp3",
+    "size": 11232,
+    "label": "どの、どちらの",
+    "category": "vocab"
+  },
+  "b6d4f4bcac8ab213f96e7e01394fc75d": {
+    "text": "ажлын хамтрагч",
+    "file": "b6d4f4bcac8ab213f96e7e01394fc75d.mp3",
+    "size": 11664,
+    "label": "同僚、仕事仲間",
+    "category": "vocab"
+  },
+  "40851a1c2a4314c902a5e73ab38ed902": {
+    "text": "аль хэдийн",
+    "file": "40851a1c2a4314c902a5e73ab38ed902.mp3",
+    "size": 11232,
+    "label": "もう、すでに",
+    "category": "vocab"
+  },
+  "768a08d0390245c58b7f101908e2aaa4": {
+    "text": "Америк",
+    "file": "768a08d0390245c58b7f101908e2aaa4.mp3",
+    "size": 11232,
+    "label": "アメリカ",
+    "category": "vocab"
+  },
+  "4aaa4595496563b92b610636970a4af8": {
+    "text": "амжилт",
+    "file": "4aaa4595496563b92b610636970a4af8.mp3",
+    "size": 11232,
+    "label": "成功",
+    "category": "vocab"
+  },
+  "2c283528cdfc169659985f00b46dee1e": {
+    "text": "амралтын өдөр",
+    "file": "2c283528cdfc169659985f00b46dee1e.mp3",
+    "size": 11376,
+    "label": "休日、休みの日",
+    "category": "vocab"
+  },
+  "ccf3c3b9323ffb1de715c1896ae3ed01": {
+    "text": "амра амар",
+    "file": "ccf3c3b9323ffb1de715c1896ae3ed01.mp3",
+    "size": 11232,
+    "label": "休む、休暇を取る",
+    "category": "vocab"
+  },
+  "1495a197ff5eb3be3f0e1b34dad55128": {
+    "text": "амьдра амьдар",
+    "file": "1495a197ff5eb3be3f0e1b34dad55128.mp3",
+    "size": 11232,
+    "label": "暮らす、生きる",
+    "category": "vocab"
+  },
+  "711829856c549ca90e22be607319303d": {
+    "text": "амс",
+    "file": "711829856c549ca90e22be607319303d.mp3",
+    "size": 11232,
+    "label": "味わう、味見する",
+    "category": "vocab"
+  },
+  "24f7618bddee38b1c56393abc3204144": {
+    "text": "амттан",
+    "file": "24f7618bddee38b1c56393abc3204144.mp3",
+    "size": 11232,
+    "label": "お菓子、甘いもの",
+    "category": "vocab"
+  },
+  "23e2d38b2d03b2d69df8e59f494e6dce": {
+    "text": "амьтан",
+    "file": "23e2d38b2d03b2d69df8e59f494e6dce.mp3",
+    "size": 11232,
+    "label": "動物、生き物",
+    "category": "vocab"
+  },
+  "02d93560b8890541fb5bf1bcbb2bd99f": {
+    "text": "анги",
+    "file": "02d93560b8890541fb5bf1bcbb2bd99f.mp3",
+    "size": 11232,
+    "label": "クラス、教室、学年",
+    "category": "vocab"
+  },
+  "a133325596a5a9b37f69fd0106a09174": {
+    "text": "архи",
+    "file": "a133325596a5a9b37f69fd0106a09174.mp3",
+    "size": 11232,
+    "label": "ウォッカ、酒",
+    "category": "vocab"
+  },
+  "f039cf55e390a928b154b4b6fd056b69": {
+    "text": "Араб",
+    "file": "f039cf55e390a928b154b4b6fd056b69.mp3",
+    "size": 11232,
+    "label": "アラブ、アラビア",
+    "category": "vocab"
+  },
+  "cf86bdfde5913e59c51572c41ac8cc38": {
+    "text": "асуулт",
+    "file": "cf86bdfde5913e59c51572c41ac8cc38.mp3",
+    "size": 11232,
+    "label": "質問",
+    "category": "vocab"
+  },
+  "f7985c8e91e69c6be2e8fd8661fe94cf": {
+    "text": "Англи",
+    "file": "f7985c8e91e69c6be2e8fd8661fe94cf.mp3",
+    "size": 11232,
+    "label": "イギリス、英語",
+    "category": "vocab"
+  },
+  "e2606142d2e8594a7e598bb073694438": {
+    "text": "арч",
+    "file": "e2606142d2e8594a7e598bb073694438.mp3",
+    "size": 11232,
+    "label": "拭く、ぬぐう",
+    "category": "vocab"
+  },
+  "fb1d3a169818333c3707b99f81a432a7": {
+    "text": "ах",
+    "file": "fb1d3a169818333c3707b99f81a432a7.mp3",
+    "size": 11232,
+    "label": "兄、年上の男性",
+    "category": "vocab"
+  },
+  "a43809df47ae9fd22127a39230d453bb": {
+    "text": "ах дүү",
+    "file": "a43809df47ae9fd22127a39230d453bb.mp3",
+    "size": 11232,
+    "label": "兄弟",
+    "category": "vocab"
+  },
+  "5b3f990e8a218d5ceb5580ebca1df8df": {
+    "text": "ач",
+    "file": "5b3f990e8a218d5ceb5580ebca1df8df.mp3",
+    "size": 11232,
+    "label": "孫（息子の子供）、おかげ",
+    "category": "vocab"
+  },
+  "bf9060fa6b11f6ebb1f46a30b60599fc": {
+    "text": "аяга",
+    "file": "bf9060fa6b11f6ebb1f46a30b60599fc.mp3",
+    "size": 11232,
+    "label": "お茶碗、カップ、湯呑み",
+    "category": "vocab"
+  },
+  "30badf0efb10968c981c7aaedebf7f12": {
+    "text": "аюултай",
+    "file": "30badf0efb10968c981c7aaedebf7f12.mp3",
+    "size": 11232,
+    "label": "危険な、危ない",
+    "category": "vocab"
+  },
+  "67026378b2442d51c0f5f949023ee164": {
+    "text": "баасан гараг",
+    "file": "67026378b2442d51c0f5f949023ee164.mp3",
+    "size": 11232,
+    "label": "金曜日",
+    "category": "vocab"
+  },
+  "23c835e9abe17789cf285bc60222b14d": {
+    "text": "ашгүй",
+    "file": "23c835e9abe17789cf285bc60222b14d.mp3",
+    "size": 11232,
+    "label": "よかった、ありがたい",
+    "category": "vocab"
+  },
+  "0ef70c49147ae3cdcd29034955712e51": {
+    "text": "бага сургууль",
+    "file": "0ef70c49147ae3cdcd29034955712e51.mp3",
+    "size": 11232,
+    "label": "小学校",
+    "category": "vocab"
+  },
+  "392f484981b40ea07b86ef642e297fb6": {
+    "text": "баг бол",
+    "file": "392f484981b40ea07b86ef642e297fb6.mp3",
+    "size": 11232,
+    "label": "チーム・グループになる",
+    "category": "vocab"
+  },
+  "e975b934a3238fa12cdfd893ecc4f80a": {
+    "text": "байгаль",
+    "file": "e975b934a3238fa12cdfd893ecc4f80a.mp3",
+    "size": 11232,
+    "label": "自然、自然環境",
+    "category": "vocab"
+  },
+  "8b5ba8caab28598576172cbaf5ce49cc": {
+    "text": "байрны мөнгө",
+    "file": "8b5ba8caab28598576172cbaf5ce49cc.mp3",
+    "size": 11232,
+    "label": "家賃",
+    "category": "vocab"
+  },
+  "ea96dfaf7d34b3e0ff18c75f3c700894": {
+    "text": "бай",
+    "file": "ea96dfaf7d34b3e0ff18c75f3c700894.mp3",
+    "size": 11232,
+    "label": "ある、いる、〜である",
+    "category": "vocab"
+  },
+  "bc929362950e9668ed6fcc1cd8e133a1": {
+    "text": "байшин",
+    "file": "bc929362950e9668ed6fcc1cd8e133a1.mp3",
+    "size": 11232,
+    "label": "建物、家、ビル",
+    "category": "vocab"
+  },
+  "77aa77903824cdfe8f019416ce3e5e28": {
+    "text": "баригд",
+    "file": "77aa77903824cdfe8f019416ce3e5e28.mp3",
+    "size": 11232,
+    "label": "建設される、捕まる",
+    "category": "vocab"
+  },
+  "022a1943a232772c1389485a351326cd": {
+    "text": "банк",
+    "file": "022a1943a232772c1389485a351326cd.mp3",
+    "size": 11232,
+    "label": "銀行",
+    "category": "vocab"
+  },
+  "313b50d5582855f3ded135a083b44007": {
+    "text": "баруун тал",
+    "file": "313b50d5582855f3ded135a083b44007.mp3",
+    "size": 11232,
+    "label": "右側、西側",
+    "category": "vocab"
+  },
+  "e11b4c267da8f0cd08ad56a42bbef3cc": {
+    "text": "бие",
+    "file": "e11b4c267da8f0cd08ad56a42bbef3cc.mp3",
+    "size": 11232,
+    "label": "体、身体",
+    "category": "vocab"
+  },
+  "5e520b361337532b5cd5d1ec60101cf0": {
+    "text": "биеийн тамирын заал",
+    "file": "5e520b361337532b5cd5d1ec60101cf0.mp3",
+    "size": 11808,
+    "label": "体育館、ジム",
+    "category": "vocab"
+  },
+  "54cff59db34bf449ece432a688753b2a": {
+    "text": "биз дээ",
+    "file": "54cff59db34bf449ece432a688753b2a.mp3",
+    "size": 9648,
+    "label": "〜でしょう、〜ですよね",
+    "category": "vocab"
+  },
+  "51b975bc6661750babfc61593606f572": {
+    "text": "бие засах газар",
+    "file": "51b975bc6661750babfc61593606f572.mp3",
+    "size": 11232,
+    "label": "お手洗い、トイレ",
+    "category": "vocab"
+  },
+  "fc13c100718514ad1a80bfeadcee6850": {
+    "text": "бил үү",
+    "file": "fc13c100718514ad1a80bfeadcee6850.mp3",
+    "size": 11232,
+    "label": "〜でしたっけ？（確認）",
+    "category": "vocab"
+  },
+  "e33cce9516631a9aa0ee3ca091388826": {
+    "text": "бич",
+    "file": "e33cce9516631a9aa0ee3ca091388826.mp3",
+    "size": 11232,
+    "label": "書く",
+    "category": "vocab"
+  },
+  "56db9d5e5aa15c970b58e005ca3fd72d": {
+    "text": "бие тааруухан",
+    "file": "56db9d5e5aa15c970b58e005ca3fd72d.mp3",
+    "size": 11232,
+    "label": "体調がすぐれない",
+    "category": "vocab"
+  },
+  "8b0bf3291b9ac316f68161ce00c39aaf": {
+    "text": "болгоомжтой",
+    "file": "8b0bf3291b9ac316f68161ce00c39aaf.mp3",
+    "size": 11232,
+    "label": "気をつけて、注意深く",
+    "category": "vocab"
+  },
+  "bec64812c89d106df91e71ae3f2e2b00": {
+    "text": "бичвэр текст",
+    "file": "bec64812c89d106df91e71ae3f2e2b00.mp3",
+    "size": 11232,
+    "label": "テキスト、文章",
+    "category": "vocab"
+  },
+  "b57a083bc7e8cd1307c3e4f84e1fb2d6": {
+    "text": "болов уу",
+    "file": "b57a083bc7e8cd1307c3e4f84e1fb2d6.mp3",
+    "size": 11232,
+    "label": "〜でしょうか（推量）",
+    "category": "vocab"
+  },
+  "e6b01a2f90213a6c6d83eaef20903a0b": {
+    "text": "бол",
+    "file": "e6b01a2f90213a6c6d83eaef20903a0b.mp3",
+    "size": 11232,
+    "label": "なる、良い、できる",
+    "category": "vocab"
+  },
+  "11b348d393d88d62c7a65430d5924ced": {
+    "text": "бороо",
+    "file": "11b348d393d88d62c7a65430d5924ced.mp3",
+    "size": 11232,
+    "label": "雨",
+    "category": "vocab"
+  },
+  "9df864ad0010ef4a86ab6c192d642681": {
+    "text": "борооны улирал",
+    "file": "9df864ad0010ef4a86ab6c192d642681.mp3",
+    "size": 11232,
+    "label": "雨季",
+    "category": "vocab"
+  },
+  "c0da210c4a7aa5b2469f50f57712bfd3": {
+    "text": "Бололгүй яах вэ",
+    "file": "c0da210c4a7aa5b2469f50f57712bfd3.mp3",
+    "size": 11808,
+    "label": "もちろんいいですよ、構いませんとも",
+    "category": "vocab"
+  },
+  "bdfe5bd73d9e2453e59fb37f9dbbabcd": {
+    "text": "бороо ор",
+    "file": "bdfe5bd73d9e2453e59fb37f9dbbabcd.mp3",
+    "size": 11232,
+    "label": "雨が降る",
+    "category": "vocab"
+  },
+  "a04ed7afa68c31ce2975bd55df7d0d83": {
+    "text": "болчихлоо",
+    "file": "a04ed7afa68c31ce2975bd55df7d0d83.mp3",
+    "size": 11232,
+    "label": "できました、完了しました",
+    "category": "vocab"
+  },
+  "3fda45e14dc7dc3a6708435fdda0844f": {
+    "text": "бос",
+    "file": "3fda45e14dc7dc3a6708435fdda0844f.mp3",
+    "size": 11232,
+    "label": "起きる、立ち上がる",
+    "category": "vocab"
+  },
+  "39bcbac77056c00d001c65a39cbece06": {
+    "text": "бөмбөг",
+    "file": "39bcbac77056c00d001c65a39cbece06.mp3",
+    "size": 11232,
+    "label": "ボール、球",
+    "category": "vocab"
+  },
+  "ab5dcd9c170f136a49ffd736679a278f": {
+    "text": "бууз",
+    "file": "ab5dcd9c170f136a49ffd736679a278f.mp3",
+    "size": 11232,
+    "label": "ボーズ（モンゴル風蒸し餃子）",
+    "category": "vocab"
+  },
+  "f2708a2199fbf0cc18259f801247a448": {
+    "text": "буу",
+    "file": "f2708a2199fbf0cc18259f801247a448.mp3",
+    "size": 11232,
+    "label": "降りる、下車する",
+    "category": "vocab"
+  },
+  "648115a3f63697197d0d1acb7fbc21d4": {
+    "text": "буц",
+    "file": "648115a3f63697197d0d1acb7fbc21d4.mp3",
+    "size": 11232,
+    "label": "帰る、戻る",
+    "category": "vocab"
+  },
+  "3c041f9e414568668d6a4d1d1bb5bdd6": {
+    "text": "бүрхэг",
+    "file": "3c041f9e414568668d6a4d1d1bb5bdd6.mp3",
+    "size": 11232,
+    "label": "曇り、曇天",
+    "category": "vocab"
+  },
+  "fd692ecc2789ecfffdf08d4164256aa7": {
+    "text": "бөх барилд",
+    "file": "fd692ecc2789ecfffdf08d4164256aa7.mp3",
+    "size": 11232,
+    "label": "モンゴル相撲を取る",
+    "category": "vocab"
+  },
+  "4a1c86c3cb3173406d7bae647eaff091": {
+    "text": "бүс",
+    "file": "4a1c86c3cb3173406d7bae647eaff091.mp3",
+    "size": 11232,
+    "label": "帯、ベルト",
+    "category": "vocab"
+  },
+  "ee0f4d06fbb9e608f4d4eb78d06141ec": {
+    "text": "бүс бүслэ бүсэл",
+    "file": "ee0f4d06fbb9e608f4d4eb78d06141ec.mp3",
+    "size": 11808,
+    "label": "帯を締める",
+    "category": "vocab"
+  },
+  "47d688ea439806f943e252b0c6779e39": {
+    "text": "бүтэн сайн өдөр",
+    "file": "47d688ea439806f943e252b0c6779e39.mp3",
+    "size": 11376,
+    "label": "日曜日（全吉日）",
+    "category": "vocab"
+  },
+  "59ccd285c66739f76c5c7546d2ecd907": {
+    "text": "бэлтгэл",
+    "file": "59ccd285c66739f76c5c7546d2ecd907.mp3",
+    "size": 11232,
+    "label": "準備、トレーニング",
+    "category": "vocab"
+  },
+  "284a4a63981492dddd88ea4d5590a85e": {
+    "text": "бээлий",
+    "file": "284a4a63981492dddd88ea4d5590a85e.mp3",
+    "size": 11232,
+    "label": "手袋",
+    "category": "vocab"
+  },
+  "ae4b349f6e1677b576dc6fd58a5817f9": {
+    "text": "бүх нутаг",
+    "file": "ae4b349f6e1677b576dc6fd58a5817f9.mp3",
+    "size": 11232,
+    "label": "全地域、全国",
+    "category": "vocab"
+  },
+  "24ec11df507851d11fb476f35041ad1b": {
+    "text": "бэлд",
+    "file": "24ec11df507851d11fb476f35041ad1b.mp3",
+    "size": 11232,
+    "label": "準備する、用意する",
+    "category": "vocab"
+  },
+  "10773e2acd4e816711ef246ce38441c3": {
+    "text": "бялуу",
+    "file": "10773e2acd4e816711ef246ce38441c3.mp3",
+    "size": 11232,
+    "label": "ケーキ",
+    "category": "vocab"
+  },
+  "ff37ae1d2e1c07f3ac0ff00fc6fe05d1": {
+    "text": "бямба гараг",
+    "file": "ff37ae1d2e1c07f3ac0ff00fc6fe05d1.mp3",
+    "size": 11232,
+    "label": "土曜日",
+    "category": "vocab"
+  },
+  "3ded66d5b6a0b83da150cb1e683ebe90": {
+    "text": "гадаад",
+    "file": "3ded66d5b6a0b83da150cb1e683ebe90.mp3",
+    "size": 11232,
+    "label": "外国、海外、外の",
+    "category": "vocab"
+  },
+  "06ea5c2501991535ac5f4db0218062d7": {
+    "text": "Вьетнам",
+    "file": "06ea5c2501991535ac5f4db0218062d7.mp3",
+    "size": 11232,
+    "label": "ベトナム",
+    "category": "vocab"
+  },
+  "b71444cb73fe405f6bf29b9cc090ee5a": {
+    "text": "гадаад хэл",
+    "file": "b71444cb73fe405f6bf29b9cc090ee5a.mp3",
+    "size": 11232,
+    "label": "外国語",
+    "category": "vocab"
+  },
+  "3a576815a48efa51c0781c028c9a38e0": {
+    "text": "гадагшаа гар",
+    "file": "3a576815a48efa51c0781c028c9a38e0.mp3",
+    "size": 11232,
+    "label": "外出する、外に出る",
+    "category": "vocab"
+  },
+  "5049d255553ff1fbd29ebb15eb0495b1": {
+    "text": "галт тэрэг",
+    "file": "5049d255553ff1fbd29ebb15eb0495b1.mp3",
+    "size": 11232,
+    "label": "列車、汽車、電車",
+    "category": "vocab"
+  },
+  "5e5fa37a69f108529d862e13b10a3007": {
+    "text": "газрын зураг",
+    "file": "5e5fa37a69f108529d862e13b10a3007.mp3",
+    "size": 11232,
+    "label": "地図",
+    "category": "vocab"
+  },
+  "b92a3c28958a72e9f6c85b1e5ff2f838": {
+    "text": "гадуур хоолло",
+    "file": "b92a3c28958a72e9f6c85b1e5ff2f838.mp3",
+    "size": 11232,
+    "label": "外食する",
+    "category": "vocab"
+  },
+  "abbd6edfb27d86a736fcea7afac0e9e9": {
+    "text": "Гандан хийд",
+    "file": "abbd6edfb27d86a736fcea7afac0e9e9.mp3",
+    "size": 11232,
+    "label": "ガンダン寺院",
+    "category": "vocab"
+  },
+  "f6f12ff955a6aaba47f62de7f7797787": {
+    "text": "газар хөдлө хөдөл",
+    "file": "f6f12ff955a6aaba47f62de7f7797787.mp3",
+    "size": 11952,
+    "label": "地震が起きる",
+    "category": "vocab"
+  },
+  "04df426494fa0bb5dac28930100260a3": {
+    "text": "гар",
+    "file": "04df426494fa0bb5dac28930100260a3.mp3",
+    "size": 11232,
+    "label": "手、腕",
+    "category": "vocab"
+  },
+  "063f9202f894318d6b3b6a6e15abbf6d": {
+    "text": "гар утас",
+    "file": "063f9202f894318d6b3b6a6e15abbf6d.mp3",
+    "size": 11232,
+    "label": "携帯電話、スマホ",
+    "category": "vocab"
+  },
+  "a8205b06b2a69025d26378ae38045172": {
+    "text": "гахай",
+    "file": "a8205b06b2a69025d26378ae38045172.mp3",
+    "size": 11232,
+    "label": "豚、豚肉",
+    "category": "vocab"
+  },
+  "149526a1c428be02a50305824ac3c8bf": {
+    "text": "гарын үсэг зур",
+    "file": "149526a1c428be02a50305824ac3c8bf.mp3",
+    "size": 11520,
+    "label": "サインする、署名する",
+    "category": "vocab"
+  },
+  "c70bb1ead2bc49976421b24f53f99aad": {
+    "text": "гол",
+    "file": "c70bb1ead2bc49976421b24f53f99aad.mp3",
+    "size": 11232,
+    "label": "川、中心",
+    "category": "vocab"
+  },
+  "d112efc6fe7e55f0924b680ef2329446": {
+    "text": "гурил",
+    "file": "d112efc6fe7e55f0924b680ef2329446.mp3",
+    "size": 11232,
+    "label": "小麦粉、麺",
+    "category": "vocab"
+  },
+  "a096d0a0b463ef5e33e9278509927b52": {
+    "text": "гуравдахь өдөр",
+    "file": "a096d0a0b463ef5e33e9278509927b52.mp3",
+    "size": 11232,
+    "label": "水曜日（第3日）",
+    "category": "vocab"
+  },
+  "67f33d0ae27b2ea272c6fc8843f1b136": {
+    "text": "гутал",
+    "file": "67f33d0ae27b2ea272c6fc8843f1b136.mp3",
+    "size": 11232,
+    "label": "靴、ブーツ",
+    "category": "vocab"
+  },
+  "44ef17d02857ab4ecff44c2bcce691e0": {
+    "text": "гүй",
+    "file": "44ef17d02857ab4ecff44c2bcce691e0.mp3",
+    "size": 11232,
+    "label": "走る",
+    "category": "vocab"
+  },
+  "44353009601c9a1eed64df6c752aef2d": {
+    "text": "гэдэг",
+    "file": "44353009601c9a1eed64df6c752aef2d.mp3",
+    "size": 11232,
+    "label": "〜という、〜と申す",
+    "category": "vocab"
+  },
+  "08d2dbdfb30b30c8dbd8bd90b8d8e0c7": {
+    "text": "гэрийн ажил",
+    "file": "08d2dbdfb30b30c8dbd8bd90b8d8e0c7.mp3",
+    "size": 11232,
+    "label": "家事",
+    "category": "vocab"
+  },
+  "4b6c724be451c8eb977e5765deafc5c4": {
+    "text": "гэрлэ",
+    "file": "4b6c724be451c8eb977e5765deafc5c4.mp3",
+    "size": 11232,
+    "label": "結婚する",
+    "category": "vocab"
+  },
+  "d8c7e41087d085565c08674e9c2b2d4a": {
+    "text": "гэрэл",
+    "file": "d8c7e41087d085565c08674e9c2b2d4a.mp3",
+    "size": 11232,
+    "label": "光、明かり、電灯",
+    "category": "vocab"
+  },
+  "ceb1d76161ddf169f1aa2f10e4fd5b2d": {
+    "text": "гэр бүлийнхэн",
+    "file": "ceb1d76161ddf169f1aa2f10e4fd5b2d.mp3",
+    "size": 11232,
+    "label": "家族のみんな",
+    "category": "vocab"
+  },
+  "9becd95d27123c30eda224ecbc8e35d1": {
+    "text": "гэхдээ",
+    "file": "9becd95d27123c30eda224ecbc8e35d1.mp3",
+    "size": 11232,
+    "label": "しかし、でも",
+    "category": "vocab"
+  },
+  "8ecf0509b69e8f8bbe6f00a6b6125d88": {
+    "text": "гэрээ сана",
+    "file": "8ecf0509b69e8f8bbe6f00a6b6125d88.mp3",
+    "size": 11232,
+    "label": "ホームシックになる、家を恋しく思う",
+    "category": "vocab"
+  },
+  "a4b5d71f25fac161d8fa33a43c2d092f": {
+    "text": "гэх мэт",
+    "file": "a4b5d71f25fac161d8fa33a43c2d092f.mp3",
+    "size": 11232,
+    "label": "〜など",
+    "category": "vocab"
+  },
+  "db4b599725d8c3c82c39ef2d914164e3": {
+    "text": "даваа гараг",
+    "file": "db4b599725d8c3c82c39ef2d914164e3.mp3",
+    "size": 11232,
+    "label": "月曜日",
+    "category": "vocab"
+  },
+  "78a50c25ec4de3e78c81a151ab18331d": {
+    "text": "давс",
+    "file": "78a50c25ec4de3e78c81a151ab18331d.mp3",
+    "size": 11232,
+    "label": "塩",
+    "category": "vocab"
+  },
+  "15fe06a42561f38d0b34a5446bcd5535": {
+    "text": "даар",
+    "file": "15fe06a42561f38d0b34a5446bcd5535.mp3",
+    "size": 11232,
+    "label": "寒気を感じる、冷える",
+    "category": "vocab"
+  },
+  "68fff52497f843dc877581d9c1cca706": {
+    "text": "давхар",
+    "file": "68fff52497f843dc877581d9c1cca706.mp3",
+    "size": 11232,
+    "label": "階（〜階）、重なり",
+    "category": "vocab"
+  },
+  "1bb10085bc9451b710fb5909660a7dc6": {
+    "text": "давт",
+    "file": "1bb10085bc9451b710fb5909660a7dc6.mp3",
+    "size": 11232,
+    "label": "復習する、繰り返す",
+    "category": "vocab"
+  },
+  "3af2d7b5cc117109ad21b9ed24f95dcf": {
+    "text": "дадлага",
+    "file": "3af2d7b5cc117109ad21b9ed24f95dcf.mp3",
+    "size": 11232,
+    "label": "実習、実務訓練",
+    "category": "vocab"
+  },
+  "ddafa8f3821cfe0a6fb3068ccbcf2543": {
+    "text": "далай",
+    "file": "ddafa8f3821cfe0a6fb3068ccbcf2543.mp3",
+    "size": 11232,
+    "label": "海、大洋",
+    "category": "vocab"
+  },
+  "e480b649342b423b1e84c135e16e6ac8": {
+    "text": "дандаа",
+    "file": "e480b649342b423b1e84c135e16e6ac8.mp3",
+    "size": 11232,
+    "label": "いつも、常に",
+    "category": "vocab"
+  },
+  "029ef0a98c8803accf3f18f06cdee985": {
+    "text": "дараа нь",
+    "file": "029ef0a98c8803accf3f18f06cdee985.mp3",
+    "size": 11232,
+    "label": "その後、次に",
+    "category": "vocab"
+  },
+  "ef30aece078ef7aa91b5d1b05061edd9": {
+    "text": "дасгал",
+    "file": "ef30aece078ef7aa91b5d1b05061edd9.mp3",
+    "size": 11232,
+    "label": "練習問題、体操、エクササイズ",
+    "category": "vocab"
+  },
+  "b7bb02d1bad453d91458bb17bbf7c563": {
+    "text": "дараагийн буудал",
+    "file": "b7bb02d1bad453d91458bb17bbf7c563.mp3",
+    "size": 11232,
+    "label": "次の停留所、次の駅",
+    "category": "vocab"
+  },
+  "eaf2719f0b34bd49a5d8c8f170787b49": {
+    "text": "дарга",
+    "file": "eaf2719f0b34bd49a5d8c8f170787b49.mp3",
+    "size": 11232,
+    "label": "上司、リーダー、長",
+    "category": "vocab"
+  },
+  "435b752bcff60c6bfd9c0483125d84f6": {
+    "text": "Дархан хот",
+    "file": "435b752bcff60c6bfd9c0483125d84f6.mp3",
+    "size": 11232,
+    "label": "ダルハン市",
+    "category": "vocab"
+  },
+  "7278b244463fe108ba3dd14adf1b3430": {
+    "text": "дахиад нэг",
+    "file": "7278b244463fe108ba3dd14adf1b3430.mp3",
+    "size": 11232,
+    "label": "もう一つ、もう一度",
+    "category": "vocab"
+  },
+  "16489d2be1179d8faed85098487f3a34": {
+    "text": "долоо хоног",
+    "file": "16489d2be1179d8faed85098487f3a34.mp3",
+    "size": 11232,
+    "label": "1週間、週",
+    "category": "vocab"
+  },
+  "c6e0d5694504607429397a6224f5fc40": {
+    "text": "дөрөвдэх өдөр",
+    "file": "c6e0d5694504607429397a6224f5fc40.mp3",
+    "size": 11232,
+    "label": "木曜日（第4日）",
+    "category": "vocab"
+  },
+  "3b0852b93dfcfa2450bafa016d68accb": {
+    "text": "дасгал хөдөлгөөн",
+    "file": "3b0852b93dfcfa2450bafa016d68accb.mp3",
+    "size": 11232,
+    "label": "運動、体操",
+    "category": "vocab"
+  },
+  "353d677d89d30923cd1003352b7ca229": {
+    "text": "дугуй",
+    "file": "353d677d89d30923cd1003352b7ca229.mp3",
+    "size": 11232,
+    "label": "自転車、車輪、丸い",
+    "category": "vocab"
+  },
+  "a43d3e622838d27a28093892e51c4671": {
+    "text": "дөнгж сая",
+    "file": "a43d3e622838d27a28093892e51c4671.mp3",
+    "size": 11232,
+    "label": "たった今、先ほど",
+    "category": "vocab"
+  },
+  "e46330a096b6f7ba48ecd272ce5f8861": {
+    "text": "дунд",
+    "file": "e46330a096b6f7ba48ecd272ce5f8861.mp3",
+    "size": 11232,
+    "label": "真ん中、間",
+    "category": "vocab"
+  },
+  "d1d580f3d099ea6628b9e4c910e739b0": {
+    "text": "дунд сургууль",
+    "file": "d1d580f3d099ea6628b9e4c910e739b0.mp3",
+    "size": 11232,
+    "label": "中学校、小中高一貫校",
+    "category": "vocab"
+  },
+  "171fa6c0cb888bb5ba0f2e7fae6da928": {
+    "text": "дулаахан",
+    "file": "171fa6c0cb888bb5ba0f2e7fae6da928.mp3",
+    "size": 11232,
+    "label": "暖かい",
+    "category": "vocab"
+  },
+  "69b2532e3973915993fa66797ac0c67f": {
+    "text": "дутуу",
+    "file": "69b2532e3973915993fa66797ac0c67f.mp3",
+    "size": 11232,
+    "label": "足りない、不完全な",
+    "category": "vocab"
+  },
+  "d8e10a64f95f50fcbb7eac2136316d6d": {
+    "text": "дуу",
+    "file": "d8e10a64f95f50fcbb7eac2136316d6d.mp3",
+    "size": 11232,
+    "label": "歌、声、音",
+    "category": "vocab"
+  },
+  "dd616ceb700c301890b8e2ec845ea59a": {
+    "text": "дууд",
+    "file": "dd616ceb700c301890b8e2ec845ea59a.mp3",
+    "size": 11232,
+    "label": "呼ぶ、電話する",
+    "category": "vocab"
+  },
+  "de18f2e842abbd3b67576a8d2c440ee1": {
+    "text": "дүү",
+    "file": "de18f2e842abbd3b67576a8d2c440ee1.mp3",
+    "size": 11232,
+    "label": "弟、妹、年下の人",
+    "category": "vocab"
+  },
+  "dd85d0e7867f26eee3a9072fb095127c": {
+    "text": "дуул",
+    "file": "dd85d0e7867f26eee3a9072fb095127c.mp3",
+    "size": 11232,
+    "label": "歌う",
+    "category": "vocab"
+  },
+  "84066a6211d2dfa3578def412c092851": {
+    "text": "жаахан",
+    "file": "84066a6211d2dfa3578def412c092851.mp3",
+    "size": 11232,
+    "label": "少し、わずか",
+    "category": "vocab"
+  },
+  "fce2c1c8c0c453909303bb8466b3e7db": {
+    "text": "дуус",
+    "file": "fce2c1c8c0c453909303bb8466b3e7db.mp3",
+    "size": 11232,
+    "label": "終わる、終了する",
+    "category": "vocab"
+  },
+  "2d12b1d7bdd6ca5b8ab054eccf943e32": {
+    "text": "дээл",
+    "file": "2d12b1d7bdd6ca5b8ab054eccf943e32.mp3",
+    "size": 11232,
+    "label": "デール（モンゴル伝統衣装）",
+    "category": "vocab"
+  },
+  "0c2b8803d7e792bdc6956b31d0d8d230": {
+    "text": "жигнэмэг",
+    "file": "0c2b8803d7e792bdc6956b31d0d8d230.mp3",
+    "size": 11232,
+    "label": "クッキー、ビスケット",
+    "category": "vocab"
+  },
+  "6c57200655882eb8c2144cd37200f1ba": {
+    "text": "жижиг",
+    "file": "6c57200655882eb8c2144cd37200f1ba.mp3",
+    "size": 11232,
+    "label": "小さい",
+    "category": "vocab"
+  },
+  "2ddf6acfd4e6004ab912c12c328e10d3": {
+    "text": "жил",
+    "file": "2ddf6acfd4e6004ab912c12c328e10d3.mp3",
+    "size": 11232,
+    "label": "年、1年",
+    "category": "vocab"
+  },
+  "1d38221724637f47c48c839d802ce93d": {
+    "text": "жүжиг",
+    "file": "1d38221724637f47c48c839d802ce93d.mp3",
+    "size": 11232,
+    "label": "劇、芝居、演劇",
+    "category": "vocab"
+  },
+  "2e9bef683a467eb08aed5706a330a867": {
+    "text": "жолоод",
+    "file": "2e9bef683a467eb08aed5706a330a867.mp3",
+    "size": 11232,
+    "label": "運転する",
+    "category": "vocab"
+  },
+  "28323891bb09e3e8978a9c0e128679c1": {
+    "text": "жүдогийн дугуйлан",
+    "file": "28323891bb09e3e8978a9c0e128679c1.mp3",
+    "size": 11952,
+    "label": "柔道クラブ・柔道サークル",
+    "category": "vocab"
+  },
+  "d5d89cf2aa05d77844bb74eb341dcac4": {
+    "text": "заа",
+    "file": "d5d89cf2aa05d77844bb74eb341dcac4.mp3",
+    "size": 11232,
+    "label": "教える、指し示す",
+    "category": "vocab"
+  },
+  "4f71b0bc9e43eca6984aa19f77b9ad19": {
+    "text": "завгүй",
+    "file": "4f71b0bc9e43eca6984aa19f77b9ad19.mp3",
+    "size": 11232,
+    "label": "忙しい、時間がない",
+    "category": "vocab"
+  },
+  "56c690f379f6d7d15b73990403b48d23": {
+    "text": "загас",
+    "file": "56c690f379f6d7d15b73990403b48d23.mp3",
+    "size": 11232,
+    "label": "魚",
+    "category": "vocab"
+  },
+  "1172198f5a22fb83e664de9061d82d7d": {
+    "text": "завсарла",
+    "file": "1172198f5a22fb83e664de9061d82d7d.mp3",
+    "size": 11232,
+    "label": "休憩する、休止する",
+    "category": "vocab"
+  },
+  "f07387afb85d47c2a142d9769d02cab4": {
+    "text": "зайрмаг",
+    "file": "f07387afb85d47c2a142d9769d02cab4.mp3",
+    "size": 11232,
+    "label": "アイスクリーム",
+    "category": "vocab"
+  },
+  "5d4844684574c817b25105a3736f5c04": {
+    "text": "зам",
+    "file": "5d4844684574c817b25105a3736f5c04.mp3",
+    "size": 11232,
+    "label": "道、道路",
+    "category": "vocab"
+  },
+  "5a95cd9c5b732ad47ddb426cf6bfa7b3": {
+    "text": "загас бари барь",
+    "file": "5a95cd9c5b732ad47ddb426cf6bfa7b3.mp3",
+    "size": 11232,
+    "label": "魚を釣る、魚を捕まえる",
+    "category": "vocab"
+  },
+  "ebef89f25f3143c20070cfe376734aa8": {
+    "text": "залга",
+    "file": "ebef89f25f3143c20070cfe376734aa8.mp3",
+    "size": 11232,
+    "label": "電話をつなぐ、かける、連結する",
+    "category": "vocab"
+  },
+  "325d5c5fb4254bc833187aa8da14488b": {
+    "text": "зар",
+    "file": "325d5c5fb4254bc833187aa8da14488b.mp3",
+    "size": 11232,
+    "label": "売る",
+    "category": "vocab"
+  },
+  "779217f27a82650b118e7af691f578a1": {
+    "text": "зах",
+    "file": "779217f27a82650b118e7af691f578a1.mp3",
+    "size": 11232,
+    "label": "市場（ザハ）、襟、端",
+    "category": "vocab"
+  },
+  "2b41d889818d2475fd4874a5af0ceec8": {
+    "text": "заримдаа",
+    "file": "2b41d889818d2475fd4874a5af0ceec8.mp3",
+    "size": 11232,
+    "label": "時々、たまに",
+    "category": "vocab"
+  },
+  "5ed9ffa1923288afcd8afa48eb4c9c25": {
+    "text": "захирал",
+    "file": "5ed9ffa1923288afcd8afa48eb4c9c25.mp3",
+    "size": 11232,
+    "label": "社長、校長、所長",
+    "category": "vocab"
+  },
+  "6f4e7159883b781a70aa384030732147": {
+    "text": "захиал",
+    "file": "6f4e7159883b781a70aa384030732147.mp3",
+    "size": 11232,
+    "label": "注文する、予約する",
+    "category": "vocab"
+  },
+  "86dfe0fbedae2f108599833c74d36835": {
+    "text": "захиа",
+    "file": "86dfe0fbedae2f108599833c74d36835.mp3",
+    "size": 11232,
+    "label": "手紙",
+    "category": "vocab"
+  },
+  "3cc842373ee1dd3eb2d63a897eb6df55": {
+    "text": "зоогийн газар",
+    "file": "3cc842373ee1dd3eb2d63a897eb6df55.mp3",
+    "size": 11232,
+    "label": "食堂、レストラン",
+    "category": "vocab"
+  },
+  "2b1825c9379d32b05aa7e54c5a8f1c23": {
+    "text": "золбин нохой",
+    "file": "2b1825c9379d32b05aa7e54c5a8f1c23.mp3",
+    "size": 11232,
+    "label": "野良犬",
+    "category": "vocab"
+  },
+  "e28a20855e35f4062ce1d544f2ab0b7f": {
+    "text": "зорчигч",
+    "file": "e28a20855e35f4062ce1d544f2ab0b7f.mp3",
+    "size": 11232,
+    "label": "乗客、旅客",
+    "category": "vocab"
+  },
+  "035877e52b398827257707875d41801b": {
+    "text": "зочид буудал",
+    "file": "035877e52b398827257707875d41801b.mp3",
+    "size": 11232,
+    "label": "ホテル、旅館",
+    "category": "vocab"
+  },
+  "a70d6f85f03b4a4e167787372aaadfa2": {
+    "text": "зөөгч",
+    "file": "a70d6f85f03b4a4e167787372aaadfa2.mp3",
+    "size": 11232,
+    "label": "ウェイター、給仕",
+    "category": "vocab"
+  },
+  "092ca23d0a4bdd2d14136834fc2d42ae": {
+    "text": "зугаалга",
+    "file": "092ca23d0a4bdd2d14136834fc2d42ae.mp3",
+    "size": 11232,
+    "label": "遠足、散歩、ピクニック",
+    "category": "vocab"
+  },
+  "63b4cf9e8914fe1dfe5bdc0002bfdc7a": {
+    "text": "зугаал",
+    "file": "63b4cf9e8914fe1dfe5bdc0002bfdc7a.mp3",
+    "size": 11232,
+    "label": "散歩する、ピクニックする",
+    "category": "vocab"
+  },
+  "4d3a7f877e4f16566283cdd03982c46d": {
+    "text": "зузаан",
+    "file": "4d3a7f877e4f16566283cdd03982c46d.mp3",
+    "size": 11232,
+    "label": "厚い",
+    "category": "vocab"
+  },
+  "de3c25ab10f82f3248e3bfe114382f96": {
+    "text": "зун",
+    "file": "de3c25ab10f82f3248e3bfe114382f96.mp3",
+    "size": 11232,
+    "label": "夏",
+    "category": "vocab"
+  },
+  "7ea418d70b030247acb97dafac895cfc": {
+    "text": "зураг",
+    "file": "7ea418d70b030247acb97dafac895cfc.mp3",
+    "size": 11232,
+    "label": "絵、写真",
+    "category": "vocab"
+  },
+  "bbc170e2fdc9a204933b1d448013377a": {
+    "text": "зур",
+    "file": "bbc170e2fdc9a204933b1d448013377a.mp3",
+    "size": 11232,
+    "label": "描く、署名する",
+    "category": "vocab"
+  },
+  "9817ede40d310d09a5520c643c45a3f1": {
+    "text": "зуслан",
+    "file": "9817ede40d310d09a5520c643c45a3f1.mp3",
+    "size": 11232,
+    "label": "別荘地、サマーキャンプ、夏の放牧地",
+    "category": "vocab"
+  },
+  "f7f645ad1d1593c0be94c8aa1e188fd9": {
+    "text": "зураг ав",
+    "file": "f7f645ad1d1593c0be94c8aa1e188fd9.mp3",
+    "size": 11232,
+    "label": "写真を撮る",
+    "category": "vocab"
+  },
+  "7ec62a893f14721938471e8426d56040": {
+    "text": "зураг авхуул",
+    "file": "7ec62a893f14721938471e8426d56040.mp3",
+    "size": 11232,
+    "label": "写真を撮ってもらう",
+    "category": "vocab"
+  },
+  "6c92bf560dd9d8a54959adc2b5bede8d": {
+    "text": "Зуунмод хот",
+    "file": "6c92bf560dd9d8a54959adc2b5bede8d.mp3",
+    "size": 11232,
+    "label": "ズウンモド市",
+    "category": "vocab"
+  },
+  "16e94d0f7e501bf025e04da0c9ac9a76": {
+    "text": "зүгээр",
+    "file": "16e94d0f7e501bf025e04da0c9ac9a76.mp3",
+    "size": 11232,
+    "label": "大丈夫、平気、ただの",
+    "category": "vocab"
+  },
+  "33892b0e210c1837c321f6d2e67bc865": {
+    "text": "Зүгээр ээ болсон",
+    "file": "33892b0e210c1837c321f6d2e67bc865.mp3",
+    "size": 11664,
+    "label": "大丈夫ですよ、すみました。",
+    "category": "vocab"
+  },
+  "2b69cba541c0a3123840e32d3bdbeb10": {
+    "text": "ид",
+    "file": "2b69cba541c0a3123840e32d3bdbeb10.mp3",
+    "size": 11232,
+    "label": "食べる",
+    "category": "vocab"
+  },
+  "2c0aaf82b1235fa5272c10dee2e01b9c": {
+    "text": "илгээмж",
+    "file": "2c0aaf82b1235fa5272c10dee2e01b9c.mp3",
+    "size": 11232,
+    "label": "小包、郵便物",
+    "category": "vocab"
+  },
+  "f38f4e581af638b412c91bf11d4da217": {
+    "text": "илтгэл",
+    "file": "f38f4e581af638b412c91bf11d4da217.mp3",
+    "size": 11232,
+    "label": "発表、プレゼンテーション、報告",
+    "category": "vocab"
+  },
+  "993c68559c62a7c951025aff1e9c172a": {
+    "text": "ийшээ",
+    "file": "993c68559c62a7c951025aff1e9c172a.mp3",
+    "size": 11232,
+    "label": "こちらへ、こっちに",
+    "category": "vocab"
+  },
+  "abaf29caec9b25a18a422b86019cc481": {
+    "text": "Индонез",
+    "file": "abaf29caec9b25a18a422b86019cc481.mp3",
+    "size": 11232,
+    "label": "インドネシア",
+    "category": "vocab"
+  },
+  "56c36ca4dcbe14b4c9d4e807826ea099": {
+    "text": "илүү",
+    "file": "56c36ca4dcbe14b4c9d4e807826ea099.mp3",
+    "size": 11232,
+    "label": "もっと、余分に、〜以上",
+    "category": "vocab"
+  },
+  "bc15d1b3bb58a69009007cfb486cec9e": {
+    "text": "ирэх долоо хоног",
+    "file": "bc15d1b3bb58a69009007cfb486cec9e.mp3",
+    "size": 11664,
+    "label": "来週",
+    "category": "vocab"
+  },
+  "bb31c89c7268da013677170c435839c0": {
+    "text": "ир",
+    "file": "bb31c89c7268da013677170c435839c0.mp3",
+    "size": 11232,
+    "label": "来る",
+    "category": "vocab"
+  },
+  "a1cadfd8a4c2cc1a5191459aae7eb55a": {
+    "text": "их дэлгүүр",
+    "file": "a1cadfd8a4c2cc1a5191459aae7eb55a.mp3",
+    "size": 11232,
+    "label": "デパート、百貨店",
+    "category": "vocab"
+  },
+  "ad776973cbf6845e81fa10d56abbdda2": {
+    "text": "Испани",
+    "file": "ad776973cbf6845e81fa10d56abbdda2.mp3",
+    "size": 11232,
+    "label": "スペイン",
+    "category": "vocab"
+  },
+  "eeeb1bbe5e943fce43d83107d6ea1977": {
+    "text": "интернет",
+    "file": "eeeb1bbe5e943fce43d83107d6ea1977.mp3",
+    "size": 11232,
+    "label": "インターネット",
+    "category": "vocab"
+  },
+  "af4b9d6a0215b4364e38088c3b909e52": {
+    "text": "Итали",
+    "file": "af4b9d6a0215b4364e38088c3b909e52.mp3",
+    "size": 11232,
+    "label": "イタリア",
+    "category": "vocab"
+  },
+  "dcd01086533b050a9a49be7c08306ecd": {
+    "text": "их сургууль",
+    "file": "dcd01086533b050a9a49be7c08306ecd.mp3",
+    "size": 11232,
+    "label": "大学",
+    "category": "vocab"
+  },
+  "831357ccf0c28e5ff4f875bfa5ba4967": {
+    "text": "ихэнхдээ",
+    "file": "831357ccf0c28e5ff4f875bfa5ba4967.mp3",
+    "size": 11232,
+    "label": "大抵、ほとんどの場合",
+    "category": "vocab"
+  },
+  "4ebbbe6017e2ee48e367166ff7f8a83c": {
+    "text": "карт",
+    "file": "4ebbbe6017e2ee48e367166ff7f8a83c.mp3",
+    "size": 11232,
+    "label": "カード（銀行・ポイント等）",
+    "category": "vocab"
+  },
+  "7d47f167a04434e92d92cf6a9525d656": {
+    "text": "килограмм",
+    "file": "7d47f167a04434e92d92cf6a9525d656.mp3",
+    "size": 11232,
+    "label": "キログラム (kg)",
+    "category": "vocab"
+  },
+  "9f9c2d9f3f0e0778139d45315cc5d213": {
+    "text": "калпис ундаа",
+    "file": "9f9c2d9f3f0e0778139d45315cc5d213.mp3",
+    "size": 11232,
+    "label": "カルピス飲料",
+    "category": "vocab"
+  },
+  "26f1e71bd23da4ecd6732342caff56a7": {
+    "text": "Казак",
+    "file": "26f1e71bd23da4ecd6732342caff56a7.mp3",
+    "size": 11232,
+    "label": "カザフ、カザフ人",
+    "category": "vocab"
+  },
+  "13dccda975cee5fa54531b00fc5a3856": {
+    "text": "километр",
+    "file": "13dccda975cee5fa54531b00fc5a3856.mp3",
+    "size": 11232,
+    "label": "キロメートル (km)",
+    "category": "vocab"
+  },
+  "4b84fb1d90cb204d84b790bf6b6aa79d": {
+    "text": "кино",
+    "file": "4b84fb1d90cb204d84b790bf6b6aa79d.mp3",
+    "size": 11232,
+    "label": "映画",
+    "category": "vocab"
+  },
+  "e443716c24bb1146eb6d1776b7a4d7f2": {
+    "text": "кофе",
+    "file": "e443716c24bb1146eb6d1776b7a4d7f2.mp3",
+    "size": 11232,
+    "label": "コーヒー",
+    "category": "vocab"
+  },
+  "4bd4df42f66e04f1308bf2cb403209e6": {
+    "text": "кинотеатр",
+    "file": "4bd4df42f66e04f1308bf2cb403209e6.mp3",
+    "size": 11232,
+    "label": "映画館",
+    "category": "vocab"
+  },
+  "2fa7a3404108083f30d6869f4434a444": {
+    "text": "куртка",
+    "file": "2fa7a3404108083f30d6869f4434a444.mp3",
+    "size": 11232,
+    "label": "ジャケット、ジャンパー",
+    "category": "vocab"
+  },
+  "675cb489a48f75f1c215252458ee06a8": {
+    "text": "кредит карт",
+    "file": "675cb489a48f75f1c215252458ee06a8.mp3",
+    "size": 11232,
+    "label": "クレジットカード",
+    "category": "vocab"
+  },
+  "d0adb6672ed9e9d5fab53cd931d9d30c": {
+    "text": "лхагва гараг",
+    "file": "d0adb6672ed9e9d5fab53cd931d9d30c.mp3",
+    "size": 11232,
+    "label": "水曜日",
+    "category": "vocab"
+  },
+  "3a9cced62372bf9fe09f44b8dae1caa1": {
+    "text": "Лаос",
+    "file": "3a9cced62372bf9fe09f44b8dae1caa1.mp3",
+    "size": 11232,
+    "label": "ラオス",
+    "category": "vocab"
+  },
+  "dd1a4d3807b1103564774d09488e96ad": {
+    "text": "май",
+    "file": "dd1a4d3807b1103564774d09488e96ad.mp3",
+    "size": 11232,
+    "label": "はいどうぞ（物を渡すとき）",
+    "category": "vocab"
+  },
+  "58cf85fe3228de2209142637ef9ba5f4": {
+    "text": "мах",
+    "file": "58cf85fe3228de2209142637ef9ba5f4.mp3",
+    "size": 11232,
+    "label": "肉",
+    "category": "vocab"
+  },
+  "9220471dd010b930698f777723229d3e": {
+    "text": "малчин",
+    "file": "9220471dd010b930698f777723229d3e.mp3",
+    "size": 11232,
+    "label": "遊牧民、牧民",
+    "category": "vocab"
+  },
+  "34b52b1c45b050d8b6ddef79062f8be9": {
+    "text": "машин",
+    "file": "34b52b1c45b050d8b6ddef79062f8be9.mp3",
+    "size": 11232,
+    "label": "自動車、車",
+    "category": "vocab"
+  },
+  "b877a76d5951435262ba8620ec4fc184": {
+    "text": "минут",
+    "file": "b877a76d5951435262ba8620ec4fc184.mp3",
+    "size": 11232,
+    "label": "分（時間の単位）",
+    "category": "vocab"
+  },
+  "6ba884316c5d2958f1fab3117d6dffc8": {
+    "text": "мод",
+    "file": "6ba884316c5d2958f1fab3117d6dffc8.mp3",
+    "size": 11232,
+    "label": "木、森林、木材",
+    "category": "vocab"
+  },
+  "0f5c95ad3c1acde1d2ba692e9218d8bb": {
+    "text": "Монгол",
+    "file": "0f5c95ad3c1acde1d2ba692e9218d8bb.mp3",
+    "size": 11232,
+    "label": "モンゴル",
+    "category": "vocab"
+  },
+  "5fea2661dc8576086f3e07b2622d8b4c": {
+    "text": "морь уна",
+    "file": "5fea2661dc8576086f3e07b2622d8b4c.mp3",
+    "size": 11232,
+    "label": "馬に乗る",
+    "category": "vocab"
+  },
+  "34c4ad8c083beba502d853558c487860": {
+    "text": "монголчууд",
+    "file": "34c4ad8c083beba502d853558c487860.mp3",
+    "size": 11232,
+    "label": "モンゴル人たち",
+    "category": "vocab"
+  },
+  "3075e39a5b5892dd0e7e285fb1a1b57d": {
+    "text": "морин хуур",
+    "file": "3075e39a5b5892dd0e7e285fb1a1b57d.mp3",
+    "size": 11232,
+    "label": "馬頭琴（モリンホール）",
+    "category": "vocab"
+  },
+  "f5486900b850c8c8de8eb62148ca7532": {
+    "text": "морь",
+    "file": "f5486900b850c8c8de8eb62148ca7532.mp3",
+    "size": 11232,
+    "label": "馬",
+    "category": "vocab"
+  },
+  "f09c8da07974024cfb168578d1bf63c7": {
+    "text": "монголоор яри ярь",
+    "file": "f09c8da07974024cfb168578d1bf63c7.mp3",
+    "size": 12528,
+    "label": "モンゴル語で話す",
+    "category": "vocab"
+  },
+  "34aa2b26ba2efcf7cd0d2e4d05b85d30": {
+    "text": "мөнгө",
+    "file": "34aa2b26ba2efcf7cd0d2e4d05b85d30.mp3",
+    "size": 11232,
+    "label": "お金、銀",
+    "category": "vocab"
+  },
+  "7d5c7bcf3bf2059a96f130d3484a2239": {
+    "text": "музей",
+    "file": "7d5c7bcf3bf2059a96f130d3484a2239.mp3",
+    "size": 11232,
+    "label": "博物館、美術館",
+    "category": "vocab"
+  },
+  "a67acb7228f52dd58fc83ea16631a97d": {
+    "text": "муур",
+    "file": "a67acb7228f52dd58fc83ea16631a97d.mp3",
+    "size": 11232,
+    "label": "猫",
+    "category": "vocab"
+  },
+  "996e5149183d0baef0549c3aca7b7148": {
+    "text": "муухайр",
+    "file": "996e5149183d0baef0549c3aca7b7148.mp3",
+    "size": 11232,
+    "label": "（天気が）悪化する、険しくなる",
+    "category": "vocab"
+  },
+  "0640e812b15f47282ff3a9db91e33646": {
+    "text": "мэдээж",
+    "file": "0640e812b15f47282ff3a9db91e33646.mp3",
+    "size": 11232,
+    "label": "もちろん、当然",
+    "category": "vocab"
+  },
+  "81c1b6459e6de2e0c2a3fc3be149ea28": {
+    "text": "мэнд хүргэ",
+    "file": "81c1b6459e6de2e0c2a3fc3be149ea28.mp3",
+    "size": 11232,
+    "label": "よろしく伝える、挨拶を述べる",
+    "category": "vocab"
+  },
+  "48a9942c941bbfb0bd1189074f44605d": {
+    "text": "мэд",
+    "file": "48a9942c941bbfb0bd1189074f44605d.mp3",
+    "size": 11232,
+    "label": "知る、わかる",
+    "category": "vocab"
+  },
+  "4439ffab5447087e2936c181c38343bf": {
+    "text": "мягмар гараг",
+    "file": "4439ffab5447087e2936c181c38343bf.mp3",
+    "size": 11232,
+    "label": "火曜日",
+    "category": "vocab"
+  },
+  "6405d60b6897bbb1aaeebf4aebc4930a": {
+    "text": "Наадам /баяр/",
+    "file": "6405d60b6897bbb1aaeebf4aebc4930a.mp3",
+    "size": 11232,
+    "label": "ナーダム祭（モンゴルの大祭）",
+    "category": "vocab"
+  },
+  "e47a3f7afc2c233ea08eef4eb9891847": {
+    "text": "намар",
+    "file": "e47a3f7afc2c233ea08eef4eb9891847.mp3",
+    "size": 11232,
+    "label": "秋",
+    "category": "vocab"
+  },
+  "3a3d816e71bb378ffe2a6a2f23f63390": {
+    "text": "намд",
+    "file": "3a3d816e71bb378ffe2a6a2f23f63390.mp3",
+    "size": 11232,
+    "label": "（痛みや嵐が）治まる、和らぐ",
+    "category": "vocab"
+  },
+  "3050b35f9f4674bf8d16b80e935b85ac": {
+    "text": "нас",
+    "file": "3050b35f9f4674bf8d16b80e935b85ac.mp3",
+    "size": 11232,
+    "label": "年齢、歳",
+    "category": "vocab"
+  },
+  "673f9592d0cbba53ecb953f8a5605c56": {
+    "text": "нимгэн",
+    "file": "673f9592d0cbba53ecb953f8a5605c56.mp3",
+    "size": 11232,
+    "label": "薄い",
+    "category": "vocab"
+  },
+  "0b1b93a9a20549e439d78841f65bc7fa": {
+    "text": "нийслэл салат",
+    "file": "0b1b93a9a20549e439d78841f65bc7fa.mp3",
+    "size": 11520,
+    "label": "首都サラダ（ポテトサラダ）",
+    "category": "vocab"
+  },
+  "5b1d87e5f79d49bc733f151bbd9f616c": {
+    "text": "ногоон",
+    "file": "5b1d87e5f79d49bc733f151bbd9f616c.mp3",
+    "size": 11232,
+    "label": "緑の、緑色",
+    "category": "vocab"
+  },
+  "379a1c2a8a33cdbee4ee025078ddade1": {
+    "text": "номын сан",
+    "file": "379a1c2a8a33cdbee4ee025078ddade1.mp3",
+    "size": 11232,
+    "label": "図書館",
+    "category": "vocab"
+  },
+  "e66e4e9ec010a9145c480e9c21dda29f": {
+    "text": "ноолуур",
+    "file": "e66e4e9ec010a9145c480e9c21dda29f.mp3",
+    "size": 11232,
+    "label": "カシミヤ",
+    "category": "vocab"
+  },
+  "764659f4c856e949b5e511d597cb6877": {
+    "text": "Нихонмацү сургалтын төв",
+    "file": "764659f4c856e949b5e511d597cb6877.mp3",
+    "size": 14544,
+    "label": "二本松訓練所",
+    "category": "vocab"
+  },
+  "1fc79110290fa4304bf1cee72831911d": {
+    "text": "ногооны зах",
+    "file": "1fc79110290fa4304bf1cee72831911d.mp3",
+    "size": 11232,
+    "label": "野菜市場",
+    "category": "vocab"
+  },
+  "bda05fc4c1fbce7c494afc9f76877c13": {
+    "text": "нөгөөдөр",
+    "file": "bda05fc4c1fbce7c494afc9f76877c13.mp3",
+    "size": 11232,
+    "label": "明後日",
+    "category": "vocab"
+  },
+  "61ac71a333b03aa9b355aec100f325d4": {
+    "text": "нөхөр",
+    "file": "61ac71a333b03aa9b355aec100f325d4.mp3",
+    "size": 11232,
+    "label": "夫、仲間、同志",
+    "category": "vocab"
+  },
+  "1139ddb2633f18f1700f45d0d8e0e9fd": {
+    "text": "нэвтрүүлэг",
+    "file": "1139ddb2633f18f1700f45d0d8e0e9fd.mp3",
+    "size": 11232,
+    "label": "番組、放送",
+    "category": "vocab"
+  },
+  "bda2d5aa9781e92f32850ee6f717af54": {
+    "text": "нэлээд",
+    "file": "bda2d5aa9781e92f32850ee6f717af54.mp3",
+    "size": 11232,
+    "label": "かなり、相当に",
+    "category": "vocab"
+  },
+  "534438177aa15d39a3dd63c0f5ce2e1f": {
+    "text": "нэг таваг",
+    "file": "534438177aa15d39a3dd63c0f5ce2e1f.mp3",
+    "size": 11232,
+    "label": "1皿（食事の注文単位）",
+    "category": "vocab"
+  },
+  "a168de4dcd5887d22b8a053b4a125d2e": {
+    "text": "нүдний шил зүү",
+    "file": "a168de4dcd5887d22b8a053b4a125d2e.mp3",
+    "size": 11808,
+    "label": "メガネをかける",
+    "category": "vocab"
+  },
+  "35a84067e2f6f99986a1b8b1b2337af6": {
+    "text": "нэгдэх өдөр",
+    "file": "35a84067e2f6f99986a1b8b1b2337af6.mp3",
+    "size": 11232,
+    "label": "月曜日（第1日）",
+    "category": "vocab"
+  },
+  "65aefd2e3c89b7847c0f740f9228ebce": {
+    "text": "нэг хоног",
+    "file": "65aefd2e3c89b7847c0f740f9228ebce.mp3",
+    "size": 11232,
+    "label": "丸1日、一昼夜",
+    "category": "vocab"
+  },
+  "af0ebe1ba5744d051d94d7bfe4d80d10": {
+    "text": "нэрлэ",
+    "file": "af0ebe1ba5744d051d94d7bfe4d80d10.mp3",
+    "size": 11232,
+    "label": "名付ける、呼ぶ",
+    "category": "vocab"
+  },
+  "99bf9abe62120684df499749882567f5": {
+    "text": "ням гараг",
+    "file": "99bf9abe62120684df499749882567f5.mp3",
+    "size": 11232,
+    "label": "日曜日",
+    "category": "vocab"
+  },
+  "93c13dad22213f080eab72a80378abda": {
+    "text": "огт",
+    "file": "93c13dad22213f080eab72a80378abda.mp3",
+    "size": 11232,
+    "label": "全く、ちっとも（否定と呼応）",
+    "category": "vocab"
+  },
+  "baa99cadc8b0a3aaa81583ce17380b86": {
+    "text": "нээ",
+    "file": "baa99cadc8b0a3aaa81583ce17380b86.mp3",
+    "size": 11232,
+    "label": "開ける、開業する",
+    "category": "vocab"
+  },
+  "74a2e2de3e44e52e2c771d3202ee2349": {
+    "text": "одоо",
+    "file": "74a2e2de3e44e52e2c771d3202ee2349.mp3",
+    "size": 11232,
+    "label": "今、現在",
+    "category": "vocab"
+  },
+  "63a9ff674ad5f5de1b469ae5e059744d": {
+    "text": "одоохондоо",
+    "file": "63a9ff674ad5f5de1b469ae5e059744d.mp3",
+    "size": 11232,
+    "label": "今のところは、当面は",
+    "category": "vocab"
+  },
+  "e6a309be1d26ec12f9bbd2840139bd1a": {
+    "text": "оймс",
+    "file": "e6a309be1d26ec12f9bbd2840139bd1a.mp3",
+    "size": 11232,
+    "label": "靴下、ソックス",
+    "category": "vocab"
+  },
+  "3de58e0597cb6a8fb95a1d9657a1cc1c": {
+    "text": "ойлго",
+    "file": "3de58e0597cb6a8fb95a1d9657a1cc1c.mp3",
+    "size": 11232,
+    "label": "理解する、わかる",
+    "category": "vocab"
+  },
+  "82bc45df825714cb10d59d3898e9d009": {
+    "text": "ойрхон",
+    "file": "82bc45df825714cb10d59d3898e9d009.mp3",
+    "size": 11232,
+    "label": "近い、近くに",
+    "category": "vocab"
+  },
+  "3497b357c73825153bd4b34493cddfe4": {
+    "text": "олон",
+    "file": "3497b357c73825153bd4b34493cddfe4.mp3",
+    "size": 11232,
+    "label": "多い、たくさんの",
+    "category": "vocab"
+  },
+  "6a0912f468bd8f56210a0d3ad7d00d37": {
+    "text": "он",
+    "file": "6a0912f468bd8f56210a0d3ad7d00d37.mp3",
+    "size": 11232,
+    "label": "年（西暦等）",
+    "category": "vocab"
+  },
+  "57311036fb108ecc9c2f838a94549041": {
+    "text": "ойрт",
+    "file": "57311036fb108ecc9c2f838a94549041.mp3",
+    "size": 11232,
+    "label": "近づく、接近する",
+    "category": "vocab"
+  },
+  "78ac6f688583db5eeaa855a6aecf9219": {
+    "text": "ор",
+    "file": "78ac6f688583db5eeaa855a6aecf9219.mp3",
+    "size": 11232,
+    "label": "入る、（雨や雪が）降る",
+    "category": "vocab"
+  },
+  "2f0d110cb645bde52225d64a3cf4343f": {
+    "text": "орой",
+    "file": "2f0d110cb645bde52225d64a3cf4343f.mp3",
+    "size": 11232,
+    "label": "夕方、夜、遅い",
+    "category": "vocab"
+  },
+  "f54d72fab885c2760e05850c2bdb9ac0": {
+    "text": "ороолт",
+    "file": "f54d72fab885c2760e05850c2bdb9ac0.mp3",
+    "size": 11232,
+    "label": "マフラー、スカーフ",
+    "category": "vocab"
+  },
+  "3b6dad214606c167fddfd54ded32e9f7": {
+    "text": "Орос",
+    "file": "3b6dad214606c167fddfd54ded32e9f7.mp3",
+    "size": 11232,
+    "label": "ロシア、ロシア人",
+    "category": "vocab"
+  },
+  "a747855afcc754c5364c1d36b6a06539": {
+    "text": "оролц",
+    "file": "a747855afcc754c5364c1d36b6a06539.mp3",
+    "size": 11232,
+    "label": "参加する",
+    "category": "vocab"
+  },
+  "74315128edd78f91b331819ad2b40f61": {
+    "text": "орондоо хэвт",
+    "file": "74315128edd78f91b331819ad2b40f61.mp3",
+    "size": 11376,
+    "label": "ベッド・布団に横になる",
+    "category": "vocab"
+  },
+  "db2880e90fdb7de948d3fd18e9ac303b": {
+    "text": "орчим",
+    "file": "db2880e90fdb7de948d3fd18e9ac303b.mp3",
+    "size": 11232,
+    "label": "およそ、〜あたり、〜頃",
+    "category": "vocab"
+  },
+  "9a71e3b5998864fb9a3fa9e3b33eaff2": {
+    "text": "орчуул",
+    "file": "9a71e3b5998864fb9a3fa9e3b33eaff2.mp3",
+    "size": 11232,
+    "label": "翻訳する、通訳する",
+    "category": "vocab"
+  },
+  "11fa2ff2c56399b1d23e49c3547c8b5d": {
+    "text": "оч",
+    "file": "11fa2ff2c56399b1d23e49c3547c8b5d.mp3",
+    "size": 11232,
+    "label": "（聞き手側や目的地へ）行く",
+    "category": "vocab"
+  },
+  "5868f9329a4194e106c0bc880676657b": {
+    "text": "охин",
+    "file": "5868f9329a4194e106c0bc880676657b.mp3",
+    "size": 11232,
+    "label": "娘、少女、女の子",
+    "category": "vocab"
+  },
+  "75f8b5b854a27384ae0eec9d2f0dd6f5": {
+    "text": "өвд",
+    "file": "75f8b5b854a27384ae0eec9d2f0dd6f5.mp3",
+    "size": 11232,
+    "label": "痛む、痛い、病気になる",
+    "category": "vocab"
+  },
+  "977383f0a2abb2e8de900453548108f3": {
+    "text": "өвөө",
+    "file": "977383f0a2abb2e8de900453548108f3.mp3",
+    "size": 11232,
+    "label": "おじいちゃん、祖父",
+    "category": "vocab"
+  },
+  "99fba004a4c3e51d2e2759bb5698fc8e": {
+    "text": "өвөл",
+    "file": "99fba004a4c3e51d2e2759bb5698fc8e.mp3",
+    "size": 11232,
+    "label": "冬",
+    "category": "vocab"
+  },
+  "a984a6dae1554158fc4232e8079f0309": {
+    "text": "өглөө",
+    "file": "a984a6dae1554158fc4232e8079f0309.mp3",
+    "size": 11232,
+    "label": "朝",
+    "category": "vocab"
+  },
+  "7d2ed83f8cbfed6d1e92ac2a70ba94e3": {
+    "text": "өвчин намдаах эм",
+    "file": "7d2ed83f8cbfed6d1e92ac2a70ba94e3.mp3",
+    "size": 12240,
+    "label": "痛み止め、鎮痛剤",
+    "category": "vocab"
+  },
+  "0cc102bd15bca487fd3cd33e802dcac2": {
+    "text": "өг",
+    "file": "0cc102bd15bca487fd3cd33e802dcac2.mp3",
+    "size": 11232,
+    "label": "あげる、渡す、与える",
+    "category": "vocab"
+  },
+  "3a679e9fd8ee1f8cb6ae562e0fad30f2": {
+    "text": "өдөр",
+    "file": "3a679e9fd8ee1f8cb6ae562e0fad30f2.mp3",
+    "size": 11232,
+    "label": "昼、日",
+    "category": "vocab"
+  },
+  "c716ca856bcdcc5f6758d78b67d4eeed": {
+    "text": "өдөржингөө",
+    "file": "c716ca856bcdcc5f6758d78b67d4eeed.mp3",
+    "size": 11232,
+    "label": "一日中",
+    "category": "vocab"
+  },
+  "b3070d94b1e67e8e6b81466f52335738": {
+    "text": "өдөр хоног",
+    "file": "b3070d94b1e67e8e6b81466f52335738.mp3",
+    "size": 11232,
+    "label": "日数、月日",
+    "category": "vocab"
+  },
+  "02d7404bc90795b6dd836ee50483743b": {
+    "text": "өдрийн хоол",
+    "file": "02d7404bc90795b6dd836ee50483743b.mp3",
+    "size": 11232,
+    "label": "昼食、お昼ご飯",
+    "category": "vocab"
+  },
+  "31caa3d8945786f0e5e112363b8495d5": {
+    "text": "өмс",
+    "file": "31caa3d8945786f0e5e112363b8495d5.mp3",
+    "size": 11232,
+    "label": "着る、身につける",
+    "category": "vocab"
+  },
+  "7f54e2db5e00b58983ece237deb775fa": {
+    "text": "өлс",
+    "file": "7f54e2db5e00b58983ece237deb775fa.mp3",
+    "size": 11232,
+    "label": "お腹が空く、空腹になる",
+    "category": "vocab"
+  },
+  "383d6be976cf0615a5fe79be5c50f37a": {
+    "text": "өнгө",
+    "file": "383d6be976cf0615a5fe79be5c50f37a.mp3",
+    "size": 11232,
+    "label": "色、カラー",
+    "category": "vocab"
+  },
+  "6e1569be3c30fc712ba2b244cc00898b": {
+    "text": "өнгөрсөн долоо хоног",
+    "file": "6e1569be3c30fc712ba2b244cc00898b.mp3",
+    "size": 12672,
+    "label": "先週",
+    "category": "vocab"
+  },
+  "c38c6873f4bbaa7cbcaff24fc40617b4": {
+    "text": "өндөр",
+    "file": "c38c6873f4bbaa7cbcaff24fc40617b4.mp3",
+    "size": 11232,
+    "label": "高い、背が高い",
+    "category": "vocab"
+  },
+  "5374768ca7e73dd043faad44fcf54e9f": {
+    "text": "өнгөр",
+    "file": "5374768ca7e73dd043faad44fcf54e9f.mp3",
+    "size": 11232,
+    "label": "過ぎる、通過する、経過する",
+    "category": "vocab"
+  },
+  "b7b7c338bf8ef4f031d6d0508b23978f": {
+    "text": "өөр",
+    "file": "b7b7c338bf8ef4f031d6d0508b23978f.mp3",
+    "size": 11232,
+    "label": "別の、他の、違う",
+    "category": "vocab"
+  },
+  "4adcf7b508b25b73a75b7e6735f6842d": {
+    "text": "өөөрийгөө танилцуул",
+    "file": "4adcf7b508b25b73a75b7e6735f6842d.mp3",
+    "size": 12816,
+    "label": "自己紹介する。",
+    "category": "example"
+  },
+  "63cc2fc2a94da3090c411a97cd62c2bb": {
+    "text": "өрөө",
+    "file": "63cc2fc2a94da3090c411a97cd62c2bb.mp3",
+    "size": 11232,
+    "label": "部屋、室",
+    "category": "vocab"
+  },
+  "ed55b7be01f0223edb884587294a0a56": {
+    "text": "өргөн",
+    "file": "ed55b7be01f0223edb884587294a0a56.mp3",
+    "size": 11232,
+    "label": "広い、幅が広い",
+    "category": "vocab"
+  },
+  "2d6fe333f462a1a0f10f3bfc412f191a": {
+    "text": "өөрийгөө танилцуул",
+    "file": "2d6fe333f462a1a0f10f3bfc412f191a.mp3",
+    "size": 12528,
+    "label": "自己紹介する",
+    "category": "vocab"
+  },
+  "5c19f4ddd5af65560e7dfcf7489488ac": {
+    "text": "паспорт",
+    "file": "5c19f4ddd5af65560e7dfcf7489488ac.mp3",
+    "size": 11232,
+    "label": "パスポート、身分証明書",
+    "category": "vocab"
+  },
+  "ef5cfecd649012349e30ba93e73d0963": {
+    "text": "пиво",
+    "file": "ef5cfecd649012349e30ba93e73d0963.mp3",
+    "size": 11232,
+    "label": "ビール",
+    "category": "vocab"
+  },
+  "27bb3309a285402b53bc0da4a2f36089": {
+    "text": "пүрэв гараг",
+    "file": "27bb3309a285402b53bc0da4a2f36089.mp3",
+    "size": 11232,
+    "label": "木曜日",
+    "category": "vocab"
+  },
+  "cf75608ce1bff561c9f3b7492aaa443d": {
+    "text": "савх",
+    "file": "cf75608ce1bff561c9f3b7492aaa443d.mp3",
+    "size": 11232,
+    "label": "箸",
+    "category": "vocab"
+  },
+  "480d5e4b03231ef98f2e919c92042729": {
+    "text": "сагсан бөмбөг",
+    "file": "480d5e4b03231ef98f2e919c92042729.mp3",
+    "size": 11520,
+    "label": "バスケットボール",
+    "category": "vocab"
+  },
+  "a91882e71517ae24b0613f060e8f92ef": {
+    "text": "ресторан",
+    "file": "a91882e71517ae24b0613f060e8f92ef.mp3",
+    "size": 11232,
+    "label": "レストラン",
+    "category": "vocab"
+  },
+  "d7c3db56f73d2a879abb56da103b2ed4": {
+    "text": "сайхан санаа",
+    "file": "d7c3db56f73d2a879abb56da103b2ed4.mp3",
+    "size": 11232,
+    "label": "良いアイデア、素敵な考え",
+    "category": "vocab"
+  },
+  "c2681d852167d83238f37520c09162fc": {
+    "text": "салхи",
+    "file": "c2681d852167d83238f37520c09162fc.mp3",
+    "size": 11232,
+    "label": "風",
+    "category": "vocab"
+  },
+  "57c95676c93d357c6a70432fafda8d4f": {
+    "text": "сайн дурын гишүүн",
+    "file": "57c95676c93d357c6a70432fafda8d4f.mp3",
+    "size": 11952,
+    "label": "ボランティア隊員（協力隊員）",
+    "category": "vocab"
+  },
+  "2915f98f40b554def2dee9267b8b1b6c": {
+    "text": "сар",
+    "file": "2915f98f40b554def2dee9267b8b1b6c.mp3",
+    "size": 11232,
+    "label": "月、1ヶ月、お月様",
+    "category": "vocab"
+  },
+  "285ced87a2f12bc0671ccfa84174fe61": {
+    "text": "санаа зов",
+    "file": "285ced87a2f12bc0671ccfa84174fe61.mp3",
+    "size": 11232,
+    "label": "心配する、気にかける",
+    "category": "vocab"
+  },
+  "472188e4e55086df6c9715776bf8a49b": {
+    "text": "соёл",
+    "file": "472188e4e55086df6c9715776bf8a49b.mp3",
+    "size": 11232,
+    "label": "文化",
+    "category": "vocab"
+  },
+  "e7b8c012d57416dd85127f0fb0b0686e": {
+    "text": "салхил",
+    "file": "e7b8c012d57416dd85127f0fb0b0686e.mp3",
+    "size": 11232,
+    "label": "風が吹く",
+    "category": "vocab"
+  },
+  "9cb387b794145e51add3e5bc3dfe460e": {
+    "text": "Солонгос",
+    "file": "9cb387b794145e51add3e5bc3dfe460e.mp3",
+    "size": 11232,
+    "label": "韓国、韓国人",
+    "category": "vocab"
+  },
+  "8eba9bfe8324ef64c3edc05136d7594a": {
+    "text": "соли соль",
+    "file": "8eba9bfe8324ef64c3edc05136d7594a.mp3",
+    "size": 11232,
+    "label": "交換する、取り替える、両替する",
+    "category": "vocab"
+  },
+  "b7e02743d55b7ee818a8866dccb9df46": {
+    "text": "сонирхолтой",
+    "file": "b7e02743d55b7ee818a8866dccb9df46.mp3",
+    "size": 11232,
+    "label": "面白い、興味深い",
+    "category": "vocab"
+  },
+  "97f3c49ab9f20d2d70b6ae3043a920b0": {
+    "text": "сонс",
+    "file": "97f3c49ab9f20d2d70b6ae3043a920b0.mp3",
+    "size": 11232,
+    "label": "聞く、耳を傾ける",
+    "category": "vocab"
+  },
+  "e898f597d7b51722d33b468a2f3df032": {
+    "text": "сонин хачин",
+    "file": "e898f597d7b51722d33b468a2f3df032.mp3",
+    "size": 11520,
+    "label": "珍しいこと、変わったこと、近況",
+    "category": "vocab"
+  },
+  "ba47ebded620e425db3c0d6c218f2701": {
+    "text": "соруул",
+    "file": "ba47ebded620e425db3c0d6c218f2701.mp3",
+    "size": 11232,
+    "label": "ストロー、吸い口",
+    "category": "vocab"
+  },
+  "c0e1278f1ed860abf51fa94507086b4a": {
+    "text": "спорт",
+    "file": "c0e1278f1ed860abf51fa94507086b4a.mp3",
+    "size": 11232,
+    "label": "スポーツ",
+    "category": "vocab"
+  },
+  "e02dc8f96c3b1d299ac40fdd7662adff": {
+    "text": "сувилагч",
+    "file": "e02dc8f96c3b1d299ac40fdd7662adff.mp3",
+    "size": 11232,
+    "label": "看護師、看護婦",
+    "category": "vocab"
+  },
+  "f008683cd52d4ffe678e212f51d01d2c": {
+    "text": "сул өрөө",
+    "file": "f008683cd52d4ffe678e212f51d01d2c.mp3",
+    "size": 11232,
+    "label": "空き部屋、空室",
+    "category": "vocab"
+  },
+  "dd32be8688e5a77b4b022b376d97b259": {
+    "text": "сул суудал",
+    "file": "dd32be8688e5a77b4b022b376d97b259.mp3",
+    "size": 11232,
+    "label": "空席、空いている席",
+    "category": "vocab"
+  },
+  "281edcc82f97543b57e1653c206977d9": {
+    "text": "сум",
+    "file": "281edcc82f97543b57e1653c206977d9.mp3",
+    "size": 11232,
+    "label": "ソム（郡）、矢",
+    "category": "vocab"
+  },
+  "f69f0cbdb07e35ce3a84c306bdf6a718": {
+    "text": "сурах бичиг",
+    "file": "f69f0cbdb07e35ce3a84c306bdf6a718.mp3",
+    "size": 11232,
+    "label": "教科書、テキスト",
+    "category": "vocab"
+  },
+  "1bf857847bec5d3febc375ab0674b365": {
+    "text": "сурагч",
+    "file": "1bf857847bec5d3febc375ab0674b365.mp3",
+    "size": 11232,
+    "label": "生徒、児童（小・中・高校生）",
+    "category": "vocab"
+  },
+  "a42587b9b4b7829dae5045eb432f5688": {
+    "text": "сур",
+    "file": "a42587b9b4b7829dae5045eb432f5688.mp3",
+    "size": 11232,
+    "label": "学ぶ、習う、覚える",
+    "category": "vocab"
+  },
+  "93da0372d2c29eee27fae4b789dbb34e": {
+    "text": "сургалтгүй үед",
+    "file": "93da0372d2c29eee27fae4b789dbb34e.mp3",
+    "size": 11232,
+    "label": "研修・授業がない時",
+    "category": "vocab"
+  },
+  "baa9c621d16655b29e9d6032aad84850": {
+    "text": "сургалтад суу",
+    "file": "baa9c621d16655b29e9d6032aad84850.mp3",
+    "size": 11232,
+    "label": "研修・授業に出席する、受講する",
+    "category": "vocab"
+  },
+  "ffaca8ae8748dc6f5a44d5516a55dda0": {
+    "text": "суу",
+    "file": "ffaca8ae8748dc6f5a44d5516a55dda0.mp3",
+    "size": 11232,
+    "label": "座る、住む、（乗り物に）乗る",
+    "category": "vocab"
+  },
+  "51615e0c4f2fdf53364bd8c86dd56c7d": {
+    "text": "сүүлийн",
+    "file": "51615e0c4f2fdf53364bd8c86dd56c7d.mp3",
+    "size": 11232,
+    "label": "最後の、最近の",
+    "category": "vocab"
+  },
+  "013d47cd5135b3924d67c9540cc0a6ce": {
+    "text": "сүү",
+    "file": "013d47cd5135b3924d67c9540cc0a6ce.mp3",
+    "size": 11232,
+    "label": "牛乳、ミルク",
+    "category": "vocab"
+  },
+  "072dc9dc848c8d73b36d71e967601711": {
+    "text": "Сүхбаатарын талбай",
+    "file": "072dc9dc848c8d73b36d71e967601711.mp3",
+    "size": 12384,
+    "label": "スフバートル広場",
+    "category": "vocab"
+  },
+  "8f0dfa0bfe382e25449935a9b0553ea8": {
+    "text": "сэл",
+    "file": "8f0dfa0bfe382e25449935a9b0553ea8.mp3",
+    "size": 11232,
+    "label": "泳ぐ",
+    "category": "vocab"
+  },
+  "6129ddaa98eead1fd7bde26bf9e0b2a9": {
+    "text": "Сэлэнгэ аймаг",
+    "file": "6129ddaa98eead1fd7bde26bf9e0b2a9.mp3",
+    "size": 11232,
+    "label": "セレンゲ県",
+    "category": "vocab"
+  },
+  "b049a141c1043d9f9da08b80a42f1630": {
+    "text": "сэрээ",
+    "file": "b049a141c1043d9f9da08b80a42f1630.mp3",
+    "size": 11232,
+    "label": "フォーク",
+    "category": "vocab"
+  },
+  "9c14ed090942b0cbc063d8e8c8bb1797": {
+    "text": "Сэргэлэн сум",
+    "file": "9c14ed090942b0cbc063d8e8c8bb1797.mp3",
+    "size": 11232,
+    "label": "セルゲレン郡",
+    "category": "vocab"
+  },
+  "857ab8e662dc647e10b76eff38570b9a": {
+    "text": "тааралд",
+    "file": "857ab8e662dc647e10b76eff38570b9a.mp3",
+    "size": 11232,
+    "label": "出くわす、偶然会う",
+    "category": "vocab"
+  },
+  "3e43d11f04e566df9c1f4894db7ec714": {
+    "text": "тавдахь өдөр",
+    "file": "3e43d11f04e566df9c1f4894db7ec714.mp3",
+    "size": 11232,
+    "label": "金曜日（第5日）",
+    "category": "vocab"
+  },
+  "2b08c0f11118c3e6ff802e207ef99e99": {
+    "text": "таваг",
+    "file": "2b08c0f11118c3e6ff802e207ef99e99.mp3",
+    "size": 11232,
+    "label": "皿、プレート",
+    "category": "vocab"
+  },
+  "220ec77e4a5dfaea820712cbbce423e4": {
+    "text": "тави тавь",
+    "file": "220ec77e4a5dfaea820712cbbce423e4.mp3",
+    "size": 11232,
+    "label": "置く、設置する",
+    "category": "vocab"
+  },
+  "95a61bb62572fec3eff2273e56779a3b": {
+    "text": "тайл",
+    "file": "95a61bb62572fec3eff2273e56779a3b.mp3",
+    "size": 11232,
+    "label": "脱ぐ、解く、ほどく",
+    "category": "vocab"
+  },
+  "1deaef25741aa1f3f08eb0961fa88024": {
+    "text": "Тайланд",
+    "file": "1deaef25741aa1f3f08eb0961fa88024.mp3",
+    "size": 11232,
+    "label": "タイ（国名）",
+    "category": "vocab"
+  },
+  "0b7af5a8015dfc80c3d38c23458f1f09": {
+    "text": "такси",
+    "file": "0b7af5a8015dfc80c3d38c23458f1f09.mp3",
+    "size": 11232,
+    "label": "タクシー",
+    "category": "vocab"
+  },
+  "043ee38dd4e71a4e12763494cfff8ab6": {
+    "text": "таксинд суу",
+    "file": "043ee38dd4e71a4e12763494cfff8ab6.mp3",
+    "size": 11232,
+    "label": "タクシーに乗る",
+    "category": "vocab"
+  },
+  "b21f61db991efa9519a63eb130314b05": {
+    "text": "тасалбар",
+    "file": "b21f61db991efa9519a63eb130314b05.mp3",
+    "size": 11232,
+    "label": "切符、チケット、入場券",
+    "category": "vocab"
+  },
+  "9600dd323a5bb481843d8c9e52f6eca7": {
+    "text": "тахиа",
+    "file": "9600dd323a5bb481843d8c9e52f6eca7.mp3",
+    "size": 11232,
+    "label": "鶏、チキン",
+    "category": "vocab"
+  },
+  "4020a67a63bea7db99250ba4212baef9": {
+    "text": "тамхи тат",
+    "file": "4020a67a63bea7db99250ba4212baef9.mp3",
+    "size": 11232,
+    "label": "タバコを吸う",
+    "category": "vocab"
+  },
+  "028ffe2f97528b48bc3768dde6aa9824": {
+    "text": "таксины зогсоол",
+    "file": "028ffe2f97528b48bc3768dde6aa9824.mp3",
+    "size": 12096,
+    "label": "タクシー乗り場",
+    "category": "vocab"
+  },
+  "d7a5b68d15cffca5bf472fbda148ac3f": {
+    "text": "тамхины цэг",
+    "file": "d7a5b68d15cffca5bf472fbda148ac3f.mp3",
+    "size": 11232,
+    "label": "喫煙所、喫煙スペース",
+    "category": "vocab"
+  },
+  "1e93452900e4259963560900b1ebb5c3": {
+    "text": "танилцъя",
+    "file": "1e93452900e4259963560900b1ebb5c3.mp3",
+    "size": 11232,
+    "label": "はじめまして、知り合いになりましょう",
+    "category": "vocab"
+  },
+  "9af388209107e6fe7ed05e2de3c50137": {
+    "text": "Тийм үү",
+    "file": "9af388209107e6fe7ed05e2de3c50137.mp3",
+    "size": 11232,
+    "label": "そうですか？、本当ですか？",
+    "category": "vocab"
+  },
+  "44b69afc64f239b14893cce5a82d9be4": {
+    "text": "тоглоом",
+    "file": "44b69afc64f239b14893cce5a82d9be4.mp3",
+    "size": 11232,
+    "label": "おもちゃ、玩具、ゲーム",
+    "category": "vocab"
+  },
+  "ed0239b13d33ecfb68a1dbaf457e2779": {
+    "text": "толгой",
+    "file": "ed0239b13d33ecfb68a1dbaf457e2779.mp3",
+    "size": 11232,
+    "label": "頭、頭部",
+    "category": "vocab"
+  },
+  "03d6c53b3ac123b4a9a109cc62b976dc": {
+    "text": "том",
+    "file": "03d6c53b3ac123b4a9a109cc62b976dc.mp3",
+    "size": 11232,
+    "label": "大きい、大型の",
+    "category": "vocab"
+  },
+  "49dd567eeae3a4eb8d5dfd99f53b04d9": {
+    "text": "Токио",
+    "file": "49dd567eeae3a4eb8d5dfd99f53b04d9.mp3",
+    "size": 11232,
+    "label": "東京",
+    "category": "vocab"
+  },
+  "ec8e25af856fb82da9986eeb0bbd8919": {
+    "text": "тогло",
+    "file": "ec8e25af856fb82da9986eeb0bbd8919.mp3",
+    "size": 11232,
+    "label": "遊ぶ、（楽器を）演奏する、（スポーツを）する",
+    "category": "vocab"
+  },
+  "88c60b2aadc1d123af958eeef5cef4e3": {
+    "text": "тор уут",
+    "file": "88c60b2aadc1d123af958eeef5cef4e3.mp3",
+    "size": 11232,
+    "label": "ビニール袋、買い物袋、レジ袋",
+    "category": "vocab"
+  },
+  "b279aea8af5cd585090184f0a1a4ca75": {
+    "text": "төв",
+    "file": "b279aea8af5cd585090184f0a1a4ca75.mp3",
+    "size": 11232,
+    "label": "中心、中央、センター",
+    "category": "vocab"
+  },
+  "4646ffb8a95f07793bc4bb0293de9ada": {
+    "text": "төгс",
+    "file": "4646ffb8a95f07793bc4bb0293de9ada.mp3",
+    "size": 11232,
+    "label": "卒業する、完了する、終える",
+    "category": "vocab"
+  },
+  "efaaa32c4e42ba0e3d8fdd1d91b55006": {
+    "text": "Төв аймаг",
+    "file": "efaaa32c4e42ba0e3d8fdd1d91b55006.mp3",
+    "size": 11232,
+    "label": "トゥブ県（中央県）",
+    "category": "vocab"
+  },
+  "7fa167b2956fe3111df3551697ec8519": {
+    "text": "төгрөг",
+    "file": "7fa167b2956fe3111df3551697ec8519.mp3",
+    "size": 11232,
+    "label": "トゥグルグ（モンゴル通貨単位 MNT）",
+    "category": "vocab"
+  },
+  "7ceff33bc1c812d86a21119968ef9f0f": {
+    "text": "төл",
+    "file": "7ceff33bc1c812d86a21119968ef9f0f.mp3",
+    "size": 11232,
+    "label": "支払う、払う",
+    "category": "vocab"
+  },
+  "59c65e4976915cd72d645468f29f97d4": {
+    "text": "төмс",
+    "file": "59c65e4976915cd72d645468f29f97d4.mp3",
+    "size": 11232,
+    "label": "ジャガイモ",
+    "category": "vocab"
+  },
+  "f9d08bb123e8e3375199078c94b45c6e": {
+    "text": "төрсөн нутаг",
+    "file": "f9d08bb123e8e3375199078c94b45c6e.mp3",
+    "size": 11232,
+    "label": "生まれ故郷、出身地",
+    "category": "vocab"
+  },
+  "64d7400fd2ed484b45e1b7c3d5c0fa86": {
+    "text": "төр",
+    "file": "64d7400fd2ed484b45e1b7c3d5c0fa86.mp3",
+    "size": 11232,
+    "label": "生まれる、出産する",
+    "category": "vocab"
+  },
+  "dd478a33ada580a7b7159079593ecc91": {
+    "text": "түлхүүр",
+    "file": "dd478a33ada580a7b7159079593ecc91.mp3",
+    "size": 11232,
+    "label": "鍵、キー",
+    "category": "vocab"
+  },
+  "86b330a6f35e103ec1bbb6cb70d3aaea": {
+    "text": "төрсөн өдөр",
+    "file": "86b330a6f35e103ec1bbb6cb70d3aaea.mp3",
+    "size": 11232,
+    "label": "誕生日",
+    "category": "vocab"
+  },
+  "f6a31bc45ba351b92659cd9dc4c43116": {
+    "text": "тухай",
+    "file": "f6a31bc45ba351b92659cd9dc4c43116.mp3",
+    "size": 11232,
+    "label": "〜について、〜に関して",
+    "category": "vocab"
+  },
+  "99b7f3dc99238e706bdc046aaab811a9": {
+    "text": "тэг",
+    "file": "99b7f3dc99238e706bdc046aaab811a9.mp3",
+    "size": 11232,
+    "label": "そうする、そのようにする",
+    "category": "vocab"
+  },
+  "d1fd78f3089ba52fb6d292043458383d": {
+    "text": "түр ороод гар",
+    "file": "d1fd78f3089ba52fb6d292043458383d.mp3",
+    "size": 11232,
+    "label": "ちょっと立ち寄る、一瞬入って出る",
+    "category": "vocab"
+  },
+  "e881fe1281ba78f907b9c7cc75894abd": {
+    "text": "тэгвэл",
+    "file": "e881fe1281ba78f907b9c7cc75894abd.mp3",
+    "size": 11232,
+    "label": "それなら、そうしたら",
+    "category": "vocab"
+  },
+  "3048c69a78038f3b7c05b1a6d915a994": {
+    "text": "түүхий загас",
+    "file": "3048c69a78038f3b7c05b1a6d915a994.mp3",
+    "size": 11232,
+    "label": "生魚、刺身",
+    "category": "vocab"
+  },
+  "cbf0dd79e313e11e2039b5ac14e5aba4": {
+    "text": "тэмцээн",
+    "file": "cbf0dd79e313e11e2039b5ac14e5aba4.mp3",
+    "size": 11232,
+    "label": "試合、競技会、大会、コンテスト",
+    "category": "vocab"
+  },
+  "3f7aca92f97fc13592442a50e14b3558": {
+    "text": "тэгээд",
+    "file": "3f7aca92f97fc13592442a50e14b3558.mp3",
+    "size": 11232,
+    "label": "そして、それから、それで",
+    "category": "vocab"
+  },
+  "08d5982f07b5fdb9b39cdd2e5d607db4": {
+    "text": "тэмээ",
+    "file": "08d5982f07b5fdb9b39cdd2e5d607db4.mp3",
+    "size": 11232,
+    "label": "ラクダ（駱駝）",
+    "category": "vocab"
+  },
+  "57331214fbc586e162b8f1a25a9ea76d": {
+    "text": "тэнгэр",
+    "file": "57331214fbc586e162b8f1a25a9ea76d.mp3",
+    "size": 11232,
+    "label": "空、天気、天",
+    "category": "vocab"
+  },
+  "54e2ecdf8f87788f9bf3adb3f15f1a65": {
+    "text": "удахгүй",
+    "file": "54e2ecdf8f87788f9bf3adb3f15f1a65.mp3",
+    "size": 11232,
+    "label": "まもなく、すぐに",
+    "category": "vocab"
+  },
+  "0b9262951f3a65a9e74e646a050d1856": {
+    "text": "улаан",
+    "file": "0b9262951f3a65a9e74e646a050d1856.mp3",
+    "size": 11232,
+    "label": "赤い、赤色",
+    "category": "vocab"
+  },
+  "f19b6b5ae8735f61d16a16b91e974483": {
+    "text": "ув улаан",
+    "file": "f19b6b5ae8735f61d16a16b91e974483.mp3",
+    "size": 11232,
+    "label": "真っ赤な",
+    "category": "vocab"
+  },
+  "ad9f73d87ecfd569ea4c4d15ef6777f0": {
+    "text": "Улаанбаатар",
+    "file": "ad9f73d87ecfd569ea4c4d15ef6777f0.mp3",
+    "size": 11232,
+    "label": "ウランバートル（モンゴル首都）",
+    "category": "vocab"
+  },
+  "3431ccc0e0244cff368e6c1890781b48": {
+    "text": "улаан лооль помидор",
+    "file": "3431ccc0e0244cff368e6c1890781b48.mp3",
+    "size": 12960,
+    "label": "トマト",
+    "category": "vocab"
+  },
+  "a4efee642d04af9b3dedd5d84db4cc51": {
+    "text": "улирал",
+    "file": "a4efee642d04af9b3dedd5d84db4cc51.mp3",
+    "size": 11232,
+    "label": "季節、シーズン",
+    "category": "vocab"
+  },
+  "4350f4dc8e2f3d2cb7d03447a0cda7e2": {
+    "text": "улс",
+    "file": "4350f4dc8e2f3d2cb7d03447a0cda7e2.mp3",
+    "size": 11232,
+    "label": "国家、国",
+    "category": "vocab"
+  },
+  "4e4baa8d78673ebf4d2f2c431fad80eb": {
+    "text": "унт",
+    "file": "4e4baa8d78673ebf4d2f2c431fad80eb.mp3",
+    "size": 11232,
+    "label": "寝る、眠る",
+    "category": "vocab"
+  },
+  "659166eec21e36d31dc3bd9baeb19679": {
+    "text": "уржигдар",
+    "file": "659166eec21e36d31dc3bd9baeb19679.mp3",
+    "size": 11232,
+    "label": "一昨日（おととい）",
+    "category": "vocab"
+  },
+  "7563687675864417e6082af1670f7889": {
+    "text": "унтраа",
+    "file": "7563687675864417e6082af1670f7889.mp3",
+    "size": 11232,
+    "label": "消す（電気・火を）",
+    "category": "vocab"
+  },
+  "3b45bd6b37a73da5fd349e6babfea71c": {
+    "text": "унш",
+    "file": "3b45bd6b37a73da5fd349e6babfea71c.mp3",
+    "size": 11232,
+    "label": "読む",
+    "category": "vocab"
+  },
+  "b1877f59b5e1a1f9ac8ea3cf065a1819": {
+    "text": "усан онгоц",
+    "file": "b1877f59b5e1a1f9ac8ea3cf065a1819.mp3",
+    "size": 11232,
+    "label": "船、船舶",
+    "category": "vocab"
+  },
+  "48797affe824b1b0eaea9319b6d05239": {
+    "text": "усан бассейн",
+    "file": "48797affe824b1b0eaea9319b6d05239.mp3",
+    "size": 11232,
+    "label": "プール、水泳プール",
+    "category": "vocab"
+  },
+  "e678de2aec865870f6a300e777b95b0d": {
+    "text": "утасны дугаар",
+    "file": "e678de2aec865870f6a300e777b95b0d.mp3",
+    "size": 11232,
+    "label": "電話番号",
+    "category": "vocab"
+  },
+  "7b64d70882bb6fbba43c64389a7e2358": {
+    "text": "утсаар яри ярь",
+    "file": "7b64d70882bb6fbba43c64389a7e2358.mp3",
+    "size": 12384,
+    "label": "電話で話す、電話をかける",
+    "category": "vocab"
+  },
+  "c7ba73933e3c7ace0d40e08ed920d16b": {
+    "text": "усанд ор",
+    "file": "c7ba73933e3c7ace0d40e08ed920d16b.mp3",
+    "size": 11232,
+    "label": "お風呂に入る、入浴する、シャワーを浴びる",
+    "category": "vocab"
+  },
+  "b503fe128794d8181758a586c3401ec5": {
+    "text": "утга",
+    "file": "b503fe128794d8181758a586c3401ec5.mp3",
+    "size": 11232,
+    "label": "意味、意義、趣旨",
+    "category": "vocab"
+  },
+  "46125a780a1bec756776fb7f768abfde": {
+    "text": "уулз",
+    "file": "46125a780a1bec756776fb7f768abfde.mp3",
+    "size": 11232,
+    "label": "会う",
+    "category": "vocab"
+  },
+  "69032a53eeaae02ee77188578c4e109e": {
+    "text": "уу",
+    "file": "69032a53eeaae02ee77188578c4e109e.mp3",
+    "size": 11232,
+    "label": "飲む",
+    "category": "vocab"
+  },
+  "726864ff0b2b780d18c463fba43db128": {
+    "text": "үг",
+    "file": "726864ff0b2b780d18c463fba43db128.mp3",
+    "size": 11232,
+    "label": "言葉、単語",
+    "category": "vocab"
+  },
+  "ebfeda878adbadcf93ca54bdeb4db361": {
+    "text": "үдээс хойш",
+    "file": "ebfeda878adbadcf93ca54bdeb4db361.mp3",
+    "size": 11232,
+    "label": "午後",
+    "category": "vocab"
+  },
+  "2db746190f8664e92772210ba9620845": {
+    "text": "уулзацгаая",
+    "file": "2db746190f8664e92772210ba9620845.mp3",
+    "size": 11232,
+    "label": "（皆で）会いましょう",
+    "category": "vocab"
+  },
+  "96c98224d1568213fdb4d0bb643726ea": {
+    "text": "үдэшлэг",
+    "file": "96c98224d1568213fdb4d0bb643726ea.mp3",
+    "size": 11232,
+    "label": "パーティー、夜会",
+    "category": "vocab"
+  },
+  "75a71b07fd6baf171fd1013d001443a2": {
+    "text": "үе",
+    "file": "75a71b07fd6baf171fd1013d001443a2.mp3",
+    "size": 11232,
+    "label": "時期、時代、世代、関節",
+    "category": "vocab"
+  },
+  "9f3c7124f80d9cde7968cd2289efc6a2": {
+    "text": "үз",
+    "file": "9f3c7124f80d9cde7968cd2289efc6a2.mp3",
+    "size": 11232,
+    "label": "見る、観る、試す",
+    "category": "vocab"
+  },
+  "f74527ce226901c1d1da0e7f0265caa4": {
+    "text": "үзэг",
+    "file": "f74527ce226901c1d1da0e7f0265caa4.mp3",
+    "size": 11232,
+    "label": "ペン、万年筆",
+    "category": "vocab"
+  },
+  "1967c2a2785fa56a749a6fe5c44a9b6f": {
+    "text": "үйлдвэр",
+    "file": "1967c2a2785fa56a749a6fe5c44a9b6f.mp3",
+    "size": 11232,
+    "label": "工場、産業",
+    "category": "vocab"
+  },
+  "47ef9bfe8d95bccb19d401f77ec6c9e4": {
+    "text": "үзүүл",
+    "file": "47ef9bfe8d95bccb19d401f77ec6c9e4.mp3",
+    "size": 11232,
+    "label": "見せる、診察を受ける",
+    "category": "vocab"
+  },
+  "dd2fbfe36f5678e471ef23b1ff187104": {
+    "text": "үзэсгэлэнтэй",
+    "file": "dd2fbfe36f5678e471ef23b1ff187104.mp3",
+    "size": 11232,
+    "label": "美しい、景色のきれいな",
+    "category": "vocab"
+  },
+  "1011a037b4f46707319b89c18525554d": {
+    "text": "үнэтэй",
+    "file": "1011a037b4f46707319b89c18525554d.mp3",
+    "size": 11232,
+    "label": "値段が高い、高価な",
+    "category": "vocab"
+  },
+  "3b3c3055a8c7d44fd280b209658c60cc": {
+    "text": "үнэтэй юм аа",
+    "file": "3b3c3055a8c7d44fd280b209658c60cc.mp3",
+    "size": 11232,
+    "label": "高いですねえ！",
+    "category": "vocab"
+  },
+  "deb54fe21e4c8ba3736b228d5ac9d21e": {
+    "text": "үсчин",
+    "file": "deb54fe21e4c8ba3736b228d5ac9d21e.mp3",
+    "size": 11232,
+    "label": "美容師、理髪師、理容室",
+    "category": "vocab"
+  },
+  "efe911cc020274bee8237fddfc112201": {
+    "text": "үхэр",
+    "file": "efe911cc020274bee8237fddfc112201.mp3",
+    "size": 11232,
+    "label": "牛、ウシ",
+    "category": "vocab"
+  },
+  "701c4b45fd1be03a935795c84215f0ef": {
+    "text": "үсээ засуул",
+    "file": "701c4b45fd1be03a935795c84215f0ef.mp3",
+    "size": 11232,
+    "label": "髪を切ってもらう、散髪する",
+    "category": "vocab"
+  },
+  "b2a9216508c7dafdf3d5b927ac3b6660": {
+    "text": "үүл",
+    "file": "b2a9216508c7dafdf3d5b927ac3b6660.mp3",
+    "size": 11232,
+    "label": "雲",
+    "category": "vocab"
+  },
+  "9970a961cc464a7e55eecaaefcf6c29d": {
+    "text": "үүүл",
+    "file": "9970a961cc464a7e55eecaaefcf6c29d.mp3",
+    "size": 11232,
+    "label": "雲。",
+    "category": "example"
+  },
+  "4668ec4f3f3d40cdcb53989660426a3d": {
+    "text": "фитнес",
+    "file": "4668ec4f3f3d40cdcb53989660426a3d.mp3",
+    "size": 11232,
+    "label": "フィットネス、スポーツジム",
+    "category": "vocab"
+  },
+  "aad5493c1d8aa00464c6b967ca3ad3ef": {
+    "text": "Франц",
+    "file": "aad5493c1d8aa00464c6b967ca3ad3ef.mp3",
+    "size": 11232,
+    "label": "フランス、フランス人",
+    "category": "vocab"
+  },
+  "117554be097fd1c968215ba30cbf5098": {
+    "text": "хаана",
+    "file": "117554be097fd1c968215ba30cbf5098.mp3",
+    "size": 11232,
+    "label": "どこに、どこで",
+    "category": "vocab"
+  },
+  "a66974e49589376a8677f895662d6337": {
+    "text": "хаанаас",
+    "file": "a66974e49589376a8677f895662d6337.mp3",
+    "size": 11232,
+    "label": "どこから",
+    "category": "vocab"
+  },
+  "77fa3c590d9dc2c8b13762bc74b94a6f": {
+    "text": "хаа",
+    "file": "77fa3c590d9dc2c8b13762bc74b94a6f.mp3",
+    "size": 11232,
+    "label": "閉める、閉鎖する",
+    "category": "vocab"
+  },
+  "ae7ad3779a6d5207cd339ab8e7efe502": {
+    "text": "хавар",
+    "file": "ae7ad3779a6d5207cd339ab8e7efe502.mp3",
+    "size": 11232,
+    "label": "春",
+    "category": "vocab"
+  },
+  "7a064b81cbbd733fd65e3a97d443aeb4": {
+    "text": "хаанахын",
+    "file": "7a064b81cbbd733fd65e3a97d443aeb4.mp3",
+    "size": 11232,
+    "label": "どこの（出身・産地）",
+    "category": "vocab"
+  },
+  "4053b49db45957f77214057138a99a7f": {
+    "text": "хааяа",
+    "file": "4053b49db45957f77214057138a99a7f.mp3",
+    "size": 11232,
+    "label": "たまに、時折",
+    "category": "vocab"
+  },
+  "3425f5d6f7f94f8b1aed75e9dc924848": {
+    "text": "хагас",
+    "file": "3425f5d6f7f94f8b1aed75e9dc924848.mp3",
+    "size": 11232,
+    "label": "半分、半〜",
+    "category": "vocab"
+  },
+  "5e1133c7fb6edcb300acd4f3cf5faa1b": {
+    "text": "хагас сайн өдөр",
+    "file": "5e1133c7fb6edcb300acd4f3cf5faa1b.mp3",
+    "size": 11664,
+    "label": "土曜日（半吉日）",
+    "category": "vocab"
+  },
+  "3bedf6d096b2ba8c127c40a6be5ee670": {
+    "text": "хажуугийн",
+    "file": "3bedf6d096b2ba8c127c40a6be5ee670.mp3",
+    "size": 11232,
+    "label": "となりの、横の",
+    "category": "vocab"
+  },
+  "2a8dcfaa71f9cb30d254aae556ae2797": {
+    "text": "хайрцаг",
+    "file": "2a8dcfaa71f9cb30d254aae556ae2797.mp3",
+    "size": 11232,
+    "label": "箱、ボックス",
+    "category": "vocab"
+  },
+  "92fbb52e2047353ab6472ce9ce844d52": {
+    "text": "халуун",
+    "file": "92fbb52e2047353ab6472ce9ce844d52.mp3",
+    "size": 11232,
+    "label": "熱い、暑い、温かい",
+    "category": "vocab"
+  },
+  "f67cfc45f51ddabe7c0a8f49c8bbfc9e": {
+    "text": "хайртай",
+    "file": "f67cfc45f51ddabe7c0a8f49c8bbfc9e.mp3",
+    "size": 11232,
+    "label": "愛している、好きである",
+    "category": "vocab"
+  },
+  "1a53bef02011487e5a38d97116f9698b": {
+    "text": "халбага",
+    "file": "1a53bef02011487e5a38d97116f9698b.mp3",
+    "size": 11232,
+    "label": "スプーン",
+    "category": "vocab"
+  },
+  "23fc8bef4c27d596bc3ac37f3a022f26": {
+    "text": "халуун рашаан",
+    "file": "23fc8bef4c27d596bc3ac37f3a022f26.mp3",
+    "size": 11232,
+    "label": "温泉、鉱泉",
+    "category": "vocab"
+  },
+  "0add0a1e49df66cfbde0731840ab93cb": {
+    "text": "хамгийн",
+    "file": "0add0a1e49df66cfbde0731840ab93cb.mp3",
+    "size": 11232,
+    "label": "最も、一番、最高の",
+    "category": "vocab"
+  },
+  "1af5f639cfe2a8815d208aba6f87861b": {
+    "text": "халуур",
+    "file": "1af5f639cfe2a8815d208aba6f87861b.mp3",
+    "size": 11232,
+    "label": "熱が出る、発熱する",
+    "category": "vocab"
+  },
+  "367b9e4c127889edad17f3999b4c41e7": {
+    "text": "халуунаа үз",
+    "file": "367b9e4c127889edad17f3999b4c41e7.mp3",
+    "size": 11232,
+    "label": "熱を測る、体温を測る",
+    "category": "vocab"
+  },
+  "76fa799f09122d3730406325f46953f0": {
+    "text": "халууц",
+    "file": "76fa799f09122d3730406325f46953f0.mp3",
+    "size": 11232,
+    "label": "暑がる、暑く感じる",
+    "category": "vocab"
+  },
+  "0f2c8590628466fe0822f25b78e52a92": {
+    "text": "хана",
+    "file": "0f2c8590628466fe0822f25b78e52a92.mp3",
+    "size": 11232,
+    "label": "壁",
+    "category": "vocab"
+  },
+  "133d91de59db5f42cbdfe9acb18c424f": {
+    "text": "хар",
+    "file": "133d91de59db5f42cbdfe9acb18c424f.mp3",
+    "size": 11232,
+    "label": "黒い、黒色",
+    "category": "vocab"
+  },
+  "a26f42ad03a99fc0c2e0b43f280e41ef": {
+    "text": "ханиад хүр",
+    "file": "a26f42ad03a99fc0c2e0b43f280e41ef.mp3",
+    "size": 11232,
+    "label": "風邪をひく",
+    "category": "vocab"
+  },
+  "741bbe30573d1f91f0e1d4e26a5de9ec": {
+    "text": "харанхуй",
+    "file": "741bbe30573d1f91f0e1d4e26a5de9ec.mp3",
+    "size": 11232,
+    "label": "暗い、闇",
+    "category": "vocab"
+  },
+  "4d5758f6b16d9f013cef37b809aaa1a5": {
+    "text": "харагд",
+    "file": "4d5758f6b16d9f013cef37b809aaa1a5.mp3",
+    "size": 11232,
+    "label": "見える",
+    "category": "vocab"
+  },
+  "15617ce7aa093cdbe79f25ec3223eb38": {
+    "text": "хари",
+    "file": "15617ce7aa093cdbe79f25ec3223eb38.mp3",
+    "size": 11232,
+    "label": "（自分の家・本国へ）帰る",
+    "category": "vocab"
+  },
+  "db59fe039f0b86e6581b98973c454f5e": {
+    "text": "харин",
+    "file": "db59fe039f0b86e6581b98973c454f5e.mp3",
+    "size": 11232,
+    "label": "しかし、一方で、逆に",
+    "category": "vocab"
+  },
+  "b9b078cbb8f759ba26fd7e33f118cae7": {
+    "text": "харшил хөдлө хөдөл",
+    "file": "b9b078cbb8f759ba26fd7e33f118cae7.mp3",
+    "size": 12528,
+    "label": "アレルギーが出る、発症する",
+    "category": "vocab"
+  },
+  "3477b8c13fd0be42f5d9e0dfcdeac2db": {
+    "text": "хичээл",
+    "file": "3477b8c13fd0be42f5d9e0dfcdeac2db.mp3",
+    "size": 11232,
+    "label": "授業、レッスン、学習",
+    "category": "vocab"
+  },
+  "2831c980783180dd9af742469db02ba4": {
+    "text": "хий",
+    "file": "2831c980783180dd9af742469db02ba4.mp3",
+    "size": 11232,
+    "label": "する、行う、作る、入れる",
+    "category": "vocab"
+  },
+  "2146d1743d31afb2e61ab46b6ebb70f6": {
+    "text": "хасах 30 хэм",
+    "file": "2146d1743d31afb2e61ab46b6ebb70f6.mp3",
+    "size": 12096,
+    "label": "マイナス30度（氷点下30℃）",
+    "category": "vocab"
+  },
+  "71b8a8bf15d8b216e6bf5fe7365758fa": {
+    "text": "хол",
+    "file": "71b8a8bf15d8b216e6bf5fe7365758fa.mp3",
+    "size": 11232,
+    "label": "遠い、遥かな",
+    "category": "vocab"
+  },
+  "aa44c596c39f2bffc20e797733a062e9": {
+    "text": "хоёрдахь өдөр",
+    "file": "aa44c596c39f2bffc20e797733a062e9.mp3",
+    "size": 11232,
+    "label": "火曜日（週の2日目）",
+    "category": "vocab"
+  },
+  "3c4bc0b44a0b13895343e4749872cf20": {
+    "text": "хоног",
+    "file": "3c4bc0b44a0b13895343e4749872cf20.mp3",
+    "size": 11232,
+    "label": "24時間、日（宿泊日数など）",
+    "category": "vocab"
+  },
+  "7b1d1435e89775cd921e0cfdebdf1064": {
+    "text": "хонь",
+    "file": "7b1d1435e89775cd921e0cfdebdf1064.mp3",
+    "size": 11232,
+    "label": "羊",
+    "category": "vocab"
+  },
+  "f9b7a4075d0962494d3d19622f9d6033": {
+    "text": "хоно",
+    "file": "f9b7a4075d0962494d3d19622f9d6033.mp3",
+    "size": 11232,
+    "label": "泊まる、宿泊する、夜を明かす",
+    "category": "vocab"
+  },
+  "9a8d8d7bba38b5dcf84bfba624dabd03": {
+    "text": "хоолой",
+    "file": "9a8d8d7bba38b5dcf84bfba624dabd03.mp3",
+    "size": 11232,
+    "label": "喉、声",
+    "category": "vocab"
+  },
+  "bde60a2116abc868410ac886e6e804ea": {
+    "text": "хоолны цэс меню",
+    "file": "bde60a2116abc868410ac886e6e804ea.mp3",
+    "size": 12528,
+    "label": "メニュー、献立表",
+    "category": "vocab"
+  },
+  "187dc5d53572854de0ca78bd5b5652b9": {
+    "text": "хот",
+    "file": "187dc5d53572854de0ca78bd5b5652b9.mp3",
+    "size": 11232,
+    "label": "都市、町、市",
+    "category": "vocab"
+  },
+  "8b41e93387b0f23b17e6258455f08202": {
+    "text": "хоолойгоо зайл",
+    "file": "8b41e93387b0f23b17e6258455f08202.mp3",
+    "size": 11376,
+    "label": "うがいをする",
+    "category": "vocab"
+  },
+  "a0b17ffae30d97f99bd376f6180e12cb": {
+    "text": "хоолоор дайл",
+    "file": "a0b17ffae30d97f99bd376f6180e12cb.mp3",
+    "size": 11232,
+    "label": "食事をごちそうする、もてなす",
+    "category": "vocab"
+  },
+  "a43a8bd73ff7f6f4a282b2d306516fb9": {
+    "text": "хотын захиргаа",
+    "file": "a43a8bd73ff7f6f4a282b2d306516fb9.mp3",
+    "size": 11232,
+    "label": "市役所、市庁舎",
+    "category": "vocab"
+  },
+  "203a5ae37e120f65b82011a1d0d79efa": {
+    "text": "хөгжилтэй",
+    "file": "203a5ae37e120f65b82011a1d0d79efa.mp3",
+    "size": 11232,
+    "label": "楽しい、陽気な、面白い",
+    "category": "vocab"
+  },
+  "ac75a3c10ccb363bc010316041b5ec4b": {
+    "text": "хөдөө",
+    "file": "ac75a3c10ccb363bc010316041b5ec4b.mp3",
+    "size": 11232,
+    "label": "田舎、地方、草原",
+    "category": "vocab"
+  },
+  "64d580eb2b208a68085416aa45fa1ed1": {
+    "text": "хөгжим",
+    "file": "64d580eb2b208a68085416aa45fa1ed1.mp3",
+    "size": 11232,
+    "label": "音楽",
+    "category": "vocab"
+  },
+  "191d920f56927e44c61e7f3343464904": {
+    "text": "хувцас",
+    "file": "191d920f56927e44c61e7f3343464904.mp3",
+    "size": 11232,
+    "label": "服、衣服",
+    "category": "vocab"
+  },
+  "5fe56eec911a5f8221e9581b323a72ad": {
+    "text": "хөл бөмбөг",
+    "file": "5fe56eec911a5f8221e9581b323a72ad.mp3",
+    "size": 11232,
+    "label": "サッカー",
+    "category": "vocab"
+  },
+  "c5eec7ad2ea75eb3dabe9580751f9923": {
+    "text": "худалдагч",
+    "file": "c5eec7ad2ea75eb3dabe9580751f9923.mp3",
+    "size": 11232,
+    "label": "店員、売り手、販売員",
+    "category": "vocab"
+  },
+  "5020d7d8f3d803979ebf9669e5e7d4fd": {
+    "text": "хувцас соли соль",
+    "file": "5020d7d8f3d803979ebf9669e5e7d4fd.mp3",
+    "size": 12384,
+    "label": "服を着替える",
+    "category": "vocab"
+  },
+  "27fb3d35c152fa81b2aff4a73a5c2dd9": {
+    "text": "хурал",
+    "file": "27fb3d35c152fa81b2aff4a73a5c2dd9.mp3",
+    "size": 11232,
+    "label": "会議、ミーティング",
+    "category": "vocab"
+  },
+  "89b23b15a296c2fe3834cd9d1cb348a0": {
+    "text": "худалд",
+    "file": "89b23b15a296c2fe3834cd9d1cb348a0.mp3",
+    "size": 11232,
+    "label": "売る、販売する",
+    "category": "vocab"
+  },
+  "f9a5f3e5b0e5d35d9fccbcd7ae17c091": {
+    "text": "хурдан эдгээрэй",
+    "file": "f9a5f3e5b0e5d35d9fccbcd7ae17c091.mp3",
+    "size": 11808,
+    "label": "早く良くなってね、お大事に",
+    "category": "vocab"
+  },
+  "820fb10021c6cc3ca8f81e6b7f1b8ce0": {
+    "text": "хурдан",
+    "file": "820fb10021c6cc3ca8f81e6b7f1b8ce0.mp3",
+    "size": 11232,
+    "label": "速い、早く",
+    "category": "vocab"
+  },
+  "5b1920f29a979080ee751b3b0978aa17": {
+    "text": "хутга",
+    "file": "5b1920f29a979080ee751b3b0978aa17.mp3",
+    "size": 11232,
+    "label": "ナイフ、包丁",
+    "category": "vocab"
+  },
+  "c8b400a8266bc2df0a1ff7cf29481c2d": {
+    "text": "хуудас",
+    "file": "c8b400a8266bc2df0a1ff7cf29481c2d.mp3",
+    "size": 11232,
+    "label": "ページ、用紙",
+    "category": "vocab"
+  },
+  "aa4c83e935e1565b74b7fa42b0deeb47": {
+    "text": "хурлын танхим",
+    "file": "aa4c83e935e1565b74b7fa42b0deeb47.mp3",
+    "size": 11232,
+    "label": "会議室、大会議場",
+    "category": "vocab"
+  },
+  "88a4ef34509db352724f3965d5fbb46b": {
+    "text": "хуушуур",
+    "file": "88a4ef34509db352724f3965d5fbb46b.mp3",
+    "size": 11232,
+    "label": "ホーショール（揚げ肉パイ）",
+    "category": "vocab"
+  },
+  "301a58e8abe5d83681b71c300fa8ec23": {
+    "text": "хүлээ",
+    "file": "301a58e8abe5d83681b71c300fa8ec23.mp3",
+    "size": 11232,
+    "label": "待つ",
+    "category": "vocab"
+  },
+  "8e802ede908e4cc704644b9dc972ef0c": {
+    "text": "хүйтрэ хүйтэр",
+    "file": "8e802ede908e4cc704644b9dc972ef0c.mp3",
+    "size": 11376,
+    "label": "寒くなる、冷え込む",
+    "category": "vocab"
+  },
+  "fdf6186288c0ba2e2219876609e634f3": {
+    "text": "хүн ам",
+    "file": "fdf6186288c0ba2e2219876609e634f3.mp3",
+    "size": 11232,
+    "label": "人口",
+    "category": "vocab"
+  },
+  "16ec8e38f53d4e6514a17a4f393e8105": {
+    "text": "хүнсний дэлгүүр",
+    "file": "16ec8e38f53d4e6514a17a4f393e8105.mp3",
+    "size": 11232,
+    "label": "食料品店、スーパーマーケット",
+    "category": "vocab"
+  },
+  "6f47796fbebe12c2f200c6e7f4acbe66": {
+    "text": "хүнс",
+    "file": "6f47796fbebe12c2f200c6e7f4acbe66.mp3",
+    "size": 11232,
+    "label": "食料品、食品",
+    "category": "vocab"
+  },
+  "3b217e9fce0d94aa2e0b004e638f9787": {
+    "text": "хүндрэ хүндэр",
+    "file": "3b217e9fce0d94aa2e0b004e638f9787.mp3",
+    "size": 11376,
+    "label": "重症化する、複雑になる、（大便をする）",
+    "category": "vocab"
+  },
+  "d1de8ad8dac3576f7215a148d4592b56": {
+    "text": "хүртэл",
+    "file": "d1de8ad8dac3576f7215a148d4592b56.mp3",
+    "size": 11232,
+    "label": "〜まで",
+    "category": "vocab"
+  },
+  "8a33124ee3d4e99756838c6aa8788a3c": {
+    "text": "хүс",
+    "file": "8a33124ee3d4e99756838c6aa8788a3c.mp3",
+    "size": 11232,
+    "label": "望む、願う、欲する",
+    "category": "vocab"
+  },
+  "58458d656eab6b011b770a1326747b2e": {
+    "text": "хүү",
+    "file": "58458d656eab6b011b770a1326747b2e.mp3",
+    "size": 11232,
+    "label": "息子、男の子",
+    "category": "vocab"
+  },
+  "072e0a4c8d499f68146ddc8f0c983d0a": {
+    "text": "хүүхэд",
+    "file": "072e0a4c8d499f68146ddc8f0c983d0a.mp3",
+    "size": 11232,
+    "label": "子ども、児童",
+    "category": "vocab"
+  },
+  "fa1ad5bae1668f9bb17dd7600d048215": {
+    "text": "хэд",
+    "file": "fa1ad5bae1668f9bb17dd7600d048215.mp3",
+    "size": 11232,
+    "label": "いくつ、何（数・時間・年齢）",
+    "category": "vocab"
+  },
+  "77bd7828e7b92d2bcf9ab377d4d4306b": {
+    "text": "Хүүхдийн баяр",
+    "file": "77bd7828e7b92d2bcf9ab377d4d4306b.mp3",
+    "size": 11232,
+    "label": "子どもの日（6月1日）",
+    "category": "vocab"
+  },
+  "93657c5947a88db842b2e167aa6c7e4e": {
+    "text": "хэдүүлээ",
+    "file": "93657c5947a88db842b2e167aa6c7e4e.mp3",
+    "size": 11232,
+    "label": "何人で、皆で",
+    "category": "vocab"
+  },
+  "d29705c19d400034c86f8a41ee8f4b52": {
+    "text": "хэм градус",
+    "file": "d29705c19d400034c86f8a41ee8f4b52.mp3",
+    "size": 11232,
+    "label": "度、気温、度数",
+    "category": "vocab"
+  },
+  "1188324bc3a124dc078bb2f10618c982": {
+    "text": "хэддэх өдөр",
+    "file": "1188324bc3a124dc078bb2f10618c982.mp3",
+    "size": 11232,
+    "label": "何曜日（口語）",
+    "category": "vocab"
+  },
+  "3077970322c77a6763ded12880089b09": {
+    "text": "хэр зэрэг",
+    "file": "3077970322c77a6763ded12880089b09.mp3",
+    "size": 11232,
+    "label": "どのくらい、どの程度",
+    "category": "vocab"
+  },
+  "9e20bfd2e89d653844bc9ed21d0699c5": {
+    "text": "хэрэв",
+    "file": "9e20bfd2e89d653844bc9ed21d0699c5.mp3",
+    "size": 11232,
+    "label": "もしも、もし〜なら",
+    "category": "vocab"
+  },
+  "1c4b742bd83c8392ed4c67e99e891bb4": {
+    "text": "хэрэглэ",
+    "file": "1c4b742bd83c8392ed4c67e99e891bb4.mp3",
+    "size": 11232,
+    "label": "使う、使用する、利用する",
+    "category": "vocab"
+  },
+  "bfacbf902bf9648110d1a752512681db": {
+    "text": "хэцүү",
+    "file": "bfacbf902bf9648110d1a752512681db.mp3",
+    "size": 11232,
+    "label": "難しい、大変な、困難な",
+    "category": "vocab"
+  },
+  "96eadbd27324cf945984dc13e894eb5a": {
+    "text": "хэрэгтэй",
+    "file": "96eadbd27324cf945984dc13e894eb5a.mp3",
+    "size": 11232,
+    "label": "必要だ、〜すべきだ",
+    "category": "vocab"
+  },
+  "d3b6745d16732279a56d874449216be1": {
+    "text": "хямдруул",
+    "file": "d3b6745d16732279a56d874449216be1.mp3",
+    "size": 11232,
+    "label": "値引きする、安くする",
+    "category": "vocab"
+  },
+  "9d99c09ab23db6180816f983bd1c3712": {
+    "text": "хямдра хямдар",
+    "file": "9d99c09ab23db6180816f983bd1c3712.mp3",
+    "size": 11520,
+    "label": "安くなる、値下がりする",
+    "category": "vocab"
+  },
+  "d0a737909febef6e29f8ea3b3886732f": {
+    "text": "Хятад",
+    "file": "d0a737909febef6e29f8ea3b3886732f.mp3",
+    "size": 11232,
+    "label": "中国、中国人",
+    "category": "vocab"
+  },
+  "8bd205467632b0dc9fb19b7dbe669ce6": {
+    "text": "цаг",
+    "file": "8bd205467632b0dc9fb19b7dbe669ce6.mp3",
+    "size": 11232,
+    "label": "時間、時計、〜時",
+    "category": "vocab"
+  },
+  "9365f90abf7d604addb8955429b5031b": {
+    "text": "хямдхан",
+    "file": "9365f90abf7d604addb8955429b5031b.mp3",
+    "size": 11232,
+    "label": "安い、手頃な",
+    "category": "vocab"
+  },
+  "aaf15d025e29ceffd04df7ebdbc06f3d": {
+    "text": "цаас бөглө",
+    "file": "aaf15d025e29ceffd04df7ebdbc06f3d.mp3",
+    "size": 11232,
+    "label": "書類・用紙に記入する",
+    "category": "vocab"
+  },
+  "368226923f31d164fd6d1a7dacfe2874": {
+    "text": "цаг агаар",
+    "file": "368226923f31d164fd6d1a7dacfe2874.mp3",
+    "size": 11232,
+    "label": "天気、気候",
+    "category": "vocab"
+  },
+  "11546dfe6fd61aa9d9d24ff995dd7159": {
+    "text": "цаг агаарын мэдээ",
+    "file": "11546dfe6fd61aa9d9d24ff995dd7159.mp3",
+    "size": 12096,
+    "label": "天気予報",
+    "category": "vocab"
+  },
+  "c47da2d261a31902214924530564af64": {
+    "text": "цагаан будаа",
+    "file": "c47da2d261a31902214924530564af64.mp3",
+    "size": 11232,
+    "label": "白米、ご飯",
+    "category": "vocab"
+  },
+  "5ba6b3aa0933fc3afda6ca688e5e315b": {
+    "text": "цагдаа",
+    "file": "5ba6b3aa0933fc3afda6ca688e5e315b.mp3",
+    "size": 11232,
+    "label": "警察、警察官",
+    "category": "vocab"
+  },
+  "449fb5c2dd7dcf136cb277415cd16f5f": {
+    "text": "Цагаан сар",
+    "file": "449fb5c2dd7dcf136cb277415cd16f5f.mp3",
+    "size": 11232,
+    "label": "ツァガーン・サル（旧正月）",
+    "category": "vocab"
+  },
+  "4db3ab6ac47781534f607de82cd08bf0": {
+    "text": "цагаан идээ",
+    "file": "4db3ab6ac47781534f607de82cd08bf0.mp3",
+    "size": 11232,
+    "label": "乳製品（ツァガーン・イデー）",
+    "category": "vocab"
+  },
+  "8fc2a7d9c400a4d3a90d0e9321165f07": {
+    "text": "цайны газар",
+    "file": "8fc2a7d9c400a4d3a90d0e9321165f07.mp3",
+    "size": 11232,
+    "label": "食堂、カフェ、軽食堂",
+    "category": "vocab"
+  },
+  "026b4d1a5b644f7bfabb434ed160184c": {
+    "text": "цагийн хуваарь",
+    "file": "026b4d1a5b644f7bfabb434ed160184c.mp3",
+    "size": 11232,
+    "label": "スケジュール、時刻表",
+    "category": "vocab"
+  },
+  "3257f5230b78d011ffb7d0a61a4038f1": {
+    "text": "цанга",
+    "file": "3257f5230b78d011ffb7d0a61a4038f1.mp3",
+    "size": 11232,
+    "label": "喉が渇く",
+    "category": "vocab"
+  },
+  "f3e5351a6c605c477f91efdefd94bf3e": {
+    "text": "цонх",
+    "file": "f3e5351a6c605c477f91efdefd94bf3e.mp3",
+    "size": 11232,
+    "label": "窓",
+    "category": "vocab"
+  },
+  "3fa7ca39954f2ac1629aed1f0cdc67c3": {
+    "text": "цас",
+    "file": "3fa7ca39954f2ac1629aed1f0cdc67c3.mp3",
+    "size": 11232,
+    "label": "雪",
+    "category": "vocab"
+  },
+  "a7a15675c58544c93409a476838413f5": {
+    "text": "цэвэрлэ",
+    "file": "a7a15675c58544c93409a476838413f5.mp3",
+    "size": 11232,
+    "label": "掃除する、綺麗にする",
+    "category": "vocab"
+  },
+  "dd284b0811e9018f070b37792a10dab8": {
+    "text": "цэлмэг",
+    "file": "dd284b0811e9018f070b37792a10dab8.mp3",
+    "size": 11232,
+    "label": "快晴の、晴れ渡った",
+    "category": "vocab"
+  },
+  "c3df92a67ac917ecf10508eaf6839b4c": {
+    "text": "цэвэрхэн",
+    "file": "c3df92a67ac917ecf10508eaf6839b4c.mp3",
+    "size": 11232,
+    "label": "清潔な、綺麗な",
+    "category": "vocab"
+  },
+  "618e9614eaa106bd8f5a0d0f8c25dba3": {
+    "text": "цэцэг",
+    "file": "618e9614eaa106bd8f5a0d0f8c25dba3.mp3",
+    "size": 11232,
+    "label": "花",
+    "category": "vocab"
+  },
+  "af6a5c6d2ddb4eff375cd31cdd052e24": {
+    "text": "цэцэрлэгт хүрээлэн",
+    "file": "af6a5c6d2ddb4eff375cd31cdd052e24.mp3",
+    "size": 11952,
+    "label": "公園、庭園",
+    "category": "vocab"
+  },
+  "7c6d4848eecdb46a479ec566628d327d": {
+    "text": "цэцэглэ",
+    "file": "7c6d4848eecdb46a479ec566628d327d.mp3",
+    "size": 11232,
+    "label": "（花が）咲く、開花する",
+    "category": "vocab"
+  },
+  "009b2c40b1030d1b5f9757abaee1dc3b": {
+    "text": "цээжл",
+    "file": "009b2c40b1030d1b5f9757abaee1dc3b.mp3",
+    "size": 11232,
+    "label": "暗記する、覚える",
+    "category": "vocab"
+  },
+  "a18b015c8b7f3ed1be05f232f9a8333a": {
+    "text": "чихэвч",
+    "file": "a18b015c8b7f3ed1be05f232f9a8333a.mp3",
+    "size": 11232,
+    "label": "イヤホン、ヘッドホン",
+    "category": "vocab"
+  },
+  "84f468af83317320ba224fdad5cc0c47": {
+    "text": "чихэр",
+    "file": "84f468af83317320ba224fdad5cc0c47.mp3",
+    "size": 11232,
+    "label": "飴、キャンディ、砂糖",
+    "category": "vocab"
+  },
+  "af7d4b52a524626c22135c9a647db929": {
+    "text": "чад",
+    "file": "af7d4b52a524626c22135c9a647db929.mp3",
+    "size": 11232,
+    "label": "できる、可能である",
+    "category": "vocab"
+  },
+  "e87e33325b583c1b6e671b6a37676ff0": {
+    "text": "чанга яри ярь",
+    "file": "e87e33325b583c1b6e671b6a37676ff0.mp3",
+    "size": 11376,
+    "label": "大声で話す",
+    "category": "vocab"
+  },
+  "70bc080305fe7f5e2120afa4e72a0d38": {
+    "text": "чөлөөтэй",
+    "file": "70bc080305fe7f5e2120afa4e72a0d38.mp3",
+    "size": 11232,
+    "label": "自由に、ご遠慮なく",
+    "category": "vocab"
+  },
+  "10db087410ff04f260b4d36ba1296c30": {
+    "text": "шалгалт",
+    "file": "10db087410ff04f260b4d36ba1296c30.mp3",
+    "size": 11232,
+    "label": "試験、テスト",
+    "category": "vocab"
+  },
+  "95c3ee603e5018ca9ff35e92b05b9a84": {
+    "text": "шар айраг",
+    "file": "95c3ee603e5018ca9ff35e92b05b9a84.mp3",
+    "size": 11232,
+    "label": "ビール",
+    "category": "vocab"
+  },
+  "7616cefab434b2923eedd11f3d8aae04": {
+    "text": "шар",
+    "file": "7616cefab434b2923eedd11f3d8aae04.mp3",
+    "size": 11232,
+    "label": "焼く、炒める、揚げる",
+    "category": "vocab"
+  },
+  "1dfb14032d02b3fb479767f2209088bb": {
+    "text": "шинэ",
+    "file": "1dfb14032d02b3fb479767f2209088bb.mp3",
+    "size": 11232,
+    "label": "新しい",
+    "category": "vocab"
+  },
+  "27073f7261a541cd26ec40c3b7023e14": {
+    "text": "шилжүүл",
+    "file": "27073f7261a541cd26ec40c3b7023e14.mp3",
+    "size": 11232,
+    "label": "振り込む、移す、転勤する",
+    "category": "vocab"
+  },
+  "ae7d205f30f041636d55991f5f62e71e": {
+    "text": "шинэ байр",
+    "file": "ae7d205f30f041636d55991f5f62e71e.mp3",
+    "size": 11232,
+    "label": "新しい家、新居",
+    "category": "vocab"
+  },
+  "23a8323d31a4bdcffc0ff089a0b29848": {
+    "text": "шинэ жил",
+    "file": "23a8323d31a4bdcffc0ff089a0b29848.mp3",
+    "size": 11232,
+    "label": "新年、お正月",
+    "category": "vocab"
+  },
+  "08c12f00a5d1630c6f2baf2783fe277e": {
+    "text": "шоколад",
+    "file": "08c12f00a5d1630c6f2baf2783fe277e.mp3",
+    "size": 11232,
+    "label": "チョコレート",
+    "category": "vocab"
+  },
+  "a77cfd5cd0829e75569a762e01450aec": {
+    "text": "шөл",
+    "file": "a77cfd5cd0829e75569a762e01450aec.mp3",
+    "size": 11232,
+    "label": "スープ、汁物",
+    "category": "vocab"
+  },
+  "feb4661627d28f783df4e85483908330": {
+    "text": "шөнө",
+    "file": "feb4661627d28f783df4e85483908330.mp3",
+    "size": 11232,
+    "label": "夜、夜間",
+    "category": "vocab"
+  },
+  "2c39e530b009b33d198ec4154f75dd9e": {
+    "text": "шууд нислэг",
+    "file": "2c39e530b009b33d198ec4154f75dd9e.mp3",
+    "size": 11520,
+    "label": "直行便",
+    "category": "vocab"
+  },
+  "c48e855a73ab1a74c7c1b5ed68c469ed": {
+    "text": "шуудан",
+    "file": "c48e855a73ab1a74c7c1b5ed68c469ed.mp3",
+    "size": 11232,
+    "label": "郵便、郵便局",
+    "category": "vocab"
+  },
+  "5d6a5f533fdb932e4abaa247ec8292c3": {
+    "text": "шүршүүр",
+    "file": "5d6a5f533fdb932e4abaa247ec8292c3.mp3",
+    "size": 11232,
+    "label": "シャワー",
+    "category": "vocab"
+  },
+  "3bea68744d9579205551b728382a1727": {
+    "text": "шүд",
+    "file": "3bea68744d9579205551b728382a1727.mp3",
+    "size": 11232,
+    "label": "歯",
+    "category": "vocab"
+  },
+  "b34322ebd20336304c61d5dcdaca8fc6": {
+    "text": "шүхэр",
+    "file": "b34322ebd20336304c61d5dcdaca8fc6.mp3",
+    "size": 11232,
+    "label": "傘、パラシュート",
+    "category": "vocab"
+  },
+  "cc87234302930243b5e6145566881775": {
+    "text": "эгч",
+    "file": "cc87234302930243b5e6145566881775.mp3",
+    "size": 11232,
+    "label": "姉、年上の女性",
+    "category": "vocab"
+  },
+  "ce7182868b4d7afecabc0f6e85804cf2": {
+    "text": "эм",
+    "file": "ce7182868b4d7afecabc0f6e85804cf2.mp3",
+    "size": 11232,
+    "label": "薬",
+    "category": "vocab"
+  },
+  "2e6d2ad0f9ae84cb952d4225395e7ee4": {
+    "text": "элчин сайдын яам",
+    "file": "2e6d2ad0f9ae84cb952d4225395e7ee4.mp3",
+    "size": 12096,
+    "label": "大使館",
+    "category": "vocab"
+  },
+  "393808345c2d91a2732d96d8d4e58b5a": {
+    "text": "эмийн жор",
+    "file": "393808345c2d91a2732d96d8d4e58b5a.mp3",
+    "size": 11232,
+    "label": "処方箋",
+    "category": "vocab"
+  },
+  "4aad372b860f98f6a5ca044debd35f3b": {
+    "text": "эмийн сан",
+    "file": "4aad372b860f98f6a5ca044debd35f3b.mp3",
+    "size": 11232,
+    "label": "薬局、ドラッグストア",
+    "category": "vocab"
+  },
+  "c191f7e6fcf8b3a36687d9f07754a179": {
+    "text": "эмнэлэг",
+    "file": "c191f7e6fcf8b3a36687d9f07754a179.mp3",
+    "size": 11232,
+    "label": "病院",
+    "category": "vocab"
+  },
+  "c7f7fd2e2048b3fdb44aecd66ed215d0": {
+    "text": "эмч",
+    "file": "c7f7fd2e2048b3fdb44aecd66ed215d0.mp3",
+    "size": 11232,
+    "label": "医師、医者",
+    "category": "vocab"
+  },
+  "6b218fe94b3627b601856afb2f783e80": {
+    "text": "эмэгтэй",
+    "file": "6b218fe94b3627b601856afb2f783e80.mp3",
+    "size": 11232,
+    "label": "女性、女の人",
+    "category": "vocab"
+  },
+  "5b2e20066db350e0c3fa049f2a3949ee": {
+    "text": "эмээ",
+    "file": "5b2e20066db350e0c3fa049f2a3949ee.mp3",
+    "size": 11232,
+    "label": "おばあちゃん、祖母",
+    "category": "vocab"
+  },
+  "358399024161b46b8e88b236f2d76225": {
+    "text": "эмчид үзүүл",
+    "file": "358399024161b46b8e88b236f2d76225.mp3",
+    "size": 11232,
+    "label": "医者に診てもらう、受診する",
+    "category": "vocab"
+  },
+  "d137e11bada96f5a41634fef17df3ff4": {
+    "text": "энэ долоо хоног",
+    "file": "d137e11bada96f5a41634fef17df3ff4.mp3",
+    "size": 11232,
+    "label": "今週",
+    "category": "vocab"
+  },
+  "b5fa727d1c8651c679937a85b735f2fe": {
+    "text": "эрт",
+    "file": "b5fa727d1c8651c679937a85b735f2fe.mp3",
+    "size": 11232,
+    "label": "早く、早い",
+    "category": "vocab"
+  },
+  "a3e786ec08039a29cad5c00d8fc5f968": {
+    "text": "эрүүл мэнд",
+    "file": "a3e786ec08039a29cad5c00d8fc5f968.mp3",
+    "size": 11232,
+    "label": "健康、ヘルス",
+    "category": "vocab"
+  },
+  "253c1b7ee4fa1e4f712585be6bc00262": {
+    "text": "Эрдэнэт хот",
+    "file": "253c1b7ee4fa1e4f712585be6bc00262.mp3",
+    "size": 11232,
+    "label": "エルデネット市",
+    "category": "vocab"
+  },
+  "66973ac3dfd0213127d68222f471da7a": {
+    "text": "эрэгтэй",
+    "file": "66973ac3dfd0213127d68222f471da7a.mp3",
+    "size": 11232,
+    "label": "男の、男性の",
+    "category": "vocab"
+  },
+  "55a0eada8ade03a814b08cb32c1ef8c5": {
+    "text": "эсвэл",
+    "file": "55a0eada8ade03a814b08cb32c1ef8c5.mp3",
+    "size": 11232,
+    "label": "または、あるいは",
+    "category": "vocab"
+  },
+  "f4aaf9f4ceb47403ebee2e3488d5bdc6": {
+    "text": "эхлээд",
+    "file": "f4aaf9f4ceb47403ebee2e3488d5bdc6.mp3",
+    "size": 11232,
+    "label": "まず、はじめに",
+    "category": "vocab"
+  },
+  "c02dc14f044e5d768db8dd64a86ad6c9": {
+    "text": "эхлэ эхэл",
+    "file": "c02dc14f044e5d768db8dd64a86ad6c9.mp3",
+    "size": 11232,
+    "label": "始まる、始める",
+    "category": "vocab"
+  },
+  "397b089aedb2cda64c4fcac49feeba4e": {
+    "text": "эхнэр",
+    "file": "397b089aedb2cda64c4fcac49feeba4e.mp3",
+    "size": 11232,
+    "label": "妻、奥さん",
+    "category": "vocab"
+  },
+  "b4e45cc1bb22c1167a496deeb389ac9f": {
+    "text": "ээж",
+    "file": "b4e45cc1bb22c1167a496deeb389ac9f.mp3",
+    "size": 11232,
+    "label": "お母さん、母",
+    "category": "vocab"
+  },
+  "6dac112ee55e12ec7e79bab1f266e31a": {
+    "text": "юм асуу",
+    "file": "6dac112ee55e12ec7e79bab1f266e31a.mp3",
+    "size": 11232,
+    "label": "質問する、尋ねる",
+    "category": "vocab"
+  },
+  "360a778defaff98d2706b67b213e53f6": {
+    "text": "юм",
+    "file": "360a778defaff98d2706b67b213e53f6.mp3",
+    "size": 11232,
+    "label": "物、こと",
+    "category": "vocab"
+  },
+  "f98c4781f3acea7425883f7ee8bd9db4": {
+    "text": "юм угаа",
+    "file": "f98c4781f3acea7425883f7ee8bd9db4.mp3",
+    "size": 11232,
+    "label": "洗濯する、物を洗う",
+    "category": "vocab"
+  },
+  "464d7161931ac8c6f55f3338003349b6": {
+    "text": "яагаад",
+    "file": "464d7161931ac8c6f55f3338003349b6.mp3",
+    "size": 11232,
+    "label": "なぜ、どうして",
+    "category": "vocab"
+  },
+  "999ef5b20013c6f44a1cb9c1742e5b52": {
+    "text": "юу гэж бод",
+    "file": "999ef5b20013c6f44a1cb9c1742e5b52.mp3",
+    "size": 11232,
+    "label": "どう思うか",
+    "category": "vocab"
+  },
+  "ebf9a8c74b96bd97d602425c136cccd1": {
+    "text": "яа",
+    "file": "ebf9a8c74b96bd97d602425c136cccd1.mp3",
+    "size": 11232,
+    "label": "どうする",
+    "category": "vocab"
+  },
+  "762204f1de51ef42c085e46faf7b5136": {
+    "text": "яагаад гэвэл",
+    "file": "762204f1de51ef42c085e46faf7b5136.mp3",
+    "size": 11232,
+    "label": "なぜなら、というのも",
+    "category": "vocab"
+  },
+  "cc2ab0e78879fbb392313664fc5c8a8a": {
+    "text": "яаж яв",
+    "file": "cc2ab0e78879fbb392313664fc5c8a8a.mp3",
+    "size": 11232,
+    "label": "どうやって行くか",
+    "category": "vocab"
+  },
+  "848d64e6a6cc693203157e1b28e5371e": {
+    "text": "Яасан бэ",
+    "file": "848d64e6a6cc693203157e1b28e5371e.mp3",
+    "size": 11232,
+    "label": "どうしましたか？何があったの？",
+    "category": "vocab"
+  },
+  "73ef4a1cda2ef0d78cb0ccd7d497f83c": {
+    "text": "явуул",
+    "file": "73ef4a1cda2ef0d78cb0ccd7d497f83c.mp3",
+    "size": 11232,
+    "label": "送る、発送する",
+    "category": "vocab"
+  },
+  "298cfbc5e8b8a499810b7ee35a8cbf35": {
+    "text": "яв",
+    "file": "298cfbc5e8b8a499810b7ee35a8cbf35.mp3",
+    "size": 11232,
+    "label": "行く、去る",
+    "category": "vocab"
+  },
+  "0981eab0f1f84065ed9c630b013a62ff": {
+    "text": "явган яв",
+    "file": "0981eab0f1f84065ed9c630b013a62ff.mp3",
+    "size": 11232,
+    "label": "歩いて行く、徒歩で行く",
+    "category": "vocab"
+  },
+  "031d2ebbae5b9ad1072412d1cd2d2cc5": {
+    "text": "яг",
+    "file": "031d2ebbae5b9ad1072412d1cd2d2cc5.mp3",
+    "size": 11232,
+    "label": "ちょうど、まさに",
+    "category": "vocab"
+  },
+  "ebf645bca80912b839c2eb353e210ef7": {
+    "text": "ямар",
+    "file": "ebf645bca80912b839c2eb353e210ef7.mp3",
+    "size": 11232,
+    "label": "どんな、どのような",
+    "category": "vocab"
+  },
+  "e218ac9c40540bb1a7a407b953f9f1c1": {
+    "text": "ядра ядар",
+    "file": "e218ac9c40540bb1a7a407b953f9f1c1.mp3",
+    "size": 11232,
+    "label": "疲れる",
+    "category": "vocab"
+  },
+  "b9e7fb86102b51b3b91fa4cea269015e": {
+    "text": "ямар гараг",
+    "file": "b9e7fb86102b51b3b91fa4cea269015e.mp3",
+    "size": 11232,
+    "label": "何曜日（正式・暦）",
+    "category": "vocab"
+  },
+  "69b4c1a4cc6c8733bdbe6a85fe505709": {
+    "text": "ямар нэг",
+    "file": "69b4c1a4cc6c8733bdbe6a85fe505709.mp3",
+    "size": 11232,
+    "label": "何かしらの、ある〜",
+    "category": "vocab"
+  },
+  "b1d5b14c3aabe12f20c88dfc0174eab4": {
+    "text": "янз бүрийн",
+    "file": "b1d5b14c3aabe12f20c88dfc0174eab4.mp3",
+    "size": 11232,
+    "label": "さまざまな、色々な、多種多様な",
+    "category": "vocab"
+  },
+  "787fc0a3f938473800eecdc9d1eb8a61": {
+    "text": "Япон",
+    "file": "787fc0a3f938473800eecdc9d1eb8a61.mp3",
+    "size": 11232,
+    "label": "日本、日本人",
+    "category": "vocab"
+  },
+  "f32b5276e1cff87837375b5a74a9066d": {
+    "text": "ямар үнэтэй",
+    "file": "f32b5276e1cff87837375b5a74a9066d.mp3",
+    "size": 11232,
+    "label": "どのくらいの値段、いくらの価格",
+    "category": "vocab"
+  },
+  "1a2dd2047960740a869ea6f11dc369f9": {
+    "text": "яри ярь",
+    "file": "1a2dd2047960740a869ea6f11dc369f9.mp3",
+    "size": 11232,
+    "label": "話す、会話する、語る",
+    "category": "vocab"
+  },
+  "a81b0b5390f6b734f0a2f20d8e9b1b9f": {
+    "text": "чийдэн",
+    "file": "a81b0b5390f6b734f0a2f20d8e9b1b9f.mp3",
+    "size": 11232,
+    "label": "電球、懐中電灯、ランプ",
+    "category": "vocab"
+  },
+  "11b03775eb55be12a3b9bce390e420a7": {
+    "text": "ус",
+    "file": "11b03775eb55be12a3b9bce390e420a7.mp3",
+    "size": 11232,
+    "label": "水",
+    "category": "vocab"
+  },
+  "5c884339218c858c62efcd8e8a744f8e": {
+    "text": "ногоо",
+    "file": "5c884339218c858c62efcd8e8a744f8e.mp3",
+    "size": 11232,
+    "label": "野菜、緑",
+    "category": "vocab"
+  },
+  "059fa42ce170a2e431b3af70caf39bef": {
+    "text": "боов",
+    "file": "059fa42ce170a2e431b3af70caf39bef.mp3",
+    "size": 11232,
+    "label": "ボーブ（モンゴル伝統の揚げ菓子・パン）",
+    "category": "vocab"
+  },
+  "8fa267c019e4ed9e30bd0ea1025e50f3": {
+    "text": "өндөг",
+    "file": "8fa267c019e4ed9e30bd0ea1025e50f3.mp3",
+    "size": 11232,
+    "label": "卵、たまご",
+    "category": "vocab"
+  },
+  "b631e6681f9436ce8a68617eba89f0f6": {
+    "text": "будаа",
+    "file": "b631e6681f9436ce8a68617eba89f0f6.mp3",
+    "size": 11232,
+    "label": "米、ご飯、穀物",
+    "category": "vocab"
+  },
+  "6e554c36a5c9c6172759418bb4990a44": {
+    "text": "жимс",
+    "file": "6e554c36a5c9c6172759418bb4990a44.mp3",
+    "size": 11232,
+    "label": "果物",
+    "category": "vocab"
+  },
+  "b2894fe224e9a00074c4011b4df10a0f": {
+    "text": "ямаа",
+    "file": "b2894fe224e9a00074c4011b4df10a0f.mp3",
+    "size": 11232,
+    "label": "山羊、ヤギ",
+    "category": "vocab"
+  },
+  "4ad309ade085332180f9a0337144007f": {
+    "text": "нохой",
+    "file": "4ad309ade085332180f9a0337144007f.mp3",
+    "size": 11232,
+    "label": "犬",
+    "category": "vocab"
+  },
+  "7de53d95eda352abd75a05d32026d6fb": {
+    "text": "гуанз",
+    "file": "7de53d95eda352abd75a05d32026d6fb.mp3",
+    "size": 11232,
+    "label": "食堂、軽食堂、大衆食堂",
+    "category": "vocab"
+  },
+  "4b69e87994a7840a3e76b0a9bf1be472": {
+    "text": "өчиグдөр",
+    "file": "4b69e87994a7840a3e76b0a9bf1be472.mp3",
+    "size": 11232,
+    "label": "昨日（きのう）。",
+    "category": "example"
+  },
+  "0d36ee726647ebe681890e7eb567943b": {
+    "text": "үдээс өмнө",
+    "file": "0d36ee726647ebe681890e7eb567943b.mp3",
+    "size": 11232,
+    "label": "午前、お昼前",
+    "category": "vocab"
+  },
+  "479397f27c9965f8e05bafe2fe5c71fd": {
+    "text": "эрэгтэй хүн",
+    "file": "479397f27c9965f8e05bafe2fe5c71fd.mp3",
+    "size": 11232,
+    "label": "男の人、男性",
+    "category": "vocab"
+  },
+  "4ed0f0846678c96098a0f502b8ece88e": {
+    "text": "Монгол улс",
+    "file": "4ed0f0846678c96098a0f502b8ece88e.mp3",
+    "size": 11232,
+    "label": "モンゴル国",
+    "category": "vocab"
+  },
+  "8828f9eebb24bc6ecc361952c4065780": {
+    "text": "дөрөвдэхь өдөр",
+    "file": "8828f9eebb24bc6ecc361952c4065780.mp3",
+    "size": 11232,
+    "label": "木曜日（週の4日目）",
+    "category": "vocab"
+  },
+  "f602f437f294c2194bccaf31256b0168": {
+    "text": "оюуタン",
+    "file": "f602f437f294c2194bccaf31256b0168.mp3",
+    "size": 11232,
+    "label": "大学生、専門学校生。",
+    "category": "example"
+  },
+  "992072d00ba767e6ce50c3ad4e8cbb87": {
+    "text": "эмэгтэй хүн",
+    "file": "992072d00ba767e6ce50c3ad4e8cbb87.mp3",
+    "size": 11232,
+    "label": "女の人、女性",
+    "category": "vocab"
+  },
+  "8ec651013a0a2202f1f58699195fba04": {
+    "text": "уул",
+    "file": "8ec651013a0a2202f1f58699195fba04.mp3",
+    "size": 11232,
+    "label": "山",
+    "category": "vocab"
+  },
+  "d0be30da8dd479829e7c6c93f4c935a8": {
+    "text": "Япон хэл",
+    "file": "d0be30da8dd479829e7c6c93f4c935a8.mp3",
+    "size": 11232,
+    "label": "日本語",
+    "category": "vocab"
+  },
+  "56b445f53afbc7e5005687a255ae0147": {
+    "text": "богино",
+    "file": "56b445f53afbc7e5005687a255ae0147.mp3",
+    "size": 11232,
+    "label": "短い",
+    "category": "vocab"
+  },
+  "e5974ee5b81aa6fc8bb8c84aeb4e45b9": {
+    "text": "халууン",
+    "file": "e5974ee5b81aa6fc8bb8c84aeb4e45b9.mp3",
+    "size": 11232,
+    "label": "熱い、暑い。",
+    "category": "example"
+  },
+  "81dd7f26d0768eb5719111c1395b6b96": {
+    "text": "урт",
+    "file": "81dd7f26d0768eb5719111c1395b6b96.mp3",
+    "size": 11232,
+    "label": "長い",
+    "category": "vocab"
+  },
+  "66ecef12f54ac24a74d30a835e1b58a1": {
+    "text": "муу",
+    "file": "66ecef12f54ac24a74d30a835e1b58a1.mp3",
+    "size": 11232,
+    "label": "悪い、劣っている、下手な",
+    "category": "vocab"
+  },
+  "c45550b526b1414b6e24bd78529b6b3d": {
+    "text": "сайхан",
+    "file": "c45550b526b1414b6e24bd78529b6b3d.mp3",
+    "size": 11232,
+    "label": "美しい、素晴らしい、素敵な",
+    "category": "vocab"
+  },
+  "ed81d7e513a4c5f113040a81d52447ef": {
+    "text": "амархан",
+    "file": "ed81d7e513a4c5f113040a81d52447ef.mp3",
+    "size": 11232,
+    "label": "簡単な、易しい",
+    "category": "vocab"
+  },
+  "5c8902a1cbe9eb00925d54ac49c31d06": {
+    "text": "муухай",
+    "file": "5c8902a1cbe9eb00925d54ac49c31d06.mp3",
+    "size": 11232,
+    "label": "醜い、ひどい、不快な",
+    "category": "vocab"
+  },
+  "ead42736a4b59bf6532781cf15e2bfd1": {
+    "text": "цагаан",
+    "file": "ead42736a4b59bf6532781cf15e2bfd1.mp3",
+    "size": 11232,
+    "label": "白い、白色",
+    "category": "vocab"
+  },
+  "6fc28b520886f7ad9b3b14e36a8b0e03": {
+    "text": "арван нэг",
+    "file": "6fc28b520886f7ad9b3b14e36a8b0e03.mp3",
+    "size": 11232,
+    "label": "11（十一）",
+    "category": "vocab"
+  },
+  "5e7fd8fed3305a2c1088f9e0eac803cd": {
+    "text": "хорь",
+    "file": "5e7fd8fed3305a2c1088f9e0eac803cd.mp3",
+    "size": 11232,
+    "label": "20（二十）",
+    "category": "vocab"
+  },
+  "28e4b46712c009ae99990ee101cea4a6": {
+    "text": "арван хоёр",
+    "file": "28e4b46712c009ae99990ee101cea4a6.mp3",
+    "size": 11232,
+    "label": "12（十二）",
+    "category": "vocab"
+  },
+  "a66bc49738ca405f0c1766f4d6b98ef4": {
+    "text": "гуч",
+    "file": "a66bc49738ca405f0c1766f4d6b98ef4.mp3",
+    "size": 11232,
+    "label": "30（三十）",
+    "category": "vocab"
+  },
+  "2078d57f0031ba72b1e8133271661625": {
+    "text": "хорин нэг",
+    "file": "2078d57f0031ba72b1e8133271661625.mp3",
+    "size": 11232,
+    "label": "21（二十一）",
+    "category": "vocab"
+  },
+  "8965afd1221ba0c59938385159b6ead1": {
+    "text": "дөч",
+    "file": "8965afd1221ba0c59938385159b6ead1.mp3",
+    "size": 11232,
+    "label": "40（四十）",
+    "category": "vocab"
+  },
+  "3348a3aa8b056f035a1b59b4da41062c": {
+    "text": "тавь",
+    "file": "3348a3aa8b056f035a1b59b4da41062c.mp3",
+    "size": 11232,
+    "label": "50（五十）",
+    "category": "vocab"
+  },
+  "cbc3782aa122eeea60cb322420b4e439": {
+    "text": "дөчин хоёр",
+    "file": "cbc3782aa122eeea60cb322420b4e439.mp3",
+    "size": 11232,
+    "label": "42（四十二）",
+    "category": "vocab"
+  },
+  "9fa47e1a6f72629717df3b1f560d66d2": {
+    "text": "гучин нэг",
+    "file": "9fa47e1a6f72629717df3b1f560d66d2.mp3",
+    "size": 11232,
+    "label": "31（三十一）",
+    "category": "vocab"
+  },
+  "c28b67d0351aae29aed41755558fec68": {
+    "text": "жар",
+    "file": "c28b67d0351aae29aed41755558fec68.mp3",
+    "size": 11232,
+    "label": "60（六十）",
+    "category": "vocab"
+  },
+  "c1d99969cddf5f54d1e94cf795457abf": {
+    "text": "дал",
+    "file": "c1d99969cddf5f54d1e94cf795457abf.mp3",
+    "size": 11232,
+    "label": "70（七十）",
+    "category": "vocab"
+  },
+  "b0c247e9d724fc6656b9ee64ba844e77": {
+    "text": "ная",
+    "file": "b0c247e9d724fc6656b9ee64ba844e77.mp3",
+    "size": 11232,
+    "label": "80（八十）",
+    "category": "vocab"
+  },
+  "d345f1ffeddc342acb04d865aa4b9b33": {
+    "text": "зуу",
+    "file": "d345f1ffeddc342acb04d865aa4b9b33.mp3",
+    "size": 11232,
+    "label": "100（百）",
+    "category": "vocab"
+  },
+  "29f97d522ca21f849d920ce39360785a": {
+    "text": "ер",
+    "file": "29f97d522ca21f849d920ce39360785a.mp3",
+    "size": 11232,
+    "label": "90（九十）",
+    "category": "vocab"
+  }
+}

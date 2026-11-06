@@ -1,0 +1,93 @@
+[
+  {
+    "id": "v_gen_1",
+    "mongolian": "аав",
+    "japanese": "お父さん、父",
+    "pronunciation": "アーウ",
+    "root": "",
+    "pos": "名詞",
+    "category": "家族・人称",
+    "priority": "★★★",
+    "exampleMn": "аав.",
+    "exampleJa": "お父さん、父。",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_22",
+    "mongolian": "амс(ах)",
+    "japanese": "味わう、味見する",
+    "pronunciation": "アムサハ",
+    "root": "амс-",
+    "pos": "動詞",
+    "category": "動詞・動作",
+    "priority": "★★",
+    "exampleMn": "амс(ах).",
+    "exampleJa": "味わう、味見する。",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_56",
+    "mongolian": "биз дээ",
+    "japanese": "〜でしょう、〜ですよね",
+    "pronunciation": "ビズ デー",
+    "root": "",
+    "pos": "助詞",
+    "category": "文法・表現",
+    "priority": "★★★",
+    "exampleMn": "биз дээ.",
+    "exampleJa": "〜でしょう、〜ですよね。",
+    "note": "品詞: 助詞"
+  },
+  {
+    "id": "v_gen_108",
+    "mongolian": "гэрлэ(х)",
+    "japanese": "結婚する",
+    "pronunciation": "ゲルレハ",
+    "root": "гэрлэ-",
+    "pos": "動詞",
+    "category": "家族・人生",
+    "priority": "★★",
+    "exampleMn": "гэрлэ(х).",
+    "exampleJa": "結婚する。",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_163",
+    "mongolian": "заримдаа",
+    "japanese": "時々、たまに",
+    "pronunciation": "ザリムダー",
+    "root": "",
+    "pos": "副詞",
+    "category": "時間・頻度",
+    "priority": "★★★",
+    "exampleMn": "заримдаа.",
+    "exampleJa": "時々、たまに。",
+    "note": "品詞: 副詞"
+  },
+  {
+    "id": "v_gen_216",
+    "mongolian": "мах(н)",
+    "japanese": "肉",
+    "pronunciation": "マハ",
+    "root": "мах(н)",
+    "pos": "名詞",
+    "category": "飲食・食材",
+    "priority": "★★★",
+    "exampleMn": "мах(н).",
+    "exampleJa": "肉。",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_247",
+    "mongolian": "нөгөөдөр",
+    "japanese": "明後日",
+    "pronunciation": "ノゴードル",
+    "root": "",
+    "pos": "名詞・副詞",
+    "category": "時間・暦",
+    "priority": "★★★",
+    "exampleMn": "нөгөөдөр.",
+    "exampleJa": "明後日。",
+    "note": "品詞: 名詞・副詞"
+  }
+]

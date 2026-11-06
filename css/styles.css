@@ -1,0 +1,143 @@
+/* Монгол хэл｜モンゴル語学習ノート - スタイルシート */
+
+:root {
+  --primary: #059669;
+  --primary-light: #ecfdf5;
+  --secondary: #0284c7;
+  --secondary-light: #f0f9ff;
+  --accent: #f59e0b;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --bg-main: #f8fafc;
+  --card-bg: #ffffff;
+  --danger: #ef4444;
+  --danger-light: #fef2f2;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Arial", "Noto Sans", sans-serif;
+  color: var(--text-main);
+  background-color: var(--bg-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-bottom: 5rem; /* スマホ下部バー用余白 */
+}
+
+/* モンゴル語キリル文字の視認性向上フォント */
+.cyrillic-text {
+  font-family: "Segoe UI", "Calibri", "Arial", "Noto Sans", sans-serif;
+  font-feature-settings: "kern" 1;
+}
+
+/* 3Dカードフリップ */
+.flip-card {
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* Duolingo風ぷにっとしたボタン押し感 */
+.btn-bouncy {
+  transition: all 0.1s ease;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+}
+.btn-bouncy:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+
+/* スクロールバーの非表示（モバイル横スクロール等） */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* HAMARU風 ドロップバトル アニメーション */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes laser-glow {
+  0% { opacity: 0.9; filter: drop-shadow(0 0 8px #38bdf8); }
+  50% { opacity: 1; filter: drop-shadow(0 0 16px #facc15); }
+  100% { opacity: 0.9; filter: drop-shadow(0 0 8px #38bdf8); }
+}
+
+.laser-beam-active {
+  animation: laser-glow 0.2s infinite alternate;
+}
+
+/* アラート・注意バッジ（赤字強調） */
+.rule-alert {
+  border-left: 4px solid #ef4444;
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+
+.rule-tip {
+  border-left: 4px solid #059669;
+  background-color: #ecfdf5;
+  color: #065f46;
+}
+
+.rule-note {
+  border-left: 4px solid #0284c7;
+  background-color: #f0f9ff;
+  color: #075985;
+}
+
+/* スマホ用ボトムナビゲーション */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid #e2e8f0;
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}

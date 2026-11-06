@@ -1,0 +1,2072 @@
+[
+  {
+    "id": "v_gen_63",
+    "mongolian": "Боolгүй яах вэ.",
+    "japanese": "Боolгүй яах вэ.（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_183",
+    "mongolian": "Зуунмод хот",
+    "japanese": "Зуунмод хот（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_291",
+    "mongolian": "өдрийн хоол(н)",
+    "japanese": "өдрийн хоол(н)（モンゴル語教科書語彙）",
+    "root": "өдрийн хоол(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_292",
+    "mongolian": "өлс(өх)",
+    "japanese": "өлс(өх)（モンゴル語教科書語彙）",
+    "root": "өлс-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_293",
+    "mongolian": "өмс(өх)",
+    "japanese": "өмс(өх)（モンゴル語教科書語彙）",
+    "root": "өмс-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_294",
+    "mongolian": "өнгө",
+    "japanese": "өнгө（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_295",
+    "mongolian": "өнгөр(өх)",
+    "japanese": "өнгөр(өх)（モンゴル語教科書語彙）",
+    "root": "өнгөр-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_296",
+    "mongolian": "өнгөрсөн долоо хоног",
+    "japanese": "өнгөрсөн долоо хоног（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_297",
+    "mongolian": "өндөр",
+    "japanese": "өндөр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_299",
+    "mongolian": "өөр",
+    "japanese": "өөр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_300",
+    "mongolian": "өөөрийгөө танилцуул(ах)",
+    "japanese": "өөөрийгөө танилцуул(ах)（モンゴル語教科書語彙）",
+    "root": "танилцуул-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_301",
+    "mongolian": "өргөн",
+    "japanese": "өргөн（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_302",
+    "mongolian": "өрөө",
+    "japanese": "өрөө（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_318",
+    "mongolian": "соёл",
+    "japanese": "соёл（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_319",
+    "mongolian": "соли(х), соль",
+    "japanese": "соли(х), соль（モンゴル語教科書語彙）",
+    "root": "соль-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_320",
+    "mongolian": "Солонгос",
+    "japanese": "Солонгос（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_322",
+    "mongolian": "сонин хачин",
+    "japanese": "сонин хачин（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_323",
+    "mongolian": "сонирхолтой",
+    "japanese": "сонирхолтой（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "形容詞",
+    "pronunciation": "",
+    "note": "品詞: 形容詞"
+  },
+  {
+    "id": "v_gen_324",
+    "mongolian": "сонс(ох)",
+    "japanese": "сонс(ох)（モンゴル語教科書語彙）",
+    "root": "сонс-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_325",
+    "mongolian": "соруул",
+    "japanese": "соруул（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_326",
+    "mongolian": "спорт",
+    "japanese": "спорт（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_327",
+    "mongolian": "сувилагч",
+    "japanese": "сувилагч（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_328",
+    "mongolian": "сул өрөө",
+    "japanese": "сул өрөө（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_329",
+    "mongolian": "сул суудал",
+    "japanese": "сул суудал（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_330",
+    "mongolian": "сум",
+    "japanese": "сум（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_331",
+    "mongolian": "сур(ах)",
+    "japanese": "сур(ах)（モンゴル語教科書語彙）",
+    "root": "сур-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_332",
+    "mongolian": "сурагч",
+    "japanese": "сурагч（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_333",
+    "mongolian": "сурах бичиг",
+    "japanese": "сурах бичиг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_334",
+    "mongolian": "сургалтад суу(х)",
+    "japanese": "сургалтад суу(х)（モンゴル語教科書語彙）",
+    "root": "суу-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_335",
+    "mongolian": "сургалтгүй үед",
+    "japanese": "сургалтгүй үед（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_337",
+    "mongolian": "суу(х)",
+    "japanese": "суу(х)（モンゴル語教科書語彙）",
+    "root": "суу-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_338",
+    "mongolian": "сүү",
+    "japanese": "сүү（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_339",
+    "mongolian": "сүүлийн",
+    "japanese": "сүүлийн（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_340",
+    "mongolian": "Сүхбаатарын талбай",
+    "japanese": "Сүхбаатарын талбай（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_341",
+    "mongolian": "сэл(эх)",
+    "japanese": "сэл(эх)（モンゴル語教科書語彙）",
+    "root": "сэл-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_342",
+    "mongolian": "Сэлэнгэ аймаг",
+    "japanese": "Сэлэнгэ аймаг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_343",
+    "mongolian": "Сэргэлэн сум",
+    "japanese": "Сэргэлэн сум（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_344",
+    "mongolian": "сэрээ",
+    "japanese": "сэрээ（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_356",
+    "mongolian": "тамхи тат(ах)",
+    "japanese": "тамхи тат(ах)（モンゴル語教科書語彙）",
+    "root": "тат-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_357",
+    "mongolian": "тамхины цэг",
+    "japanese": "тамхины цэг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_358",
+    "mongolian": "танилцъя",
+    "japanese": "танилцъя（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_359",
+    "mongolian": "тасалбар",
+    "japanese": "тасалбар（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_360",
+    "mongolian": "тахиа",
+    "japanese": "тахиа（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_361",
+    "mongolian": "Тийм үү?",
+    "japanese": "Тийм үү?（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_362",
+    "mongolian": "тогло(х)",
+    "japanese": "тогло(х)（モンゴル語教科書語彙）",
+    "root": "тогло-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_363",
+    "mongolian": "тоглоом",
+    "japanese": "тоглоом（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_364",
+    "mongolian": "Токио(г)",
+    "japanese": "Токио(г)（モンゴル語教科書語彙）",
+    "root": "Токио(г)",
+    "pos": "名詞（隠れг）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れг）"
+  },
+  {
+    "id": "v_gen_365",
+    "mongolian": "толгой",
+    "japanese": "толгой（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_367",
+    "mongolian": "том",
+    "japanese": "том（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_368",
+    "mongolian": "тор(н), уут(н)",
+    "japanese": "тор(н), уут(н)（モンゴル語教科書語彙）",
+    "root": "тор, уут(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_369",
+    "mongolian": "төв",
+    "japanese": "төв（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_370",
+    "mongolian": "Төв аймаг",
+    "japanese": "Төв аймаг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_371",
+    "mongolian": "төгрөг",
+    "japanese": "төгрөг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_372",
+    "mongolian": "төгс(өх)",
+    "japanese": "төгс(өх)（モンゴル語教科書語彙）",
+    "root": "төгс-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_373",
+    "mongolian": "төл(өх)",
+    "japanese": "төл(өх)（モンゴル語教科書語彙）",
+    "root": "төл-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_374",
+    "mongolian": "төмс(н)",
+    "japanese": "төмс(н)（モンゴル語教科書語彙）",
+    "root": "төмс(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_375",
+    "mongolian": "төр(өх)",
+    "japanese": "төр(өх)（モンゴル語教科書語彙）",
+    "root": "төр-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_376",
+    "mongolian": "төрсөн нутаг",
+    "japanese": "төрсөн нутаг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_377",
+    "mongolian": "төрсөн өдөр",
+    "japanese": "төрсөн өдөр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "時間・暦名詞",
+    "pronunciation": "",
+    "note": "品詞: 時間・暦名詞"
+  },
+  {
+    "id": "v_gen_378",
+    "mongolian": "тухай",
+    "japanese": "тухай（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_379",
+    "mongolian": "түлхүүр",
+    "japanese": "түлхүүр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_380",
+    "mongolian": "түр ороод гар(ах)",
+    "japanese": "түр ороод гар(ах)（モンゴル語教科書語彙）",
+    "root": "гар-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_381",
+    "mongolian": "түүхий загас(н)",
+    "japanese": "түүхий загас(н)（モンゴル語教科書語彙）",
+    "root": "түүхий загас(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_382",
+    "mongolian": "тэг(эх)",
+    "japanese": "тэг(эх)（モンゴル語教科書語彙）",
+    "root": "тэг-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_383",
+    "mongolian": "тэгвэл",
+    "japanese": "тэгвэл（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_384",
+    "mongolian": "тэгээд",
+    "japanese": "тэгээд（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_385",
+    "mongolian": "тэмцээн",
+    "japanese": "тэмцээн（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_386",
+    "mongolian": "тэмээ",
+    "japanese": "тэмээ（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_387",
+    "mongolian": "тэнгэр",
+    "japanese": "тэнгэр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_400",
+    "mongolian": "уржигдар",
+    "japanese": "уржигдар（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_401",
+    "mongolian": "усан бассейн",
+    "japanese": "усан бассейн（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_402",
+    "mongolian": "усан онгоц(н)",
+    "japanese": "усан онгоц(н)（モンゴル語教科書語彙）",
+    "root": "усан онгоц(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_403",
+    "mongolian": "усанд ор(ох)",
+    "japanese": "усанд ор(ох)（モンゴル語教科書語彙）",
+    "root": "ор-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_404",
+    "mongolian": "утасны дугаар",
+    "japanese": "утасны дугаар（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_405",
+    "mongolian": "утга",
+    "japanese": "утга（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_406",
+    "mongolian": "утсаар яри(х), ярь",
+    "japanese": "утсаар яри(х), ярь（モンゴル語教科書語彙）",
+    "root": "ярь-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_407",
+    "mongolian": "уу(х)",
+    "japanese": "уу(х)（モンゴル語教科書語彙）",
+    "root": "уу-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_408",
+    "mongolian": "уулз(ах)",
+    "japanese": "уулз(ах)（モンゴル語教科書語彙）",
+    "root": "уулз-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_409",
+    "mongolian": "уулзацгаая",
+    "japanese": "уулзацгаая（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_420",
+    "mongolian": "үнэтэй юм аа",
+    "japanese": "үнэтэй юм аа（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_421",
+    "mongolian": "үсчин",
+    "japanese": "үсчин（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_422",
+    "mongolian": "үсээ засуул(ах)",
+    "japanese": "үсээ засуул(ах)（モンゴル語教科書語彙）",
+    "root": "засуул-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_423",
+    "mongolian": "үүүл(н)",
+    "japanese": "үүүл(н)（モンゴル語教科書語彙）",
+    "root": "үүүл(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_424",
+    "mongolian": "үхэр",
+    "japanese": "үхэр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_425",
+    "mongolian": "фитнес",
+    "japanese": "фитнес（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_426",
+    "mongolian": "Франц",
+    "japanese": "Франц（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_437",
+    "mongolian": "хайрцаг(н)",
+    "japanese": "хайрцаг(н)（モンゴル語教科書語彙）",
+    "root": "хайрцаг(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_438",
+    "mongolian": "халуун",
+    "japanese": "халуун（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_439",
+    "mongolian": "халбага",
+    "japanese": "халбага（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_440",
+    "mongolian": "халуун рашаан",
+    "japanese": "халуун рашаан（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_441",
+    "mongolian": "халуунаа үз(эх)",
+    "japanese": "халуунаа үз(эх)（モンゴル語教科書語彙）",
+    "root": "үз-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_442",
+    "mongolian": "халуур(ах)",
+    "japanese": "халуур(ах)（モンゴル語教科書語彙）",
+    "root": "халуур-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_443",
+    "mongolian": "халууц(ах)",
+    "japanese": "халууц(ах)（モンゴル語教科書語彙）",
+    "root": "халууц-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_444",
+    "mongolian": "хамгийн",
+    "japanese": "хамгийн（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_446",
+    "mongolian": "хана(н)",
+    "japanese": "хана(н)（モンゴル語教科書語彙）",
+    "root": "хана(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_447",
+    "mongolian": "ханиад хүр(эх)",
+    "japanese": "ханиад хүр(эх)（モンゴル語教科書語彙）",
+    "root": "хүр-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_448",
+    "mongolian": "хар",
+    "japanese": "хар（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_449",
+    "mongolian": "харагд(ах)",
+    "japanese": "харагд(ах)（モンゴル語教科書語彙）",
+    "root": "харагд-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_451",
+    "mongolian": "харанхуй",
+    "japanese": "харанхуй（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_452",
+    "mongolian": "хари(х)",
+    "japanese": "хари(х)（モンゴル語教科書語彙）",
+    "root": "хари-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_454",
+    "mongolian": "харин",
+    "japanese": "харин（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_455",
+    "mongolian": "харшил хөдлө(х), хөдөл",
+    "japanese": "харшил хөдлө(х), хөдөл（モンゴル語教科書語彙）",
+    "root": "хөдөл-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_456",
+    "mongolian": "хасах 30 хэм",
+    "japanese": "хасах 30 хэм（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_457",
+    "mongolian": "хий(х)",
+    "japanese": "хий(х)（モンゴル語教科書語彙）",
+    "root": "хий-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_458",
+    "mongolian": "хичээл",
+    "japanese": "хичээл（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_459",
+    "mongolian": "хоёрдахь өдөр",
+    "japanese": "хоёрдахь өдөр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "時間・暦名詞",
+    "pronunciation": "",
+    "note": "品詞: 時間・暦名詞"
+  },
+  {
+    "id": "v_gen_460",
+    "mongolian": "хол",
+    "japanese": "хол（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_461",
+    "mongolian": "хоног",
+    "japanese": "хоног（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_462",
+    "mongolian": "хоно(х)",
+    "japanese": "хоно(х)（モンゴル語教科書語彙）",
+    "root": "хоно-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_463",
+    "mongolian": "хонь(н)",
+    "japanese": "хонь(н)（モンゴル語教科書語彙）",
+    "root": "хонь(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_465",
+    "mongolian": "хоолны цэс, меню(н)",
+    "japanese": "хоолны цэс, меню(н)（モンゴル語教科書語彙）",
+    "root": "хоолны цэс, меню(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_466",
+    "mongolian": "хоолой",
+    "japanese": "хоолой（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_467",
+    "mongolian": "хоолойгоо зайл(ах)",
+    "japanese": "хоолойгоо зайл(ах)（モンゴル語教科書語彙）",
+    "root": "зайл-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_468",
+    "mongolian": "хоолоор дайл(ах)",
+    "japanese": "хоолоор дайл(ах)（モンゴル語教科書語彙）",
+    "root": "дайл-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_469",
+    "mongolian": "хот",
+    "japanese": "хот（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_470",
+    "mongolian": "хотын захиргаа",
+    "japanese": "хотын захиргаа（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_471",
+    "mongolian": "хөгжилтэй",
+    "japanese": "хөгжилтэй（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "形容詞",
+    "pronunciation": "",
+    "note": "品詞: 形容詞"
+  },
+  {
+    "id": "v_gen_472",
+    "mongolian": "хөгжим",
+    "japanese": "хөгжим（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_473",
+    "mongolian": "хөдөө(н)",
+    "japanese": "хөдөө(н)（モンゴル語教科書語彙）",
+    "root": "хөдөө(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_474",
+    "mongolian": "хөл бөмбөг",
+    "japanese": "хөл бөмбөг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_475",
+    "mongolian": "хувцас соли(х), соль",
+    "japanese": "хувцас соли(х), соль（モンゴル語教科書語彙）",
+    "root": "соль-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_476",
+    "mongolian": "хувцас(н)",
+    "japanese": "хувцас(н)（モンゴル語教科書語彙）",
+    "root": "хувцас(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_477",
+    "mongolian": "худалдагч",
+    "japanese": "худалдагч（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_478",
+    "mongolian": "худалд(ах)",
+    "japanese": "худалд(ах)（モンゴル語教科書語彙）",
+    "root": "худалд-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_479",
+    "mongolian": "хурал",
+    "japanese": "хурал（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_480",
+    "mongolian": "хурдан",
+    "japanese": "хурдан（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_481",
+    "mongolian": "хурдан эдгээрэй",
+    "japanese": "хурдан эдгээрэй（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_482",
+    "mongolian": "хурлын танхим",
+    "japanese": "хурлын танхим（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_483",
+    "mongolian": "хутга(н)",
+    "japanese": "хутга(н)（モンゴル語教科書語彙）",
+    "root": "хутга(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_484",
+    "mongolian": "хуудас",
+    "japanese": "хуудас（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_485",
+    "mongolian": "хуушуур",
+    "japanese": "хуушуур（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_486",
+    "mongolian": "хүйтрэ(х), хүйтэр",
+    "japanese": "хүйтрэ(х), хүйтэр（モンゴル語教科書語彙）",
+    "root": "хүйтэр-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_488",
+    "mongolian": "хүлээ(х)",
+    "japanese": "хүлээ(х)（モンゴル語教科書語彙）",
+    "root": "хүлээ-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_489",
+    "mongolian": "хүн ам",
+    "japanese": "хүн ам（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_490",
+    "mongolian": "хүндрэ(х), хүндэр",
+    "japanese": "хүндрэ(х), хүндэр（モンゴル語教科書語彙）",
+    "root": "хүндэр-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_491",
+    "mongolian": "хүнс(н)",
+    "japanese": "хүнс(н)（モンゴル語教科書語彙）",
+    "root": "хүнс(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_492",
+    "mongolian": "хүнсний дэлгүүр",
+    "japanese": "хүнсний дэлгүүр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_493",
+    "mongolian": "хүртэл",
+    "japanese": "хүртэл（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_494",
+    "mongolian": "хүс(эх)",
+    "japanese": "хүс(эх)（モンゴル語教科書語彙）",
+    "root": "хүс-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_495",
+    "mongolian": "хүү(г)",
+    "japanese": "хүү(г)（モンゴル語教科書語彙）",
+    "root": "хүү(г)",
+    "pos": "名詞（隠れг）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れг）"
+  },
+  {
+    "id": "v_gen_496",
+    "mongolian": "Хүүхдийн баяр",
+    "japanese": "Хүүхдийн баяр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_497",
+    "mongolian": "хүүхэд",
+    "japanese": "хүүхэд（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_498",
+    "mongolian": "хэд",
+    "japanese": "хэд（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_499",
+    "mongolian": "хэддэх өдөр",
+    "japanese": "хэддэх өдөр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "時間・暦名詞",
+    "pronunciation": "",
+    "note": "品詞: 時間・暦名詞"
+  },
+  {
+    "id": "v_gen_500",
+    "mongolian": "хэдүүлээ",
+    "japanese": "хэдүүлээ（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_504",
+    "mongolian": "хэл(эх)",
+    "japanese": "хэл(эх)（モンゴル語教科書語彙）",
+    "root": "хэл-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_505",
+    "mongolian": "хэм, градус",
+    "japanese": "хэм, градус（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_507",
+    "mongolian": "хэр зэрэг",
+    "japanese": "хэр зэрэг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_508",
+    "mongolian": "хэрэв",
+    "japanese": "хэрэв（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_509",
+    "mongolian": "хэрэглэ(х)",
+    "japanese": "хэрэглэ(х)（モンゴル語教科書語彙）",
+    "root": "хэрэглэ-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_510",
+    "mongolian": "хэрэгтэй",
+    "japanese": "хэрэгтэй（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "形容詞",
+    "pronunciation": "",
+    "note": "品詞: 形容詞"
+  },
+  {
+    "id": "v_gen_511",
+    "mongolian": "хэцүү",
+    "japanese": "хэцүү（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_512",
+    "mongolian": "хямдра(х), хямдар",
+    "japanese": "хямдра(х), хямдар（モンゴル語教科書語彙）",
+    "root": "хямдар-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_513",
+    "mongolian": "хямдруул(ах)",
+    "japanese": "хямдруул(ах)（モンゴル語教科書語彙）",
+    "root": "хямдруул-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_514",
+    "mongolian": "хямдхан",
+    "japanese": "хямдхан（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "形容詞",
+    "pronunciation": "",
+    "note": "品詞: 形容詞"
+  },
+  {
+    "id": "v_gen_515",
+    "mongolian": "Хятад",
+    "japanese": "Хятад（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_527",
+    "mongolian": "цайны газар",
+    "japanese": "цайны газар（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_528",
+    "mongolian": "цанга(х)",
+    "japanese": "цанга(х)（モンゴル語教科書語彙）",
+    "root": "цанга-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_529",
+    "mongolian": "цас(н)",
+    "japanese": "цас(н)（モンゴル語教科書語彙）",
+    "root": "цас(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_530",
+    "mongolian": "цонх(н)",
+    "japanese": "цонх(н)（モンゴル語教科書語彙）",
+    "root": "цонх(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_532",
+    "mongolian": "цэвэрлэ(х)",
+    "japanese": "цэвэрлэ(х)（モンゴル語教科書語彙）",
+    "root": "цэвэрлэ-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_533",
+    "mongolian": "цэвэрхэн",
+    "japanese": "цэвэрхэн（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "形容詞",
+    "pronunciation": "",
+    "note": "品詞: 形容詞"
+  },
+  {
+    "id": "v_gen_534",
+    "mongolian": "цэлмэг",
+    "japanese": "цэлмэг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_535",
+    "mongolian": "цэцэг",
+    "japanese": "цэцэг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_536",
+    "mongolian": "цэцэглэ(х)",
+    "japanese": "цэцэглэ(х)（モンゴル語教科書語彙）",
+    "root": "цэцэглэ-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_537",
+    "mongolian": "цэцэрлэгт хүрээлэн(г)",
+    "japanese": "цэцэрлэгт хүрээлэн(г)（モンゴル語教科書語彙）",
+    "root": "цэцэрлэгт хүрээлэн(г)",
+    "pos": "名詞（隠れг）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れг）"
+  },
+  {
+    "id": "v_gen_538",
+    "mongolian": "цээжл(эх)",
+    "japanese": "цээжл(эх)（モンゴル語教科書語彙）",
+    "root": "цээжл-",
+    "pos": "動詞",
+    "pronunciation": "",
+    "note": "品詞: 動詞"
+  },
+  {
+    "id": "v_gen_554",
+    "mongolian": "шөнө",
+    "japanese": "шөнө（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_555",
+    "mongolian": "шууд нислэг",
+    "japanese": "шууд нислэг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_556",
+    "mongolian": "шуудан(г)",
+    "japanese": "шуудан(г)（モンゴル語教科書語彙）",
+    "root": "шуудан(г)",
+    "pos": "名詞（隠れг）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れг）"
+  },
+  {
+    "id": "v_gen_557",
+    "mongolian": "шүд(н)",
+    "japanese": "шүд(н)（モンゴル語教科書語彙）",
+    "root": "шүд(н)",
+    "pos": "名詞（隠れн）",
+    "pronunciation": "",
+    "note": "品詞: 名詞（隠れн）"
+  },
+  {
+    "id": "v_gen_558",
+    "mongolian": "шүршүүр",
+    "japanese": "шүршүүр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_560",
+    "mongolian": "шүхэр",
+    "japanese": "шүхэр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_573",
+    "mongolian": "энэ долоо хоног",
+    "japanese": "энэ долоо хоног（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_574",
+    "mongolian": "Эрдэнэт хот",
+    "japanese": "Эрдэнэт хот（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_575",
+    "mongolian": "эрт",
+    "japanese": "эрт（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_576",
+    "mongolian": "эрүүл мэнд",
+    "japanese": "эрүүл мэнд（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_577",
+    "mongolian": "эрэгтэй",
+    "japanese": "эрэгтэй（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "形容詞",
+    "pronunciation": "",
+    "note": "品詞: 形容詞"
+  },
+  {
+    "id": "v_gen_578",
+    "mongolian": "эсвэл",
+    "japanese": "эсвэл（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_579",
+    "mongolian": "эхлэ(х), эхэл",
+    "japanese": "эхлэ(х), эхэл（モンゴル語教科書語彙）",
+    "root": "эхэл-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_580",
+    "mongolian": "эхлээд",
+    "japanese": "эхлээд（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_581",
+    "mongolian": "эхнэр",
+    "japanese": "эхнэр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_582",
+    "mongolian": "ээж",
+    "japanese": "ээж（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_598",
+    "mongolian": "ямар",
+    "japanese": "ямар（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_599",
+    "mongolian": "ямар гараг",
+    "japanese": "ямар гараг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "時間・暦名詞",
+    "pronunciation": "",
+    "note": "品詞: 時間・暦名詞"
+  },
+  {
+    "id": "v_gen_600",
+    "mongolian": "ямар нэг",
+    "japanese": "ямар нэг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_601",
+    "mongolian": "ямар үнэтэй",
+    "japanese": "ямар үнэтэй（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "形容詞",
+    "pronunciation": "",
+    "note": "品詞: 形容詞"
+  },
+  {
+    "id": "v_gen_602",
+    "mongolian": "янз бүрийн",
+    "japanese": "янз бүрийн（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_603",
+    "mongolian": "Япон",
+    "japanese": "Япон（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_604",
+    "mongolian": "яри(х), ярь",
+    "japanese": "яри(х), ярь（モンゴル語教科書語彙）",
+    "root": "ярь-",
+    "pos": "動詞句",
+    "pronunciation": "",
+    "note": "品詞: 動詞句"
+  },
+  {
+    "id": "v_gen_609",
+    "mongolian": "цаас",
+    "japanese": "цаас（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_614",
+    "mongolian": "мөнгө",
+    "japanese": "мөнгө（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_619",
+    "mongolian": "оймс",
+    "japanese": "оймс（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_620",
+    "mongolian": "ус",
+    "japanese": "ус（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_622",
+    "mongolian": "цай",
+    "japanese": "цай（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_624",
+    "mongolian": "архи",
+    "japanese": "архи（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_625",
+    "mongolian": "ногоо",
+    "japanese": "ногоо（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_626",
+    "mongolian": "боов",
+    "japanese": "боов（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_627",
+    "mongolian": "өндөг",
+    "japanese": "өндөг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_628",
+    "mongolian": "будаа",
+    "japanese": "будаа（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_630",
+    "mongolian": "гуанз",
+    "japanese": "гуанз（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_631",
+    "mongolian": "морь",
+    "japanese": "морь（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_632",
+    "mongolian": "хонь",
+    "japanese": "хонь（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_634",
+    "mongolian": "ямаа",
+    "japanese": "ямаа（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_638",
+    "mongolian": "нохой",
+    "japanese": "нохой（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_643",
+    "mongolian": "өчиグдөр",
+    "japanese": "өчиグдөр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_649",
+    "mongolian": "үдээс өмнө",
+    "japanese": "үдээс өмнө（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_654",
+    "mongolian": "дөрөвдэхь өдөр",
+    "japanese": "дөрөвдэхь өдөр（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "時間・暦名詞",
+    "pronunciation": "",
+    "note": "品詞: 時間・暦名詞"
+  },
+  {
+    "id": "v_gen_661",
+    "mongolian": "эрэгтэй хүн",
+    "japanese": "эрэгтэй хүн（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_662",
+    "mongolian": "эмэгтэй хүн",
+    "japanese": "эмэгтэй хүн（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_664",
+    "mongolian": "оюуタン",
+    "japanese": "оюуタン（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_668",
+    "mongolian": "шуудан",
+    "japanese": "шуудан（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_674",
+    "mongolian": "автобус",
+    "japanese": "автобус（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_675",
+    "mongolian": "галт тэрэг",
+    "japanese": "галт тэрэг（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_676",
+    "mongolian": "онгоц",
+    "japanese": "онгоц（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_677",
+    "mongolian": "Монгол улс",
+    "japanese": "Монгол улс（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_678",
+    "mongolian": "Япон хэл",
+    "japanese": "Япон хэл（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "連語・句",
+    "pronunciation": "",
+    "note": "品詞: 連語・句"
+  },
+  {
+    "id": "v_gen_679",
+    "mongolian": "уул",
+    "japanese": "уул（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_680",
+    "mongolian": "үүл",
+    "japanese": "үүл（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_681",
+    "mongolian": "цас",
+    "japanese": "цас（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_683",
+    "mongolian": "халууン",
+    "japanese": "халууン（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_687",
+    "mongolian": "урт",
+    "japanese": "урт（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_688",
+    "mongolian": "богино",
+    "japanese": "богино（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_691",
+    "mongolian": "сайн",
+    "japanese": "сайн（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_692",
+    "mongolian": "муу",
+    "japanese": "муу（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_693",
+    "mongolian": "сайхан",
+    "japanese": "сайхан（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "形容詞",
+    "pronunciation": "",
+    "note": "品詞: 形容詞"
+  },
+  {
+    "id": "v_gen_694",
+    "mongolian": "муухай",
+    "japanese": "муухай（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_696",
+    "mongolian": "амархан",
+    "japanese": "амархан（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "形容詞",
+    "pronunciation": "",
+    "note": "品詞: 形容詞"
+  },
+  {
+    "id": "v_gen_698",
+    "mongolian": "цагаан",
+    "japanese": "цагаан（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  },
+  {
+    "id": "v_gen_700",
+    "mongolian": "шар",
+    "japanese": "шар（モンゴル語教科書語彙）",
+    "root": "",
+    "pos": "名詞",
+    "pronunciation": "",
+    "note": "品詞: 名詞"
+  }
+]

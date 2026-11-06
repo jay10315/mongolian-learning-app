@@ -1,0 +1,168 @@
+{
+  "total_words": 744,
+  "total_with_parentheses": 215,
+  "total_verbs": 206,
+  "verbs_without_root_count": 3,
+  "verbs_without_root_samples": [
+    {
+      "id": "v_2_21",
+      "mongolian": "байхгүй",
+      "pos": "動詞",
+      "japanese": "ない、いない"
+    },
+    {
+      "id": "v_13_2",
+      "mongolian": "болохгүй",
+      "pos": "動詞",
+      "japanese": "〜してはいけない（禁止）"
+    },
+    {
+      "id": "v_gen_64",
+      "mongolian": "болчихлоо",
+      "pos": "動詞形",
+      "japanese": "できました、完了しました"
+    }
+  ],
+  "parentheses_samples": [
+    {
+      "id": "v_2_2",
+      "mongolian": "цаас(н)",
+      "pos": "名詞",
+      "root": "",
+      "japanese": "紙"
+    },
+    {
+      "id": "v_num_3",
+      "mongolian": "гурав (名詞前: гурван)",
+      "pos": "数詞",
+      "root": "",
+      "japanese": "3（みっつ）"
+    },
+    {
+      "id": "v_num_4",
+      "mongolian": "дөрөв (名詞前: дөрвөн)",
+      "pos": "数詞",
+      "root": "",
+      "japanese": "4（よっつ）"
+    },
+    {
+      "id": "v_num_5",
+      "mongolian": "тав (名詞前: таван)",
+      "pos": "数詞",
+      "root": "",
+      "japanese": "5（いつつ）"
+    },
+    {
+      "id": "v_num_6",
+      "mongolian": "зургаа (名詞前: зургаан)",
+      "pos": "数詞",
+      "root": "",
+      "japanese": "6（むっつ）"
+    },
+    {
+      "id": "v_num_7",
+      "mongolian": "долоо (名詞前: долоон)",
+      "pos": "数詞",
+      "root": "",
+      "japanese": "7（ななつ）"
+    },
+    {
+      "id": "v_num_8",
+      "mongolian": "найм (名詞前: найман)",
+      "pos": "数詞",
+      "root": "",
+      "japanese": "8（やっつ）"
+    },
+    {
+      "id": "v_num_9",
+      "mongolian": "ес (名詞前: есөн)",
+      "pos": "数詞",
+      "root": "",
+      "japanese": "9（ここのつ）"
+    },
+    {
+      "id": "v_num_10",
+      "mongolian": "арав (名詞前: арван)",
+      "pos": "数詞",
+      "root": "",
+      "japanese": "10（とお）"
+    },
+    {
+      "id": "v_3_14",
+      "mongolian": "хоол(н)",
+      "pos": "名詞",
+      "root": "",
+      "japanese": "料理、ご飯"
+    },
+    {
+      "id": "v_3_15",
+      "mongolian": "цай(н)",
+      "pos": "名詞",
+      "root": "",
+      "japanese": "お茶"
+    },
+    {
+      "id": "v_3_20",
+      "mongolian": "талх(н)",
+      "pos": "名詞",
+      "root": "",
+      "japanese": "パン"
+    },
+    {
+      "id": "v_4_2",
+      "mongolian": "хэл(н)",
+      "pos": "名詞",
+      "root": "",
+      "japanese": "言語、言葉、舌"
+    },
+    {
+      "id": "v_4_3",
+      "mongolian": "цүнх(н)",
+      "pos": "名詞",
+      "root": "",
+      "japanese": "鞄、バッグ"
+    },
+    {
+      "id": "v_12_1",
+      "mongolian": "онгоц(н)",
+      "pos": "名詞",
+      "root": "",
+      "japanese": "飛行機、船"
+    },
+    {
+      "id": "v_gen_2",
+      "mongolian": "ав(ах)",
+      "pos": "動詞",
+      "root": "ав-",
+      "japanese": "取る、買う、もらう"
+    },
+    {
+      "id": "v_gen_3",
+      "mongolian": "автобус(н)",
+      "pos": "名詞",
+      "root": "автобус(н)",
+      "japanese": "バス"
+    },
+    {
+      "id": "v_gen_4",
+      "mongolian": "автобуснаас буу(х)",
+      "pos": "動詞句",
+      "root": "буу-",
+      "japanese": "バスから降りる"
+    },
+    {
+      "id": "v_gen_5",
+      "mongolian": "авч яв(ах)",
+      "pos": "動詞句",
+      "root": "яв-",
+      "japanese": "持っていく、連れていく"
+    },
+    {
+      "id": "v_gen_8",
+      "mongolian": "ажилла(х)",
+      "pos": "動詞",
+      "root": "ажилла-",
+      "japanese": "働く、仕事をする"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+Total scripts: 4
+Has <div id='app'>: False
+Has <body>: True
+
+--- SCRIPT 0 (len: 408) ---
+<script>
+    // 古いPWAキャッシュをクリアして確実に最新744語・48文法データを読み込む
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        for (var reg of regs) {
+          reg.unregister();
+        }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys(
+...
+or.serviceWorker.getRegistrations().then(function(regs) {
+        for (var reg of regs) {
+          reg.unregister();
+        }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(function(keys) {
+        keys.forEach(function(k) { caches.delete(k); });
+      });
+    }
+  </script>
+
+--- SCRIPT 1 (len: 51) ---
+<script src="https://cdn.tailwindcss.com"></script>
+...
+<script src="https://cdn.tailwindcss.com"></script>
+
+--- SCRIPT 2 (len: 396) ---
+<script>
+    if (typeof tailwind !== 'undefined') {
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#ecfdf5',
+                100: '#d1fae5',
+                500: '#10b981',
+                600: '#059669',
+             
+...
+         extend: {
+            colors: {
+              brand: {
+                50: '#ecfdf5',
+                100: '#d1fae5',
+                500: '#10b981',
+                600: '#059669',
+                700: '#047857',
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+--- SCRIPT 3 (len: 580977) ---
+<script>
+// === js/utils/helpers.js ===
+// モンゴル語キリル文字・母音調和・UIユーティリティ
+
+// モンゴル語キリル文字アルファベット（35文字）
+const MONGOLIAN_CYRILLIC_LETTERS = [
+  // 母音
+  { char: 'а', upper: 'А', name: 'a', type: 'male_vowel' },
+  { char: 'э', upper: 'Э', name: 'e', type: 'female_vowel' },
+  { char: 'и', upper: 'И', name: 'i'
+...
+dding: 12px; border-radius: 8px; border: 1px solid #fca5a5; overflow-x: auto;">${err.stack || err.message || err}</pre>
+      </div>
+    `;
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startApplication);
+} else {
+  startApplication();
+}
+
+  </script>

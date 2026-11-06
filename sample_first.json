@@ -1,0 +1,72 @@
+[
+  {
+    "id": "v_1_1",
+    "mongolian": "харилцан яриа",
+    "japanese": "会話",
+    "pronunciation": "ハリルツァン ヤリヤ",
+    "root": "",
+    "pos": "名詞句",
+    "category": "第1課 自己紹介",
+    "priority": "★",
+    "exampleMn": "Харилцан яриа уншаарай.",
+    "exampleJa": "会話文を読んでください。",
+    "note": "課の会話文。",
+    "lesson": 1
+  },
+  {
+    "id": "v_1_2",
+    "mongolian": "би",
+    "japanese": "私",
+    "pronunciation": "ビ",
+    "root": "",
+    "pos": "代名詞",
+    "category": "第1課 自己紹介",
+    "priority": "★★★",
+    "exampleMn": "Би япон хүн.",
+    "exampleJa": "私は日本人です。",
+    "note": "1人称単数主格。",
+    "lesson": 1
+  },
+  {
+    "id": "v_1_3",
+    "mongolian": "миний",
+    "japanese": "私の",
+    "pronunciation": "ミニイ",
+    "root": "",
+    "pos": "代名詞",
+    "category": "第1課 自己紹介",
+    "priority": "★★★",
+    "exampleMn": "Миний нэр Золбоо.",
+    "exampleJa": "私の名前はゾルボーです。",
+    "note": "би の属格。所有を表す。",
+    "lesson": 1
+  },
+  {
+    "id": "v_1_4",
+    "mongolian": "та",
+    "japanese": "あなた（年上・敬意）",
+    "pronunciation": "タ",
+    "root": "",
+    "pos": "代名詞",
+    "category": "第1課 自己紹介",
+    "priority": "★★★",
+    "exampleMn": "Та багш уу?",
+    "exampleJa": "あなたは先生ですか？",
+    "note": "年上や初対面の人への丁寧な二人称。",
+    "lesson": 1
+  },
+  {
+    "id": "v_1_5",
+    "mongolian": "таны",
+    "japanese": "あなたの（年上）",
+    "pronunciation": "タヌィ",
+    "root": "",
+    "pos": "代名詞",
+    "category": "第1課 自己紹介",
+    "priority": "★★★",
+    "exampleMn": "Таны нэр хэн бэ?",
+    "exampleJa": "あなたのお名前は何ですか？",
+    "note": "та の属格。",
+    "lesson": 1
+  }
+]

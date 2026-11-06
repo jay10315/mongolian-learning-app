@@ -1,0 +1,26 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Temporary test logs and text outputs
+chunk_*.txt
+check_*.txt
+audit_output*.txt
+bad_vocab_report.txt
+bad_words_summary.txt
+test_verb_stem_results.txt
+all_230_words.txt
+codebase_bad_check.json
+vocab_quality_issues.json
+verify_fixes_result.json
+
+# Scratch & local temp
+scratch/
+.tmp/
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
