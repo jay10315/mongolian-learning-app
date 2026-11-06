@@ -59341,7 +59341,7 @@ class DeclensionTestComponent {
     const idx = this.state.currentIndex;
     const total = this.state.quizzes.length;
     const progressPercent = Math.round(((idx) / total) * 100);
-    const isNoun = q.kind === 'noun';
+    const isNoun = q.kind === 'noun' || q.kind === 'hidden_n_g' || q.type === 'declension' || !!q.targetCase;
 
     this.container.innerHTML = `
       <div class="animate-fade-in max-w-xl mx-auto px-4 py-3 space-y-3">
@@ -59356,8 +59356,8 @@ class DeclensionTestComponent {
                   🔥 ${GamificationService.sessionCombo} COMBO
                 </span>
               ` : ''}
-              <span class="text-[10px] px-2 py-0.5 rounded-full ${isNoun ? 'bg-sky-50 text-sky-700 border-sky-200' : 'bg-amber-50 text-amber-700 border-amber-200'} border">
-                ${isNoun ? `🏛 名詞: ${q.targetCase}` : `🔄 動詞活用: ${q.targetForm}`}
+              <span class="text-[10px] px-2 py-0.5 rounded-full ${isNoun ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800' : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'} border font-bold">
+                ${isNoun ? `🏛 名詞格変化: ${q.targetCase || '格変化'}` : `🔄 動詞活用: ${q.targetForm || '活用'}`}
               </span>
             </span>
             <div class="flex items-center gap-3">
@@ -59379,9 +59379,17 @@ class DeclensionTestComponent {
             ${q.question}
           </div>
 
-          <div class="text-xs text-slate-500 font-medium">
-            基本形: <span class="font-bold text-slate-700 cyrillic-text">${q.baseWord}</span>（${q.baseMeaning}）
-            ${q.root ? ` / 語幹: <span class="font-bold text-emerald-700 cyrillic-text">${q.root}</span>` : ''}
+          <!-- ヒントトグルボタン（他テストと同様にタップするまで隠す・ネタバレ防止） -->
+          <div class="mt-2 text-center">
+            <button type="button" id="btn-toggle-decl-hint" class="text-xs text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-1 rounded-full font-bold border border-slate-200 dark:border-slate-700 transition-all inline-flex items-center gap-1.5 cursor-pointer select-none active:scale-95 shadow-2xs">
+              <span>💡</span>
+              <span id="decl-hint-toggle-text">ヒントを見る ▼</span>
+            </button>
+            <div id="decl-hint-content" class="hidden mt-2 animate-fade-in text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/90 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-medium space-y-1 inline-block text-left max-w-sm">
+              <div>基本形: <span class="font-bold text-slate-800 dark:text-slate-100 cyrillic-text">${q.baseWord}</span>（${q.baseMeaning}）</div>
+              ${q.root ? `<div>語幹: <span class="font-bold text-emerald-700 dark:text-emerald-400 cyrillic-text">${q.root}</span></div>` : ''}
+              ${q.rule ? `<div class="text-amber-800 dark:text-amber-300 font-bold">ルール: ${q.rule}</div>` : ''}
+            </div>
           </div>
         </div>
 
@@ -59426,7 +59434,7 @@ class DeclensionTestComponent {
         ` : `
           <!-- 回答後フィードバック・解説 -->
           <div class="animate-fade-in space-y-4">
-            <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950' : 'bg-rose-50/90 border-rose-300 text-rose-950'} shadow-sm">
+            <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50/90 dark:bg-emerald-950/50 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50/90 dark:bg-rose-950/50 border-rose-300 dark:border-rose-800 text-rose-950 dark:text-rose-100'} shadow-sm">
               <div class="text-2xl font-bold mb-2 ${this.state.isCorrect ? 'text-emerald-800' : 'text-rose-800'}">
                 ${this.state.isCorrect ? '⭕ 正解！' : '❌ 不正解'}
               </div>
@@ -59483,6 +59491,20 @@ class DeclensionTestComponent {
         if (confirm('テストを中断しますか？')) {
           this.state.view = 'settings';
           this.renderSettings();
+        }
+      });
+    }
+
+    // ヒントトグルボタン（タップするまで隠す）
+    const toggleHintBtn = this.container.querySelector('#btn-toggle-decl-hint');
+    const hintContent = this.container.querySelector('#decl-hint-content');
+    const hintToggleText = this.container.querySelector('#decl-hint-toggle-text');
+    if (toggleHintBtn && hintContent) {
+      toggleHintBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isHidden = hintContent.classList.toggle('hidden');
+        if (hintToggleText) {
+          hintToggleText.textContent = isHidden ? 'ヒントを見る ▼' : 'ヒントを閉じる ▲';
         }
       });
     }

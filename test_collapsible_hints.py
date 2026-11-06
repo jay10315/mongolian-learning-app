@@ -35,6 +35,11 @@ def test_collapsible_hints():
     assert "grammar-hint-content" in code, "GrammarTest must have grammar-hint-content"
     assert 'id="grammar-hint-content" class="hidden' in code, "GrammarTest hint must be hidden by default"
 
+    # 6. DeclensionTest toggle
+    assert "btn-toggle-decl-hint" in code, "DeclensionTest must have btn-toggle-decl-hint"
+    assert "decl-hint-content" in code, "DeclensionTest must have decl-hint-content"
+    assert 'id="decl-hint-content" class="hidden' in code, "DeclensionTest hint must be hidden by default"
+
     print(">>> Collapsible Hints Tests: ALL PASSED SUCCESSFULLY! <<<")
 
 if __name__ == "__main__":
