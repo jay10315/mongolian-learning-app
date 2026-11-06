@@ -809,10 +809,10 @@ export class WordGameComponent {
   }
 
   static loadQuestion() {
-    // プールが尽きたら再構築
+    // プールが尽きたら再シャッフルして継続（スコアや履歴をリセットしない）
     if (this.state.currentQuestionIndex >= this.state.questionsPool.length) {
-      this.startGame();
-      return;
+      this.state.questionsPool = shuffleArray([...this.state.questionsPool]);
+      this.state.currentQuestionIndex = 0;
     }
 
     const q = this.state.questionsPool[this.state.currentQuestionIndex];
@@ -1714,6 +1714,7 @@ export class WordGameComponent {
   }
 
   static handleChoiceAnswer(choiceId) {
+    if (this.state.hasAnswered) return;
     if (this.state.mode === 'drop') {
       this.handleDropChoiceAnswer(choiceId);
       return;
@@ -2167,11 +2168,12 @@ export class WordGameComponent {
                     </div>
                   `;
                 } else if (genre === 'visual') {
+                  const thumbSvg = item.svg ? item.svg.replace(/class="[^"]*"/, 'class="w-full h-full object-contain p-0.5"') : '';
                   return `
                     <div class="py-2.5 flex items-center justify-between gap-3 text-xs">
                       <div class="flex items-center gap-2.5">
-                        <div class="w-12 h-12 shrink-0 bg-white rounded-xl border border-slate-200 overflow-hidden p-1 shadow-2xs">
-                          ${item.svg}
+                        <div class="w-12 h-12 shrink-0 bg-white rounded-xl border border-slate-200 overflow-hidden p-0.5 shadow-2xs flex items-center justify-center">
+                          ${thumbSvg}
                         </div>
                         <div class="space-y-0.5">
                           <div class="flex items-center gap-1.5">
