@@ -2,6 +2,7 @@
 import { StorageService } from './services/storage.js';
 import { AuthService } from './services/auth.js';
 import { SpeechService } from './services/speech.js';
+import { ThemeService } from './services/theme.js';
 import { CyrillicKeyboard } from './components/CyrillicKeyboard.js';
 import { Navbar } from './components/Navbar.js';
 import { HomeComponent } from './components/Home.js';
@@ -54,6 +55,13 @@ class App {
 
     // 1. ストレージ初期化
     StorageService.init();
+
+    // 2. テーマ・背景色初期化（ユーザー設定またはナイトモード反映）
+    try {
+      ThemeService.init();
+    } catch (e) {
+      console.warn('[App] ThemeService.init error:', e);
+    }
 
     // サーバー（LAN経由）に登録済みのアカウントをバックグラウンドで取得・同期
     try {

@@ -37,7 +37,8 @@ tests = [
     'test_spelling_game_feature.py',
     'test_synonym_tea_match.py',
     'test_word_family_games.py',
-    'test_suffix_rule_dojo.py'
+    'test_suffix_rule_dojo.py',
+    'test_theme_and_night_mode.py'
 ]
 
 for t in tests:

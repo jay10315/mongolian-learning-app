@@ -141,3 +141,133 @@ body {
 .animate-fade-in {
   animation: fadeIn 0.25s ease-out forwards;
 }
+
+/* ========================================================
+   テーマシステム（ワンタップナイトモード ＆ 背景色カスタマイズ）
+   ======================================================== */
+body.theme-dark {
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --bg-main: #0f172a;
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
+body.theme-dark header,
+body.theme-dark #app-header > header {
+  background-color: rgba(15, 23, 42, 0.96) !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+body.theme-dark .mobile-bottom-nav {
+  background-color: rgba(15, 23, 42, 0.96) !important;
+  border-color: #334155 !important;
+}
+
+body.theme-dark .bg-white {
+  background-color: #1e293b !important;
+  color: #f1f5f9;
+}
+
+body.theme-dark .bg-slate-50 {
+  background-color: #0f172a !important;
+}
+
+body.theme-dark .bg-slate-100 {
+  background-color: #263349 !important;
+}
+
+body.theme-dark .border-slate-200,
+body.theme-dark .border-slate-100 {
+  border-color: #334155 !important;
+}
+
+body.theme-dark .text-slate-800,
+body.theme-dark .text-slate-900,
+body.theme-dark .text-slate-700 {
+  color: #f1f5f9 !important;
+}
+
+body.theme-dark .text-slate-500,
+body.theme-dark .text-slate-600,
+body.theme-dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+body.theme-dark input:not([type="color"]):not([type="checkbox"]):not([type="radio"]),
+body.theme-dark textarea,
+body.theme-dark select {
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+  border-color: #475569 !important;
+}
+
+/* 🌿 草原グリーン（深緑ダーク） */
+body.theme-forest {
+  background-color: #064e3b !important;
+}
+body.theme-forest header,
+body.theme-forest #app-header > header,
+body.theme-forest .mobile-bottom-nav {
+  background-color: rgba(6, 78, 59, 0.96) !important;
+  border-color: #047857 !important;
+}
+body.theme-forest .bg-white {
+  background-color: #065f46 !important;
+  border-color: #047857 !important;
+}
+
+/* 🌊 ディープオーシャン（紺碧ダーク） */
+body.theme-ocean {
+  background-color: #0c4a6e !important;
+}
+body.theme-ocean header,
+body.theme-ocean #app-header > header,
+body.theme-ocean .mobile-bottom-nav {
+  background-color: rgba(12, 74, 110, 0.96) !important;
+  border-color: #0369a1 !important;
+}
+body.theme-ocean .bg-white {
+  background-color: #075985 !important;
+  border-color: #0369a1 !important;
+}
+
+/* 📖 読書セピア（和紙風ペーパー） */
+body.theme-sepia {
+  background-color: #f6eedb !important;
+  color: #453225 !important;
+}
+body.theme-sepia header,
+body.theme-sepia #app-header > header,
+body.theme-sepia .mobile-bottom-nav {
+  background-color: rgba(246, 238, 219, 0.96) !important;
+  border-color: #e6dac3 !important;
+}
+body.theme-sepia .bg-white {
+  background-color: #fdf8ed !important;
+  border-color: #e6dac3 !important;
+  color: #453225 !important;
+}
+body.theme-sepia .text-slate-800,
+body.theme-sepia .text-slate-900,
+body.theme-sepia .text-slate-700 {
+  color: #453225 !important;
+}
+
+/* 💜 ラベンダー（薄紫） */
+body.theme-lavender {
+  background-color: #f5f3ff !important;
+  color: #2e1065 !important;
+}
+body.theme-lavender header,
+body.theme-lavender #app-header > header,
+body.theme-lavender .mobile-bottom-nav {
+  background-color: rgba(245, 243, 255, 0.96) !important;
+  border-color: #ddd6fe !important;
+}
+body.theme-lavender .bg-white {
+  background-color: #ffffff !important;
+  border-color: #ddd6fe !important;
+}
+

@@ -228,6 +228,136 @@ body {
   animation: fadeIn 0.25s ease-out forwards;
 }
 
+/* ========================================================
+   テーマシステム（ワンタップナイトモード ＆ 背景色カスタマイズ）
+   ======================================================== */
+body.theme-dark {
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --bg-main: #0f172a;
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
+body.theme-dark header,
+body.theme-dark #app-header > header {
+  background-color: rgba(15, 23, 42, 0.96) !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+body.theme-dark .mobile-bottom-nav {
+  background-color: rgba(15, 23, 42, 0.96) !important;
+  border-color: #334155 !important;
+}
+
+body.theme-dark .bg-white {
+  background-color: #1e293b !important;
+  color: #f1f5f9;
+}
+
+body.theme-dark .bg-slate-50 {
+  background-color: #0f172a !important;
+}
+
+body.theme-dark .bg-slate-100 {
+  background-color: #263349 !important;
+}
+
+body.theme-dark .border-slate-200,
+body.theme-dark .border-slate-100 {
+  border-color: #334155 !important;
+}
+
+body.theme-dark .text-slate-800,
+body.theme-dark .text-slate-900,
+body.theme-dark .text-slate-700 {
+  color: #f1f5f9 !important;
+}
+
+body.theme-dark .text-slate-500,
+body.theme-dark .text-slate-600,
+body.theme-dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+body.theme-dark input:not([type="color"]):not([type="checkbox"]):not([type="radio"]),
+body.theme-dark textarea,
+body.theme-dark select {
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+  border-color: #475569 !important;
+}
+
+/* 🌿 草原グリーン（深緑ダーク） */
+body.theme-forest {
+  background-color: #064e3b !important;
+}
+body.theme-forest header,
+body.theme-forest #app-header > header,
+body.theme-forest .mobile-bottom-nav {
+  background-color: rgba(6, 78, 59, 0.96) !important;
+  border-color: #047857 !important;
+}
+body.theme-forest .bg-white {
+  background-color: #065f46 !important;
+  border-color: #047857 !important;
+}
+
+/* 🌊 ディープオーシャン（紺碧ダーク） */
+body.theme-ocean {
+  background-color: #0c4a6e !important;
+}
+body.theme-ocean header,
+body.theme-ocean #app-header > header,
+body.theme-ocean .mobile-bottom-nav {
+  background-color: rgba(12, 74, 110, 0.96) !important;
+  border-color: #0369a1 !important;
+}
+body.theme-ocean .bg-white {
+  background-color: #075985 !important;
+  border-color: #0369a1 !important;
+}
+
+/* 📖 読書セピア（和紙風ペーパー） */
+body.theme-sepia {
+  background-color: #f6eedb !important;
+  color: #453225 !important;
+}
+body.theme-sepia header,
+body.theme-sepia #app-header > header,
+body.theme-sepia .mobile-bottom-nav {
+  background-color: rgba(246, 238, 219, 0.96) !important;
+  border-color: #e6dac3 !important;
+}
+body.theme-sepia .bg-white {
+  background-color: #fdf8ed !important;
+  border-color: #e6dac3 !important;
+  color: #453225 !important;
+}
+body.theme-sepia .text-slate-800,
+body.theme-sepia .text-slate-900,
+body.theme-sepia .text-slate-700 {
+  color: #453225 !important;
+}
+
+/* 💜 ラベンダー（薄紫） */
+body.theme-lavender {
+  background-color: #f5f3ff !important;
+  color: #2e1065 !important;
+}
+body.theme-lavender header,
+body.theme-lavender #app-header > header,
+body.theme-lavender .mobile-bottom-nav {
+  background-color: rgba(245, 243, 255, 0.96) !important;
+  border-color: #ddd6fe !important;
+}
+body.theme-lavender .bg-white {
+  background-color: #ffffff !important;
+  border-color: #ddd6fe !important;
+}
+
+
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-emerald-100 selection:text-emerald-900">
@@ -25358,6 +25488,144 @@ class StorageService {
 }
 
 
+// === js/services/theme.js ===
+// テーマ・背景色管理サービス（ワンタップナイトモード ＆ 自由背景色カスタマイズ）
+
+
+const THEME_PRESETS = [
+  { id: 'light', name: 'デフォルト（ライト）', bg: '#f8fafc', icon: '☀️', isDark: false, desc: '清潔感のある翠緑・白' },
+  { id: 'dark', name: 'ナイトモード（ダーク）', bg: '#0f172a', icon: '🌙', isDark: true, desc: '目に優しい深夜スレート' },
+  { id: 'sepia', name: '読書セピア（和紙風）', bg: '#f6eedb', icon: '📖', isDark: false, desc: '目が疲れない温かいペーパー' },
+  { id: 'forest', name: '草原グリーン（深緑）', bg: '#064e3b', icon: '🌿', isDark: true, desc: '落ち着きのある大草原の緑' },
+  { id: 'ocean', name: 'ディープオーシャン（紺碧）', bg: '#0c4a6e', icon: '🌊', isDark: true, desc: '集中力が高まる静かな海' },
+  { id: 'lavender', name: 'ラベンダー（薄紫）', bg: '#f5f3ff', icon: '💜', isDark: false, desc: '上品でリラックスできる紫' }
+];
+
+class ThemeService {
+  static listeners = [];
+  static currentTheme = 'light';
+  static customBg = null;
+
+  static init() {
+    try {
+      const settings = StorageService.getSettings() || {};
+      const savedTheme = settings.theme || 'light';
+      const savedCustomBg = settings.customBg || null;
+      this.applyTheme(savedTheme, savedCustomBg, false);
+    } catch (e) {
+      console.warn('ThemeService.init error:', e);
+    }
+  }
+
+  static isColorDark(hex) {
+    if (!hex || typeof hex !== 'string' || !hex.startsWith('#')) return false;
+    let c = hex.substring(1);
+    if (c.length === 3) c = c.split('').map(x => x + x).join('');
+    const rgb = parseInt(c, 16);
+    if (isNaN(rgb)) return false;
+    const r = (rgb >> 16) & 0xff;
+    const g = (rgb >>  8) & 0xff;
+    const b = (rgb >>  0) & 0xff;
+    const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    return luma < 140;
+  }
+
+  static applyTheme(themeId = 'light', customBgColor = null, saveToStorage = true) {
+    this.currentTheme = themeId;
+    this.customBg = customBgColor;
+
+    if (typeof document === 'undefined') return;
+
+    const body = document.body;
+    if (!body) return;
+
+    // 既存テーマクラスを除去
+    body.classList.remove('theme-dark', 'theme-sepia', 'theme-forest', 'theme-ocean', 'theme-lavender', 'theme-custom');
+    body.style.backgroundColor = '';
+
+    if (themeId === 'dark') {
+      body.classList.add('theme-dark');
+    } else if (themeId === 'sepia') {
+      body.classList.add('theme-sepia');
+    } else if (themeId === 'forest') {
+      body.classList.add('theme-dark', 'theme-forest');
+    } else if (themeId === 'ocean') {
+      body.classList.add('theme-dark', 'theme-ocean');
+    } else if (themeId === 'lavender') {
+      body.classList.add('theme-lavender');
+    } else if (themeId === 'custom' && customBgColor) {
+      body.classList.add('theme-custom');
+      body.style.backgroundColor = customBgColor;
+      if (this.isColorDark(customBgColor)) {
+        body.classList.add('theme-dark');
+      }
+    }
+
+    // meta theme-colorの更新
+    try {
+      let metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) {
+        if (themeId === 'dark') metaTheme.content = '#0f172a';
+        else if (themeId === 'sepia') metaTheme.content = '#f6eedb';
+        else if (themeId === 'forest') metaTheme.content = '#064e3b';
+        else if (themeId === 'ocean') metaTheme.content = '#0c4a6e';
+        else if (themeId === 'lavender') metaTheme.content = '#f5f3ff';
+        else if (themeId === 'custom' && customBgColor) metaTheme.content = customBgColor;
+        else metaTheme.content = '#059669';
+      }
+    } catch (_) {}
+
+    if (saveToStorage) {
+      try {
+        const settings = StorageService.getSettings() || {};
+        settings.theme = themeId;
+        settings.customBg = customBgColor;
+        StorageService.saveSettings(settings);
+      } catch (e) {
+        console.warn('ThemeService saveSettings error:', e);
+      }
+    }
+
+    // リスナー呼び出し
+    this.listeners.forEach(fn => {
+      try { fn(themeId, customBgColor); } catch (_) {}
+    });
+  }
+
+  static toggleNightMode() {
+    if (this.isDarkMode()) {
+      this.applyTheme('light', null, true);
+    } else {
+      this.applyTheme('dark', null, true);
+    }
+  }
+
+  static isDarkMode() {
+    if (this.currentTheme === 'dark' || this.currentTheme === 'forest' || this.currentTheme === 'ocean') {
+      return true;
+    }
+    if (this.currentTheme === 'custom' && this.customBg && this.isColorDark(this.customBg)) {
+      return true;
+    }
+    return false;
+  }
+
+  static getThemeState() {
+    return {
+      theme: this.currentTheme,
+      customBg: this.customBg,
+      isDark: this.isDarkMode()
+    };
+  }
+
+  static addListener(fn) {
+    if (typeof fn === 'function') {
+      this.listeners.push(fn);
+    }
+  }
+}
+
+
 // === js/services/speech.js ===
 // モンゴル語音声再生サービス（高品位ニューラル音声・端末ローカルIndexedDB保存・完全オフライン対応）
 // 1. 端末内蔵 IndexedDB キャッシュ（完全オフライン・無制限・0秒即時再生）
@@ -28776,8 +29044,235 @@ class BatchAudioModal {
 }
 
 
+// === js/components/ThemeModal.js ===
+// 背景色・テーマカスタマイズモーダル
+
+
+class ThemeModal {
+  static modalEl = null;
+
+  static show(onUpdate) {
+    this.close();
+
+    const currentState = ThemeService.getThemeState();
+    const currentTheme = currentState.theme;
+    const currentCustomBg = currentState.customBg || '#f8fafc';
+
+    // クイックパレット用の追加おすすめカラー
+    const quickColors = [
+      { hex: '#f8fafc', name: '標準スレート' },
+      { hex: '#ffffff', name: 'ピュアホワイト' },
+      { hex: '#f6eedb', name: '読書セピア' },
+      { hex: '#e6f4ea', name: 'ペールミント' },
+      { hex: '#e8f0fe', name: 'ソフトスカイ' },
+      { hex: '#fef7e0', name: 'ウォームクリーム' },
+      { hex: '#fce8e6', name: 'さくらピンク' },
+      { hex: '#f5f3ff', name: 'ラベンダー' },
+      { hex: '#0f172a', name: 'ミッドナイト' },
+      { hex: '#18181b', name: '漆黒ジンク' },
+      { hex: '#064e3b', name: '深緑フォレスト' },
+      { hex: '#0c4a6e', name: '紺碧オーシャン' },
+      { hex: '#1e1b4b', name: 'インディゴナイト' },
+      { hex: '#262626', name: 'ダークニュートラル' },
+      { hex: '#000000', name: 'AMOLEDブラック' }
+    ];
+
+    const modal = document.createElement('div');
+    modal.id = 'theme-modal-overlay';
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in';
+
+    modal.innerHTML = `
+      <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
+        <!-- ヘッダー -->
+        <div class="px-6 py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">🎨</span>
+            <div>
+              <h3 class="font-extrabold text-base leading-tight">テーマ ＆ 背景色カスタマイズ</h3>
+              <p class="text-emerald-100 text-[11px] font-medium">お好みの背景色やダークモードで快適に学習できます</p>
+            </div>
+          </div>
+          <button type="button" id="btn-close-theme-modal" class="text-white/80 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors cursor-pointer text-lg font-bold">
+            ✕
+          </button>
+        </div>
+
+        <!-- 本文 -->
+        <div class="p-6 space-y-6 overflow-y-auto">
+
+          <!-- 1. プリセットテーマ -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🌟</span> 定番おすすめテーマ
+              </h4>
+              <span class="text-[11px] text-slate-400">タップで即時変更</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="theme-preset-list">
+              ${THEME_PRESETS.map(preset => {
+                const isSelected = currentTheme === preset.id;
+                return `
+                  <button type="button" data-preset-id="${preset.id}" class="preset-theme-btn p-3 rounded-2xl border text-left transition-all flex flex-col gap-1.5 cursor-pointer hover:scale-[1.02] shadow-2xs relative ${
+                    isSelected ? 'border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-50/30' : 'border-slate-200 hover:border-slate-300 bg-white'
+                  }">
+                    <div class="flex items-center justify-between w-full">
+                      <span class="text-xl">${preset.icon}</span>
+                      <span class="w-5 h-5 rounded-full border border-slate-300 shadow-2xs inline-block" style="background-color: ${preset.bg};"></span>
+                    </div>
+                    <div class="font-bold text-xs text-slate-800 leading-tight">${preset.name}</div>
+                    <div class="text-[10px] text-slate-400 line-clamp-1">${preset.desc}</div>
+                    ${isSelected ? '<span class="absolute top-2 right-2 text-emerald-600 font-black text-xs">✓</span>' : ''}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- 2. 自由な背景色の選択 -->
+          <div class="space-y-3 pt-3 border-t border-slate-100">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🖌️</span> 自由な背景色（カラーピッカー）
+              </h4>
+              <span class="text-[11px] text-slate-400">どんな色でもOK</span>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="relative w-12 h-12 rounded-xl overflow-hidden shadow-inner border border-slate-300 flex-shrink-0 cursor-pointer">
+                  <input type="color" id="input-theme-color-picker" value="${currentCustomBg}" class="absolute -top-4 -left-4 w-20 h-20 cursor-pointer border-0 p-0">
+                </div>
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-slate-700">カラーコード入力 / 選択</div>
+                  <div class="flex items-center gap-2 mt-1">
+                    <input type="text" id="input-theme-hex" value="${currentCustomBg}" placeholder="#ffffff" maxlength="7" class="w-28 px-2.5 py-1 text-xs font-mono border border-slate-300 rounded-lg uppercase font-bold focus:ring-1 focus:ring-emerald-500">
+                    <button type="button" id="btn-apply-custom-color" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg transition-all shadow-2xs cursor-pointer">
+                      背景に適用
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- クイックパレット一覧 -->
+              <div class="space-y-1.5 pt-2">
+                <div class="text-[11px] text-slate-500 font-bold">人気の背景色パレット:</div>
+                <div class="flex flex-wrap gap-2">
+                  ${quickColors.map(c => `
+                    <button type="button" data-hex="${c.hex}" title="${c.name} (${c.hex})" class="quick-color-btn w-7 h-7 rounded-lg border border-slate-300 shadow-2xs hover:scale-110 transition-transform cursor-pointer flex items-center justify-center relative" style="background-color: ${c.hex};">
+                      ${currentCustomBg.toLowerCase() === c.hex.toLowerCase() ? '<span class="text-[10px] font-black" style="color: ' + (ThemeService.isColorDark(c.hex) ? '#ffffff' : '#000000') + '">✓</span>' : ''}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. デフォルトへの復帰 -->
+          <div class="pt-2 flex items-center justify-between text-xs">
+            <button type="button" id="btn-reset-default-theme" class="text-slate-500 hover:text-slate-800 underline cursor-pointer font-medium">
+              ↺ デフォルト配色に戻す
+            </button>
+            <button type="button" id="btn-theme-modal-done" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold transition-all shadow-sm cursor-pointer">
+              完了
+            </button>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    this.modalEl = modal;
+
+    // イベントバインド
+    const closeBtn = modal.querySelector('#btn-close-theme-modal');
+    if (closeBtn) closeBtn.addEventListener('click', () => this.close());
+
+    const doneBtn = modal.querySelector('#btn-theme-modal-done');
+    if (doneBtn) doneBtn.addEventListener('click', () => this.close());
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) this.close();
+    });
+
+    // プリセットボタン
+    modal.querySelectorAll('.preset-theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const presetId = btn.getAttribute('data-preset-id');
+        ThemeService.applyTheme(presetId, null, true);
+        this.show(onUpdate); // 再描画して選択枠を更新
+        if (onUpdate) onUpdate();
+      });
+    });
+
+    // カラーピッカー & Hex 入力
+    const colorPicker = modal.querySelector('#input-theme-color-picker');
+    const hexInput = modal.querySelector('#input-theme-hex');
+    const applyBtn = modal.querySelector('#btn-apply-custom-color');
+
+    if (colorPicker && hexInput) {
+      colorPicker.addEventListener('input', (e) => {
+        hexInput.value = e.target.value;
+        ThemeService.applyTheme('custom', e.target.value, true);
+        if (onUpdate) onUpdate();
+      });
+
+      if (applyBtn) {
+        applyBtn.addEventListener('click', () => {
+          let val = hexInput.value.trim();
+          if (!val.startsWith('#')) val = '#' + val;
+          if (/^#[0-9A-Fa-f]{6}$/.test(val) || /^#[0-9A-Fa-f]{3}$/.test(val)) {
+            ThemeService.applyTheme('custom', val, true);
+            this.show(onUpdate);
+            if (onUpdate) onUpdate();
+          } else {
+            alert('有効なカラーコード（例: #ffffff, #0f172a）を入力してください。');
+          }
+        });
+      }
+    }
+
+    // クイックカラーボタン
+    modal.querySelectorAll('.quick-color-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const hex = btn.getAttribute('data-hex');
+        if (hex) {
+          ThemeService.applyTheme('custom', hex, true);
+          this.show(onUpdate);
+          if (onUpdate) onUpdate();
+        }
+      });
+    });
+
+    // リセットボタン
+    const resetBtn = modal.querySelector('#btn-reset-default-theme');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        ThemeService.applyTheme('light', null, true);
+        this.show(onUpdate);
+        if (onUpdate) onUpdate();
+      });
+    }
+  }
+
+  static close() {
+    if (this.modalEl && this.modalEl.parentElement) {
+      this.modalEl.parentElement.removeChild(this.modalEl);
+      this.modalEl = null;
+    }
+    const existing = document.getElementById('theme-modal-overlay');
+    if (existing && existing.parentElement) {
+      existing.parentElement.removeChild(existing);
+    }
+  }
+}
+
+
 // === js/components/Navbar.js ===
 // ナビゲーションバー（デスクトップ上部 ＆ モバイル下部固定）
+
+
 
 
 
@@ -28803,6 +29298,10 @@ class Navbar {
     SyncService.addListener(() => {
       this.updateSyncStatus();
     });
+
+    ThemeService.addListener(() => {
+      this.render();
+    });
   }
 
   static setTab(tab) {
@@ -28819,6 +29318,8 @@ class Navbar {
     const bottomNavContainer = document.getElementById('mobile-bottom-nav');
     const currentUser = AuthService.getCurrentUser();
     const profile = GamificationService.getProfile();
+    const themeState = ThemeService.getThemeState();
+    const isDarkMode = themeState.isDark;
 
     const tabs = [
       { id: 'home', label: 'ホーム', icon: '🏠' },
@@ -28887,6 +29388,22 @@ class Navbar {
               }">
                 <span>👤</span>
                 <span class="max-w-[80px] sm:max-w-[120px] truncate">${currentUser ? (currentUser.displayName || currentUser.username) : 'ログイン'}</span>
+              </button>
+
+              <!-- 🌙/☀️ ワンタップナイトモード切替 -->
+              <button type="button" id="btn-toggle-night-mode" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold transition-all border cursor-pointer hover:shadow-2xs ${
+                isDarkMode 
+                  ? 'bg-amber-400/20 text-amber-300 border-amber-400/40 hover:bg-amber-400/30' 
+                  : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+              }" title="ナイトモード切替（ワンタップで昼夜反転）">
+                <span>${isDarkMode ? '☀️' : '🌙'}</span>
+                <span class="hidden md:inline">${isDarkMode ? 'ライト' : 'ナイト'}</span>
+              </button>
+
+              <!-- 🎨 背景色・テーマパレット設定 -->
+              <button type="button" id="btn-open-theme-palette" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold transition-all border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 cursor-pointer hover:shadow-2xs" title="背景色・テーマの変更（お好みの色にカスタマイズ）">
+                <span>🎨</span>
+                <span class="hidden sm:inline">背景色</span>
               </button>
 
               <!-- タブレット・スマホ連携ボタン -->
@@ -28959,6 +29476,22 @@ class Navbar {
           AuthModal.show(() => {
             this.render();
           });
+        });
+      }
+
+      // ワンタップナイトモード切替
+      const nightModeBtn = headerContainer.querySelector('#btn-toggle-night-mode');
+      if (nightModeBtn) {
+        nightModeBtn.addEventListener('click', () => {
+          ThemeService.toggleNightMode();
+        });
+      }
+
+      // 背景色・テーマパレットモーダル
+      const themePaletteBtn = headerContainer.querySelector('#btn-open-theme-palette');
+      if (themePaletteBtn) {
+        themePaletteBtn.addEventListener('click', () => {
+          ThemeModal.show(() => this.render());
         });
       }
 
@@ -46444,6 +46977,7 @@ class ReferenceGuideComponent {
 
 
 
+
 class App {
   static currentTab = 'home';
 
@@ -46471,6 +47005,13 @@ class App {
 
     // 1. ストレージ初期化
     StorageService.init();
+
+    // 2. テーマ・背景色初期化（ユーザー設定またはナイトモード反映）
+    try {
+      ThemeService.init();
+    } catch (e) {
+      console.warn('[App] ThemeService.init error:', e);
+    }
 
     // サーバー（LAN経由）に登録済みのアカウントをバックグラウンドで取得・同期
     try {

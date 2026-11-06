@@ -3,6 +3,8 @@ import { SpeechService } from '../services/speech.js';
 import { AuthService } from '../services/auth.js';
 import { SyncService } from '../services/sync.js';
 import { GamificationService } from '../services/gamification.js';
+import { ThemeService } from '../services/theme.js';
+import { ThemeModal } from './ThemeModal.js';
 import { PenguinMascot } from './PenguinMascot.js';
 import { AuthModal } from './AuthModal.js';
 import { CloudSettingsModal } from './CloudSettingsModal.js';
@@ -24,6 +26,10 @@ export class Navbar {
     SyncService.addListener(() => {
       this.updateSyncStatus();
     });
+
+    ThemeService.addListener(() => {
+      this.render();
+    });
   }
 
   static setTab(tab) {
@@ -40,6 +46,8 @@ export class Navbar {
     const bottomNavContainer = document.getElementById('mobile-bottom-nav');
     const currentUser = AuthService.getCurrentUser();
     const profile = GamificationService.getProfile();
+    const themeState = ThemeService.getThemeState();
+    const isDarkMode = themeState.isDark;
 
     const tabs = [
       { id: 'home', label: 'ホーム', icon: '🏠' },
@@ -108,6 +116,22 @@ export class Navbar {
               }">
                 <span>👤</span>
                 <span class="max-w-[80px] sm:max-w-[120px] truncate">${currentUser ? (currentUser.displayName || currentUser.username) : 'ログイン'}</span>
+              </button>
+
+              <!-- 🌙/☀️ ワンタップナイトモード切替 -->
+              <button type="button" id="btn-toggle-night-mode" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold transition-all border cursor-pointer hover:shadow-2xs ${
+                isDarkMode 
+                  ? 'bg-amber-400/20 text-amber-300 border-amber-400/40 hover:bg-amber-400/30' 
+                  : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+              }" title="ナイトモード切替（ワンタップで昼夜反転）">
+                <span>${isDarkMode ? '☀️' : '🌙'}</span>
+                <span class="hidden md:inline">${isDarkMode ? 'ライト' : 'ナイト'}</span>
+              </button>
+
+              <!-- 🎨 背景色・テーマパレット設定 -->
+              <button type="button" id="btn-open-theme-palette" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold transition-all border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 cursor-pointer hover:shadow-2xs" title="背景色・テーマの変更（お好みの色にカスタマイズ）">
+                <span>🎨</span>
+                <span class="hidden sm:inline">背景色</span>
               </button>
 
               <!-- タブレット・スマホ連携ボタン -->
@@ -180,6 +204,22 @@ export class Navbar {
           AuthModal.show(() => {
             this.render();
           });
+        });
+      }
+
+      // ワンタップナイトモード切替
+      const nightModeBtn = headerContainer.querySelector('#btn-toggle-night-mode');
+      if (nightModeBtn) {
+        nightModeBtn.addEventListener('click', () => {
+          ThemeService.toggleNightMode();
+        });
+      }
+
+      // 背景色・テーマパレットモーダル
+      const themePaletteBtn = headerContainer.querySelector('#btn-open-theme-palette');
+      if (themePaletteBtn) {
+        themePaletteBtn.addEventListener('click', () => {
+          ThemeModal.show(() => this.render());
         });
       }
 
