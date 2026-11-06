@@ -767,7 +767,19 @@ function isJapanese(str) {
 function isFuzzyMatch(userAnswer, correctAnswer) {
   if (!userAnswer || !correctAnswer) return false;
 
-  const clean = (s) => s.trim().toLowerCase()
+  const normalizeLookalikes = (str) => {
+    return String(str || '')
+      .replace(/ス/g, 'с') // 片仮名「ス」の混入是正
+      .replace(/c/g, 'с') // Latin c -> Cyrillic с
+      .replace(/a/g, 'а') // Latin a -> Cyrillic а
+      .replace(/e/g, 'е') // Latin e -> Cyrillic е
+      .replace(/o/g, 'о') // Latin o -> Cyrillic о
+      .replace(/p/g, 'р') // Latin p -> Cyrillic р
+      .replace(/x/g, 'х') // Latin x -> Cyrillic х
+      .replace(/y/g, 'у'); // Latin y -> Cyrillic у
+  };
+
+  const clean = (s) => normalizeLookalikes(s.trim().toLowerCase())
     .replace(/[.,!?。、！？\s]/g, '')
     .replace(/[«»"']/g, '');
 
@@ -34188,7 +34200,7 @@ const initialDeclensionQuizzes = [
     prompt: "「目から（奪格）」の正しい形を答えなさい。",
     question: "нүд ＋ 奪格 →",
     options: ["нүднээс", "нүдээс", "нүдноос", "нүдгээс"],
-    answer: "нүднээス",
+    answer: "нүднээс",
     explanation: "нүд の奪格は女性語の -нээс が接続し нүднээс（目から、例：нүднээс нулимс гарах = 目から涙が出る）になります。",
     rule: "隠れн: нүд → нүднээс"
   },

@@ -64,7 +64,19 @@ export function isJapanese(str) {
 export function isFuzzyMatch(userAnswer, correctAnswer) {
   if (!userAnswer || !correctAnswer) return false;
 
-  const clean = (s) => s.trim().toLowerCase()
+  const normalizeLookalikes = (str) => {
+    return String(str || '')
+      .replace(/ス/g, 'с') // 片仮名「ス」の混入是正
+      .replace(/c/g, 'с') // Latin c -> Cyrillic с
+      .replace(/a/g, 'а') // Latin a -> Cyrillic а
+      .replace(/e/g, 'е') // Latin e -> Cyrillic е
+      .replace(/o/g, 'о') // Latin o -> Cyrillic о
+      .replace(/p/g, 'р') // Latin p -> Cyrillic р
+      .replace(/x/g, 'х') // Latin x -> Cyrillic х
+      .replace(/y/g, 'у'); // Latin y -> Cyrillic у
+  };
+
+  const clean = (s) => normalizeLookalikes(s.trim().toLowerCase())
     .replace(/[.,!?。、！？\s]/g, '')
     .replace(/[«»"']/g, '');
 
