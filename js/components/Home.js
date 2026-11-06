@@ -636,6 +636,30 @@ export class HomeComponent {
               </div>
             </div>
 
+            <!-- 文章入力テストモード（新機能・双方向文翻訳） -->
+            <div class="bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-cyan-500/15 rounded-xl p-5 border-2 border-teal-500 hover:border-teal-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="sentence_test">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-600 via-cyan-600 to-blue-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    ✍️
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-2xs">
+                    新機能 ⚡ 双方向文翻訳
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-teal-700 transition-colors flex items-center gap-1.5">
+                  文章入力テストモード
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  文章を直接入力して翻訳力特訓！「日本語 ➔ モンゴル語訳」と「モンゴル語 ➔ 日本語訳」を自由に選んで本格テスト！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-teal-200/60 flex items-center justify-between text-xs font-black text-teal-700">
+                <span>文章入力テストを開始</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- タイピング練習（単語タップ辞書・即時和訳） -->
             <div class="bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-emerald-500/10 rounded-xl p-5 border-2 border-teal-400 hover:border-teal-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="typing_test">
               <div>

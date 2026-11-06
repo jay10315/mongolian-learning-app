@@ -69,6 +69,7 @@ export class Navbar {
       { id: 'listening_test', label: 'リスニング', icon: '🎧' },
       { id: 'reading_test', label: '読解テスト', icon: '📖' },
       { id: 'typing_test', label: 'タイピング', icon: '⌨️' },
+      { id: 'sentence_test', label: '文章入力テスト', icon: '✍️' },
       { id: 'pronunciation_test', label: '発音特訓', icon: '🎙️' },
       { id: 'flashcards', label: 'カード', icon: '🃏' },
       { id: 'review', label: '間違い復習', icon: '🔥' },

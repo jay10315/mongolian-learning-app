@@ -51,6 +51,7 @@ files_order = [
     'js/components/ListeningTest.js',
     'js/components/ReadingTest.js',
     'js/components/TypingTest.js',
+    'js/components/SentenceTranslationTest.js',
     'js/components/PronunciationTest.js',
     'js/components/RoleplayTest.js',
     'js/components/InterviewMaster.js',

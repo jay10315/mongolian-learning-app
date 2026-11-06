@@ -18,6 +18,7 @@ import { ReferenceGuideComponent } from './components/ReferenceGuide.js';
 import { ListeningTestComponent } from './components/ListeningTest.js';
 import { ReadingTestComponent } from './components/ReadingTest.js';
 import { TypingTestComponent } from './components/TypingTest.js';
+import { SentenceTranslationTestComponent } from './components/SentenceTranslationTest.js';
 import { PronunciationTestComponent } from './components/PronunciationTest.js';
 import { RoleplayComponent } from './components/RoleplayTest.js';
 import { NumberMasterComponent } from './components/NumberMasterTest.js';
@@ -138,6 +139,9 @@ class App {
         break;
       case 'typing_test':
         TypingTestComponent.render(mainContainer, onNavigate);
+        break;
+      case 'sentence_test':
+        SentenceTranslationTestComponent.render(mainContainer, onNavigate);
         break;
       case 'pronunciation_test':
         PronunciationTestComponent.render(mainContainer, onNavigate);

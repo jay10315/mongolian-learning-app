@@ -604,10 +604,10 @@ export class ReviewNotebookComponent {
         categoryLabel = "ことわざ・なぞなぞ・文化知識の正解を入力してください";
         subHint = item.category ? `【文化: ${item.category}】` : '';
         placeholder = isCyrillicAns ? "キリル文字で入力..." : "日本語で入力...";
-      } else if (item.type === 'typing') {
-        categoryLabel = "指定のモンゴル語文章をタイピング入力してください";
-        subHint = item.category ? `【タイピング: ${item.category}】` : '';
-        placeholder = "キリル文字で入力...";
+      } else if (item.type === 'sentence_translation' || item.type === 'typing') {
+        categoryLabel = isCyrillicAns ? "日本語に合うモンゴル語文章をキリル文字で入力してください" : "モンゴル語文章の日本語訳を入力してください";
+        subHint = item.category ? `【文章入力: ${item.category}】` : '';
+        placeholder = isCyrillicAns ? "キリル文字で文章を入力..." : "日本語訳を入力...";
       } else {
         categoryLabel = "問題の正解を入力してください";
         placeholder = isCyrillicAns ? "キリル文字で入力..." : "日本語で入力...";
