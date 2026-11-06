@@ -24,6 +24,10 @@ def test_spelling_game():
     assert 'resolveKeyToTile' in comp_content, "Missing resolveKeyToTile for keyboard support"
     assert 'resolveLatinCharToCyrillic' in comp_content, "Missing resolveLatinCharToCyrillic"
     assert 'animate-pulse' not in comp_content, "Flashing animate-pulse should be removed from SpellingGame"
+    assert "'x': ['х', 'ч']" in comp_content, "x must map to Cyrillic х"
+    assert "'y': ['й'" in comp_content, "y must map to Cyrillic й"
+    assert "process" in comp_content, "Must handle Japanese IME process key"
+    assert "renderUI()" in comp_content, "Must render UI immediately"
     print("  [OK] SpellingGameComponent implementation verified")
 
     # 2. Check bundled.js

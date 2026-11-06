@@ -43915,12 +43915,12 @@ class SpellingGameComponent {
 
   static prepareQuestions() {
     const rawVocab = StorageService.getVocabulary();
-    // 1単語で記号やスペースを含まない、長さ2〜8文字のクリーンな単語を抽出
+    // 1単語で記号やスペースを含まない、長さ2〜8文字の純粋なキリル文字単語を抽出
     let pool = rawVocab.filter(w => {
       if (!w.mongolian || !w.japanese) return false;
-      const clean = w.mongolian.trim().toLowerCase();
+      const clean = w.mongolian.trim().toLowerCase().replace(/[.,?!/\\~]/g, '');
       if (clean.includes(' ') || clean.includes('-') || clean.includes('(')) return false;
-      return clean.length >= 2 && clean.length <= 8 && isCyrillic(clean);
+      return clean.length >= 2 && clean.length <= 8 && /^[а-яёөү]+$/i.test(clean);
     });
 
     // カテゴリ別フィルタ
@@ -43937,7 +43937,11 @@ class SpellingGameComponent {
     }
 
     if (pool.length < 5) {
-      pool = rawVocab.filter(w => w.mongolian && w.japanese && !w.mongolian.includes(' ') && w.mongolian.length >= 2 && w.mongolian.length <= 8);
+      pool = rawVocab.filter(w => {
+        if (!w.mongolian || !w.japanese) return false;
+        const clean = w.mongolian.trim().toLowerCase().replace(/[.,?!/\\~]/g, '');
+        return clean.length >= 2 && clean.length <= 8 && !clean.includes(' ') && /^[а-яёөү]+$/i.test(clean);
+      });
     }
 
     this.state.questions = shuffleArray([...pool]).slice(0, 10); // 1ラウンド10問
@@ -43951,7 +43955,7 @@ class SpellingGameComponent {
 
     const word = this.state.questions[this.state.currentIndex];
     this.state.currentWord = word;
-    const cleanMn = word.mongolian.trim().toLowerCase();
+    const cleanMn = word.mongolian.trim().toLowerCase().replace(/[.,?!/\\~]/g, '');
     this.state.targetLetters = cleanMn.split('');
     this.state.hasAnswered = false;
     this.state.isMistake = false;
@@ -44435,9 +44439,14 @@ class SpellingGameComponent {
         return;
       }
 
-      const keyChar = e.key.toLowerCase();
+      let keyChar = e.key ? e.key.toLowerCase() : '';
+      // Windows 日本語IMEがONの場合、e.code から物理キー名を取得
+      if ((keyChar === 'process' || e.isComposing) && e.code && e.code.startsWith('Key')) {
+        keyChar = e.code.slice(3).toLowerCase();
+      }
+
       if (this.state.mode === 'tile_arrange') {
-        const matchTile = this.resolveKeyToTile(keyChar);
+        const matchTile = this.resolveKeyToTile(keyChar, e);
         if (matchTile) {
           e.preventDefault();
           this.onTileClicked(matchTile.id, matchTile.char);
@@ -44446,7 +44455,7 @@ class SpellingGameComponent {
         if (isCyrillic(keyChar)) {
           this.onFreeCharTyped(keyChar);
         } else {
-          const cyr = this.resolveLatinCharToCyrillic(keyChar);
+          const cyr = this.resolveLatinCharToCyrillic(keyChar, e);
           if (cyr) {
             this.onFreeCharTyped(cyr);
           }
@@ -44459,36 +44468,31 @@ class SpellingGameComponent {
 
   /**
    * PCキーボード打鍵文字から未使用の候補タイルを賢く探索
-   * （直接キリル一致 ➜ QWERTY物理配列一致 ➜ フォネティック発音一致）
+   * （期待文字最優先 ➜ フォネティック発音一致 ➜ 直接キリル一致 ➜ QWERTY物理配列一致）
    */
-  static resolveKeyToTile(keyChar) {
+  static resolveKeyToTile(keyChar, e = null) {
     if (!keyChar) return null;
+    keyChar = keyChar.toLowerCase();
+    if ((keyChar === 'process' || (e && e.isComposing)) && e && e.code && e.code.startsWith('Key')) {
+      keyChar = e.code.slice(3).toLowerCase();
+    }
+
     const unusedTiles = this.state.candidateTiles.filter(t => !t.isUsed);
     if (!unusedTiles.length) return null;
 
+    // 次のスロットで期待されている文字（正解文字を最優先でヒットさせる）
+    const nextIdx = this.state.placedLetters.length;
+    const expectedChar = this.state.targetLetters[nextIdx] ? this.state.targetLetters[nextIdx].toLowerCase() : null;
+
     // 1. 直接キリル文字一致
+    if (expectedChar) {
+      const directExpected = unusedTiles.find(t => t.char.toLowerCase() === keyChar && t.char.toLowerCase() === expectedChar);
+      if (directExpected) return directExpected;
+    }
     const direct = unusedTiles.find(t => t.char.toLowerCase() === keyChar);
     if (direct) return direct;
 
-    // 2. QWERTY物理キー配列マッピング (ロシア語/モンゴル語キーボード配列)
-    const QWERTY_MAP = {
-      'q': 'й', 'w': 'ц', 'e': 'у', 'r': 'к', 't': 'е', 'y': 'н', 'u': 'г', 'i': 'ш', 'o': 'щ', 'p': 'з',
-      '[': 'х', '{': 'х', ']': 'ъ', '}': 'ъ',
-      'a': 'ф', 's': 'ы', 'd': 'в', 'f': 'а', 'g': 'п', 'h': 'р', 'j': 'о', 'k': 'л', 'l': 'д',
-      ';': 'ж', ':': 'ж', "'": 'э', '"': 'э',
-      'z': 'я', 'x': 'ч', 'c': 'с', 'v': 'м', 'b': 'и', 'n': 'т', 'm': 'ь',
-      '-': 'ү', '=': 'ө'
-    };
-    if (QWERTY_MAP[keyChar]) {
-      const qMatch = unusedTiles.find(t => t.char === QWERTY_MAP[keyChar]);
-      if (qMatch) return qMatch;
-    }
-
-    // 3. 発音・ローマ字（フォネティック）マッピング
-    // 次のスロットで期待されている文字を最優先でマッチング！
-    const nextIdx = this.state.placedLetters.length;
-    const expectedChar = this.state.targetLetters[nextIdx];
-
+    // 2. 発音・ローマ字（フォネティック）マッピング（日本語・英語キーボードの直感入力）
     const PHONETIC_MAP = {
       'a': ['а', 'я'],
       'b': ['б'],
@@ -44512,33 +44516,67 @@ class SpellingGameComponent {
       'u': ['у', 'ү'],
       'f': ['ф'],
       'h': ['х'],
+      'x': ['х', 'ч'],
       'c': ['ц', 'ч', 'с'],
-      'y': ['ы', 'й', 'я', 'ю']
+      'y': ['й', 'ы', 'я', 'ю', 'у', 'ү'],
+      'q': ['й', 'ө', 'ү'],
+      '-': ['ь', 'ъ', 'ү'],
+      '=': ['ө'],
+      "'": ['ь', 'ъ'],
+      '"': ['ь', 'ъ']
     };
 
     const phoneticCandidates = PHONETIC_MAP[keyChar];
     if (phoneticCandidates) {
+      // 期待される正解文字に合致する未使用タイルがあれば最優先で選択！
       if (expectedChar && phoneticCandidates.includes(expectedChar)) {
-        const expectedMatch = unusedTiles.find(t => t.char === expectedChar);
+        const expectedMatch = unusedTiles.find(t => t.char.toLowerCase() === expectedChar);
         if (expectedMatch) return expectedMatch;
       }
       for (const c of phoneticCandidates) {
-        const pMatch = unusedTiles.find(t => t.char === c);
+        const pMatch = unusedTiles.find(t => t.char.toLowerCase() === c);
         if (pMatch) return pMatch;
       }
+    }
+
+    // 3. QWERTY物理キー配列マッピング (ロシア語/モンゴル語キーボード配列)
+    const QWERTY_MAP = {
+      'q': 'й', 'w': 'ц', 'e': 'у', 'r': 'к', 't': 'е', 'y': 'н', 'u': 'г', 'i': 'ш', 'o': 'щ', 'p': 'з',
+      '[': 'х', '{': 'х', ']': 'ъ', '}': 'ъ',
+      'a': 'ф', 's': 'ы', 'd': 'в', 'f': 'а', 'g': 'п', 'h': 'р', 'j': 'о', 'k': 'л', 'l': 'д',
+      ';': 'ж', ':': 'ж', "'": 'э', '"': 'э',
+      'z': 'я', 'x': 'ч', 'c': 'с', 'v': 'м', 'b': 'и', 'n': 'т', 'm': 'ь',
+      '-': 'ү', '=': 'ө'
+    };
+    if (QWERTY_MAP[keyChar]) {
+      const qChar = QWERTY_MAP[keyChar];
+      if (expectedChar && qChar === expectedChar) {
+        const qExpected = unusedTiles.find(t => t.char.toLowerCase() === expectedChar);
+        if (qExpected) return qExpected;
+      }
+      const qMatch = unusedTiles.find(t => t.char.toLowerCase() === qChar);
+      if (qMatch) return qMatch;
     }
 
     return null;
   }
 
-  static resolveLatinCharToCyrillic(keyChar) {
+  static resolveLatinCharToCyrillic(keyChar, e = null) {
+    if (!keyChar) return null;
+    keyChar = keyChar.toLowerCase();
+    if ((keyChar === 'process' || (e && e.isComposing)) && e && e.code && e.code.startsWith('Key')) {
+      keyChar = e.code.slice(3).toLowerCase();
+    }
+
     const nextIdx = this.state.typedLetters.length;
-    const expectedChar = this.state.targetLetters[nextIdx];
+    const expectedChar = this.state.targetLetters[nextIdx] ? this.state.targetLetters[nextIdx].toLowerCase() : null;
     const PHONETIC_MAP = {
       'a': ['а', 'я'], 'b': ['б'], 'v': ['в'], 'w': ['в'], 'g': ['г'], 'd': ['д'],
-      'e': ['э', 'е'], 'z': ['з', 'ж'], 'i': ['и', 'й', 'ы'], 'j': ['ж'], 'k': ['к'],
+      'e': ['э', 'е', 'ё'], 'z': ['з', 'ж'], 'i': ['и', 'й', 'ы'], 'j': ['ж', 'й'], 'k': ['к', 'х'],
       'l': ['л'], 'm': ['м'], 'n': ['н'], 'o': ['о', 'ө'], 'p': ['п'], 'r': ['р'],
-      's': ['с', 'ш'], 't': ['т'], 'u': ['у', 'ү'], 'f': ['ф'], 'h': ['х'], 'c': ['ц', 'ч'], 'y': ['ы']
+      's': ['с', 'ш'], 't': ['т', 'ц'], 'u': ['у', 'ү'], 'f': ['ф'], 'h': ['х'], 'x': ['х', 'ч'],
+      'c': ['ц', 'ч'], 'y': ['й', 'ы', 'я', 'ю'], 'q': ['й', 'ө', 'ү'],
+      "'": ['ь'], '-': ['ү'], '=': ['ө']
     };
     const list = PHONETIC_MAP[keyChar];
     if (list) {
@@ -44563,11 +44601,14 @@ class SpellingGameComponent {
     SoundEffects.playTile();
     this.state.isMistake = false;
 
+    // 即座に最新のスロット配置を画面に反映
+    this.renderUI();
+
     // 全スロットが埋まったら自動判定
     if (this.state.placedLetters.length === this.state.targetLetters.length) {
-      this.checkArrangeAnswer();
-    } else {
-      this.renderUI();
+      setTimeout(() => {
+        this.checkArrangeAnswer();
+      }, 120);
     }
   }
 
@@ -44643,11 +44684,14 @@ class SpellingGameComponent {
     SoundEffects.playTile();
     this.state.isMistake = false;
 
+    // 即座に最新のスロット配置を画面に反映
+    this.renderUI();
+
     // 全スロットが埋まったら即時判定
     if (this.state.typedLetters.length === this.state.targetLetters.length) {
-      this.verifyFreeTypeAnswer();
-    } else {
-      this.renderUI();
+      setTimeout(() => {
+        this.verifyFreeTypeAnswer();
+      }, 120);
     }
   }
 
@@ -44687,9 +44731,21 @@ class SpellingGameComponent {
       isFever = true;
       this.state.fullness = 0; // リセット
       this.state.score += 50;  // 満腹フィーバーボーナス
-      GamificationService.addXp(50);
+      try {
+        if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+          GamificationService.addXp(50);
+        }
+      } catch (e) {
+        console.warn('GamificationService.addXp error:', e);
+      }
     } else {
-      GamificationService.addXp(15);
+      try {
+        if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+          GamificationService.addXp(15);
+        }
+      } catch (e) {
+        console.warn('GamificationService.addXp error:', e);
+      }
     }
 
     // マスコットのアニメーションとメッセージ
@@ -44700,13 +44756,17 @@ class SpellingGameComponent {
       : `モグモグ！美味しい！！ амттай байна! 🐟😋 (+${pts} pt)`;
 
     // 効果音
-    SoundEffects.playCorrect();
-    setTimeout(() => {
-      SoundEffects.playMunch();
-    }, 200);
+    try {
+      SoundEffects.playCorrect();
+      setTimeout(() => {
+        SoundEffects.playMunch();
+      }, 200);
+    } catch (_) {}
 
     // ネイティブ音声自動再生
-    SpeechService.speak(this.state.currentWord.mongolian, { rate: 0.9 });
+    try {
+      SpeechService.speak(this.state.currentWord.mongolian, { rate: 0.9 });
+    } catch (_) {}
 
     // 履歴に追加
     this.state.answeredLog.push({
@@ -44728,7 +44788,9 @@ class SpellingGameComponent {
     this.state.combo = 0;
     this.state.mascotMood = 'sad';
     this.state.mascotMessage = 'うーん、惜しい！文字を直してもう一度！🐧';
-    SoundEffects.playWrong();
+    try {
+      SoundEffects.playWrong();
+    } catch (_) {}
     this.renderUI();
   }
 
