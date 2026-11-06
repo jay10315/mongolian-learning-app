@@ -344,7 +344,13 @@ export class WordFamilyComponent {
       SoundEffects.playCorrect();
       antonymGame.combo++;
       antonymGame.matchedCount++;
-      GamificationService.addXp(10);
+      try {
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(10);
+      }
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
 
       setTimeout(() => {
         firstCard.isMatched = true;
@@ -357,7 +363,13 @@ export class WordFamilyComponent {
           // 全ペアクリア
           antonymGame.isCleared = true;
           antonymGame.clearSeconds = Math.round((Date.now() - antonymGame.startTime) / 1000);
-          GamificationService.addXp(35);
+          try {
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(35);
+      }
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
           SoundEffects.playLevelUp();
         }
         this.renderMain();
@@ -502,7 +514,13 @@ export class WordFamilyComponent {
       SoundEffects.playCorrect();
       synonymGame.score += 15;
       synonymGame.streak++;
-      GamificationService.addXp(15);
+      try {
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(15);
+      }
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
     } else {
       SoundEffects.playWrong();
       synonymGame.streak = 0;
@@ -671,7 +689,13 @@ export class WordFamilyComponent {
     if (isCorrect) {
       SoundEffects.playCorrect();
       familyGame.score += 15;
-      GamificationService.addXp(15);
+      try {
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(15);
+      }
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
     } else {
       SoundEffects.playWrong();
     }

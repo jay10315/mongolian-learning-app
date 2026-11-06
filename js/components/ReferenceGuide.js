@@ -66,6 +66,30 @@ export class ReferenceGuideComponent {
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-conversation">
               💬 ⑦ 実践会話表現
             </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-modality">
+              🎭 ⑧ モダリティ終助詞12選
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-volitive">
+              🎯 ⑨ 希求形・意思形（-я⁴/-ъя⁴/-ье）
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-converb-j-ch">
+              ⚡ ⑩ 進行形（-ж/-ч）原則と5大例外
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-auxiliary-verbs">
+              🤝 ⑪ 補助動詞7大構文
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-plural">
+              👥 ⑫ 複数形（-ууд²/-нар/-д/-с/-чууд²）
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-reflexive">
+              🔄 ⑬ 再帰所有（-аа⁴）＆人称関係助詞
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-interrogative">
+              ❓ ⑭ 疑問詞全格変化マトリクス
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-dative-locative">
+              🏛️ ⑮ 与位格（-д/-т）接続＆隠れ-н
+            </button>
           </div>
 
           <!-- タブ1: 隠れн (нууц н) -->
@@ -645,6 +669,659 @@ export class ReferenceGuideComponent {
               </div>
             </div>
           </div>
+
+          <!-- タブ8: モダリティ・終助詞12選 -->
+          <div id="ref-tab-modality" class="ref-subtab-pane hidden space-y-4">
+            <div class="bg-indigo-100/60 p-3.5 rounded-xl border border-indigo-200 text-xs text-indigo-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
+                <span>🎭</span> 働きかけ・モダリティ表現（12大終助詞・推量・義務・伝聞）
+              </div>
+              <p class="leading-relaxed">
+                話し手の疑い、確信、推量、義務、想起、伝聞などの気持ちや働きかけを表す最重要終助詞・構文12種です。日常会話や口述試験で頻出します。
+              </p>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-indigo-200 bg-white shadow-xs">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-indigo-50 text-indigo-950 border-b border-indigo-200">
+                    <th class="p-2.5 font-bold">表現</th>
+                    <th class="p-2.5 font-bold">意味・用法</th>
+                    <th class="p-2.5 font-bold">例文</th>
+                    <th class="p-2.5 font-bold">日本語訳</th>
+                    <th class="p-2.5 text-center font-bold">音声</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-indigo-100 text-slate-700">
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">гэж үү?</td>
+                    <td class="p-2.5">疑い・意外「本当に〜ですか？まさか〜？」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Энэ үнэн гэж үү?</td>
+                    <td class="p-2.5">これが本当ですか（まさか本当なのですか）？</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Энэ үнэн гэж үү?">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">биш үү?</td>
+                    <td class="p-2.5">確認・反語「〜ではありませんか？」「〜ですよね？」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Энэ таны ном биш үү?</td>
+                    <td class="p-2.5">これはあなたの本ではありませんか？</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Энэ таны ном биш үү?">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">биз / биз дээ?</td>
+                    <td class="p-2.5">相手への念押し確認「〜でしょうね」「〜だよね」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Та маргааш завтай биз дээ?</td>
+                    <td class="p-2.5">明日お時間ありますよね？</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Та маргааш завтай биз дээ?">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">билүү / билээ?</td>
+                    <td class="p-2.5">過去の記憶想起「〜でしたっけ？」（忘れた事の確認）</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Түүний нэр хэн билээ?</td>
+                    <td class="p-2.5">彼の名前は何でしたっけ？</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Түүний нэр хэн билээ?">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">болов уу? / бол?</td>
+                    <td class="p-2.5">自問・婉曲推量「〜かしら、〜だろうか」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Маргааш бороо орох болов уу?</td>
+                    <td class="p-2.5">明日雨が降るかしら？</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Маргааш бороо орох болов уу?">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">байх аа</td>
+                    <td class="p-2.5">主観的推量「〜でしょう、〜と思う」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Тэр одоо гэртээ байгаа байх аа.</td>
+                    <td class="p-2.5">彼は今家にいるでしょう。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Тэр одоо гэртээ байгаа байх аа.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">-х ёстой</td>
+                    <td class="p-2.5">当然・義務「〜のはずだ、〜すべきだ」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Бид цагтаа очих ёстой.</td>
+                    <td class="p-2.5">私たちは時間通りに行くべきです。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Бид цагтаа очих ёстой.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">магадгүй</td>
+                    <td class="p-2.5">可能性・不確実推量「〜かもしれない」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Тэр өнөөдөр ирж магадгүй.</td>
+                    <td class="p-2.5">彼は今日来るかもしれない。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Тэр өнөөдөр ирж магадгүй.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">бололтой</td>
+                    <td class="p-2.5">状況・外見からの推測「〜のようだ、〜らしい」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Бороо орох бололтой.</td>
+                    <td class="p-2.5">雨が降りそうだ（降るらしい）。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Бороо орох бололтой.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">мөн</td>
+                    <td class="p-2.5">強い確信「まさに〜に違いない」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Энэ ном мөн байна.</td>
+                    <td class="p-2.5">まさにこの本に間違いありません。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Энэ ном мөн байна.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">гэнэ ээ</td>
+                    <td class="p-2.5">伝聞「〜だそうだ、〜とのことだ」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Маргааш цас орно гэнэ ээ.</td>
+                    <td class="p-2.5">明日雪が降るそうです。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Маргааш цас орно гэнэ ээ.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">юм шиг байна</td>
+                    <td class="p-2.5">直感・印象推測「〜みたいです、〜のようです」</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Тэр их ядарсан юм шиг байна.</td>
+                    <td class="p-2.5">彼はとても疲れているみたいです。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Тэр их ядарсан юм шиг байна.">🔊</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- タブ9: 希求形・意思形（-я⁴ / -ъя⁴ / -ье） -->
+          <div id="ref-tab-volitive" class="ref-subtab-pane hidden space-y-4">
+            <div class="bg-indigo-100/60 p-3.5 rounded-xl border border-indigo-200 text-xs text-indigo-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
+                <span>🎯</span> 動詞の希求形・意思形（-я⁴ / -ъя⁴ / -ье）完全活用ルール
+              </div>
+              <p class="leading-relaxed">
+                「〜しよう」「〜しましょう」を表す意思・勧誘の語尾です。男性語／女性語および語幹末尾（母音か子音か）によって<strong>硬音記号「ъ」や軟音記号「ь」を挟む厳密な正書法</strong>があります。
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <!-- 男性語 -->
+              <div class="bg-white rounded-xl p-4 border border-amber-200 shadow-2xs space-y-2.5">
+                <div class="font-black text-amber-800 text-sm flex items-center justify-between border-b border-amber-100 pb-1.5">
+                  <span>🔵 男性語（語幹母音が а, о, у）</span>
+                  <span class="text-[11px] bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md font-bold">-я / -ё / -ъя / -ъё</span>
+                </div>
+                <div class="space-y-2">
+                  <div class="bg-amber-50/60 p-2.5 rounded-lg border border-amber-200/60">
+                    <div class="font-bold text-slate-800 mb-1">1. 母音語幹 ➜ 直接「-я / -ё」を接続</div>
+                    <ul class="space-y-1 text-slate-700 cyrillic-text">
+                      <li>• уух（飲む）➜ <span class="font-bold text-amber-700">ууя</span>（飲もう）</li>
+                      <li>• тоглох（遊ぶ）➜ <span class="font-bold text-amber-700">тоглоё</span>（遊ぼう）</li>
+                      <li>• унах（乗る）➜ <span class="font-bold text-amber-700">уная</span>（乗ろう）</li>
+                    </ul>
+                  </div>
+                  <div class="bg-amber-50/60 p-2.5 rounded-lg border border-amber-200/60">
+                    <div class="font-bold text-slate-800 mb-1">2. 子音語幹 ➜ 硬音記号「ъ」を挟んで「-ъя / -ъё」</div>
+                    <ul class="space-y-1 text-slate-700 cyrillic-text">
+                      <li>• амрах（休む: 語幹 амар-）➜ <span class="font-bold text-amber-700">амаръя</span>（休もう）</li>
+                      <li>• уулзах（会う: 語幹 уулз-）➜ <span class="font-bold text-amber-700">уулзъя</span>（会おう）</li>
+                      <li>• сонсох（聴く: 語幹 сонс-）➜ <span class="font-bold text-amber-700">сонсъё</span>（聴こう）</li>
+                      <li>• гарах（出る: 語幹 гар-）➜ <span class="font-bold text-amber-700">гаръя</span>（出よう）</li>
+                      <li>• явах（行く: 語幹 яв-）➜ <span class="font-bold text-amber-700">явъя</span>（行こう）</li>
+                      <li>• ярих（話す: 語幹 ярь-）➜ <span class="font-bold text-amber-700">яръя</span>（話そう: ьが脱落してъя）</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 女性語 -->
+              <div class="bg-white rounded-xl p-4 border border-sky-200 shadow-2xs space-y-2.5">
+                <div class="font-black text-sky-800 text-sm flex items-center justify-between border-b border-sky-100 pb-1.5">
+                  <span>🌸 女性語（語幹母音が э, ө, ү, и）</span>
+                  <span class="text-[11px] bg-sky-100 text-sky-900 px-2 py-0.5 rounded-md font-bold">-е / -ье</span>
+                </div>
+                <div class="space-y-2">
+                  <div class="bg-sky-50/60 p-2.5 rounded-lg border border-sky-200/60">
+                    <div class="font-bold text-slate-800 mb-1">1. 母音語幹 ➜ 直接「-е」を接続</div>
+                    <ul class="space-y-1 text-slate-700 cyrillic-text">
+                      <li>• гүйх（走る）➜ <span class="font-bold text-sky-700">гүе</span>（走ろう）</li>
+                      <li>• цэвэрлэх（掃除する）➜ <span class="font-bold text-sky-700">цэвэрлэе</span>（掃除しよう）</li>
+                      <li>• нээх（開ける）➜ <span class="font-bold text-sky-700">нээе</span>（開けよう）</li>
+                      <li>• хийх（する）➜ <span class="font-bold text-sky-700">хийе</span>（しよう）</li>
+                    </ul>
+                  </div>
+                  <div class="bg-sky-50/60 p-2.5 rounded-lg border border-sky-200/60">
+                    <div class="font-bold text-slate-800 mb-1">2. 子音語幹 ➜ 軟音記号「ь」を挟んで「-ье」</div>
+                    <ul class="space-y-1 text-slate-700 cyrillic-text">
+                      <li>• үзэх（見る: 語幹 үз-）➜ <span class="font-bold text-sky-700">үзье</span>（見よう）</li>
+                      <li>• идэх（食べる: 語幹 ид-）➜ <span class="font-bold text-sky-700">идье</span>（食べよう）</li>
+                      <li>• хүсэх（願う: 語幹 хүс-）➜ <span class="font-bold text-sky-700">хүсье</span>（願おう）</li>
+                      <li>• сэлэх（泳ぐ: 語幹 сэл-）➜ <span class="font-bold text-sky-700">сэлье</span>（泳ごう）</li>
+                      <li>• шилжүүлэх（振り込む: 語幹 шилжүүл-）➜ <span class="font-bold text-sky-700">шилжүүлье</span></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- タブ10: 進行形（-ж / -ч байна）の原則と5大例外 -->
+          <div id="ref-tab-converb-j-ch" class="ref-subtab-pane hidden space-y-4">
+            <div class="bg-indigo-100/60 p-3.5 rounded-xl border border-indigo-200 text-xs text-indigo-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
+                <span>⚡</span> 現在進行形（-ж / -ч байна）の原則と5大例外動詞
+              </div>
+              <p class="leading-relaxed">
+                モンゴル語の現在進行形「〜している」は動詞語幹に「-ж байна」または「-ч байна」を接続します。原則規則と、試験で狙われる<strong>超重要5大例外</strong>を完璧に押さえましょう。
+              </p>
+            </div>
+
+            <!-- 原則と例外の対比カード -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div class="bg-white rounded-xl p-4 border border-emerald-200 shadow-2xs space-y-2">
+                <div class="font-bold text-emerald-800 text-sm border-b border-emerald-100 pb-1">
+                  📘 原則ルール（接続条件）
+                </div>
+                <div class="space-y-2 text-slate-700">
+                  <div class="p-2 bg-emerald-50/50 rounded-lg">
+                    <strong class="text-emerald-900">「-ч」を取る語幹:</strong><br>
+                    語幹末尾が <strong>р, г, в, л</strong>（特に非摩擦子音）の場合:
+                    <ul class="mt-1 space-y-0.5 cyrillic-text">
+                      <li>• сур-（学ぶ）➜ <span class="font-bold text-emerald-700">сурч байна</span></li>
+                      <li>• өг-（与える）➜ <span class="font-bold text-emerald-700">өгч байна</span></li>
+                      <li>• ав-（取る）➜ <span class="font-bold text-emerald-700">авч байна</span></li>
+                    </ul>
+                  </div>
+                  <div class="p-2 bg-emerald-50/50 rounded-lg">
+                    <strong class="text-emerald-900">「-ж」を取る語幹:</strong><br>
+                    母音語幹、および ж, ч, ш, ц, з, с, д, т, х, н, м 等:
+                    <ul class="mt-1 space-y-0.5 cyrillic-text">
+                      <li>• унши-（読む）➜ <span class="font-bold text-emerald-700">уншиж байна</span></li>
+                      <li>• хий-（する）➜ <span class="font-bold text-emerald-700">хийж байна</span></li>
+                      <li>• бич-（書く）➜ <span class="font-bold text-emerald-700">бичиж байна</span></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5大例外動詞カード -->
+              <div class="bg-gradient-to-br from-rose-50 to-amber-50 rounded-xl p-4 border-2 border-rose-300 shadow-2xs space-y-2">
+                <div class="font-black text-rose-900 text-sm flex items-center justify-between border-b border-rose-200 pb-1">
+                  <span>🚨 超重要！5大例外動詞</span>
+                  <span class="text-[10px] bg-rose-600 text-white px-2 py-0.5 rounded-full font-bold">必須暗記</span>
+                </div>
+                <p class="text-slate-600">
+                  語幹末尾が р, г, в で終わるにもかかわらず、<strong>「-ч」ではなく「-ж」を取る</strong>超頻出例外です！
+                </p>
+                <div class="space-y-1.5 pt-1">
+                  <div class="bg-white/90 p-2 rounded-lg border border-rose-200 flex items-center justify-between cyrillic-text">
+                    <div>
+                      <span class="font-black text-slate-800">1. ирэх</span>（語幹: ир- / 来る）
+                    </div>
+                    <div>
+                      <span class="text-rose-500 line-through text-xs mr-1">ирч</span>
+                      <span class="font-black text-emerald-700 text-sm">➜ ирж байна</span>
+                    </div>
+                  </div>
+                  <div class="bg-white/90 p-2 rounded-lg border border-rose-200 flex items-center justify-between cyrillic-text">
+                    <div>
+                      <span class="font-black text-slate-800">2. орох</span>（語幹: ор- / 入る・降る）
+                    </div>
+                    <div>
+                      <span class="text-rose-500 line-through text-xs mr-1">орч</span>
+                      <span class="font-black text-emerald-700 text-sm">➜ орж байна</span>
+                    </div>
+                  </div>
+                  <div class="bg-white/90 p-2 rounded-lg border border-rose-200 flex items-center justify-between cyrillic-text">
+                    <div>
+                      <span class="font-black text-slate-800">3. явах</span>（語幹: яв- / 行く）
+                    </div>
+                    <div>
+                      <span class="text-rose-500 line-through text-xs mr-1">явч</span>
+                      <span class="font-black text-emerald-700 text-sm">➜ явж байна</span>
+                    </div>
+                  </div>
+                  <div class="bg-white/90 p-2 rounded-lg border border-rose-200 flex items-center justify-between cyrillic-text">
+                    <div>
+                      <span class="font-black text-slate-800">4. зурах</span>（語幹: зур- / 描く）
+                    </div>
+                    <div>
+                      <span class="text-rose-500 line-through text-xs mr-1">зурч</span>
+                      <span class="font-black text-emerald-700 text-sm">➜ зурж байна</span>
+                    </div>
+                  </div>
+                  <div class="bg-white/90 p-2 rounded-lg border border-rose-200 flex items-center justify-between cyrillic-text">
+                    <div>
+                      <span class="font-black text-slate-800">5. харах</span>（語幹: хар- / 見る）
+                    </div>
+                    <div>
+                      <span class="text-rose-500 line-through text-xs mr-1">харч</span>
+                      <span class="font-black text-emerald-700 text-sm">➜ харж байна</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- タブ11: 補助動詞7大構文 -->
+          <div id="ref-tab-auxiliary-verbs" class="ref-subtab-pane hidden space-y-4">
+            <div class="bg-indigo-100/60 p-3.5 rounded-xl border border-indigo-200 text-xs text-indigo-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
+                <span>🤝</span> 補助動詞7大構文（V + ж/ч + 補助動詞）
+              </div>
+              <p class="leading-relaxed">
+                本動詞の接続形（-ж / -ч）に補助動詞を添えることで、開始、終了、能力獲得、試み、経験、授受などの豊かなアスペクト・ニュアンスを表します。
+              </p>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-indigo-200 bg-white shadow-xs">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-indigo-50 text-indigo-950 border-b border-indigo-200">
+                    <th class="p-2.5 font-bold">構文</th>
+                    <th class="p-2.5 font-bold">意味</th>
+                    <th class="p-2.5 font-bold">例文</th>
+                    <th class="p-2.5 font-bold">日本語訳</th>
+                    <th class="p-2.5 text-center font-bold">音声</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-indigo-100 text-slate-700">
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">V + ж/ч сурах</td>
+                    <td class="p-2.5">〜できるようになる、〜の仕方を覚える</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Би монгол хоол хийж сурсан.</td>
+                    <td class="p-2.5">私はモンゴル料理を作れるようになった。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Би монгол хоол хийж сурсан.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">V + ж/ч эхлэх</td>
+                    <td class="p-2.5">〜し始める（動作・状態の開始）</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Цас орж эхэллээ.</td>
+                    <td class="p-2.5">雪が降り始めた。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Цас орж эхэллээ.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">V + ж/ч дуусах</td>
+                    <td class="p-2.5">〜し終わる（動作の完了）</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Би даалгавраа хийж дууссан.</td>
+                    <td class="p-2.5">私は宿題をし終えた。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Би даалгавраа хийж дууссан.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">V + ж/ч үзэх</td>
+                    <td class="p-2.5">〜してみる（試み）</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Энэ дээлийг өмсөж үзье.</td>
+                    <td class="p-2.5">このデールを着てみよう。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Энэ дээлийг өмсөж үзье.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">V + ж/ч үзсэн / байсан</td>
+                    <td class="p-2.5">〜したことがある（過去の経験）</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Би хөдөө морь унаж үзсэн.</td>
+                    <td class="p-2.5">私は田舎で馬に乗ったことがある。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Би хөдөө морь унаж үзсэн.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">V + ж/ч авах</td>
+                    <td class="p-2.5">自分のために〜しておく / 自分のものにする</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Түүний хаягийг тэмдэглэж авсан.</td>
+                    <td class="p-2.5">彼の住所をメモしておいた。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Түүний хаягийг тэмдэглэж авсан.">🔊</button></td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-indigo-700 cyrillic-text">V + ж/ч өгөх</td>
+                    <td class="p-2.5">相手のために〜してあげる（恩恵の授与）</td>
+                    <td class="p-2.5 cyrillic-text font-medium text-slate-900">Би найздаа тусалж өгсөн.</td>
+                    <td class="p-2.5">私は友達を手伝ってあげた。</td>
+                    <td class="p-2.5 text-center"><button type="button" class="btn-ref-speak text-xs bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md" data-word="Би найздаа тусалж өгсөн.">🔊</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- タブ12: 複数形語尾の5大分類 -->
+          <div id="ref-tab-plural" class="ref-subtab-pane hidden space-y-4">
+            <div class="bg-indigo-100/60 p-3.5 rounded-xl border border-indigo-200 text-xs text-indigo-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
+                <span>👥</span> 複数形語尾（-ууд², -нар, -д, -с, -чууд²）の完全分類
+              </div>
+              <p class="leading-relaxed">
+                モンゴル語の名詞複数形は単一ではなく、対象（物・敬称・職業・集団など）や語末音によって語尾が変化します。
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div class="bg-white rounded-xl p-3.5 border border-indigo-200 space-y-2">
+                <div class="font-bold text-indigo-900 text-sm">1. -ууд / -үүд（一般複数形）</div>
+                <p class="text-slate-600">最も汎用的な複数語尾。子音終わり名詞や一般事物に広く使われます。</p>
+                <ul class="space-y-1 cyrillic-text text-slate-800">
+                  <li>• ном ➜ <span class="font-bold text-indigo-700">номууд</span>（本たち）</li>
+                  <li>• гэр ➜ <span class="font-bold text-indigo-700">гэрүүд</span>（ゲルたち/家たち）</li>
+                  <li>• байшин ➜ <span class="font-bold text-indigo-700">байшингууд</span>（建物たち）</li>
+                </ul>
+              </div>
+
+              <div class="bg-white rounded-xl p-3.5 border border-indigo-200 space-y-2">
+                <div class="font-bold text-indigo-900 text-sm">2. -нар / -нэр（人物・敬称・親族）</div>
+                <p class="text-slate-600">先生、僧侶、家族、目上の人など敬意を伴う人物名詞に接続します。</p>
+                <ul class="space-y-1 cyrillic-text text-slate-800">
+                  <li>• багш ➜ <span class="font-bold text-indigo-700">багш нар</span>（先生たち）</li>
+                  <li>• лам ➜ <span class="font-bold text-indigo-700">лам нар</span>（僧侶たち）</li>
+                  <li>• эгч ➜ <span class="font-bold text-indigo-700">эгч нар</span>（姉たち）</li>
+                  <li>• эмч ➜ <span class="font-bold text-indigo-700">эмч нар</span>（医者たち）</li>
+                </ul>
+              </div>
+
+              <div class="bg-white rounded-xl p-3.5 border border-indigo-200 space-y-2">
+                <div class="font-bold text-indigo-900 text-sm">3. -д（語末が -гч, -ч, -н, -л の名詞）</div>
+                <p class="text-slate-600">職業や行為者を表す「-гч」「-ч」等で終わる名詞に付きます。</p>
+                <ul class="space-y-1 cyrillic-text text-slate-800">
+                  <li>• уншигч ➜ <span class="font-bold text-indigo-700">уншигчид</span>（読者たち）</li>
+                  <li>• сурагч ➜ <span class="font-bold text-indigo-700">сурагчид</span>（生徒たち）</li>
+                  <li>• оюутан ➜ <span class="font-bold text-indigo-700">оюутнууд / оюутнууд</span>（学生たち）</li>
+                </ul>
+              </div>
+
+              <div class="bg-white rounded-xl p-3.5 border border-indigo-200 space-y-2">
+                <div class="font-bold text-indigo-900 text-sm">4. -чууд / -чүүд（世代・民族・集団）</div>
+                <p class="text-slate-600">同じ属性や世代、出身地を共有する人間集団を表します。</p>
+                <ul class="space-y-1 cyrillic-text text-slate-800">
+                  <li>• залуу ➜ <span class="font-bold text-indigo-700">залуучууд</span>（若者たち）</li>
+                  <li>• монгол ➜ <span class="font-bold text-indigo-700">монголчууд</span>（モンゴル人たち）</li>
+                  <li>• хүүхэд ➜ <span class="font-bold text-indigo-700">хүүхдүүд</span>（子どもたち）</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- タブ13: 再帰所有＆人称関係助詞 -->
+          <div id="ref-tab-reflexive" class="ref-subtab-pane hidden space-y-4">
+            <div class="bg-indigo-100/60 p-3.5 rounded-xl border border-indigo-200 text-xs text-indigo-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
+                <span>🔄</span> 再帰所有語尾（-аа⁴, -хаа⁴, -гаа⁴）＆ 人称関係助詞（минь, маань...）
+              </div>
+              <p class="leading-relaxed">
+                主語自身が所有するものを表す再帰所有語尾と、会話で親愛や関係性を添える人称関係助詞の完全まとめです。
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <!-- 再帰所有語尾 -->
+              <div class="bg-white rounded-xl p-4 border border-indigo-200 shadow-2xs space-y-2.5">
+                <div class="font-bold text-indigo-900 text-sm border-b border-indigo-100 pb-1">
+                  1. 再帰所有語尾（自分の〜）
+                </div>
+                <div class="space-y-1.5 text-slate-700">
+                  <div class="p-2 bg-indigo-50/50 rounded-lg">
+                    <strong>基本形（単独接続）:</strong> -аа / -ээ / -оо / -өө<br>
+                    • ном + -оо ➜ <span class="font-bold cyrillic-text text-indigo-700">номоо</span>（自分の本を）<br>
+                    • ажил + -аа ➜ <span class="font-bold cyrillic-text text-indigo-700">ажлаа</span>（自分の仕事を）
+                  </div>
+                  <div class="p-2 bg-indigo-50/50 rounded-lg">
+                    <strong>与位格（-д + -аа⁴）:</strong> -даа / -дээ / -доо / -дөө<br>
+                    • гэр ➜ <span class="font-bold cyrillic-text text-indigo-700">гэртээ</span>（自分の家に）<br>
+                    • найз ➜ <span class="font-bold cyrillic-text text-indigo-700">найздаа</span>（自分の友達に）
+                  </div>
+                  <div class="p-2 bg-indigo-50/50 rounded-lg">
+                    <strong>奪格（-аас + -аа⁴）:</strong> -аасаа / -ээсээ / -оосоо / -өөсөө<br>
+                    • гэр ➜ <span class="font-bold cyrillic-text text-indigo-700">гэрээсээ</span>（自分の家から）
+                  </div>
+                  <div class="p-2 bg-indigo-50/50 rounded-lg">
+                    <strong>造格（-аар + -аа⁴）:</strong> -аараа / -ээрээ / -оороо / -өөрөө<br>
+                    • машин ➜ <span class="font-bold cyrillic-text text-indigo-700">машинаараа</span>（自分の車で）
+                  </div>
+                </div>
+              </div>
+
+              <!-- 人称関係助詞 -->
+              <div class="bg-white rounded-xl p-4 border border-indigo-200 shadow-2xs space-y-2.5">
+                <div class="font-bold text-indigo-900 text-sm border-b border-indigo-100 pb-1">
+                  2. 人称関係助詞（会話の親愛表現）
+                </div>
+                <div class="space-y-1.5 text-slate-700">
+                  <div class="p-2 bg-slate-50 rounded-lg">
+                    <strong class="text-indigo-800 cyrillic-text">минь</strong>（私の〜: 親愛感・慈しみ）<br>
+                    • Ээж минь сайн байна уウ?（私のお母さんは元気かい？）
+                  </div>
+                  <div class="p-2 bg-slate-50 rounded-lg">
+                    <strong class="text-indigo-800 cyrillic-text">маань</strong>（私たちの〜: 誇り・家族・仲間）<br>
+                    • Манай хүү маань их сайн сурч байна.（うちの息子ちゃんはとてもよく勉強しています。）
+                  </div>
+                  <div class="p-2 bg-slate-50 rounded-lg">
+                    <strong class="text-indigo-800 cyrillic-text">чинь</strong>（あなたの〜: 親称の確認・親しさ）<br>
+                    • Нэр чинь хэн бэ?（君の名前は何だっけ？）
+                  </div>
+                  <div class="p-2 bg-slate-50 rounded-lg">
+                    <strong class="text-indigo-800 cyrillic-text">тань</strong>（あなたの〜: 敬称）<br>
+                    • Гэр бүл тань сайн сууж байна уу?（ご家族はお元気でいらっしゃいますか？）
+                  </div>
+                  <div class="p-2 bg-slate-50 rounded-lg">
+                    <strong class="text-indigo-800 cyrillic-text">нь</strong>（その〜: 話題の提示・限定）<br>
+                    • Энэ цамцны өнгө нь их гоё байна.（このシャツの色はとても綺麗です。）
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- タブ14: 疑問詞全格変化マトリクス -->
+          <div id="ref-tab-interrogative" class="ref-subtab-pane hidden space-y-4">
+            <div class="bg-indigo-100/60 p-3.5 rounded-xl border border-indigo-200 text-xs text-indigo-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
+                <span>❓</span> 疑問詞全格変化マトリクス（хэн, юу, хаана, хэзээ, хэд）
+              </div>
+              <p class="leading-relaxed">
+                モンゴル語の疑問詞は名詞と同様に格変化します。疑問詞がある文は文末に「вэ / бэ」が付きます（Yes/No疑問文の「уу / үү」と区別）。
+              </p>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-indigo-200 bg-white shadow-xs">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-indigo-50 text-indigo-950 border-b border-indigo-200">
+                    <th class="p-2.5 font-bold">格</th>
+                    <th class="p-2.5 font-bold">хэн（誰）</th>
+                    <th class="p-2.5 font-bold">юу（何）</th>
+                    <th class="p-2.5 font-bold">хаана（どこ）</th>
+                    <th class="p-2.5 font-bold">хэзээ（いつ）</th>
+                    <th class="p-2.5 font-bold">хэд（いくつ）</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-indigo-100 text-slate-700 cyrillic-text">
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-slate-900 font-sans">主格（〜は）</td>
+                    <td class="p-2.5 font-black text-indigo-700">хэн</td>
+                    <td class="p-2.5 font-black text-indigo-700">юу</td>
+                    <td class="p-2.5 font-black text-indigo-700">хаана</td>
+                    <td class="p-2.5 font-black text-indigo-700">хэзээ</td>
+                    <td class="p-2.5 font-black text-indigo-700">хэд</td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-slate-900 font-sans">属格（〜の）</td>
+                    <td class="p-2.5">хэний</td>
+                    <td class="p-2.5">юуны</td>
+                    <td class="p-2.5">хаанахын</td>
+                    <td class="p-2.5">хэзээний</td>
+                    <td class="p-2.5">хэдний</td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-slate-900 font-sans">与位格（〜に/で）</td>
+                    <td class="p-2.5">хэнд</td>
+                    <td class="p-2.5">юунд</td>
+                    <td class="p-2.5">хаашаа (方向)</td>
+                    <td class="p-2.5">хэзээд</td>
+                    <td class="p-2.5">хэдэд</td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-slate-900 font-sans">対格（〜を）</td>
+                    <td class="p-2.5">хэнийг</td>
+                    <td class="p-2.5">юуг / юу</td>
+                    <td class="p-2.5">-</td>
+                    <td class="p-2.5">-</td>
+                    <td class="p-2.5">хэдийг</td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-slate-900 font-sans">奪格（〜から/より）</td>
+                    <td class="p-2.5">хэнээс</td>
+                    <td class="p-2.5">юунаас</td>
+                    <td class="p-2.5">хаанаас</td>
+                    <td class="p-2.5">хэзээнээс</td>
+                    <td class="p-2.5">хэдээс</td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-slate-900 font-sans">造格（〜で/を使って）</td>
+                    <td class="p-2.5">хэнээр</td>
+                    <td class="p-2.5">юугаар</td>
+                    <td class="p-2.5">хаагуур</td>
+                    <td class="p-2.5">-</td>
+                    <td class="p-2.5">хэдээр</td>
+                  </tr>
+                  <tr class="hover:bg-indigo-50/40">
+                    <td class="p-2.5 font-bold text-slate-900 font-sans">共格（〜と）</td>
+                    <td class="p-2.5">хэнтэй</td>
+                    <td class="p-2.5">юутай</td>
+                    <td class="p-2.5">-</td>
+                    <td class="p-2.5">-</td>
+                    <td class="p-2.5">хэдтэй</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 疑問文末尾助詞ルール -->
+            <div class="bg-amber-50 rounded-xl p-3.5 border border-amber-200 text-xs space-y-1.5">
+              <div class="font-bold text-amber-900">💡 疑問文の文末助詞ルール（вэ/бэ vs уу/үү）</div>
+              <ul class="space-y-1 text-slate-700">
+                <li>• <strong>疑問詞がある疑問文:</strong> 文末は <strong>вэ / бэ</strong>（語末が н, м, л, в の後は「бэ」、それ以外は「вэ」）<br>
+                  例: Энэ юу вэ?（これは何ですか？）/ Тэр хэн бэ?（あの人は誰ですか？）
+                </li>
+                <li>• <strong>Yes/No 疑問文:</strong> 文末は <strong>уу / үү / юу / юү</strong><br>
+                  例: Та оюутан уу?（あなたは学生ですか？）/ Энэ таны ном уу?（これはあなたの本ですか？）
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- タブ15: 与位格（-д / -т）接続＆隠れ-н語完全一覧 -->
+          <div id="ref-tab-dative-locative" class="ref-subtab-pane hidden space-y-4">
+            <div class="bg-indigo-100/60 p-3.5 rounded-xl border border-indigo-200 text-xs text-indigo-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
+                <span>🏛️</span> 与位格助詞（-д / -т）の厳密な接続条件と隠れ-н語完全一覧
+              </div>
+              <p class="leading-relaxed">
+                場所・時・対象「〜に、〜で」を表す与位格助詞「-д / -т」の接続規則です。語末の子音や潜在文字（隠れ-н）によって厳密に形が決まります。
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <!-- -т 接続 -->
+              <div class="bg-white rounded-xl p-3.5 border border-rose-200 shadow-2xs space-y-2">
+                <div class="font-black text-rose-800 text-sm border-b border-rose-100 pb-1 flex items-center justify-between">
+                  <span>1. 「-т」接続</span>
+                  <span class="text-[10px] bg-rose-100 text-rose-800 px-2 py-0.5 rounded-md font-bold">г, р, с, в等</span>
+                </div>
+                <p class="text-slate-600">語末が г, р, с, в または非共鳴子音で終わる名詞に直接「-т」が接続します。</p>
+                <div class="space-y-1 cyrillic-text font-medium text-slate-800 bg-rose-50/50 p-2 rounded-lg">
+                  <div>• дэлгүүр ➜ <span class="font-bold text-rose-700">дэлгүүрт</span>（店に）</div>
+                  <div>• Солонгос ➜ <span class="font-bold text-rose-700">Солонгост</span>（韓国に）</div>
+                  <div>• самбар ➜ <span class="font-bold text-rose-700">самбарт</span>（黒板に）</div>
+                  <div>• үйлдвэр ➜ <span class="font-bold text-rose-700">үйлдвэрт</span>（工場に）</div>
+                  <div>• гэр ➜ <span class="font-bold text-rose-700">гэрт</span>（家に）</div>
+                  <div>• дэвтэр ➜ <span class="font-bold text-rose-700">дэвтэрт</span>（ノートに）</div>
+                  <div>• компьютер ➜ <span class="font-bold text-rose-700">компьютерт</span></div>
+                  <div>• Улаанбаатар ➜ <span class="font-bold text-rose-700">Улаанбаатарт</span></div>
+                </div>
+              </div>
+
+              <!-- 母音挿入 -д 接続 -->
+              <div class="bg-white rounded-xl p-3.5 border border-amber-200 shadow-2xs space-y-2">
+                <div class="font-black text-amber-800 text-sm border-b border-amber-100 pb-1 flex items-center justify-between">
+                  <span>2. 母音挿入＋「-д」</span>
+                  <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-bold">ж, ч, ш, з等</span>
+                </div>
+                <p class="text-slate-600">子音衝突を防ぐため、間に短母音（а/и/о/ө）を挟んで「-д」を接続します。</p>
+                <div class="space-y-1 cyrillic-text font-medium text-slate-800 bg-amber-50/50 p-2 rounded-lg">
+                  <div>• багш ➜ <span class="font-bold text-amber-700">багшид</span>（先生に）</div>
+                  <div>• найз ➜ <span class="font-bold text-amber-700">найзад</span>（友人に）</div>
+                  <div>• эмч ➜ <span class="font-bold text-amber-700">эмчид</span>（医者に）</div>
+                  <div>• зурагт ➜ <span class="font-bold text-amber-700">зурагтад</span>（テレビに）</div>
+                  <div>• Франц ➜ <span class="font-bold text-amber-700">Францад</span>（フランスに）</div>
+                  <div>• Тайланд ➜ <span class="font-bold text-amber-700">Тайландад</span>（タイに）</div>
+                </div>
+              </div>
+
+              <!-- 隠れ-н ＋ -д 接続 -->
+              <div class="bg-white rounded-xl p-3.5 border border-emerald-200 shadow-2xs space-y-2">
+                <div class="font-black text-emerald-800 text-sm border-b border-emerald-100 pb-1 flex items-center justify-between">
+                  <span>3. 隠れ-н ＋「-д」</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-bold">-нд / -өнд等</span>
+                </div>
+                <p class="text-slate-600">潜在する「н」が復活し、「-нд」などの形で接続する最重要単語群です。</p>
+                <div class="space-y-1 cyrillic-text font-medium text-slate-800 bg-emerald-50/50 p-2 rounded-lg">
+                  <div>• цүнх ➜ <span class="font-bold text-emerald-700">цүнхэнд</span>（かばんに）</div>
+                  <div>• хоол ➜ <span class="font-bold text-emerald-700">хоолонд</span>（料理に）</div>
+                  <div>• банк ➜ <span class="font-bold text-emerald-700">банканд</span>（銀行に）</div>
+                  <div>• мөнгө ➜ <span class="font-bold text-emerald-700">мөнгөнд</span>（お金に）</div>
+                  <div>• өрөө ➜ <span class="font-bold text-emerald-700">өрөөнд</span>（部屋に）</div>
+                  <div>• ширээ ➜ <span class="font-bold text-emerald-700">ширээнд</span>（机に）</div>
+                  <div>• сүү ➜ <span class="font-bold text-emerald-700">сүүнд</span>（牛乳に）</div>
+                  <div>• харандаа ➜ <span class="font-bold text-emerald-700">харандаанд</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
 </div>
         </div>
 

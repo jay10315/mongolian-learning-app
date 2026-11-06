@@ -242,7 +242,13 @@ export class NumberMasterComponent {
         if (this.state.currentIndex + 1 < this.state.quizzes.length) {
           this.loadQuiz(this.state.currentIndex + 1);
         } else {
-          GamificationService.addXp(this.state.score * 5);
+          try {
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(this.state.score * 5);
+      }
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
           SoundEffects.playLevelUp();
           this.state.view = 'result';
           this.renderResult();

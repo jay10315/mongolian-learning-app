@@ -80,7 +80,13 @@ export class CultureComponent {
         if (isOk) {
           this.state.riddleScore++;
           SoundEffects.playCorrect();
-          GamificationService.addXp(10);
+          try {
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(10);
+      }
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
         } else {
           SoundEffects.playWrong();
         }

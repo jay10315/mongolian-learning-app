@@ -46,6 +46,10 @@ export class DeclensionTestComponent {
     this.state.settings.category = category;
     this.state.settings.count = 'all';
     this.state.view = 'testing';
+    if (!this.container) {
+      const mainContainer = document.getElementById('main-content');
+      if (mainContainer) this.container = mainContainer;
+    }
     this.startTest();
   }
 

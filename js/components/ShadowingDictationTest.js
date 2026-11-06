@@ -33,12 +33,12 @@ export class ShadowingDictationComponent {
       }
       if (!rawList || !rawList.length) {
         try {
-          if (typeof typingSentences !== 'undefined' && typingSentences && typingSentences.length) {
-            rawList = typingSentences;
-          } else if (typeof initialTypingSentences !== 'undefined' && initialTypingSentences && initialTypingSentences.length) {
-            rawList = initialTypingSentences;
+          if (typeof window !== 'undefined' && window.typingSentences && window.typingSentences.length) {
+            rawList = window.typingSentences;
           } else if (typeof window !== 'undefined' && window.initialTypingSentences && window.initialTypingSentences.length) {
             rawList = window.initialTypingSentences;
+          } else if (typeof initialTypingSentences !== 'undefined' && initialTypingSentences && initialTypingSentences.length) {
+            rawList = initialTypingSentences;
           }
         } catch (_) {}
       }
@@ -229,10 +229,22 @@ export class ShadowingDictationComponent {
         this.state.isChecked = true;
         if (acc >= 85) {
           SoundEffects.playCorrect();
-          GamificationService.addXp(10);
+          try {
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(10);
+      }
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
         } else {
           SoundEffects.playWrong();
-          GamificationService.addXp(3);
+          try {
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(3);
+      }
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
         }
         this.render(this.container, this.onNavigate);
       });

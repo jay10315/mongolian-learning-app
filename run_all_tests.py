@@ -40,7 +40,8 @@ tests = [
     'test_suffix_rule_dojo.py',
     'test_theme_and_night_mode.py',
     'test_expedition_map_all_aimags.py',
-    'test_user_notes_added.py'
+    'test_user_notes_added.py',
+    'test_pdf_grammar_supplement.py'
 ]
 
 for t in tests:

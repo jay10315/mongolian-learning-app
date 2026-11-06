@@ -878,8 +878,14 @@ export class HomeComponent {
     const hiddenCard = container.querySelector('#home-card-hidden-letters');
     if (hiddenCard) {
       hiddenCard.addEventListener('click', () => {
-        DeclensionTestComponent.startWithCategory('hidden_n_g');
-        if (onNavigate) onNavigate('declension_test');
+        if (onNavigate) {
+          onNavigate('declension_test');
+          setTimeout(() => {
+            DeclensionTestComponent.startWithCategory('hidden_n_g');
+          }, 0);
+        } else {
+          DeclensionTestComponent.startWithCategory('hidden_n_g');
+        }
       });
     }
 

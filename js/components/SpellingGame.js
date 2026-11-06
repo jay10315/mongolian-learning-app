@@ -971,6 +971,12 @@ export class SpellingGameComponent {
       SoundEffects.playWrong();
     } catch (_) {}
     this.renderUI();
+    // 誤答時は最後の文字（誤った文字）を少し待って自動で候補プールへ戻し、スムーズに再入力できるようにする
+    setTimeout(() => {
+      if (this.state.isMistake && this.state.placedLetters.length > 0) {
+        this.popLastPlacedTile();
+      }
+    }, 450);
   }
 
   static nextWord() {

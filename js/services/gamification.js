@@ -449,3 +449,7 @@ export class GamificationService {
     modal.querySelector('#btn-close-celebration').addEventListener('click', close);
   }
 }
+
+if (typeof window !== 'undefined') {
+  window.GamificationService = GamificationService;
+}

@@ -230,7 +230,13 @@ export class RoleplayComponent {
           this.renderDialogue();
         } else {
           // 終了
-          GamificationService.addXp(this.state.score * 2);
+          try {
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(this.state.score * 2);
+      }
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
           SoundEffects.playLevelUp();
           this.state.view = 'result';
           this.renderResult();
