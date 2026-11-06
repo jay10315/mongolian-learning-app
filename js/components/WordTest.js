@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR } from '../utils/helpers.js';
+import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR, isPronunciationCautionWord } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
@@ -285,12 +285,12 @@ export class WordTestComponent {
     } else if (mode === 'mn_to_ja') {
       questionPrompt = "モンゴル語の意味（日本語）を入力してください";
       questionMain = details.dictForm;
-      subHint = q.pronunciation ? `読み: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
+      subHint = (typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `⚠️ 読み注意: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
       isCyrillicInput = false;
     } else if (mode === 'choice_4') {
       questionPrompt = "正しい日本語訳を選択してください";
       questionMain = details.dictForm;
-      subHint = q.pronunciation ? `発音: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
+      subHint = (typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `⚠️ 読み注意: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
     } else if (mode === 'root_input') {
       questionPrompt = `動詞の【語幹（活用の土台）】を答えてください`;
       questionMain = `${details.dictForm}（${q.japanese}）`;
@@ -772,7 +772,7 @@ export class WordTestComponent {
                         ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
                       </span>
                       <span class="font-extrabold text-slate-900 text-sm cyrillic-text">${r.question.dictForm || r.question.mongolian}</span>
-                      ${r.question.pronunciation ? `<span class="text-slate-400 text-xs font-normal">[${r.question.pronunciation}]</span>` : ''}
+                      ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(r.question) && r.question.pronunciation) ? `<span class="text-amber-700 font-bold text-xs ml-1">⚠️ [${r.question.pronunciation}]</span>` : ''}
                     </div>
                     <div class="text-slate-700 font-medium">
                       意味: <span class="font-bold text-emerald-800">${r.question.japanese}</span>

@@ -1,7 +1,7 @@
 // フラッシュカードコンポーネント（3D反転アニメーション ＆ SRS 4段階評価）
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
-import { shuffleArray, isVerb, getWordGrammarDetails } from '../utils/helpers.js';
+import { shuffleArray, isVerb, getWordGrammarDetails, isPronunciationCautionWord } from '../utils/helpers.js';
 
 export class FlashcardsComponent {
   static state = {
@@ -130,9 +130,9 @@ export class FlashcardsComponent {
                       ${details.dictForm || card.mongolian}
                     </div>
 
-                    ${card.pronunciation ? `
-                      <div class="text-xs text-emerald-800 font-semibold">
-                        読み: ${card.pronunciation}
+                    ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(card) && card.pronunciation) ? `
+                      <div class="text-xs text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded-full inline-block border border-amber-200">
+                        ⚠️ 読み注意: ${card.pronunciation}
                       </div>
                     ` : ''}
 

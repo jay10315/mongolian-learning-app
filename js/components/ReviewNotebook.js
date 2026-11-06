@@ -570,7 +570,7 @@ export class ReviewNotebookComponent {
       }
     } else {
       categoryLabel = "モンゴル語の意味（日本語）を入力してください";
-      subHint = (matchedWord && matchedWord.pronunciation) ? `読み: ${matchedWord.pronunciation}` : '';
+      subHint = (matchedWord && typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(matchedWord) && matchedWord.pronunciation) ? `⚠️ 読み注意: ${matchedWord.pronunciation}` : '';
       placeholder = "日本語で意味を入力...";
     }
 

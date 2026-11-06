@@ -2,7 +2,7 @@
 // 身体部位・学校文房具・衣類・食べ物・日用品家電・果物野菜・方位 の全7分野を完全網羅
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
-import { SoundEffects, shuffleArray } from '../utils/helpers.js';
+import { SoundEffects, shuffleArray, isPronunciationCautionWord } from '../utils/helpers.js';
 import { PenguinMascot } from './PenguinMascot.js';
 import { GamificationService } from '../services/gamification.js';
 
@@ -329,9 +329,11 @@ export class GenreWordMasterComponent {
                     <div class="text-xl font-black text-slate-900 tracking-wide font-sans">
                       ${w.mongolian}
                     </div>
-                    <div class="text-xs font-bold text-emerald-600">
-                      [ ${w.pronunciation || '—'} ]
-                    </div>
+                    ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(w) && w.pronunciation) ? `
+                      <div class="text-xs font-bold text-amber-600">
+                        ⚠️ [ ${w.pronunciation} ]
+                      </div>
+                    ` : ''}
                   </div>
                   <button type="button" class="btn-play-word-audio p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition-colors cursor-pointer" data-word="${w.mongolian}" title="音声を聴く">
                     <span class="text-base">🔊</span>
@@ -465,12 +467,15 @@ export class GenreWordMasterComponent {
     const pool = [qWord, ...chosenDummies];
     const shuffledPool = shuffleArray(pool);
 
-    this.state.gameChoices = shuffledPool.map(w => ({
-      word: w,
-      text: isMnToJa ? w.japanese : w.mongolian,
-      subText: isMnToJa ? '' : `[${w.pronunciation || ''}]`,
-      isAnswer: w.id === qWord.id
-    }));
+    this.state.gameChoices = shuffledPool.map(w => {
+      const isCaution = typeof isPronunciationCautionWord === 'function' ? isPronunciationCautionWord(w) : false;
+      return {
+        word: w,
+        text: isMnToJa ? w.japanese : w.mongolian,
+        subText: isMnToJa ? '' : (isCaution && w.pronunciation ? `⚠️ [${w.pronunciation}]` : ''),
+        isAnswer: w.id === qWord.id
+      };
+    });
 
     this.state.mascotMood = 'idle';
     this.state.mascotMessage = `第 ${this.state.gameCurrentIndex + 1} 問！がんばって！🐧`;
@@ -540,9 +545,11 @@ export class GenreWordMasterComponent {
               <h3 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-wide font-sans mb-2">
                 ${currentQuestion.mongolian}
               </h3>
-              <div class="text-sm font-bold text-emerald-600 mb-3">
-                [ ${currentQuestion.pronunciation || ''} ]
-              </div>
+              ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(currentQuestion) && currentQuestion.pronunciation) ? `
+                <div class="inline-block text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 mb-3">
+                  ⚠️ 読み注意: [ ${currentQuestion.pronunciation} ]
+                </div>
+              ` : '<div class="mb-2"></div>'}
               <button type="button" id="btn-audio-question" class="inline-flex items-center gap-1.5 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3.5 py-1.5 rounded-full font-bold transition-all border border-emerald-200 cursor-pointer">
                 <span>🔊 発音を聴く</span>
               </button>
@@ -574,7 +581,7 @@ export class GenreWordMasterComponent {
                 <button type="button" class="btn-game-choice p-4 rounded-2xl text-left font-bold transition-all flex items-center justify-between ${btnClass} ${hasAnswered ? 'cursor-default pointer-events-none' : 'active:scale-98 cursor-pointer'}" data-choice-index="${idx}">
                   <div>
                     <div class="text-base sm:text-lg">${c.text}</div>
-                    ${c.subText ? `<div class="text-xs text-emerald-600">${c.subText}</div>` : ''}
+                    ${c.subText ? `<div class="text-xs text-amber-700 font-bold">${c.subText}</div>` : ''}
                   </div>
                   <span class="text-xs text-slate-400 font-mono">${idx + 1}</span>
                 </button>
@@ -594,7 +601,7 @@ export class GenreWordMasterComponent {
                 </button>
               </div>
               <div class="text-xs space-y-1">
-                <div><strong>正解:</strong> ${currentQuestion.mongolian} [${currentQuestion.pronunciation || ''}] = ${currentQuestion.japanese}</div>
+                <div><strong>正解:</strong> ${currentQuestion.mongolian} ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(currentQuestion) && currentQuestion.pronunciation) ? `<span class="text-amber-700 font-bold ml-1">⚠️ [${currentQuestion.pronunciation}]</span>` : ''} = ${currentQuestion.japanese}</div>
                 ${currentQuestion.exampleMn ? `<div><strong>例文:</strong> ${currentQuestion.exampleMn} (${currentQuestion.exampleJa || ''})</div>` : ''}
               </div>
             </div>
@@ -763,7 +770,7 @@ export class GenreWordMasterComponent {
                   <div class="flex items-center justify-between p-2.5 bg-rose-50/70 border border-rose-200 rounded-xl text-xs">
                     <div>
                       <span class="font-black text-slate-900 font-sans">${w.mongolian}</span>
-                      <span class="text-emerald-700 ml-1.5">[${w.pronunciation || ''}]</span>
+                      ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(w) && w.pronunciation) ? `<span class="text-amber-700 font-bold ml-1.5">⚠️ [${w.pronunciation}]</span>` : ''}
                     </div>
                     <span class="font-bold text-slate-700">${w.japanese}</span>
                   </div>

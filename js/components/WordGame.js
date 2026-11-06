@@ -1,7 +1,7 @@
 // 単語・文法・翻訳 統合バトルゲーム コンポーネント（独立したゲームコーナー）
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
-import { SoundEffects, shuffleArray, getWordGrammarDetails, isWordAnswerMatch, SPECIAL_CYRILLIC_BAR, isCyrillic } from '../utils/helpers.js';
+import { SoundEffects, shuffleArray, getWordGrammarDetails, isWordAnswerMatch, SPECIAL_CYRILLIC_BAR, isCyrillic, isPronunciationCautionWord } from '../utils/helpers.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
 export class WordGameComponent {
@@ -1423,9 +1423,9 @@ export class WordGameComponent {
               語幹: <span class="cyrillic-text">${details.root}</span>
             </span>
           ` : ''}
-          ${q.pronunciation ? `
-            <span class="text-xs text-slate-500 bg-slate-50 px-2 py-0.5 rounded-full font-medium">
-              [${q.pronunciation}]
+          ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `
+            <span class="text-xs text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full font-bold border border-amber-200">
+              ⚠️ 読み注意: [${q.pronunciation}]
             </span>
           ` : ''}
         </div>
@@ -2180,7 +2180,7 @@ export class WordGameComponent {
                             <span class="font-bold text-slate-900 text-xs">${item.japanese}</span>
                           </div>
                           <div class="text-slate-900 font-extrabold cyrillic-text">
-                            正解: ${item.dictForm || item.mongolian} ${item.pronunciation ? `[${item.pronunciation}]` : ''}
+                            正解: ${item.dictForm || item.mongolian} ${(typeof isPronunciationCautionWord === "function" && isPronunciationCautionWord(item) && item.pronunciation) ? `<span class="text-amber-700 font-bold ml-1">⚠️ [${item.pronunciation}]</span>` : ''}
                           </div>
                           ${!isCorr ? `<div class="text-slate-500">あなたの回答: <span class="line-through text-rose-600">${m.userAnswer}</span></div>` : ''}
                         </div>
@@ -2199,7 +2199,7 @@ export class WordGameComponent {
                           ${statusBadge}
                           <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-900 font-bold">日本語訳</span>
                           <span class="font-extrabold text-slate-900 cyrillic-text text-sm">${d.dictForm || item.mongolian}</span>
-                          ${item.pronunciation ? `<span class="text-slate-400 font-normal text-xs">[${item.pronunciation}]</span>` : ''}
+                          ${(typeof isPronunciationCautionWord === "function" && isPronunciationCautionWord(item) && item.pronunciation) ? `<span class="text-amber-700 font-bold text-xs ml-1">⚠️ [${item.pronunciation}]</span>` : ''}
                         </div>
                         <div class="text-slate-700 font-medium">正解: <span class="font-bold text-slate-900">${item.japanese}</span></div>
                         ${!isCorr ? `<div class="text-slate-500">あなたの回答: <span class="line-through text-rose-600">${m.userAnswer}</span></div>` : ''}

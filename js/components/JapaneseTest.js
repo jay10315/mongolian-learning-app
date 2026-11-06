@@ -1,7 +1,7 @@
 // 日本語訳専用テストコンポーネント（モンゴル語 → 日本語 記述・4択テスト）
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
-import { isWordAnswerMatch, getWordGrammarDetails, renderGrammarExplanationHTML, shuffleArray, SoundEffects } from '../utils/helpers.js';
+import { isWordAnswerMatch, getWordGrammarDetails, renderGrammarExplanationHTML, shuffleArray, SoundEffects, isPronunciationCautionWord } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
@@ -286,9 +286,9 @@ export class JapaneseTestComponent {
                   🌱 語幹: <span class="cyrillic-text">${details.root}</span>
                 </span>
               ` : ''}
-              ${q.pronunciation ? `
-                <span class="text-xs text-slate-500 bg-slate-50 px-2 py-0.5 rounded-full">
-                  読み: ${q.pronunciation}
+              ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `
+                <span class="text-xs text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full font-bold border border-amber-200">
+                  ⚠️ 読み注意: ${q.pronunciation}
                 </span>
               ` : ''}
             </div>
@@ -661,7 +661,7 @@ export class JapaneseTestComponent {
                         ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
                       </span>
                       <span class="font-extrabold text-slate-900 text-sm cyrillic-text">${r.question.dictForm || r.question.mongolian}</span>
-                      ${r.question.pronunciation ? `<span class="text-slate-400 text-xs font-normal">[${r.question.pronunciation}]</span>` : ''}
+                      ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(r.question) && r.question.pronunciation) ? `<span class="text-amber-700 font-bold text-xs ml-1">⚠️ [${r.question.pronunciation}]</span>` : ''}
                     </div>
                     <div class="text-slate-700 font-medium">
                       日本語訳: <span class="font-bold text-rose-800">${r.question.japanese}</span>

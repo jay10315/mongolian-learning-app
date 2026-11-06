@@ -827,7 +827,7 @@ function renderGrammarExplanationHTML({
       <div class="flex items-center flex-wrap gap-2">
         <span class="text-slate-500 font-medium">正解: </span>
         <span class="font-extrabold text-base cyrillic-text text-emerald-800">${correctAnswer}</span>
-        ${pron ? `<span class="text-slate-400 font-normal ml-1">(${pron})</span>` : ''}
+        ${pron && isPronunciationCautionWord(item || { mongolian: correctAnswer, pronunciation: pron }) ? `<span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md text-xs font-bold border border-amber-200 ml-1">⚠️ 読み注意: ${pron}</span>` : ''}
       </div>
 
       ${!isCorrect && userAnswer ? `
@@ -1131,6 +1131,53 @@ const SoundEffects = new Proxy(SoundEffectsBase, {
 });
 if (typeof window !== 'undefined') {
   window.SoundEffects = SoundEffects;
+}
+
+// 発音・読み方に特に注意が必要な単語リスト（不規則発音・軟音記号ь・硬音記号ъ・特殊母音・短縮形など）
+const PRONUNCIATION_CAUTION_WORDS = new Set([
+  'баярлалаа', 'баяртай', 'сайн байна уу', 'байна', 'байхгүй', 'хоёул',
+  'гурвуул', 'дөрвүүл', 'тавуул', 'зургууль', 'долуулаа', 'долоул', 'наймуул', 'есүүл',
+  'гурав', 'дөрөв', 'тав', 'зургаа', 'долоо', 'найм', 'ес', 'арав', 'хоёр',
+  'жар', 'жаран', 'дал', 'далан', 'ная', 'наян', 'ер', 'ерэн',
+  'морь', 'хонь', 'сургууль', 'явъя', 'суръя', 'ашгүй', 'юу', 'юү', 'өглөө', 'өвөө',
+  'хэлэх', 'үзэх', 'өгөх', 'мэдэх', 'хийх', 'идэх', 'авах', 'явах', 'болох'
+]);
+
+/**
+ * 読み方に特に注意が必要な単語か判定
+ * （全単語にカタカナを振るのではなく、不規則発音・軟音化・文字と発音の乖離が大きいものに限定）
+ */
+function isPronunciationCautionWord(word) {
+  if (!word) return false;
+  if (word.pronunciationCaution === true || word.isIrregularPronunciation === true || word.pronunciationWarning) return true;
+  
+  const mn = ((typeof word === 'string' ? word : (word.mongolian || word.dictForm || word.baseWord || '')) || '').trim().toLowerCase();
+  if (!mn) return false;
+  
+  // 明示的な注意単語
+  if (PRONUNCIATION_CAUTION_WORDS.has(mn)) return true;
+  for (const cw of PRONUNCIATION_CAUTION_WORDS) {
+    if (mn.includes(cw) && cw.length >= 4) return true;
+  }
+  
+  // 軟音記号 ь（前の文字を口蓋化・軟音化させるため読み方注意）
+  if (mn.includes('ь')) return true;
+  // 硬音記号 ъ（口蓋化を防ぐ・音節境界）
+  if (mn.includes('ъ')) return true;
+  
+  // メモや解説に発音の注意書きがある場合
+  const note = (word.note || word.grammarExplanation || word.hint || '');
+  if (/発音|読み方|短縮|脱落|不規則|軟音|注意|変則/.test(note)) return true;
+  
+  // е / ё で始まり特別な読み方になる単語
+  if (mn.startsWith('е') || mn.startsWith('ё')) return true;
+  
+  return false;
+}
+
+if (typeof window !== 'undefined') {
+  window.isPronunciationCautionWord = isPronunciationCautionWord;
+  window.PRONUNCIATION_CAUTION_WORDS = PRONUNCIATION_CAUTION_WORDS;
 }
 
 /**
@@ -45888,9 +45935,9 @@ class WordGameComponent {
               語幹: <span class="cyrillic-text">${details.root}</span>
             </span>
           ` : ''}
-          ${q.pronunciation ? `
-            <span class="text-xs text-slate-500 bg-slate-50 px-2 py-0.5 rounded-full font-medium">
-              [${q.pronunciation}]
+          ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `
+            <span class="text-xs text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full font-bold border border-amber-200">
+              ⚠️ 読み注意: [${q.pronunciation}]
             </span>
           ` : ''}
         </div>
@@ -46645,7 +46692,7 @@ class WordGameComponent {
                             <span class="font-bold text-slate-900 text-xs">${item.japanese}</span>
                           </div>
                           <div class="text-slate-900 font-extrabold cyrillic-text">
-                            正解: ${item.dictForm || item.mongolian} ${item.pronunciation ? `[${item.pronunciation}]` : ''}
+                            正解: ${item.dictForm || item.mongolian} ${(typeof isPronunciationCautionWord === "function" && isPronunciationCautionWord(item) && item.pronunciation) ? `<span class="text-amber-700 font-bold ml-1">⚠️ [${item.pronunciation}]</span>` : ''}
                           </div>
                           ${!isCorr ? `<div class="text-slate-500">あなたの回答: <span class="line-through text-rose-600">${m.userAnswer}</span></div>` : ''}
                         </div>
@@ -46664,7 +46711,7 @@ class WordGameComponent {
                           ${statusBadge}
                           <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-900 font-bold">日本語訳</span>
                           <span class="font-extrabold text-slate-900 cyrillic-text text-sm">${d.dictForm || item.mongolian}</span>
-                          ${item.pronunciation ? `<span class="text-slate-400 font-normal text-xs">[${item.pronunciation}]</span>` : ''}
+                          ${(typeof isPronunciationCautionWord === "function" && isPronunciationCautionWord(item) && item.pronunciation) ? `<span class="text-amber-700 font-bold text-xs ml-1">⚠️ [${item.pronunciation}]</span>` : ''}
                         </div>
                         <div class="text-slate-700 font-medium">正解: <span class="font-bold text-slate-900">${item.japanese}</span></div>
                         ${!isCorr ? `<div class="text-slate-500">あなたの回答: <span class="line-through text-rose-600">${m.userAnswer}</span></div>` : ''}
@@ -47209,12 +47256,12 @@ class WordTestComponent {
     } else if (mode === 'mn_to_ja') {
       questionPrompt = "モンゴル語の意味（日本語）を入力してください";
       questionMain = details.dictForm;
-      subHint = q.pronunciation ? `読み: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
+      subHint = (typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `⚠️ 読み注意: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
       isCyrillicInput = false;
     } else if (mode === 'choice_4') {
       questionPrompt = "正しい日本語訳を選択してください";
       questionMain = details.dictForm;
-      subHint = q.pronunciation ? `発音: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
+      subHint = (typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `⚠️ 読み注意: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
     } else if (mode === 'root_input') {
       questionPrompt = `動詞の【語幹（活用の土台）】を答えてください`;
       questionMain = `${details.dictForm}（${q.japanese}）`;
@@ -47696,7 +47743,7 @@ class WordTestComponent {
                         ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
                       </span>
                       <span class="font-extrabold text-slate-900 text-sm cyrillic-text">${r.question.dictForm || r.question.mongolian}</span>
-                      ${r.question.pronunciation ? `<span class="text-slate-400 text-xs font-normal">[${r.question.pronunciation}]</span>` : ''}
+                      ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(r.question) && r.question.pronunciation) ? `<span class="text-amber-700 font-bold text-xs ml-1">⚠️ [${r.question.pronunciation}]</span>` : ''}
                     </div>
                     <div class="text-slate-700 font-medium">
                       意味: <span class="font-bold text-emerald-800">${r.question.japanese}</span>
@@ -48038,9 +48085,9 @@ class JapaneseTestComponent {
                   🌱 語幹: <span class="cyrillic-text">${details.root}</span>
                 </span>
               ` : ''}
-              ${q.pronunciation ? `
-                <span class="text-xs text-slate-500 bg-slate-50 px-2 py-0.5 rounded-full">
-                  読み: ${q.pronunciation}
+              ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `
+                <span class="text-xs text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full font-bold border border-amber-200">
+                  ⚠️ 読み注意: ${q.pronunciation}
                 </span>
               ` : ''}
             </div>
@@ -48413,7 +48460,7 @@ class JapaneseTestComponent {
                         ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
                       </span>
                       <span class="font-extrabold text-slate-900 text-sm cyrillic-text">${r.question.dictForm || r.question.mongolian}</span>
-                      ${r.question.pronunciation ? `<span class="text-slate-400 text-xs font-normal">[${r.question.pronunciation}]</span>` : ''}
+                      ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(r.question) && r.question.pronunciation) ? `<span class="text-amber-700 font-bold text-xs ml-1">⚠️ [${r.question.pronunciation}]</span>` : ''}
                     </div>
                     <div class="text-slate-700 font-medium">
                       日本語訳: <span class="font-bold text-rose-800">${r.question.japanese}</span>
@@ -59448,9 +59495,11 @@ class GenreWordMasterComponent {
                     <div class="text-xl font-black text-slate-900 tracking-wide font-sans">
                       ${w.mongolian}
                     </div>
-                    <div class="text-xs font-bold text-emerald-600">
-                      [ ${w.pronunciation || '—'} ]
-                    </div>
+                    ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(w) && w.pronunciation) ? `
+                      <div class="text-xs font-bold text-amber-600">
+                        ⚠️ [ ${w.pronunciation} ]
+                      </div>
+                    ` : ''}
                   </div>
                   <button type="button" class="btn-play-word-audio p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition-colors cursor-pointer" data-word="${w.mongolian}" title="音声を聴く">
                     <span class="text-base">🔊</span>
@@ -59584,12 +59633,15 @@ class GenreWordMasterComponent {
     const pool = [qWord, ...chosenDummies];
     const shuffledPool = shuffleArray(pool);
 
-    this.state.gameChoices = shuffledPool.map(w => ({
-      word: w,
-      text: isMnToJa ? w.japanese : w.mongolian,
-      subText: isMnToJa ? '' : `[${w.pronunciation || ''}]`,
-      isAnswer: w.id === qWord.id
-    }));
+    this.state.gameChoices = shuffledPool.map(w => {
+      const isCaution = typeof isPronunciationCautionWord === 'function' ? isPronunciationCautionWord(w) : false;
+      return {
+        word: w,
+        text: isMnToJa ? w.japanese : w.mongolian,
+        subText: isMnToJa ? '' : (isCaution && w.pronunciation ? `⚠️ [${w.pronunciation}]` : ''),
+        isAnswer: w.id === qWord.id
+      };
+    });
 
     this.state.mascotMood = 'idle';
     this.state.mascotMessage = `第 ${this.state.gameCurrentIndex + 1} 問！がんばって！🐧`;
@@ -59659,9 +59711,11 @@ class GenreWordMasterComponent {
               <h3 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-wide font-sans mb-2">
                 ${currentQuestion.mongolian}
               </h3>
-              <div class="text-sm font-bold text-emerald-600 mb-3">
-                [ ${currentQuestion.pronunciation || ''} ]
-              </div>
+              ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(currentQuestion) && currentQuestion.pronunciation) ? `
+                <div class="inline-block text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 mb-3">
+                  ⚠️ 読み注意: [ ${currentQuestion.pronunciation} ]
+                </div>
+              ` : '<div class="mb-2"></div>'}
               <button type="button" id="btn-audio-question" class="inline-flex items-center gap-1.5 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3.5 py-1.5 rounded-full font-bold transition-all border border-emerald-200 cursor-pointer">
                 <span>🔊 発音を聴く</span>
               </button>
@@ -59693,7 +59747,7 @@ class GenreWordMasterComponent {
                 <button type="button" class="btn-game-choice p-4 rounded-2xl text-left font-bold transition-all flex items-center justify-between ${btnClass} ${hasAnswered ? 'cursor-default pointer-events-none' : 'active:scale-98 cursor-pointer'}" data-choice-index="${idx}">
                   <div>
                     <div class="text-base sm:text-lg">${c.text}</div>
-                    ${c.subText ? `<div class="text-xs text-emerald-600">${c.subText}</div>` : ''}
+                    ${c.subText ? `<div class="text-xs text-amber-700 font-bold">${c.subText}</div>` : ''}
                   </div>
                   <span class="text-xs text-slate-400 font-mono">${idx + 1}</span>
                 </button>
@@ -59713,7 +59767,7 @@ class GenreWordMasterComponent {
                 </button>
               </div>
               <div class="text-xs space-y-1">
-                <div><strong>正解:</strong> ${currentQuestion.mongolian} [${currentQuestion.pronunciation || ''}] = ${currentQuestion.japanese}</div>
+                <div><strong>正解:</strong> ${currentQuestion.mongolian} ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(currentQuestion) && currentQuestion.pronunciation) ? `<span class="text-amber-700 font-bold ml-1">⚠️ [${currentQuestion.pronunciation}]</span>` : ''} = ${currentQuestion.japanese}</div>
                 ${currentQuestion.exampleMn ? `<div><strong>例文:</strong> ${currentQuestion.exampleMn} (${currentQuestion.exampleJa || ''})</div>` : ''}
               </div>
             </div>
@@ -59882,7 +59936,7 @@ class GenreWordMasterComponent {
                   <div class="flex items-center justify-between p-2.5 bg-rose-50/70 border border-rose-200 rounded-xl text-xs">
                     <div>
                       <span class="font-black text-slate-900 font-sans">${w.mongolian}</span>
-                      <span class="text-emerald-700 ml-1.5">[${w.pronunciation || ''}]</span>
+                      ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(w) && w.pronunciation) ? `<span class="text-amber-700 font-bold ml-1.5">⚠️ [${w.pronunciation}]</span>` : ''}
                     </div>
                     <span class="font-bold text-slate-700">${w.japanese}</span>
                   </div>
@@ -61310,9 +61364,9 @@ class FlashcardsComponent {
                       ${details.dictForm || card.mongolian}
                     </div>
 
-                    ${card.pronunciation ? `
-                      <div class="text-xs text-emerald-800 font-semibold">
-                        読み: ${card.pronunciation}
+                    ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(card) && card.pronunciation) ? `
+                      <div class="text-xs text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded-full inline-block border border-amber-200">
+                        ⚠️ 読み注意: ${card.pronunciation}
                       </div>
                     ` : ''}
 
@@ -62072,7 +62126,7 @@ class ReviewNotebookComponent {
       }
     } else {
       categoryLabel = "モンゴル語の意味（日本語）を入力してください";
-      subHint = (matchedWord && matchedWord.pronunciation) ? `読み: ${matchedWord.pronunciation}` : '';
+      subHint = (matchedWord && typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(matchedWord) && matchedWord.pronunciation) ? `⚠️ 読み注意: ${matchedWord.pronunciation}` : '';
       placeholder = "日本語で意味を入力...";
     }
 

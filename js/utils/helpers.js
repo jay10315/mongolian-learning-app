@@ -451,7 +451,7 @@ export function renderGrammarExplanationHTML({
       <div class="flex items-center flex-wrap gap-2">
         <span class="text-slate-500 font-medium">正解: </span>
         <span class="font-extrabold text-base cyrillic-text text-emerald-800">${correctAnswer}</span>
-        ${pron ? `<span class="text-slate-400 font-normal ml-1">(${pron})</span>` : ''}
+        ${pron && isPronunciationCautionWord(item || { mongolian: correctAnswer, pronunciation: pron }) ? `<span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md text-xs font-bold border border-amber-200 ml-1">⚠️ 読み注意: ${pron}</span>` : ''}
       </div>
 
       ${!isCorrect && userAnswer ? `
@@ -755,6 +755,53 @@ export const SoundEffects = new Proxy(SoundEffectsBase, {
 });
 if (typeof window !== 'undefined') {
   window.SoundEffects = SoundEffects;
+}
+
+// 発音・読み方に特に注意が必要な単語リスト（不規則発音・軟音記号ь・硬音記号ъ・特殊母音・短縮形など）
+export const PRONUNCIATION_CAUTION_WORDS = new Set([
+  'баярлалаа', 'баяртай', 'сайн байна уу', 'байна', 'байхгүй', 'хоёул',
+  'гурвуул', 'дөрвүүл', 'тавуул', 'зургууль', 'долуулаа', 'долоул', 'наймуул', 'есүүл',
+  'гурав', 'дөрөв', 'тав', 'зургаа', 'долоо', 'найм', 'ес', 'арав', 'хоёр',
+  'жар', 'жаран', 'дал', 'далан', 'ная', 'наян', 'ер', 'ерэн',
+  'морь', 'хонь', 'сургууль', 'явъя', 'суръя', 'ашгүй', 'юу', 'юү', 'өглөө', 'өвөө',
+  'хэлэх', 'үзэх', 'өгөх', 'мэдэх', 'хийх', 'идэх', 'авах', 'явах', 'болох'
+]);
+
+/**
+ * 読み方に特に注意が必要な単語か判定
+ * （全単語にカタカナを振るのではなく、不規則発音・軟音化・文字と発音の乖離が大きいものに限定）
+ */
+export function isPronunciationCautionWord(word) {
+  if (!word) return false;
+  if (word.pronunciationCaution === true || word.isIrregularPronunciation === true || word.pronunciationWarning) return true;
+  
+  const mn = ((typeof word === 'string' ? word : (word.mongolian || word.dictForm || word.baseWord || '')) || '').trim().toLowerCase();
+  if (!mn) return false;
+  
+  // 明示的な注意単語
+  if (PRONUNCIATION_CAUTION_WORDS.has(mn)) return true;
+  for (const cw of PRONUNCIATION_CAUTION_WORDS) {
+    if (mn.includes(cw) && cw.length >= 4) return true;
+  }
+  
+  // 軟音記号 ь（前の文字を口蓋化・軟音化させるため読み方注意）
+  if (mn.includes('ь')) return true;
+  // 硬音記号 ъ（口蓋化を防ぐ・音節境界）
+  if (mn.includes('ъ')) return true;
+  
+  // メモや解説に発音の注意書きがある場合
+  const note = (word.note || word.grammarExplanation || word.hint || '');
+  if (/発音|読み方|短縮|脱落|不規則|軟音|注意|変則/.test(note)) return true;
+  
+  // е / ё で始まり特別な読み方になる単語
+  if (mn.startsWith('е') || mn.startsWith('ё')) return true;
+  
+  return false;
+}
+
+if (typeof window !== 'undefined') {
+  window.isPronunciationCautionWord = isPronunciationCautionWord;
+  window.PRONUNCIATION_CAUTION_WORDS = PRONUNCIATION_CAUTION_WORDS;
 }
 
 /**
