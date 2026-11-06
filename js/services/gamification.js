@@ -84,6 +84,36 @@ export class GamificationService {
   }
 
   /**
+   * 任意のXPを加算してレベル・称号・ステータスを更新
+   */
+  static addXp(amount = 0) {
+    if (!amount || amount <= 0) return;
+    try {
+      const stats = StorageService.getGameStats() || {};
+      const oldTotalXp = stats.totalXp || 0;
+      const newTotalXp = oldTotalXp + amount;
+      stats.totalXp = newTotalXp;
+
+      const progress = this.getXpProgress(newTotalXp);
+      const newLevel = progress.level;
+      stats.level = newLevel;
+
+      const titleInfo = this.getTitleForLevel(newLevel);
+      if (titleInfo) {
+        stats.currentTitle = titleInfo.title;
+        if (!stats.unlockedTitles) stats.unlockedTitles = [];
+        if (!stats.unlockedTitles.includes(titleInfo.title)) {
+          stats.unlockedTitles.push(titleInfo.title);
+        }
+      }
+      StorageService.saveGameStats(stats);
+      return stats;
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
+  }
+
+  /**
    * テスト開始時にセッションコンボをリセット
    */
   static resetSessionCombo() {

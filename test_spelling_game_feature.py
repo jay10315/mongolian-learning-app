@@ -21,6 +21,9 @@ def test_spelling_game():
     assert 'onWrongAnswer' in comp_content, "Missing onWrongAnswer"
     assert 'fishFedCount' in comp_content, "Missing fish feeding mechanics"
     assert 'fullness' in comp_content, "Missing fullness gauge"
+    assert 'resolveKeyToTile' in comp_content, "Missing resolveKeyToTile for keyboard support"
+    assert 'resolveLatinCharToCyrillic' in comp_content, "Missing resolveLatinCharToCyrillic"
+    assert 'animate-pulse' not in comp_content, "Flashing animate-pulse should be removed from SpellingGame"
     print("  [OK] SpellingGameComponent implementation verified")
 
     # 2. Check bundled.js

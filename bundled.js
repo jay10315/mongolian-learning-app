@@ -26944,6 +26944,36 @@ class GamificationService {
   }
 
   /**
+   * 任意のXPを加算してレベル・称号・ステータスを更新
+   */
+  static addXp(amount = 0) {
+    if (!amount || amount <= 0) return;
+    try {
+      const stats = StorageService.getGameStats() || {};
+      const oldTotalXp = stats.totalXp || 0;
+      const newTotalXp = oldTotalXp + amount;
+      stats.totalXp = newTotalXp;
+
+      const progress = this.getXpProgress(newTotalXp);
+      const newLevel = progress.level;
+      stats.level = newLevel;
+
+      const titleInfo = this.getTitleForLevel(newLevel);
+      if (titleInfo) {
+        stats.currentTitle = titleInfo.title;
+        if (!stats.unlockedTitles) stats.unlockedTitles = [];
+        if (!stats.unlockedTitles.includes(titleInfo.title)) {
+          stats.unlockedTitles.push(titleInfo.title);
+        }
+      }
+      StorageService.saveGameStats(stats);
+      return stats;
+    } catch (e) {
+      console.warn('GamificationService.addXp error:', e);
+    }
+  }
+
+  /**
    * テスト開始時にセッションコンボをリセット
    */
   static resetSessionCombo() {
@@ -42761,12 +42791,12 @@ class SpellingGameComponent {
             <button type="button" id="btn-mode-arrange" class="px-3 py-1.5 rounded-lg transition-all ${
               isArrange ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }">
-              🔤 タイル並び替え
+              🔤 候補タイルあり（タップ / キーボード入力）
             </button>
             <button type="button" id="btn-mode-free" class="px-3 py-1.5 rounded-lg transition-all ${
               !isArrange ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }">
-              ⌨️ 完全自力入力
+              ⌨️ 候補なし自力入力
             </button>
           </div>
 
@@ -42775,7 +42805,7 @@ class SpellingGameComponent {
             <div class="flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-full font-black">
               <span>⚡</span>
               <span>${score} pt</span>
-              ${combo >= 2 ? `<span class="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded-full text-[10px] animate-pulse">${combo}コンボ</span>` : ''}
+              ${combo >= 2 ? `<span class="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded-full text-[10px] font-bold">${combo}コンボ</span>` : ''}
             </div>
             <div class="flex items-center gap-1 bg-sky-50 text-sky-900 border border-sky-300 px-2.5 py-1 rounded-full font-black" title="本日あげたご飯の数">
               <span>🐟</span>
@@ -42788,8 +42818,8 @@ class SpellingGameComponent {
         <!-- 満月と星空のゲームステージ（添付画像オマージュ） -->
         <div class="relative bg-gradient-to-b from-[#060c18] via-[#0b172a] to-[#041118] rounded-3xl p-5 sm:p-8 border-2 border-amber-400/40 shadow-2xl overflow-hidden min-h-[500px] text-white flex flex-col justify-between">
           
-          <!-- 背景：輝く満月（Golden Full Moon） -->
-          <div class="absolute top-4 left-1/2 -translate-x-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-tr from-amber-300 via-yellow-200 to-amber-400 shadow-[0_0_70px_rgba(251,191,36,0.7)] flex items-center justify-center pointer-events-none opacity-95 border-2 border-yellow-100/80 animate-pulse">
+          <!-- 背景：満月（穏やかな黄金の満月） -->
+          <div class="absolute top-4 left-1/2 -translate-x-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-tr from-amber-300 via-yellow-200 to-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.35)] flex items-center justify-center pointer-events-none opacity-95 border border-yellow-100/80">
             <div class="w-full h-full rounded-full opacity-40 bg-[radial-gradient(circle_at_35%_35%,rgba(217,119,6,0.5),transparent_65%)]"></div>
           </div>
 
@@ -42808,7 +42838,7 @@ class SpellingGameComponent {
               </span>
             </div>
 
-            <!-- 日本語の意味（黄金に輝くフォント） -->
+            <!-- 日本語の意味（黄金フォント） -->
             <h3 class="text-3xl sm:text-4xl md:text-5xl font-black text-amber-200 tracking-wide drop-shadow-[0_2px_12px_rgba(251,191,36,0.6)]">
               ${currentWord.japanese}
             </h3>
@@ -42831,7 +42861,7 @@ class SpellingGameComponent {
                     char 
                       ? 'bg-gradient-to-b from-amber-400 to-amber-500 text-slate-950 border-2 border-yellow-200 shadow-[0_4px_12px_rgba(245,158,11,0.5)] transform scale-105' 
                       : isCurrent 
-                        ? 'bg-white/10 border-2 border-amber-300/80 shadow-[0_0_10px_rgba(251,191,36,0.4)] animate-pulse' 
+                        ? 'bg-white/10 border-2 border-amber-300/80 shadow-xs' 
                         : 'bg-white/5 border-2 border-dashed border-white/25 text-transparent'
                   }" data-slot-index="${idx}">
                     ${char || '<span class="text-white/20 text-lg">_</span>'}
@@ -42841,8 +42871,8 @@ class SpellingGameComponent {
             </div>
 
             ${this.state.isMistake ? `
-              <div class="mt-3 text-xs font-bold text-rose-300 bg-rose-950/70 border border-rose-500/50 px-3 py-1 rounded-full inline-block animate-bounce">
-                ⚠️ お手並み拝見！スペルが合っていません。文字をタップして直そう！
+              <div class="mt-3 text-xs font-bold text-rose-300 bg-rose-950/70 border border-rose-500/50 px-3 py-1 rounded-full inline-block">
+                ⚠️ スペルが合っていません。文字をタップまたは⌫で直そう！
               </div>
             ` : ''}
           </div>
@@ -42885,6 +42915,9 @@ class SpellingGameComponent {
                     💡 ヒント (1文字開く)
                   </button>
                 </div>
+                <div class="text-[11px] text-amber-200/70 text-center mt-2.5 font-medium">
+                  ⌨️ パソコンのキーボードでも打てます（ローマ字／キリル文字両対応・⌫で1文字戻す）
+                </div>
               </div>
             ` : `
               <!-- 完全自力入力モード：キリル文字バー ＆ 入力フィールド -->
@@ -42924,13 +42957,13 @@ class SpellingGameComponent {
               </div>
             `}
 
-            <!-- ペンギンのご飯フィーディングバー（モグモグ演出 ＆ 満腹度ゲージ） -->
+            <!-- ペンギンのご飯フィーディングバー（満腹度ゲージ） -->
             <div class="bg-gradient-to-r from-sky-950/80 via-slate-900/80 to-emerald-950/80 backdrop-blur-md p-3.5 rounded-2xl border border-sky-400/30 flex items-center justify-between gap-4">
               
-              <!-- 満腹度ゲージと説明 -->
-              <div class="flex-1 space-y-1">
+              <!-- 満腹度ゲージ -->
+              <div class="flex-1 space-y-1.5">
                 <div class="flex items-center justify-between text-xs">
-                  <span class="text-sky-200 font-extrabold flex items-center gap-1">
+                  <span class="text-sky-200 font-extrabold flex items-center gap-1.5">
                     <span>🥣</span>
                     <span>ペンギンの満腹度</span>
                   </span>
@@ -42940,24 +42973,18 @@ class SpellingGameComponent {
                 </div>
 
                 <!-- ゲージバー -->
-                <div class="w-full bg-black/40 rounded-full h-3.5 overflow-hidden p-0.5 border border-sky-500/30">
+                <div class="w-full bg-black/40 rounded-full h-3 overflow-hidden p-0.5 border border-sky-500/30">
                   <div class="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-sky-400 via-teal-300 to-amber-300 shadow-xs" style="width: ${fullness * 20}%"></div>
-                </div>
-
-                <div class="text-[11px] text-sky-100/90 font-medium truncate">
-                  🐧 <span class="font-bold text-amber-200">${mascotMessage}</span>
                 </div>
               </div>
 
               <!-- ペンギンマスコットのアバター -->
-              <div class="shrink-0 flex items-center justify-center p-1 bg-white/10 rounded-2xl border border-white/20 relative ${
-                this.state.isFeeding ? 'animate-bounce' : ''
-              }" id="spelling-penguin-avatar" title="正解するとお魚が飛び込んできます！">
-                ${PenguinMascot.getSvg({ mood: mascotMood, size: 68 })}
+              <div class="shrink-0 flex items-center justify-center p-1 bg-white/10 rounded-2xl border border-white/20 relative" id="spelling-penguin-avatar">
+                ${PenguinMascot.getSvg({ mood: mascotMood, size: 54 })}
                 
                 ${this.state.isFeeding ? `
-                  <!-- 飛び込むお魚エフェクト -->
-                  <div class="absolute -top-3 -left-3 text-2xl animate-ping">
+                  <!-- お魚マーク -->
+                  <div class="absolute -top-2 -left-2 text-xl">
                     🐟
                   </div>
                 ` : ''}
@@ -43163,29 +43190,138 @@ class SpellingGameComponent {
         return;
       }
 
+      if (e.key === 'Escape' || e.key === 'Delete') {
+        e.preventDefault();
+        if (this.state.mode === 'tile_arrange') {
+          this.clearPlacedTiles();
+        } else {
+          this.state.typedLetters = [];
+          this.renderUI();
+        }
+        return;
+      }
+
       if (e.key === 'Enter') {
         e.preventDefault();
         if (this.state.mode === 'free_type') {
           this.verifyFreeTypeAnswer();
+        } else if (this.state.placedLetters.length === this.state.targetLetters.length) {
+          this.checkArrangeAnswer();
         }
         return;
       }
 
       const keyChar = e.key.toLowerCase();
-      if (isCyrillic(keyChar)) {
-        if (this.state.mode === 'tile_arrange') {
-          // 候補タイルから該当する未使用文字を探して配置
-          const available = this.state.candidateTiles.find(t => !t.isUsed && t.char === keyChar);
-          if (available) {
-            this.onTileClicked(available.id, available.char);
-          }
-        } else {
+      if (this.state.mode === 'tile_arrange') {
+        const matchTile = this.resolveKeyToTile(keyChar);
+        if (matchTile) {
+          e.preventDefault();
+          this.onTileClicked(matchTile.id, matchTile.char);
+        }
+      } else {
+        if (isCyrillic(keyChar)) {
           this.onFreeCharTyped(keyChar);
+        } else {
+          const cyr = this.resolveLatinCharToCyrillic(keyChar);
+          if (cyr) {
+            this.onFreeCharTyped(cyr);
+          }
         }
       }
     };
 
     window.addEventListener('keydown', this.keydownHandler);
+  }
+
+  /**
+   * PCキーボード打鍵文字から未使用の候補タイルを賢く探索
+   * （直接キリル一致 ➜ QWERTY物理配列一致 ➜ フォネティック発音一致）
+   */
+  static resolveKeyToTile(keyChar) {
+    if (!keyChar) return null;
+    const unusedTiles = this.state.candidateTiles.filter(t => !t.isUsed);
+    if (!unusedTiles.length) return null;
+
+    // 1. 直接キリル文字一致
+    const direct = unusedTiles.find(t => t.char.toLowerCase() === keyChar);
+    if (direct) return direct;
+
+    // 2. QWERTY物理キー配列マッピング (ロシア語/モンゴル語キーボード配列)
+    const QWERTY_MAP = {
+      'q': 'й', 'w': 'ц', 'e': 'у', 'r': 'к', 't': 'е', 'y': 'н', 'u': 'г', 'i': 'ш', 'o': 'щ', 'p': 'з',
+      '[': 'х', '{': 'х', ']': 'ъ', '}': 'ъ',
+      'a': 'ф', 's': 'ы', 'd': 'в', 'f': 'а', 'g': 'п', 'h': 'р', 'j': 'о', 'k': 'л', 'l': 'д',
+      ';': 'ж', ':': 'ж', "'": 'э', '"': 'э',
+      'z': 'я', 'x': 'ч', 'c': 'с', 'v': 'м', 'b': 'и', 'n': 'т', 'm': 'ь',
+      '-': 'ү', '=': 'ө'
+    };
+    if (QWERTY_MAP[keyChar]) {
+      const qMatch = unusedTiles.find(t => t.char === QWERTY_MAP[keyChar]);
+      if (qMatch) return qMatch;
+    }
+
+    // 3. 発音・ローマ字（フォネティック）マッピング
+    // 次のスロットで期待されている文字を最優先でマッチング！
+    const nextIdx = this.state.placedLetters.length;
+    const expectedChar = this.state.targetLetters[nextIdx];
+
+    const PHONETIC_MAP = {
+      'a': ['а', 'я'],
+      'b': ['б'],
+      'v': ['в'],
+      'w': ['в'],
+      'g': ['г'],
+      'd': ['д'],
+      'e': ['э', 'е', 'ё'],
+      'z': ['з', 'ж'],
+      'i': ['и', 'й', 'ы'],
+      'j': ['ж', 'й'],
+      'k': ['к', 'х'],
+      'l': ['л'],
+      'm': ['м'],
+      'n': ['н'],
+      'o': ['о', 'ө'],
+      'p': ['п'],
+      'r': ['р'],
+      's': ['с', 'ш', 'щ', 'ц'],
+      't': ['т', 'ц'],
+      'u': ['у', 'ү'],
+      'f': ['ф'],
+      'h': ['х'],
+      'c': ['ц', 'ч', 'с'],
+      'y': ['ы', 'й', 'я', 'ю']
+    };
+
+    const phoneticCandidates = PHONETIC_MAP[keyChar];
+    if (phoneticCandidates) {
+      if (expectedChar && phoneticCandidates.includes(expectedChar)) {
+        const expectedMatch = unusedTiles.find(t => t.char === expectedChar);
+        if (expectedMatch) return expectedMatch;
+      }
+      for (const c of phoneticCandidates) {
+        const pMatch = unusedTiles.find(t => t.char === c);
+        if (pMatch) return pMatch;
+      }
+    }
+
+    return null;
+  }
+
+  static resolveLatinCharToCyrillic(keyChar) {
+    const nextIdx = this.state.typedLetters.length;
+    const expectedChar = this.state.targetLetters[nextIdx];
+    const PHONETIC_MAP = {
+      'a': ['а', 'я'], 'b': ['б'], 'v': ['в'], 'w': ['в'], 'g': ['г'], 'd': ['д'],
+      'e': ['э', 'е'], 'z': ['з', 'ж'], 'i': ['и', 'й', 'ы'], 'j': ['ж'], 'k': ['к'],
+      'l': ['л'], 'm': ['м'], 'n': ['н'], 'o': ['о', 'ө'], 'p': ['п'], 'r': ['р'],
+      's': ['с', 'ш'], 't': ['т'], 'u': ['у', 'ү'], 'f': ['ф'], 'h': ['х'], 'c': ['ц', 'ч'], 'y': ['ы']
+    };
+    const list = PHONETIC_MAP[keyChar];
+    if (list) {
+      if (expectedChar && list.includes(expectedChar)) return expectedChar;
+      return list[0];
+    }
+    return null;
   }
 
   // ==========================================
