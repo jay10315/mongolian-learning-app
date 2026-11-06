@@ -655,6 +655,19 @@ export class PenguinExpeditionComponent {
           </div>
         </div>
 
+        ${rw.totalMistakes > 0 ? `
+          <div class="p-3 bg-white border border-rose-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-2.5 max-w-md mx-auto text-left shadow-2xs">
+            <div class="text-xs text-rose-800 font-bold flex items-center gap-1.5">
+              <span>🔥</span>
+              <span>間違えた <strong>${rw.totalMistakes}</strong> 問を「間違いノート」に自動保存しました</span>
+            </div>
+            <button type="button" id="btn-goto-mistakes-from-railway" class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-xs shadow-xs transition-all flex items-center gap-1 cursor-pointer shrink-0">
+              <span>間違いノートで特訓</span>
+              <span>→</span>
+            </button>
+          </div>
+        ` : ''}
+
         <button type="button" id="btn-railway-restart" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-700 hover:to-amber-700 text-white font-black shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer">
           🔄 始発駅（スフバートル）から再挑戦する！
         </button>
@@ -1192,6 +1205,19 @@ export class PenguinExpeditionComponent {
     }
 
     // 鉄道すごろく: 再挑戦・リスタート
+    const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-railway');
+    if (gotoMistakesBtn) {
+      gotoMistakesBtn.addEventListener('click', () => {
+        if (this.onNavigate) {
+          if (typeof ReviewNotebookComponent !== 'undefined') {
+            ReviewNotebookComponent.state.view = 'list';
+            ReviewNotebookComponent.state.filterType = 'all';
+          }
+          this.onNavigate('review');
+        }
+      });
+    }
+
     const restartBtn = this.container.querySelector('#btn-railway-restart');
     if (restartBtn) {
       restartBtn.addEventListener('click', () => {

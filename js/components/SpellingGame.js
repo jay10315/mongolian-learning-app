@@ -1136,7 +1136,15 @@ export class SpellingGameComponent {
     const { score, fishFedCount, maxCombo, answeredLog } = this.state;
     const totalQ = answeredLog.length;
     const correctCount = answeredLog.filter(l => l.isCorrect).length;
+    const wrongCount = totalQ - correctCount;
     const accuracy = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+    const currentFilter = this.state.resultFilter || 'all';
+
+    const filteredLog = answeredLog.filter(item => {
+      if (currentFilter === 'correct') return item.isCorrect;
+      if (currentFilter === 'wrong') return !item.isCorrect;
+      return true;
+    });
 
     this.container.innerHTML = `
       <div class="max-w-2xl mx-auto px-4 py-8 space-y-6">
@@ -1183,27 +1191,66 @@ export class SpellingGameComponent {
             </div>
           </div>
 
+          ${wrongCount > 0 ? `
+            <!-- 間違いノート自動保存通知バナー ＆ 直行ボタン -->
+            <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs text-left">
+              <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5">
+                <span class="text-base">🔥</span>
+                <span>間違えた <strong>${wrongCount}</strong> 単語を「間違いノート」に自動保存しました</span>
+              </div>
+              <button type="button" id="btn-goto-mistakes-from-spelling" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                <span>間違いノートで特訓</span>
+                <span>→</span>
+              </button>
+            </div>
+          ` : ''}
+
           <!-- 単語レビュー一覧 -->
           <div class="space-y-2 text-left">
-            <h4 class="text-xs font-black text-slate-700 uppercase tracking-wider">今回の単語振り返り</h4>
-            <div class="divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden max-h-56 overflow-y-auto">
-              ${answeredLog.map(item => `
-                <div class="p-3 bg-slate-50 flex items-center justify-between text-xs">
-                  <div class="flex items-center gap-2">
-                    <span class="${item.isCorrect ? 'text-emerald-600' : 'text-rose-600'} font-black text-base">
-                      ${item.isCorrect ? '✓' : '✗'}
-                    </span>
-                    <div>
-                      <div class="font-bold font-mono text-slate-800 text-sm">${item.word.mongolian}</div>
-                      <div class="text-slate-500 text-[11px]">${item.word.japanese}</div>
-                    </div>
-                  </div>
-                  <button type="button" class="btn-review-audio p-1.5 text-slate-400 hover:text-sky-600 rounded-lg transition-all" data-text="${item.word.mongolian}">
-                    🔊
-                  </button>
-                </div>
-              `).join('')}
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1 border-b border-slate-100">
+              <h4 class="text-xs font-black text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <span>📋</span> 今回の単語振り返り (${totalQ}語)
+              </h4>
+              <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold self-start sm:self-auto">
+                <button type="button" class="filter-spelling-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'all' ? 'bg-white text-slate-900 shadow-2xs font-black' : 'text-slate-500 hover:text-slate-800'}" data-filter="all">
+                  すべて (${totalQ})
+                </button>
+                <button type="button" class="filter-spelling-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'correct' ? 'bg-emerald-600 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-emerald-700'}" data-filter="correct">
+                  ⭕ 正解 (${correctCount})
+                </button>
+                <button type="button" class="filter-spelling-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'wrong' ? 'bg-rose-600 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-rose-700'}" data-filter="wrong">
+                  ❌ 不正解 (${wrongCount})
+                </button>
+              </div>
             </div>
+
+            ${filteredLog.length === 0 ? `
+              <div class="text-center py-4 text-xs text-slate-400">
+                該当する単語はありません。
+              </div>
+            ` : `
+              <div class="divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden max-h-56 overflow-y-auto">
+                ${filteredLog.map(item => `
+                  <div class="p-3 bg-slate-50 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2">
+                      <span class="${item.isCorrect ? 'text-emerald-600' : 'text-rose-600'} font-black text-base">
+                        ${item.isCorrect ? '⭕' : '❌'}
+                      </span>
+                      <div>
+                        <div class="font-bold font-mono text-slate-800 text-sm">${item.word.mongolian}</div>
+                        <div class="text-slate-500 text-[11px]">${item.word.japanese}</div>
+                        ${!item.isCorrect && item.typedText ? `
+                          <div class="text-rose-600 text-[10px]">あなたの入力: <span class="line-through font-mono">${item.typedText}</span></div>
+                        ` : ''}
+                      </div>
+                    </div>
+                    <button type="button" class="btn-review-audio p-1.5 text-slate-400 hover:text-sky-600 rounded-lg transition-all" data-text="${item.word.mongolian}">
+                      🔊
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            `}
           </div>
 
           <!-- アクションボタン -->
@@ -1218,6 +1265,28 @@ export class SpellingGameComponent {
         </div>
       </div>
     `;
+
+    // フィルターボタンイベント
+    this.container.querySelectorAll('.filter-spelling-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.resultFilter = btn.dataset.filter;
+        this.renderResultUI();
+      });
+    });
+
+    // 間違いノートへ直行
+    const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-spelling');
+    if (gotoMistakesBtn) {
+      gotoMistakesBtn.addEventListener('click', () => {
+        if (this.onNavigate) {
+          if (typeof ReviewNotebookComponent !== 'undefined') {
+            ReviewNotebookComponent.state.view = 'list';
+            ReviewNotebookComponent.state.filterType = 'all';
+          }
+          this.onNavigate('review');
+        }
+      });
+    }
 
     const btnReplay = this.container.querySelector('#btn-replay');
     if (btnReplay) {

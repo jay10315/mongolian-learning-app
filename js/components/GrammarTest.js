@@ -605,6 +605,20 @@ export class GrammarTestComponent {
           sessionResult: sessionRes
         })}
 
+        ${wrong > 0 ? `
+          <!-- 間違いノート自動保存通知バナー ＆ 直行ボタン -->
+          <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+            <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5 text-center sm:text-left">
+              <span class="text-base">🔥</span>
+              <span>間違えた <strong>${wrong}</strong> 問を「間違いノート」に自動保存しました</span>
+            </div>
+            <button type="button" id="btn-goto-mistakes-from-grammar" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+              <span>間違いノートで特訓</span>
+              <span>→</span>
+            </button>
+          </div>
+        ` : ''}
+
         <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-md text-center space-y-3">
           <div class="flex items-center justify-between text-xs text-slate-500 font-bold px-2">
             <span>文法テスト総評</span>
@@ -700,6 +714,19 @@ export class GrammarTestComponent {
     this.container.querySelector('#btn-retry-grammar').addEventListener('click', () => {
       this.startTest();
     });
+
+    const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-grammar');
+    if (gotoMistakesBtn) {
+      gotoMistakesBtn.addEventListener('click', () => {
+        if (this.onNavigate) {
+          if (typeof ReviewNotebookComponent !== 'undefined') {
+            ReviewNotebookComponent.state.view = 'list';
+            ReviewNotebookComponent.state.filterType = 'all';
+          }
+          this.onNavigate('review');
+        }
+      });
+    }
 
     this.container.querySelector('#btn-result-home').addEventListener('click', () => {
       if (this.onNavigate) this.onNavigate('home');

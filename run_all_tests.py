@@ -61,7 +61,8 @@ tests = [
     'test_similar_words_distinctions_feature.py',
     'test_declension_mojibake_fix.py',
     'test_all_mistakes_unified_recording.py',
-    'test_all_recent_feedback_fixes.py'
+    'test_all_recent_feedback_fixes.py',
+    'test_all_tests_mistakes_review.py'
 ]
 
 for t in tests:

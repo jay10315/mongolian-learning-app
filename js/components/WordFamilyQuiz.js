@@ -124,7 +124,8 @@ export class WordFamilyComponent {
       selectedChoiceIndex: null,
       score: 0,
       streak: 0,
-      isFinished: false
+      isFinished: false,
+      answeredLog: []
     };
   }
 
@@ -441,20 +442,102 @@ export class WordFamilyComponent {
     const { questions, currentIndex, currentQ, hasAnswered, selectedChoiceIndex, score, streak, isFinished } = this.state.synonymGame;
 
     if (isFinished || !currentQ) {
+      const log = synonymGame.answeredLog || [];
+      const totalQ = questions.length;
+      const correctCount = log.filter(l => l.isCorrect).length;
+      const wrongCount = totalQ - correctCount;
+      const currentFilter = this.state.synonymResultFilter || 'all';
+
+      const filteredLog = log.filter(l => {
+        if (currentFilter === 'correct') return l.isCorrect;
+        if (currentFilter === 'wrong') return !l.isCorrect;
+        return true;
+      });
+
       return `
-        <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 rounded-3xl p-6 sm:p-8 text-white text-center shadow-xl space-y-4 animate-scale-up">
-          <div class="flex justify-center transform scale-110">
-            ${PenguinMascot.getSvg({ mood: 'celebrate', size: 100 })}
+        <div class="space-y-5 animate-scale-up">
+          <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 rounded-3xl p-6 sm:p-8 text-white text-center shadow-xl space-y-4">
+            <div class="flex justify-center transform scale-110">
+              ${PenguinMascot.getSvg({ mood: 'celebrate', size: 100 })}
+            </div>
+            <div class="space-y-1">
+              <span class="text-xs bg-white/20 text-white font-black px-3 py-1 rounded-full uppercase">ROUND COMPLETE</span>
+              <h3 class="text-2xl sm:text-3xl font-black text-indigo-100">類義語ニュアンスマスター！🎯</h3>
+              <p class="text-xs text-indigo-200">スコア: <span class="font-black text-amber-300 text-sm">${score} pt</span> ｜ 正解数: ${correctCount} / ${totalQ} 問</p>
+            </div>
+            <div class="pt-2 flex justify-center gap-3">
+              <button type="button" id="btn-synonym-replay" class="px-6 py-2.5 rounded-xl bg-white text-slate-900 font-black text-sm shadow-md active:scale-95 transition-all cursor-pointer">
+                🔄 もう1ラウンド挑戦
+              </button>
+            </div>
           </div>
-          <div class="space-y-1">
-            <span class="text-xs bg-white/20 text-white font-black px-3 py-1 rounded-full uppercase">ROUND COMPLETE</span>
-            <h3 class="text-2xl sm:text-3xl font-black text-indigo-100">類義語ニュアンスマスター！🎯</h3>
-            <p class="text-xs text-indigo-200">スコア: <span class="font-black text-amber-300 text-sm">${score} pt</span> ｜ 正解数: ${score / 15} / ${questions.length} 問</p>
-          </div>
-          <div class="pt-2 flex justify-center gap-3">
-            <button type="button" id="btn-synonym-replay" class="px-6 py-2.5 rounded-xl bg-white text-slate-900 font-black text-sm shadow-md active:scale-95 transition-all">
-              🔄 もう1ラウンド挑戦
-            </button>
+
+          ${wrongCount > 0 ? `
+            <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs text-left">
+              <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5">
+                <span class="text-base">🔥</span>
+                <span>間違えた <strong>${wrongCount}</strong> 問を「間違いノート」に自動保存しました</span>
+              </div>
+              <button type="button" id="btn-goto-mistakes-from-synonym" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                <span>間違いノートで特訓</span>
+                <span>→</span>
+              </button>
+            </div>
+          ` : ''}
+
+          <!-- 出題問題の復習リスト -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-xs space-y-3 text-left">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100 dark:border-slate-700">
+              <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5">
+                <span>📋</span> 出題問題の復習 (${totalQ}問)
+              </h4>
+              <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 p-1 rounded-xl text-xs font-bold self-start sm:self-auto">
+                <button type="button" class="filter-synonym-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'all' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-black' : 'text-slate-500 hover:text-slate-800'}" data-filter="all">
+                  すべて (${totalQ})
+                </button>
+                <button type="button" class="filter-synonym-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'correct' ? 'bg-emerald-600 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-emerald-700'}" data-filter="correct">
+                  ⭕ 正解 (${correctCount})
+                </button>
+                <button type="button" class="filter-synonym-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'wrong' ? 'bg-rose-600 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-rose-700'}" data-filter="wrong">
+                  ❌ 不正解 (${wrongCount})
+                </button>
+              </div>
+            </div>
+
+            ${filteredLog.length === 0 ? `
+              <div class="text-center py-6 text-xs text-slate-400">
+                該当する問題はありません。
+              </div>
+            ` : `
+              <div class="divide-y divide-slate-100 dark:divide-slate-700 max-h-80 overflow-y-auto pr-1 space-y-3">
+                ${filteredLog.map(l => `
+                  <div class="py-3 space-y-1.5 text-xs">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${l.isCorrect ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'}">
+                        ${l.isCorrect ? '⭕ 正解' : '❌ 不正解'}
+                      </span>
+                      <button type="button" class="btn-play-word-audio text-slate-400 hover:text-indigo-600 p-1 rounded-lg transition-colors cursor-pointer" data-word="${l.correctAnswer}">
+                        🔊
+                      </button>
+                    </div>
+                    <div class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Q. ${l.question}</div>
+                    <div class="font-bold text-slate-700 dark:text-slate-300">
+                      正解: <span class="text-emerald-700 dark:text-emerald-400 font-black cyrillic-text">${l.correctAnswer}</span>
+                    </div>
+                    ${!l.isCorrect ? `
+                      <div class="text-slate-500 dark:text-slate-400">
+                        あなたの回答: <span class="line-through text-rose-600 dark:text-rose-400 font-medium">${l.userAnswer}</span>
+                      </div>
+                    ` : ''}
+                    ${l.explanation ? `
+                      <div class="text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl text-[11px] leading-relaxed">
+                        💡 ${l.explanation}
+                      </div>
+                    ` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            `}
           </div>
         </div>
       `;
@@ -552,6 +635,16 @@ export class WordFamilyComponent {
     synonymGame.hasAnswered = true;
     synonymGame.selectedChoiceIndex = idx;
     const isCorrect = idx === synonymGame.currentQ.correctIndex;
+    if (!synonymGame.answeredLog) synonymGame.answeredLog = [];
+    synonymGame.answeredLog.push({
+      question: synonymGame.currentQ.question,
+      title: synonymGame.currentQ.title,
+      options: synonymGame.currentQ.options,
+      correctAnswer: synonymGame.currentQ.options[synonymGame.currentQ.correctIndex],
+      userAnswer: synonymGame.currentQ.options[idx] || '(未回答)',
+      isCorrect,
+      explanation: synonymGame.currentQ.explanation
+    });
 
     const chosenWord = synonymGame.currentQ.options[idx];
     if (chosenWord) SpeechService.speak(chosenWord, { rate: 0.9 });
@@ -608,20 +701,102 @@ export class WordFamilyComponent {
     const { quizzes, currentIndex, currentQuiz, hasAnswered, selectedSuffix, score, isFinished } = this.state.familyGame;
 
     if (isFinished || !currentQuiz) {
+      const log = familyGame.answeredLog || [];
+      const totalQ = quizzes.length;
+      const correctCount = log.filter(l => l.isCorrect).length;
+      const wrongCount = totalQ - correctCount;
+      const currentFilter = this.state.familyResultFilter || 'all';
+
+      const filteredLog = log.filter(l => {
+        if (currentFilter === 'correct') return l.isCorrect;
+        if (currentFilter === 'wrong') return !l.isCorrect;
+        return true;
+      });
+
       return `
-        <div class="bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-800 rounded-3xl p-6 sm:p-8 text-white text-center shadow-xl space-y-4 animate-scale-up">
-          <div class="flex justify-center transform scale-110">
-            ${PenguinMascot.getSvg({ mood: 'celebrate', size: 100 })}
+        <div class="space-y-5 animate-scale-up">
+          <div class="bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-800 rounded-3xl p-6 sm:p-8 text-white text-center shadow-xl space-y-4">
+            <div class="flex justify-center transform scale-110">
+              ${PenguinMascot.getSvg({ mood: 'celebrate', size: 100 })}
+            </div>
+            <div class="space-y-1">
+              <span class="text-xs bg-white/20 text-white font-black px-3 py-1 rounded-full uppercase">ROOT BUILDER FINISHED</span>
+              <h3 class="text-2xl sm:text-3xl font-black text-emerald-100">語根ビルドマスター！！🌳</h3>
+              <p class="text-xs text-emerald-200">スコア: <span class="font-black text-yellow-300 text-sm">${score} pt</span> ｜ 正解数: ${correctCount} / ${totalQ} 問</p>
+            </div>
+            <div class="pt-2 flex justify-center gap-3">
+              <button type="button" id="btn-family-replay" class="px-6 py-2.5 rounded-xl bg-white text-slate-900 font-black text-sm shadow-md active:scale-95 transition-all cursor-pointer">
+                🔄 もう1ラウンド遊ぶ
+              </button>
+            </div>
           </div>
-          <div class="space-y-1">
-            <span class="text-xs bg-white/20 text-white font-black px-3 py-1 rounded-full uppercase">ROOT BUILDER FINISHED</span>
-            <h3 class="text-2xl sm:text-3xl font-black text-emerald-100">語根ビルドマスター！！🌳</h3>
-            <p class="text-xs text-emerald-200">スコア: <span class="font-black text-yellow-300 text-sm">${score} pt</span> ｜ 獲得: +30 XP</p>
-          </div>
-          <div class="pt-2 flex justify-center gap-3">
-            <button type="button" id="btn-family-replay" class="px-6 py-2.5 rounded-xl bg-white text-slate-900 font-black text-sm shadow-md active:scale-95 transition-all">
-              🔄 もう1ラウンド遊ぶ
-            </button>
+
+          ${wrongCount > 0 ? `
+            <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs text-left">
+              <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5">
+                <span class="text-base">🔥</span>
+                <span>間違えた <strong>${wrongCount}</strong> 問を「間違いノート」に自動保存しました</span>
+              </div>
+              <button type="button" id="btn-goto-mistakes-from-family" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                <span>間違いノートで特訓</span>
+                <span>→</span>
+              </button>
+            </div>
+          ` : ''}
+
+          <!-- 出題問題の復習リスト -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-xs space-y-3 text-left">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100 dark:border-slate-700">
+              <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5">
+                <span>📋</span> 出題問題の復習 (${totalQ}問)
+              </h4>
+              <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 p-1 rounded-xl text-xs font-bold self-start sm:self-auto">
+                <button type="button" class="filter-family-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'all' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-black' : 'text-slate-500 hover:text-slate-800'}" data-filter="all">
+                  すべて (${totalQ})
+                </button>
+                <button type="button" class="filter-family-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'correct' ? 'bg-emerald-600 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-emerald-700'}" data-filter="correct">
+                  ⭕ 正解 (${correctCount})
+                </button>
+                <button type="button" class="filter-family-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'wrong' ? 'bg-rose-600 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-rose-700'}" data-filter="wrong">
+                  ❌ 不正解 (${wrongCount})
+                </button>
+              </div>
+            </div>
+
+            ${filteredLog.length === 0 ? `
+              <div class="text-center py-6 text-xs text-slate-400">
+                該当する問題はありません。
+              </div>
+            ` : `
+              <div class="divide-y divide-slate-100 dark:divide-slate-700 max-h-80 overflow-y-auto pr-1 space-y-3">
+                ${filteredLog.map(l => `
+                  <div class="py-3 space-y-1.5 text-xs">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${l.isCorrect ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'}">
+                        ${l.isCorrect ? '⭕ 正解' : '❌ 不正解'}
+                      </span>
+                      <button type="button" class="btn-play-word-audio text-slate-400 hover:text-emerald-600 p-1 rounded-lg transition-colors cursor-pointer" data-word="${l.targetWord}">
+                        🔊
+                      </button>
+                    </div>
+                    <div class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Q. ${l.question}</div>
+                    <div class="font-bold text-slate-700 dark:text-slate-300">
+                      派生語: <span class="text-emerald-700 dark:text-emerald-400 font-black cyrillic-text">${l.targetWord}</span>（正解接尾辞: <span class="font-mono text-amber-700">${l.correctAnswer}</span>）
+                    </div>
+                    ${!l.isCorrect ? `
+                      <div class="text-slate-500 dark:text-slate-400">
+                        あなたの回答: <span class="line-through text-rose-600 dark:text-rose-400 font-medium font-mono">${l.userAnswer}</span>
+                      </div>
+                    ` : ''}
+                    ${l.explanation ? `
+                      <div class="text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl text-[11px] leading-relaxed">
+                        💡 ${l.explanation}
+                      </div>
+                    ` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            `}
           </div>
         </div>
       `;
@@ -741,6 +916,17 @@ export class WordFamilyComponent {
     familyGame.hasAnswered = true;
     familyGame.selectedSuffix = suffix;
     const isCorrect = suffix === familyGame.currentQuiz.correctSuffix;
+    if (!familyGame.answeredLog) familyGame.answeredLog = [];
+    familyGame.answeredLog.push({
+      question: `${familyGame.currentQuiz.root} + [接尾辞] → 「${familyGame.currentQuiz.meaningJa}」`,
+      targetWord: familyGame.currentQuiz.targetWord,
+      meaningJa: familyGame.currentQuiz.meaningJa,
+      options: familyGame.currentQuiz.options,
+      correctAnswer: familyGame.currentQuiz.correctSuffix,
+      userAnswer: suffix || '(未回答)',
+      isCorrect,
+      explanation: familyGame.currentQuiz.explanation || `${familyGame.currentQuiz.root} + ${familyGame.currentQuiz.correctSuffix} = ${familyGame.currentQuiz.targetWord} (${familyGame.currentQuiz.meaningJa})`
+    });
 
     SpeechService.speak(familyGame.currentQuiz.targetWord, { rate: 0.9 });
 

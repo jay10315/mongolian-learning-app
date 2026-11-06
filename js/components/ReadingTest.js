@@ -353,6 +353,19 @@ export class ReadingTestComponent {
                   </div>
                 </div>
 
+                ${this.state.score < totalQ ? `
+                  <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs text-left">
+                    <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5">
+                      <span class="text-base">🔥</span>
+                      <span>間違えた <strong>${totalQ - this.state.score}</strong> 問を「間違いノート」に自動保存しました</span>
+                    </div>
+                    <button type="button" id="btn-goto-mistakes-from-reading" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                      <span>間違いノートで特訓</span>
+                      <span>→</span>
+                    </button>
+                  </div>
+                ` : ''}
+
                 <button type="button" id="btn-finish-reading" class="w-full py-3.5 bg-slate-800 hover:bg-slate-900 text-white font-extrabold rounded-xl shadow-md transition-all active:scale-98 text-sm cursor-pointer">
                   読解一覧に戻る →
                 </button>

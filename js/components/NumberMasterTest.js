@@ -241,6 +241,7 @@ export class NumberMasterComponent {
                 question: `【数字特訓】${q.question}`,
                 userAnswer: val || '(未回答)',
                 correctAnswer: q.answer,
+                options: q.options ? [...q.options] : [],
                 type: 'word',
                 category: '数字・数詞',
                 explanation: `${q.question} → 正解: ${q.answer}。${q.explanation || ''}`
@@ -282,7 +283,15 @@ export class NumberMasterComponent {
   static renderResult() {
     const total = this.state.quizzes.length;
     const score = this.state.score;
+    const wrongCount = total - score;
     const percent = Math.round((score / total) * 100);
+    const currentFilter = this.state.resultFilter || 'all';
+
+    const filteredResults = this.state.results.filter(r => {
+      if (currentFilter === 'correct') return r.isOk;
+      if (currentFilter === 'wrong') return !r.isOk;
+      return true;
+    });
 
     this.container.innerHTML = `
       <div class="animate-fade-in max-w-xl mx-auto px-4 py-8 space-y-5">
@@ -307,42 +316,76 @@ export class NumberMasterComponent {
           </div>
         </div>
 
+        ${wrongCount > 0 ? `
+          <!-- 間違いノート自動保存通知バナー ＆ 直行ボタン -->
+          <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+            <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5 text-center sm:text-left">
+              <span class="text-base">🔥</span>
+              <span>間違えた <strong>${wrongCount}</strong> 問を「間違いノート」に自動保存しました</span>
+            </div>
+            <button type="button" id="btn-goto-mistakes-from-num" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+              <span>間違いノートで特訓</span>
+              <span>→</span>
+            </button>
+          </div>
+        ` : ''}
+
         <!-- 出題問題の一覧・復習 ＆ 選択肢解説 -->
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-xs space-y-3 text-left">
-          <h3 class="text-sm font-extrabold text-slate-800 dark:text-white flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-700">
-            <span>📋</span> 出題問題の復習 (${total}問)
-          </h3>
-          <div class="divide-y divide-slate-100 dark:divide-slate-700 max-h-96 overflow-y-auto pr-1 space-y-2">
-            ${this.state.results.map((r, i) => `
-              <div class="py-3 space-y-1.5 text-xs">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${r.isOk ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : 'bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300'}">
-                    ${r.isOk ? '⭕ 正解' : '❌ 不正解'}
-                  </span>
-                  <button type="button" class="btn-opt-speak text-slate-400 hover:text-cyan-700 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" data-word="${r.quiz.answer}" title="正解の発音を聞く">
-                    🔊
-                  </button>
-                </div>
-                <div class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">${i + 1}. ${r.quiz.question}</div>
-                <div>正解: <span class="font-bold text-cyan-800 dark:text-cyan-300 cyrillic-text">${r.quiz.answer}</span></div>
-                ${!r.isOk ? `
-                  <div class="text-slate-500 dark:text-slate-400">
-                    あなたの回答: <span class="line-through text-rose-600 dark:text-rose-400 font-medium">${r.userAns || '(無回答)'}</span>
-                  </div>
-                ` : `
-                  <div class="text-slate-500 dark:text-slate-400">あなたの回答: <span class="text-emerald-700 dark:text-emerald-400 font-bold">${r.userAns}</span> ✅</div>
-                `}
-                <div class="text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl text-[11px] leading-relaxed">
-                  ${r.quiz.explanation}
-                </div>
-                ${(typeof renderChoiceExplanationsHTML === 'function' && r.quiz.options && r.quiz.options.length > 0) ? renderChoiceExplanationsHTML(r.quiz.options, {
-                  expectedAnswer: r.quiz.answer,
-                  userAnswer: r.userAns,
-                  title: '選択肢に出た単語・表現の全解説を見る（タップで開閉）'
-                }) : ''}
-              </div>
-            `).join('')}
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100 dark:border-slate-700">
+            <h3 class="text-sm font-extrabold text-slate-800 dark:text-white flex items-center gap-1.5">
+              <span>📋</span> 出題問題の復習 (${total}問)
+            </h3>
+            <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700/60 p-1 rounded-xl text-xs font-bold self-start sm:self-auto">
+              <button type="button" class="filter-num-result-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'all' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800'}" data-filter="all">
+                すべて (${total})
+              </button>
+              <button type="button" class="filter-num-result-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'correct' ? 'bg-emerald-600 text-white shadow-2xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-emerald-700'}" data-filter="correct">
+                ⭕ 正解 (${score})
+              </button>
+              <button type="button" class="filter-num-result-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'wrong' ? 'bg-rose-600 text-white shadow-2xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-rose-700'}" data-filter="wrong">
+                ❌ 不正解 (${wrongCount})
+              </button>
+            </div>
           </div>
+
+          ${filteredResults.length === 0 ? `
+            <div class="text-center py-6 text-xs text-slate-400">
+              該当する問題はありません。
+            </div>
+          ` : `
+            <div class="divide-y divide-slate-100 dark:divide-slate-700 max-h-96 overflow-y-auto pr-1 space-y-2">
+              ${filteredResults.map((r, i) => `
+                <div class="py-3 space-y-1.5 text-xs">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${r.isOk ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : 'bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300'}">
+                      ${r.isOk ? '⭕ 正解' : '❌ 不正解'}
+                    </span>
+                    <button type="button" class="btn-opt-speak text-slate-400 hover:text-cyan-700 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" data-word="${r.quiz.answer}" title="正解の発音を聞く">
+                      🔊
+                    </button>
+                  </div>
+                  <div class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">${r.quiz.question}</div>
+                  <div>正解: <span class="font-bold text-cyan-800 dark:text-cyan-300 cyrillic-text">${r.quiz.answer}</span></div>
+                  ${!r.isOk ? `
+                    <div class="text-slate-500 dark:text-slate-400">
+                      あなたの回答: <span class="line-through text-rose-600 dark:text-rose-400 font-medium">${r.userAns || '(無回答)'}</span>
+                    </div>
+                  ` : `
+                    <div class="text-slate-500 dark:text-slate-400">あなたの回答: <span class="text-emerald-700 dark:text-emerald-400 font-bold">${r.userAns}</span> ✅</div>
+                  `}
+                  <div class="text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl text-[11px] leading-relaxed">
+                    ${r.quiz.explanation}
+                  </div>
+                  ${(typeof renderChoiceExplanationsHTML === 'function' && r.quiz.options && r.quiz.options.length > 0) ? renderChoiceExplanationsHTML(r.quiz.options, {
+                    expectedAnswer: r.quiz.answer,
+                    userAnswer: r.userAns,
+                    title: '選択肢に出た単語・表現の全解説を見る（タップで開閉）'
+                  }) : ''}
+                </div>
+              `).join('')}
+            </div>
+          `}
         </div>
 
         <div class="flex gap-2">
@@ -355,6 +398,28 @@ export class NumberMasterComponent {
         </div>
       </div>
     `;
+
+    // フィルター切り替えイベント
+    this.container.querySelectorAll('.filter-num-result-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.resultFilter = btn.dataset.filter;
+        this.renderResult();
+      });
+    });
+
+    // 間違いノートへ直行
+    const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-num');
+    if (gotoMistakesBtn) {
+      gotoMistakesBtn.addEventListener('click', () => {
+        if (this.onNavigate) {
+          if (typeof ReviewNotebookComponent !== 'undefined') {
+            ReviewNotebookComponent.state.view = 'list';
+            ReviewNotebookComponent.state.filterType = 'all';
+          }
+          this.onNavigate('review');
+        }
+      });
+    }
 
     this.container.querySelectorAll('.btn-opt-speak').forEach(btn => {
       btn.addEventListener('click', (e) => {

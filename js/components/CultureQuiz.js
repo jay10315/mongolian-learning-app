@@ -78,6 +78,8 @@ export class CultureComponent {
         const currentRiddle = cultureData.riddles[this.state.currentRiddleIndex];
         const isOk = val === currentRiddle.answer;
         this.state.selectedRiddleAnswer = val;
+        if (!this.state.riddleResults) this.state.riddleResults = [];
+        this.state.riddleResults.push({ riddle: currentRiddle, userVal: val, isOk });
         if (isOk) {
           this.state.riddleScore++;
           SoundEffects.playCorrect();
@@ -108,9 +110,48 @@ export class CultureComponent {
     const nextRiddleBtn = this.container.querySelector('#btn-next-riddle');
     if (nextRiddleBtn) {
       nextRiddleBtn.addEventListener('click', () => {
-        this.state.currentRiddleIndex = (this.state.currentRiddleIndex + 1) % cultureData.riddles.length;
-        this.state.selectedRiddleAnswer = null;
+        if (this.state.currentRiddleIndex + 1 < cultureData.riddles.length) {
+          this.state.currentRiddleIndex++;
+          this.state.selectedRiddleAnswer = null;
+        } else {
+          this.state.riddleFinished = true;
+        }
         this.render(this.container, this.onNavigate);
+      });
+    }
+
+    // なぞなぞ結果フィルターボタン
+    this.container.querySelectorAll('.filter-culture-res-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.resultFilter = btn.dataset.filter;
+        this.render(this.container, this.onNavigate);
+      });
+    });
+
+    // なぞなぞリスタート
+    const restartRiddleBtn = this.container.querySelector('#btn-restart-riddles');
+    if (restartRiddleBtn) {
+      restartRiddleBtn.addEventListener('click', () => {
+        this.state.currentRiddleIndex = 0;
+        this.state.selectedRiddleAnswer = null;
+        this.state.riddleScore = 0;
+        this.state.riddleFinished = false;
+        this.state.riddleResults = [];
+        this.render(this.container, this.onNavigate);
+      });
+    }
+
+    // 間違いノートへ直行
+    const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-culture');
+    if (gotoMistakesBtn) {
+      gotoMistakesBtn.addEventListener('click', () => {
+        if (this.onNavigate) {
+          if (typeof ReviewNotebookComponent !== 'undefined') {
+            ReviewNotebookComponent.state.view = 'list';
+            ReviewNotebookComponent.state.filterType = 'all';
+          }
+          this.onNavigate('review');
+        }
       });
     }
   }
@@ -159,9 +200,106 @@ export class CultureComponent {
   }
 
   static renderRiddlesHTML() {
+    const total = cultureData.riddles.length;
+
+    if (this.state.riddleFinished) {
+      const results = this.state.riddleResults || [];
+      const score = this.state.riddleScore;
+      const wrongCount = total - score;
+      const percent = Math.round((score / total) * 100);
+      const currentFilter = this.state.resultFilter || 'all';
+
+      const filteredResults = results.filter(r => {
+        if (currentFilter === 'correct') return r.isOk;
+        if (currentFilter === 'wrong') return !r.isOk;
+        return true;
+      });
+
+      return `
+        <div class="space-y-5 animate-scale-up">
+          <div class="bg-gradient-to-br from-amber-500 to-rose-600 rounded-3xl p-6 sm:p-8 text-white text-center shadow-xl space-y-4">
+            <span class="text-5xl">🎪🎉</span>
+            <div class="space-y-1">
+              <span class="text-xs bg-white/20 text-white font-black px-3 py-1 rounded-full uppercase">RIDDLE COMPLETE</span>
+              <h3 class="text-2xl sm:text-3xl font-black text-amber-100">モンゴルなぞなぞ 全問終了！</h3>
+              <p class="text-xs text-amber-200">スコア: <span class="font-black text-white text-base">${score} / ${total} 点 (${percent}%)</span></p>
+            </div>
+            <div class="pt-2 flex justify-center gap-3">
+              <button type="button" id="btn-restart-riddles" class="px-6 py-2.5 rounded-xl bg-white text-slate-900 font-black text-sm shadow-md active:scale-95 transition-all cursor-pointer">
+                🔄 もう一度挑戦
+              </button>
+            </div>
+          </div>
+
+          ${wrongCount > 0 ? `
+            <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs text-left">
+              <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5">
+                <span class="text-base">🔥</span>
+                <span>間違えた <strong>${wrongCount}</strong> 問を「間違いノート」に自動保存しました</span>
+              </div>
+              <button type="button" id="btn-goto-mistakes-from-culture" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                <span>間違いノートで特訓</span>
+                <span>→</span>
+              </button>
+            </div>
+          ` : ''}
+
+          <!-- 出題問題の復習リスト -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-xs space-y-3 text-left">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100 dark:border-slate-700">
+              <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5">
+                <span>📋</span> 出題なぞなぞの復習 (${total}問)
+              </h4>
+              <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 p-1 rounded-xl text-xs font-bold self-start sm:self-auto">
+                <button type="button" class="filter-culture-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'all' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-black' : 'text-slate-500 hover:text-slate-800'}" data-filter="all">
+                  すべて (${total})
+                </button>
+                <button type="button" class="filter-culture-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'correct' ? 'bg-emerald-600 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-emerald-700'}" data-filter="correct">
+                  ⭕ 正解 (${score})
+                </button>
+                <button type="button" class="filter-culture-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'wrong' ? 'bg-rose-600 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-rose-700'}" data-filter="wrong">
+                  ❌ 不正解 (${wrongCount})
+                </button>
+              </div>
+            </div>
+
+            ${filteredResults.length === 0 ? `
+              <div class="text-center py-6 text-xs text-slate-400">
+                該当する問題はありません。
+              </div>
+            ` : `
+              <div class="divide-y divide-slate-100 dark:divide-slate-700 max-h-80 overflow-y-auto pr-1 space-y-3">
+                ${filteredResults.map(r => `
+                  <div class="py-3 space-y-1.5 text-xs">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${r.isOk ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'}">
+                        ${r.isOk ? '⭕ 正解' : '❌ 不正解'}
+                      </span>
+                    </div>
+                    <div class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm cyrillic-text">${r.riddle.riddleMn}</div>
+                    <div class="text-slate-600 dark:text-slate-400 text-xs">「${r.riddle.riddleJa}」</div>
+                    <div class="font-bold text-slate-700 dark:text-slate-300">
+                      正解: <span class="text-emerald-700 dark:text-emerald-400 font-black cyrillic-text">${r.riddle.answer}</span>（${r.riddle.answerJa}）
+                    </div>
+                    ${!r.isOk ? `
+                      <div class="text-slate-500 dark:text-slate-400">
+                        あなたの回答: <span class="line-through text-rose-600 dark:text-rose-400 font-medium">${r.userVal || '(未回答)'}</span>
+                      </div>
+                    ` : ''}
+                    <div class="text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl text-[11px] leading-relaxed">
+                      💡 ${r.riddle.explanation}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
     const idx = this.state.currentRiddleIndex;
     const r = cultureData.riddles[idx];
-    const total = cultureData.riddles.length;
 
     return `
       <div class="space-y-4">

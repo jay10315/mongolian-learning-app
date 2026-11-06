@@ -47,7 +47,8 @@ export class EtymologyMasterComponent {
       hasAnswered: false,
       score: 0,
       streak: 0,
-      isFinished: false
+      isFinished: false,
+      results: []
     };
     if (this.state.quiz.questions.length > 0) {
       this.state.quiz.currentQ = this.state.quiz.questions[0];
@@ -346,30 +347,108 @@ export class EtymologyMasterComponent {
 
   static renderQuizResult() {
     const qState = this.state.quiz;
-    const accuracy = Math.round((qState.score / (qState.questions.length * 10)) * 100);
+    const totalQ = qState.questions.length;
+    const correctCount = (qState.results || []).filter(r => r.isCorrect).length;
+    const wrongCount = totalQ - correctCount;
+    const accuracy = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+    const currentFilter = this.state.resultFilter || 'all';
+
+    const filteredResults = (qState.results || []).filter(r => {
+      if (currentFilter === 'correct') return r.isCorrect;
+      if (currentFilter === 'wrong') return !r.isCorrect;
+      return true;
+    });
 
     return `
-      <div class="max-w-md mx-auto bg-white rounded-2xl border border-slate-200 shadow-sm p-6 text-center space-y-4 animate-scale-up">
+      <div class="max-w-xl mx-auto bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl p-5 sm:p-7 text-center space-y-5 animate-scale-up">
         <span class="text-5xl">🏆</span>
-        <h3 class="text-xl font-black text-slate-800">特訓完了！</h3>
-        <p class="text-xs text-slate-500">語源・神接尾辞クイズを全問やり遂げました！</p>
+        <h3 class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white">特訓完了！</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">語源・神接尾辞クイズを全問やり遂げました！</p>
 
-        <div class="bg-gradient-to-tr from-amber-50 to-rose-50 p-4 rounded-2xl border border-amber-200 space-y-1">
-          <div class="text-xs font-bold text-slate-600">あなたのスコア</div>
-          <div class="text-3xl font-black text-rose-600">${qState.score} / ${qState.questions.length * 10} 点</div>
-          <div class="text-xs font-extrabold text-amber-700">正解率: ${accuracy}%</div>
+        <div class="bg-gradient-to-tr from-amber-50 to-rose-50 dark:from-slate-900 dark:to-slate-800 p-4 rounded-2xl border border-amber-200 dark:border-slate-700 space-y-1">
+          <div class="text-xs font-bold text-slate-600 dark:text-slate-400">あなたのスコア</div>
+          <div class="text-3xl font-black text-rose-600 dark:text-rose-400">${qState.score} / ${totalQ * 10} 点</div>
+          <div class="text-xs font-extrabold text-amber-700 dark:text-amber-400">正解率: ${accuracy}% (${correctCount}/${totalQ} 問)</div>
         </div>
 
-        <div class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200 text-left font-medium">
-          💡 <strong>アドバイス</strong><br>
-          接尾辞はモンゴル語の「レゴブロック」です！「-гүй（語源副詞）」「-тай（有格）」「-ч（人）」「-лах（動詞化）」などの基本ルールを意識しながら単語を見ると、新しい語彙に出会った時も直感的に意味が推測できるようになります。
+        ${wrongCount > 0 ? `
+          <!-- 間違いノート自動保存通知バナー ＆ 直行ボタン -->
+          <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs text-left">
+            <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5">
+              <span class="text-base">🔥</span>
+              <span>間違えた <strong>${wrongCount}</strong> 問を「間違いノート」に自動保存しました</span>
+            </div>
+            <button type="button" id="btn-goto-mistakes-from-etym" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+              <span>間違いノートで特訓</span>
+              <span>→</span>
+            </button>
+          </div>
+        ` : ''}
+
+        <!-- 出題問題の復習 ＆ 全選択肢解説 -->
+        <div class="bg-slate-50 dark:bg-slate-900/60 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 space-y-3 text-left">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
+            <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5">
+              <span>📋</span> 出題問題の復習 (${totalQ}問)
+            </h4>
+            <div class="flex items-center gap-1 bg-white dark:bg-slate-800 p-1 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 self-start sm:self-auto">
+              <button type="button" class="filter-etym-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'all' ? 'bg-slate-900 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-slate-800'}" data-filter="all">
+                すべて (${totalQ})
+              </button>
+              <button type="button" class="filter-etym-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'correct' ? 'bg-emerald-600 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-emerald-700'}" data-filter="correct">
+                ⭕ 正解 (${correctCount})
+              </button>
+              <button type="button" class="filter-etym-res-btn px-2.5 py-1 rounded-lg transition-all cursor-pointer ${currentFilter === 'wrong' ? 'bg-rose-600 text-white shadow-2xs font-black' : 'text-slate-500 hover:text-rose-700'}" data-filter="wrong">
+                ❌ 不正解 (${wrongCount})
+              </button>
+            </div>
+          </div>
+
+          ${filteredResults.length === 0 ? `
+            <div class="text-center py-6 text-xs text-slate-400">
+              該当する問題はありません。
+            </div>
+          ` : `
+            <div class="divide-y divide-slate-200 dark:divide-slate-700 max-h-80 overflow-y-auto pr-1 space-y-3">
+              ${filteredResults.map((r, i) => {
+                const correctOpt = r.q.options[r.q.answer];
+                const userOpt = r.q.options[r.choiceIdx] || '(未回答)';
+                return `
+                  <div class="py-3 space-y-1.5 text-xs">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${r.isCorrect ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'}">
+                        ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
+                      </span>
+                    </div>
+                    <div class="font-black text-slate-900 dark:text-white text-xs sm:text-sm">Q. ${r.q.question}</div>
+                    <div class="font-bold text-slate-700 dark:text-slate-300">
+                      正解: <span class="text-emerald-700 dark:text-emerald-400 cyrillic-text font-black">${correctOpt}</span>
+                    </div>
+                    ${!r.isCorrect ? `
+                      <div class="text-slate-500 dark:text-slate-400">
+                        あなたの回答: <span class="line-through text-rose-600 dark:text-rose-400 font-medium">${userOpt}</span>
+                      </div>
+                    ` : ''}
+                    <div class="text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] leading-relaxed">
+                      💡 ${r.q.explanation}
+                    </div>
+                    ${(typeof renderChoiceExplanationsHTML === 'function' && r.q.options && r.q.options.length > 0) ? renderChoiceExplanationsHTML(r.q.options, {
+                      expectedAnswer: correctOpt,
+                      userAnswer: userOpt,
+                      title: '選択肢に出た単語・語根の全解説を見る（タップで開閉）'
+                    }) : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `}
         </div>
 
         <div class="flex items-center gap-2 pt-2">
-          <button type="button" id="btn-retry-quiz" class="flex-1 py-3 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-black text-xs rounded-xl shadow-xs transition-all">
+          <button type="button" id="btn-retry-quiz" class="flex-1 py-3 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-black text-xs rounded-xl shadow-xs transition-all cursor-pointer">
             もう一度挑戦 🔄
           </button>
-          <button type="button" id="btn-switch-study" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs rounded-xl transition-all">
+          <button type="button" id="btn-switch-study" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs rounded-xl transition-all cursor-pointer">
             図鑑で復習 📖
           </button>
         </div>
@@ -578,6 +657,32 @@ export class EtymologyMasterComponent {
       });
     }
 
+    // 結果フィルターボタン
+    this.container.querySelectorAll('.filter-etym-res-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.resultFilter = btn.dataset.filter;
+        const contentDiv = this.container.querySelector('#etymology-tab-content');
+        if (contentDiv) {
+          contentDiv.innerHTML = this.renderTabContent();
+          this.attachEvents();
+        }
+      });
+    });
+
+    // 間違いノートへ直行
+    const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-etym');
+    if (gotoMistakesBtn) {
+      gotoMistakesBtn.addEventListener('click', () => {
+        if (this.onNavigate) {
+          if (typeof ReviewNotebookComponent !== 'undefined') {
+            ReviewNotebookComponent.state.view = 'list';
+            ReviewNotebookComponent.state.filterType = 'all';
+          }
+          this.onNavigate('review');
+        }
+      });
+    }
+
     // クイズリトライ
     const btnRetry = this.container.querySelector('#btn-retry-quiz');
     if (btnRetry) {
@@ -606,6 +711,8 @@ export class EtymologyMasterComponent {
     qState.selectedChoiceIndex = choiceIdx;
 
     const isCorrect = (choiceIdx === currentQ.answer);
+    if (!qState.results) qState.results = [];
+    qState.results.push({ q: currentQ, choiceIdx, isCorrect });
     if (isCorrect) {
       SoundEffects.playCorrect();
       qState.score += 10;

@@ -968,6 +968,18 @@ export class GenreWordMasterComponent {
 
           <!-- 間違えた単語の復習リスト -->
           ${mistakes.length > 0 ? `
+            <!-- 間違いノート自動保存通知バナー ＆ 直行ボタン -->
+            <div class="p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs text-left">
+              <div class="text-xs text-rose-800 dark:text-rose-200 font-bold flex items-center gap-1.5">
+                <span class="text-base">🔥</span>
+                <span>間違えた <strong>${mistakes.length}</strong> 語を「間違いノート」に自動保存しました</span>
+              </div>
+              <button type="button" id="btn-goto-mistakes-from-genre" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                <span>間違いノートで特訓</span>
+                <span>→</span>
+              </button>
+            </div>
+
             <div class="text-left space-y-2 pt-2">
               <h4 class="text-xs font-black text-slate-700 flex items-center gap-1.5">
                 <span>📝 要復習単語 (${mistakes.length}語):</span>
@@ -1072,6 +1084,19 @@ export class GenreWordMasterComponent {
     if (replayBtn) {
       replayBtn.addEventListener('click', () => {
         this.startGenreGame(this.state.activeGenreId);
+      });
+    }
+
+    const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-genre');
+    if (gotoMistakesBtn) {
+      gotoMistakesBtn.addEventListener('click', () => {
+        if (this.onNavigate) {
+          if (typeof ReviewNotebookComponent !== 'undefined') {
+            ReviewNotebookComponent.state.view = 'list';
+            ReviewNotebookComponent.state.filterType = 'all';
+          }
+          this.onNavigate('review');
+        }
       });
     }
 
