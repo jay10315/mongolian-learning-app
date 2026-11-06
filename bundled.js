@@ -38560,6 +38560,34 @@ class StorageService {
     ]);
     return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
   }
+
+  // --- 汎用 Key-Value ストレージアクセサ (JSON対応 & 安全フォールバック) ---
+  static getItem(key, defaultValue = null) {
+    try {
+      if (typeof localStorage === 'undefined') return defaultValue;
+      const data = localStorage.getItem(key);
+      if (data === null || data === undefined) return defaultValue;
+      try {
+        return JSON.parse(data);
+      } catch (_) {
+        return data;
+      }
+    } catch (_) {
+      return defaultValue;
+    }
+  }
+
+  static setItem(key, value) {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      const valStr = typeof value === 'string' ? value : JSON.stringify(value);
+      localStorage.setItem(key, valStr);
+    } catch (_) {}
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.StorageService = StorageService;
 }
 
 
@@ -54267,7 +54295,16 @@ class InterviewMasterComponent {
     this.onNavigate = onNavigate;
     
     // 進捗データのロード
-    const progressData = StorageService.getItem('interview_master_progress', {});
+    let progressData = {};
+    try {
+      if (typeof StorageService !== 'undefined' && typeof StorageService.getItem === 'function') {
+        progressData = StorageService.getItem('interview_master_progress', {}) || {};
+      } else if (typeof localStorage !== 'undefined') {
+        progressData = JSON.parse(localStorage.getItem('interview_master_progress') || '{}');
+      }
+    } catch (_) {
+      progressData = {};
+    }
     const topic = interviewTopics[this.currentTopicIndex] || interviewTopics[0];
     const isCompleted = progressData[topic.id] === 'mastered';
 

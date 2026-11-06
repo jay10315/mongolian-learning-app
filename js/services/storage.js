@@ -1034,4 +1034,32 @@ export class StorageService {
     ]);
     return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
   }
+
+  // --- 汎用 Key-Value ストレージアクセサ (JSON対応 & 安全フォールバック) ---
+  static getItem(key, defaultValue = null) {
+    try {
+      if (typeof localStorage === 'undefined') return defaultValue;
+      const data = localStorage.getItem(key);
+      if (data === null || data === undefined) return defaultValue;
+      try {
+        return JSON.parse(data);
+      } catch (_) {
+        return data;
+      }
+    } catch (_) {
+      return defaultValue;
+    }
+  }
+
+  static setItem(key, value) {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      const valStr = typeof value === 'string' ? value : JSON.stringify(value);
+      localStorage.setItem(key, valStr);
+    } catch (_) {}
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.StorageService = StorageService;
 }

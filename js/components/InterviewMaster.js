@@ -22,7 +22,16 @@ export class InterviewMasterComponent {
     this.onNavigate = onNavigate;
     
     // 進捗データのロード
-    const progressData = StorageService.getItem('interview_master_progress', {});
+    let progressData = {};
+    try {
+      if (typeof StorageService !== 'undefined' && typeof StorageService.getItem === 'function') {
+        progressData = StorageService.getItem('interview_master_progress', {}) || {};
+      } else if (typeof localStorage !== 'undefined') {
+        progressData = JSON.parse(localStorage.getItem('interview_master_progress') || '{}');
+      }
+    } catch (_) {
+      progressData = {};
+    }
     const topic = interviewTopics[this.currentTopicIndex] || interviewTopics[0];
     const isCompleted = progressData[topic.id] === 'mastered';
 
