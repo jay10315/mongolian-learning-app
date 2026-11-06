@@ -48,6 +48,12 @@ export class Navbar {
       { id: 'japanese_test', label: '日本語訳テスト', icon: '🇯🇵' },
       { id: 'grammar_test', label: '文法テスト', icon: '📐' },
       { id: 'declension_test', label: '格変化・活用', icon: '⚡' },
+      { id: 'roleplay', label: '会話ロールプレイ', icon: '🏕️' },
+      { id: 'number_master', label: '数字マスター', icon: '🔢' },
+      { id: 'shadowing_dictation', label: 'シャドーイング', icon: '🎙️' },
+      { id: 'culture', label: 'ことわざ・なぞなぞ', icon: '🐴' },
+      { id: 'word_family', label: '語根・対義語', icon: '🌳' },
+      { id: 'expedition', label: 'ペンギン探検隊', icon: '🗺️' },
       { id: 'listening_test', label: 'リスニング', icon: '🎧' },
       { id: 'reading_test', label: '読解テスト', icon: '📖' },
       { id: 'typing_test', label: 'タイピング', icon: '⌨️' },
@@ -124,7 +130,7 @@ export class Navbar {
 
           <!-- デスクトップ用タブバー -->
           <div class="hidden md:block max-w-6xl mx-auto px-4 sm:px-6">
-            <nav class="flex space-x-1 border-t border-slate-100 pt-1 pb-1">
+            <nav class="flex space-x-1 border-t border-slate-100 pt-1 pb-1 overflow-x-auto no-scrollbar scroll-smooth">
               ${tabs.map(t => {
                 const isActive = this.currentTab === t.id;
                 return `

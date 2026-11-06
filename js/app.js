@@ -18,6 +18,12 @@ import { ListeningTestComponent } from './components/ListeningTest.js';
 import { ReadingTestComponent } from './components/ReadingTest.js';
 import { TypingTestComponent } from './components/TypingTest.js';
 import { PronunciationTestComponent } from './components/PronunciationTest.js';
+import { RoleplayComponent } from './components/RoleplayTest.js';
+import { NumberMasterComponent } from './components/NumberMasterTest.js';
+import { ShadowingDictationComponent } from './components/ShadowingDictationTest.js';
+import { CultureComponent } from './components/CultureQuiz.js';
+import { WordFamilyComponent } from './components/WordFamilyQuiz.js';
+import { PenguinExpeditionComponent } from './components/PenguinExpedition.js';
 
 class App {
   static currentTab = 'home';
@@ -119,6 +125,24 @@ class App {
         break;
       case 'pronunciation_test':
         PronunciationTestComponent.render(mainContainer, onNavigate);
+        break;
+      case 'roleplay':
+        RoleplayComponent.render(mainContainer, onNavigate);
+        break;
+      case 'number_master':
+        NumberMasterComponent.render(mainContainer, onNavigate);
+        break;
+      case 'shadowing_dictation':
+        ShadowingDictationComponent.render(mainContainer, onNavigate);
+        break;
+      case 'culture':
+        CultureComponent.render(mainContainer, onNavigate);
+        break;
+      case 'word_family':
+        WordFamilyComponent.render(mainContainer, onNavigate);
+        break;
+      case 'expedition':
+        PenguinExpeditionComponent.render(mainContainer, onNavigate);
         break;
       case 'flashcards':
         FlashcardsComponent.render(mainContainer, onNavigate);

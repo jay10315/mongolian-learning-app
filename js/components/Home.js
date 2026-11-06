@@ -540,6 +540,150 @@ export class HomeComponent {
               </div>
             </div>
 
+            <!-- 会話ロールプレイ（実践対話モード） -->
+            <div class="bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-emerald-500/15 rounded-xl p-5 border-2 border-amber-500 hover:border-amber-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="roleplay">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-emerald-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🏕️
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-600 text-white shadow-2xs">
+                    新モード ⚡ 実践対話
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-amber-700 transition-colors flex items-center gap-1.5">
+                  会話ロールプレイ
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  ゲル訪問・レストラン・ナラントール市場・タクシー道案内！リアルな選択肢とネイティブ音声で実践的な会話力を養う！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-between text-xs font-black text-amber-800">
+                <span>対話を始める</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- 数字・金額・時間スピードマスター -->
+            <div class="bg-gradient-to-br from-blue-500/15 via-indigo-500/10 to-sky-500/15 rounded-xl p-5 border-2 border-blue-500 hover:border-blue-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="number_master">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🔢
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-blue-600 text-white shadow-2xs">
+                    新モード ⚡ 瞬発力
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-blue-700 transition-colors flex items-center gap-1.5">
+                  数字・金額・時間マスター
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  「гурав / гурван」の接続形使い分け、トゥグルグの金額、時計の「хагас / дутуу」、日付・曜日をタイムアタック特訓！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-blue-200/60 flex items-center justify-between text-xs font-black text-blue-800">
+                <span>数字特訓を開始</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- シャドーイング ＆ ディクテーション -->
+            <div class="bg-gradient-to-br from-rose-500/15 via-pink-500/10 to-purple-500/15 rounded-xl p-5 border-2 border-rose-500 hover:border-rose-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="shadowing_dictation">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-pink-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🎙️
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-rose-600 text-white shadow-2xs">
+                    新モード ⚡ 聴覚＆打鍵
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-rose-700 transition-colors flex items-center gap-1.5">
+                  シャドーイング ＆ ディクテーション
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  0.75倍速／等速ネイティブ音声を聴いてカラオケ式追唱 ＆ キリル文字で耳取り書き取り！正解率自動採点。
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-rose-200/60 flex items-center justify-between text-xs font-black text-rose-800">
+                <span>特訓を開始</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- ことわざ ＆ 伝統なぞなぞ -->
+            <div class="bg-gradient-to-br from-amber-600/15 via-yellow-500/10 to-orange-500/15 rounded-xl p-5 border-2 border-amber-600 hover:border-amber-700 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="culture">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 to-yellow-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🐴
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-700 text-white shadow-2xs">
+                    新モード ⚡ 伝統知恵
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-amber-800 transition-colors flex items-center gap-1.5">
+                  ことわざ ＆ 伝統なぞなぞ
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  「馬には鞭、人には言葉」。遊牧民の暮らしと知恵が詰まった伝統ことわざ（Зүйр үг）とクイズ形式のなぞなぞ（Оньсого）！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-between text-xs font-black text-amber-800">
+                <span>知恵を学ぶ</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- 語根ファミリー ＆ 対義語 -->
+            <div class="bg-gradient-to-br from-emerald-600/15 via-green-500/10 to-teal-500/15 rounded-xl p-5 border-2 border-emerald-600 hover:border-emerald-700 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="word_family">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-green-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🌳
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-700 text-white shadow-2xs">
+                    新モード ⚡ 語彙ツリー
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-emerald-800 transition-colors flex items-center gap-1.5">
+                  語根ファミリー ＆ 対義語
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  語根「үз- (見る)」から「үзэх, үзэсгэлэн, үзэгч」へ広がる派生語ツリーや対義語・類義語のニュアンス比較で語彙を一気に倍増！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-emerald-200/60 flex items-center justify-between text-xs font-black text-emerald-800">
+                <span>派生語を広げる</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- ペンギン探検隊（モンゴル名所めぐり旅） -->
+            <div class="bg-gradient-to-br from-cyan-600/15 via-sky-500/10 to-blue-600/15 rounded-xl p-5 border-2 border-cyan-600 hover:border-cyan-700 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="expedition">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🗺️
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-cyan-700 text-white shadow-2xs">
+                    新モード ⚡ XP連動冒険
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-cyan-800 transition-colors flex items-center gap-1.5">
+                  ペンギン探検隊（名所めぐり）
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  ウランバートルからフブスグル湖・ゴビ砂漠・アルタイ山脈へ！学習で貯めたXPで名所を巡り、記念絵はがきとお土産を集めよう！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-cyan-200/60 flex items-center justify-between text-xs font-black text-cyan-800">
+                <span>探検に出発</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- フラッシュカード -->
             <div class="bg-white rounded-xl p-5 border border-slate-200 hover:border-teal-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="flashcards">
               <div>

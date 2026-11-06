@@ -20476,6 +20476,799 @@ const PRONUNCIATION_ITEMS = [
 ];
 
 
+// === js/data/roleplayData.js ===
+// 日常会話・旅行ロールプレイシナリオデータ
+const roleplayScenarios = [
+  {
+    id: "ger_visit",
+    title: "ゲル訪問・遊牧民への挨拶",
+    category: "culture",
+    icon: "⛺",
+    description: "大草原の遊牧民のゲルを訪ねるシチュエーション。礼儀作法ともてなしの会話を体験！",
+    initialPrompt: "あなたは草原を旅して、ある遊牧民のゲルに到着しました。ゲルの前でおじいさんが笑顔で迎えてくれます。",
+    character: {
+      name: "Батболд гуай (バトボルドおじいさん)",
+      avatar: "👴"
+    },
+    steps: [
+      {
+        npcText: "Сайн байна уу? Тавтай морил! Мал сүрэг тарган тавтай байна уу?",
+        npcMeaning: "こんにちは！ようこそおいでくださいました！家畜たちは丸々と太って無事ですか？（遊牧民伝統の挨拶）",
+        options: [
+          {
+            text: "Сайн байна уу? Тарган тавтай сайн байна.",
+            meaning: "こんにちは！家畜も元気で順調です。（伝統の正しい返し）",
+            isBest: true,
+            score: 10,
+            feedback: "素晴らしい！遊牧民の挨拶「家畜は元気ですか？」には「タрган тавтай сайн（丸々と元気です）」と返すのが最高の礼儀です。"
+          },
+          {
+            text: "Сайн байна уウ. Би Япон улсаас ирсэн.",
+            meaning: "こんにちは。私は日本から来ました。",
+            isBest: false,
+            score: 7,
+            feedback: "通じますが、伝統的な家畜への気遣いに触れてあげるとさらに喜ばれます！"
+          },
+          {
+            text: "Баяртай!",
+            meaning: "さようなら！",
+            isBest: false,
+            score: 0,
+            feedback: "到着したばかりで「さようなら」と言ってしまいました！"
+          }
+        ]
+      },
+      {
+        npcText: "Манай гэрт ор, ор! Цай уу, ааруул ид.",
+        npcMeaning: "さあ、ゲルにお入りなさい！お茶を飲んで、アーロール（乾燥チーズ）を召し上がれ。",
+        options: [
+          {
+            text: "Баярлалаа. Сайхан цай байна.",
+            meaning: "ありがとうございます。とても美味しいお茶ですね。",
+            isBest: true,
+            score: 10,
+            feedback: "完璧です！振る舞われたスーテイ・ツァイ（ミルクティー）を褒めるのは最高のもてなしへのお礼です。"
+          },
+          {
+            text: "Би уухгүй.",
+            meaning: "私は飲みません。",
+            isBest: false,
+            score: 2,
+            feedback: "モンゴルではゲルで出されたお茶を一切口にしないのは失礼とされます。一口だけでも口をつけるのがマナーです。"
+          },
+          {
+            text: "Энэ юу вэ?",
+            meaning: "これは何ですか？",
+            isBest: false,
+            score: 6,
+            feedback: "悪くはありませんが、まずはお礼を言ってから尋ねると自然です。"
+          }
+        ]
+      },
+      {
+        npcText: "За, замдаа сайн яваарай! Дараа дахин ирээрэй.",
+        npcMeaning: "さあ、道中お気をつけて！またいつでも遊びに来てくださいね。",
+        options: [
+          {
+            text: "Маш их баярлалаа! Та сайн сууж байгаарай.",
+            meaning: "本当にありがとうございました！お元気でお過ごしください。（見送る相手への挨拶）",
+            isBest: true,
+            score: 10,
+            feedback: "満点！旅立つ側から残る側への挨拶は「Сайн сууж байгаарай（お元気でとどまってください）」が完璧なモンゴル語です！"
+          },
+          {
+            text: "Сайн яваарай.",
+            meaning: "良い旅を。（※残る側が言う言葉）",
+            isBest: false,
+            score: 5,
+            feedback: "「Сайн яваарай」は残る側が見送る相手に言う表現です。見送られる側は「Сайн сууж байгаарай」と言います。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "restaurant_order",
+    title: "レストランでモンゴル料理を注文",
+    category: "daily",
+    icon: "🥟",
+    description: "ウランバートルの食堂で、名物ボーズ（肉まん）やツォイワン（焼きうどん）を注文！",
+    initialPrompt: "お腹を空かせて地元の食堂（Гуанз）に入りました。店員さんが注文を取りに来ます。",
+    character: {
+      name: "Зөөгч (店員さん)",
+      avatar: "👩‍🍳"
+    },
+    steps: [
+      {
+        npcText: "Сайн байна уу? Та юу захиалах вэ?",
+        npcMeaning: "いらっしゃいませ！何をご注文されますか？",
+        options: [
+          {
+            text: "Танайд хамгийн амттай хоол юу байна вэ?",
+            meaning: "ここ一番の美味しい料理（おすすめ）は何ですか？",
+            isBest: true,
+            score: 10,
+            feedback: "自然で素晴らしい聞き方です！店員さんも張り切ってお勧めを教えてくれます。"
+          },
+          {
+            text: "Би өлсөж байна.",
+            meaning: "私はお腹が空いています。",
+            isBest: false,
+            score: 4,
+            feedback: "気持ちは分かりますが、注文を聞かれているので料理について話しましょう！"
+          },
+          {
+            text: "Цэс байна уу?",
+            meaning: "メニューはありますか？",
+            isBest: true,
+            score: 9,
+            feedback: "メニューを見せてもらう良いアプローチです！"
+          }
+        ]
+      },
+      {
+        npcText: "Манай цуйван, бууз хоёр маш амттай шүү!",
+        npcMeaning: "当店のツォイワン（羊肉焼きうどん）とボーズ（肉蒸し餃子）がとっても美味しいですよ！",
+        options: [
+          {
+            text: "Тэгвэл нэг цуйван, таван ширхэг бууз, нэг сүүтэй цай авъя.",
+            meaning: "それではツォイワン1つとボーズ5個、ミルクティー1つをください。",
+            isBest: true,
+            score: 10,
+            feedback: "完璧な注文です！数詞＋ ширхэг（個）＋ авъя（〜をください/いただきます）の流れが完璧です。"
+          },
+          {
+            text: "Цуйван өг.",
+            meaning: "ツォイワンをよこせ。",
+            isBest: false,
+            score: 3,
+            feedback: "少しぶっきらぼうです。「авъя（〜をください）」や「өгөөч（〜をください）」を使うと丁寧です。"
+          }
+        ]
+      },
+      {
+        npcText: "Хоол гарлаа, сайхан хооллоорой! (食事後) Өөр зүйл хэрэгтэй юу?",
+        npcMeaning: "お料理をお持ちしました、美味しく召し上がれ！（食事後）他に必要なものはありますか？",
+        options: [
+          {
+            text: "Маш амттай байлаа! Тооцоо хийе.",
+            meaning: "ごちそうさまでした（とても美味しかったです）！お会計をお願いします。",
+            isBest: true,
+            score: 10,
+            feedback: "素晴らしい！「Тооцоо хийе（お会計しましょう）」は食堂で最も使う必須フレーズです！"
+          },
+          {
+            text: "Мөнгө ав.",
+            meaning: "金を受け取れ。",
+            isBest: false,
+            score: 2,
+            feedback: "失礼になってしまいます。「Тооцоо хийе」と言いましょう。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "market_shopping",
+    title: "ナラン・トール市場（ザハ）で値段交渉",
+    category: "shopping",
+    icon: "🛍️",
+    description: "活気あふれるマンモス市場で、カシミヤのマフラーやお土産をスマートに買い物！",
+    initialPrompt: "ウランバートルの巨大市場「ナラン・トール」のお土産ブースで、温かそうなカシミヤのマフラーを見つけました。",
+    character: {
+      name: "Худалдагч (売り手のお姉さん)",
+      avatar: "🧣"
+    },
+    steps: [
+      {
+        npcText: "Сайн байна уу? Энэ цэвэр ноолууран ороолт маш дулаахан шүү.",
+        npcMeaning: "こんにちは！この純カシミヤのマフラー、とっても温かいですよ。",
+        options: [
+          {
+            text: "Сайн байна уу? Энэ ороолт ямар үнэтэй вэ?",
+            meaning: "こんにちは！このマフラーはおいくらですか？",
+            isBest: true,
+            score: 10,
+            feedback: "スマートな値段の聞き方です！「ямар үнэтэй вэ?」または「хэд вэ?」が定番です。"
+          },
+          {
+            text: "Хямдхан өг.",
+            meaning: "安く寄越せ。",
+            isBest: false,
+            score: 2,
+            feedback: "値段も聞かずに安くしろと言うのは商売人に対して失礼です！"
+          }
+        ]
+      },
+      {
+        npcText: "Энэ дөчин таван мянган төгрөг.",
+        npcMeaning: "こちらは45,000トゥグルグ（約2,000円）です。",
+        options: [
+          {
+            text: "Би хоёрыг авбал жаахан хямдруулж өгч болох уу?",
+            meaning: "2つ買ったら、少しお安くしていただけますか？",
+            isBest: true,
+            score: 10,
+            feedback: "完璧な市場交渉！「2つ買うから安くして」という論理的な値引き交渉はザハで大歓迎されます。"
+          },
+          {
+            text: "Үгүй, хэтэрхий үнэтэй!",
+            meaning: "ダメだ、高すぎる！",
+            isBest: false,
+            score: 4,
+            feedback: "露骨に嫌な顔をするより、いくらなら買いたいか交渉するのがモンゴル流です。"
+          }
+        ]
+      },
+      {
+        npcText: "За яахав, хоёрыг наян мянгаар өгье!",
+        npcMeaning: "よし分かった、2つで80,000トゥグルグ（1万引き）でいいよ！",
+        options: [
+          {
+            text: "Маш их баярлалаа! Би хоёрыг авъя.",
+            meaning: "本当にありがとうございます！2つ買います。",
+            isBest: true,
+            score: 10,
+            feedback: "交渉成立！お互いに笑顔で気持ちの良い買い物ができました。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "taxi_direction",
+    title: "タクシー乗車・行き先と道案内",
+    category: "travel",
+    icon: "🚕",
+    description: "手を挙げてタクシーを停め、スフバートル広場やホテルまで的確に道を伝える！",
+    initialPrompt: "道路脇で右手を横に出すと、車が停まってくれました（モンゴルでは一般車も白タクとして停まります）。",
+    character: {
+      name: "Жолооч (運転手さん)",
+      avatar: "🚕"
+    },
+    steps: [
+      {
+        npcText: "Ах аа, хаашаа явах вэ?",
+        npcMeaning: "お客さん、どちらまで行きますか？",
+        options: [
+          {
+            text: "Сүхбаатарын талбай руу явъя. Хэд болох вэ?",
+            meaning: "スフバートル広場までお願いします。いくらになりますか？",
+            isBest: true,
+            score: 10,
+            feedback: "完璧です！目的地＋руу/рүү（方向格）＋явъя（〜へ行こう）＋料金確認がスムーズです。"
+          },
+          {
+            text: "Би мэдэхгүй.",
+            meaning: "私は知りません。",
+            isBest: false,
+            score: 1,
+            feedback: "運転手さんが困ってしまいます！"
+          }
+        ]
+      },
+      {
+        npcText: "Нэг километр нь хоёр мянган төгрөг. За, суу даа.",
+        npcMeaning: "1キロ2,000トゥグルグね。さあ乗って。",
+        options: [
+          {
+            text: "За, баярлалаа. Баруун тийш эргээрэй.",
+            meaning: "分かりました、お願いします。そこを右に曲がってください。",
+            isBest: true,
+            score: 10,
+            feedback: "方向の指示「Баруун тийш（右へ）」「Зүүн тийш（左へ）」「Чигээрээ（まっすぐ）」は必須です！"
+          }
+        ]
+      },
+      {
+        npcText: "Талбай дээр ирлээ дээ.",
+        npcMeaning: "広場に着きましたよ。",
+        options: [
+          {
+            text: "Энд зогсоорой. Төлбөр нь хэд болсон бэ?",
+            meaning: "ここで停めてください。料金はいくらになりましたか？",
+            isBest: true,
+            score: 10,
+            feedback: "満点！「Энд зогсоорой（ここで停めて）」はタクシー降車時の鉄板フレーズです。"
+          }
+        ]
+      }
+    ]
+  }
+];
+
+
+// === js/data/numberQuizData.js ===
+// 数字・金額・時刻・日付スピードマスター問題データ
+const numberQuizzes = [
+  // --- 1. 名詞接続形 (名詞の前で гурав -> гурван になるルール) ---
+  {
+    id: "num_conn_1",
+    category: "connecting",
+    type: "choice",
+    question: "「3冊の本」を正しく表したモンゴル語はどれ？ (本 = ном)",
+    options: ["гурван ном", "гурав ном", "гурав дахь ном", "гуравдугаар ном"],
+    answer: "гурван ном",
+    explanation: "モンゴル語の数詞は、名詞を直接修飾するときに接続形（нが付く形）になります。3（гурав）は名詞の前で「гурван」になります。",
+    rule: "数詞接続形: гурав → гурван (3つの〜)"
+  },
+  {
+    id: "num_conn_2",
+    category: "connecting",
+    type: "choice",
+    question: "「4本のペン」を表す正しい形は？ (ペン = үзэг)",
+    options: ["дөрвөн үзэг", "дөрөв үзэг", "дөрөвт үзэг", "дөрөвний үзэг"],
+    answer: "дөрвөн үзэг",
+    explanation: "4（дөрөв）は名詞の前で第2母音が落ちてнが付き「дөрвөн」になります（дөрвөн үзэг）。",
+    rule: "数詞接続形: дөрөв → дөрвөн (4つの〜)"
+  },
+  {
+    id: "num_conn_3",
+    category: "connecting",
+    type: "choice",
+    question: "「10人の学生」を表す正しい形は？ (学生 = оюутан)",
+    options: ["арван оюутан", "арав оюутан", "аравт оюутан", "арвын оюутан"],
+    answer: "арван оюутан",
+    explanation: "10（арав）は名詞の前で「арван」になります。またモンゴル語では数詞の後ろの名詞は常に単数形（оюутан нарではなくоюутан）です。",
+    rule: "数詞接続形: арав → арван (10の〜)"
+  },
+  {
+    id: "num_conn_4",
+    category: "connecting",
+    type: "choice",
+    question: "「2つのリンゴ」を表す正しい形は？ (リンゴ = алим)",
+    options: ["хоёр алим", "хоёрын алим", "хоёрдахь алим", "хоёул алим"],
+    answer: "хоёр алим",
+    explanation: "2（хоёр）はもともとрで終わるため、名詞の前でもそのまま「хоёр алим」となります（нは付きません）。",
+    rule: "2の例外: хоёр はそのまま名詞を修飾"
+  },
+  {
+    id: "num_conn_5",
+    category: "connecting",
+    type: "choice",
+    question: "「5匹の馬」を表す正しい形は？ (馬 = морь)",
+    options: ["таван морь", "тав морь", "тавын морь", "тавтай морь"],
+    answer: "таван морь",
+    explanation: "5（тав）は名詞の前でнが付き「таван」になります（таван морь）。",
+    rule: "数詞接続形: тав → таван (5つの〜)"
+  },
+
+  // --- 2. 金額（トゥグルグ ₮ の計算・表現） ---
+  {
+    id: "num_curr_1",
+    category: "currency",
+    type: "choice",
+    question: "「5,000 トゥグルグ」の正しいモンゴル語は？",
+    options: ["таван мянган төгрөг", "тав мянга төгрөг", "таван зуун төгрөг", "тавин төгрөг"],
+    answer: "таван мянган төгрөг",
+    explanation: "千（мянга）の前では 5 は接続形の таван になり、さらに төгрөг の前で мянга は мянган になります。таван мянган төгрөг です。",
+    rule: "金額: таван мянган төгрөг (5,000₮)"
+  },
+  {
+    id: "num_curr_2",
+    category: "currency",
+    type: "choice",
+    question: "「20,000 トゥグルグ」の正しいモンゴル語は？",
+    options: ["хорин мянган төгрөг", "хоёр түмэн төгрөг", "хоёр мянган төгрөг", "хорь мянга төгрөг"],
+    answer: "хорин мянган төгрөг",
+    explanation: "20（хорь）の接続形は хорин です。20,000は「хорин мянган төгрөг」と表現します。",
+    rule: "金額: хорин мянган төгрөг (20,000₮)"
+  },
+  {
+    id: "num_curr_3",
+    category: "currency",
+    type: "choice",
+    question: "「100,000 トゥグルグ（10万₮）」を表すモンゴル語はどれ？",
+    options: ["зуун мянган төгрөг", "нэг сая төгрөг", "арван мянган төгрөг", "мянган төгрөг"],
+    answer: "зуун мянган төгрөг",
+    explanation: "10万は「100個の千（зуун мянга）」として表現し、「зуун мянган төгрөг」になります。",
+    rule: "金額: зуун мянган төгрөг (100,000₮)"
+  },
+  {
+    id: "num_curr_4",
+    category: "currency",
+    type: "choice",
+    question: "「1,000,000 トゥグルグ（100万₮・1ミリオン）」を表すモンゴル語は？",
+    options: ["нэг сая төгрөг", "нэг тэрбум төгрөг", "зуун мянган төгрөг", "нэг түмэн төгрөг"],
+    answer: "нэг сая төгрөг",
+    explanation: "100万は「сая（サヤ）」と言います。したがって100万トゥグルグは「нэг сая төгрөг」です。",
+    rule: "単位: сая (100万), тэрбум (10億)"
+  },
+
+  // --- 3. 時刻・時計の読み方 ---
+  {
+    id: "num_time_1",
+    category: "time",
+    type: "choice",
+    question: "「午後2時半（2:30）」を正しく表した表現はどれ？",
+    options: ["хоёр цаг хагас", "хоёрдугаар хагас", "гурав хагас", "хоёр цаг гучин"],
+    answer: "хоёр цаг хагас",
+    explanation: "半分（30分）は「хагас」を使います。「хоёр цаг хагас」で2時半になります。",
+    rule: "時刻: 〜 цаг хагас (〜時半)"
+  },
+  {
+    id: "num_time_2",
+    category: "time",
+    type: "choice",
+    question: "「10時15分前（9:45）」を表すモンゴル語はどれ？ (дутуу = 不足・〜前)",
+    options: ["арваас арван таван минут дутуу", "арав цаг арван тав", "ес цаг дөчин таван", "арванд арван таван минут"],
+    answer: "арваас арван таван минут дутуу",
+    explanation: "「〜時〜分前」は「目標時(奪格) ＋ 分 ＋ дутуу」で表します。10時(арваас) 15分(арван таван минут) 前(дутуу) です。",
+    rule: "時刻: 〜аас/ээс 〜 минут дутуу (〜時〜分前)"
+  },
+  {
+    id: "num_time_3",
+    category: "time",
+    type: "choice",
+    question: "「今何時ですか？」と尋ねる正しいモンゴル語は？",
+    options: ["Одоо хэдэн цаг болж байна вэ?", "Одоо ямар цаг байна вэ?", "Одоо хэд байна вэ?", "Цаг хэдэн төгрөг вэ?"],
+    answer: "Одоо хэдэн цаг болж байна вэ?",
+    explanation: "時刻を尋ねる定番表現は「Одоо хэдэн цаг болж байна вэ?（いま何時になっていますか？）」です。",
+    rule: "定型句: Одоо хэдэн цаг болж байна вэ?"
+  },
+
+  // --- 4. 日付・曜日 ---
+  {
+    id: "num_date_1",
+    category: "date",
+    type: "choice",
+    question: "「金曜日」を表すモンゴル語はどれ？",
+    options: ["Баасан гараг", "Бямба гараг", "Пүрэв гараг", "Ням гараг"],
+    answer: "Баасан гараг",
+    explanation: "金曜日は「Баасан гараг（または Баасан гариг）」です。月曜から順に: Даваа, Мягмар, Лхагва, Пүрэв, Баасан, Бямба, Ням となります。",
+    rule: "曜日: Даваа(月), Мягмар(火), Лхагва(水), Пүрэв(木), Баасан(金), Бямба(土), Ням(日)"
+  },
+  {
+    id: "num_date_2",
+    category: "date",
+    type: "choice",
+    question: "「7月11日（モンゴル国家祭ナーダム初日）」の日付表記は？",
+    options: ["Долдугаар сарын арван нэгэн", "Долоо сарын арван нэг", "Долоон сар арван нэгэнд", "Долдугаар сар нэгэн"],
+    answer: "Долдугаар сарын арван нэгэн",
+    explanation: "月は序数詞の属格「Долдугаар сарын（第7の月の）」、日にちは「арван нэгэн（11日）」と表します。",
+    rule: "日付: 〜дугаар сарын 〜эн (〜月〜日)"
+  }
+];
+
+
+// === js/data/cultureData.js ===
+// モンゴル文化データ：ことわざ（Зүйр үг）＆ 伝統なぞなぞ（Оньсого）
+const cultureData = {
+  proverbs: [
+    {
+      id: "prov_1",
+      mongolian: "Эх нь хээр алаг бол, хүү нь шийр алаг.",
+      pronunciation: "エフ ニ ヘール アラグ ボル、フー ニ シーラ アラグ",
+      literalJa: "母馬が鹿毛のまだらなら、子馬も足元がまだらになる。",
+      japaneseMeaning: "蛙の子は蛙（血筋や親の性質は子に受け継がれる）",
+      culturalContext: "遊牧民が馬の毛並み（хээр = 鹿毛、алаг = まだら）を見て親子の血統を見分ける生活の知恵から生まれた有名なことわざです。"
+    },
+    {
+      id: "prov_2",
+      mongolian: "Ажил хийвэл ам тосодно.",
+      pronunciation: "アジル キーベル アム トソドノ",
+      literalJa: "仕事をすれば、口のまわりが脂で潤う（肉が食べられる）。",
+      japaneseMeaning: "働かざる者食うべからず / 努力すれば必ず実りがある",
+      culturalContext: "モンゴルでは「口が脂で潤う（ам тосодно）」＝「肉のごちそうをたっぷり食べられる（幸福・富）」の象徴です。"
+    },
+    {
+      id: "prov_3",
+      mongolian: "Дуслыг хураавал далай, дуулсныг хураавал эрдэм.",
+      pronunciation: "ドスリグ フラーバル ダライ、ドールスニグ フラーバル エルデム",
+      literalJa: "雫を集めれば海となり、聞いたことを集めれば学問となる。",
+      japaneseMeaning: "塵も積もれば山となる / 日々の学びが大きな知恵となる",
+      culturalContext: "広大な草原で一滴の水を大切にする心と、人の教えに耳を傾ける謙虚さを説く美しいことわざです。"
+    },
+    {
+      id: "prov_4",
+      mongolian: "Эвт шаазгай буга барина.",
+      pronunciation: "エフト シャーズガイ ブガ バリナ",
+      literalJa: "結束したカササギは、大きな鹿をも捕らえる。",
+      japaneseMeaning: "三人寄れば文殊の知恵 / 団結は力なり",
+      culturalContext: "小鳥のカササギ（шаазгай）でも、群れで団結すれば大きな鹿を倒せるという意味から、部族の結束や協力の重要性を教えます。"
+    },
+    {
+      id: "prov_5",
+      mongolian: "Хүн нэрээрээ, тогос өдөөрөө.",
+      pronunciation: "フン ネレーレエ、トゴス オーデエレーレエ",
+      literalJa: "人は名前（名誉）によって、孔雀は美しい羽によって知られる。",
+      japaneseMeaning: "虎は死して皮を留め、人は死して名を残す / 名誉や品格を重んぜよ",
+      culturalContext: "草原社会では信頼と評判（Нэр хүнд）が命の次に大切とされ、子供に立派な名前を授ける伝統にも通じています。"
+    },
+    {
+      id: "prov_6",
+      mongolian: "Ус үзээгүй байж гутлаа бүү тайл.",
+      pronunciation: "オス ウゼーグイ バイジ グトラー ブー タイル",
+      literalJa: "まだ川の水を見ていないうちに靴を脱ぐな。",
+      japaneseMeaning: "早まるな / ぬか喜びするな / 取り越し苦労をするな",
+      culturalContext: "大自然の中を渡渉（川渡り）する前に慌てて靴を脱ぐ危険を戒める、実体験に基づいた教訓です。"
+    }
+  ],
+
+  riddles: [
+    {
+      id: "rid_1",
+      riddleMn: "Өвс иддэггүй, уул өөд мацдаг хар хонь юу вэ?",
+      riddleJa: "草を食べずに、山（羊の背中）を登っていく黒い羊はな〜んだ？",
+      options: ["Хайч (ハサミ)", "Чоно (オオカミ)", "Хутга (包丁)", "Сам (櫛)"],
+      answer: "Хайч (ハサミ)",
+      explanation: "遊牧民が羊の毛刈りをするとき、黒いハサミが羊の背中（山）を刈り進む様子を黒い羊に見立てた伝統の謎解きです。"
+    },
+    {
+      id: "rid_2",
+      riddleMn: "Хаалгагүй, цонхгүй улаан гэрт суудаг цагаан хоньд юу вэ?",
+      riddleJa: "扉も窓もない赤いゲル（家）に住んでいる、たくさんの白い羊はな〜んだ？",
+      options: ["Шүд (歯)", "Бууз (ボーズ)", "Хуруу (指)", "Өндөг (卵)"],
+      answer: "Шүд (歯)",
+      explanation: "赤いゲル＝「口の中」、そこに並ぶ白い羊たち＝「歯」を表しています。子供たちに大人気の古典的ななぞなぞです！"
+    },
+    {
+      id: "rid_3",
+      riddleMn: "Хоёр ах дүү хамт явдаг ч бие биенээ хэзээ ч харж чаддаггүй юу вэ?",
+      riddleJa: "二人の兄弟がいつも一緒に歩んでいるのに、お互いの顔を一度も見られないものは？",
+      options: ["Нүд (目)", "Гутал (靴)", "Чих (耳)", "Хөл (足)"],
+      answer: "Нүд (目)",
+      explanation: "顔の左右にあって常に一緒に世界を見ているけれど、自分同士は見つめ合えない＝「二つの目」です。"
+    },
+    {
+      id: "rid_4",
+      riddleMn: "Тэнгэрт татсан цагаан хадаг юу вэ?",
+      riddleJa: "夜空に長く引かれた白い絹の布（ハダク）はな〜んだ？",
+      options: ["Сүүн зам (天の川)", "Үүл (雲)", "Солонго (虹)", "Сар (月)"],
+      answer: "Сүүн зам (天の川)",
+      explanation: "モンゴルの満天の星空に帯のように広がる天の川を、もてなしや儀式に用いる青白い絹布「ハダク」に見立てた詩的な謎解きです。"
+    }
+  ]
+};
+
+
+// === js/data/wordFamilyData.js ===
+// 類義語・対義語・語根ファミリー（派生語）学習データ
+const wordFamilyData = {
+  // --- 対義語ペア (Эсрэг утга) ---
+  antonyms: [
+    {
+      id: "ant_1",
+      wordA: "том",
+      meaningA: "大きい",
+      wordB: "жижиг",
+      meaningB: "小さい",
+      exampleA: "том байшин (大きな家)",
+      exampleB: "жижиг шувуу (小さな鳥)"
+    },
+    {
+      id: "ant_2",
+      wordA: "хурдан",
+      meaningA: "速い",
+      wordB: "удаан",
+      meaningB: "遅い",
+      exampleA: "хурдан морь (速い馬)",
+      exampleB: "удаан явах (ゆっくり歩く)"
+    },
+    {
+      id: "ant_3",
+      wordA: "халуун",
+      meaningA: "熱い・暑い",
+      wordB: "хүйтэн",
+      meaningB: "冷たい・寒い",
+      exampleA: "халуун цай (熱いお茶)",
+      exampleB: "хүйтэн салхи (冷たい風)"
+    },
+    {
+      id: "ant_4",
+      wordA: "өндөр",
+      meaningA: "高い",
+      wordB: "намхан",
+      meaningB: "低い",
+      exampleA: "өндөр уул (高い山)",
+      exampleB: "намхан сандал (低い椅子)"
+    },
+    {
+      id: "ant_5",
+      wordA: "үнэтэй",
+      meaningA: "高価な・高い",
+      wordB: "хямд",
+      meaningB: "安い",
+      exampleA: "үнэтэй машин (高い車)",
+      exampleB: "хямд бараа (安い品物)"
+    },
+    {
+      id: "ant_6",
+      wordA: "хүнд",
+      meaningA: "重い",
+      wordB: "хөнгөн",
+      meaningB: "軽い",
+      exampleA: "хүнд ачаа (重い荷物)",
+      exampleB: "хөнгөн хувцас (薄着・軽い服)"
+    },
+    {
+      id: "ant_7",
+      wordA: "шинэ",
+      meaningA: "新しい",
+      wordB: "хуучин",
+      meaningB: "古い",
+      exampleA: "шинэ жил (新年)",
+      exampleB: "хуучин ном (古本)"
+    },
+    {
+      id: "ant_8",
+      wordA: "баярлах",
+      meaningA: "喜ぶ",
+      wordB: "гуних",
+      meaningB: "悲しむ",
+      exampleA: "их баярлаж байна (とても喜んでいる)",
+      exampleB: "бүү гунь (悲しまないで)"
+    }
+  ],
+
+  // --- 類義語ペア (Ойролцоо утга) ---
+  synonyms: [
+    {
+      id: "syn_1",
+      wordA: "сайхан",
+      meaningA: "良い、美しい",
+      wordB: "гоё",
+      meaningB: "綺麗な、素敵な（口語で多用）",
+      nuance: "сайхан は心や風景、味など広範な「良さ・素晴らしさ」、гоё は見た目の美しさやオシャレさを指します。"
+    },
+    {
+      id: "syn_2",
+      wordA: "ажил",
+      meaningA: "仕事・用事",
+      wordB: "хөдөлмөр",
+      meaningB: "労働・勤労",
+      nuance: "ажил は日常のタスクや職業、хөдөлмөр は肉体的・精神的な努力を伴う「労働・働き」を表します。"
+    },
+    {
+      id: "syn_3",
+      wordA: "үнэн",
+      meaningA: "真実・本当",
+      wordB: "бодит",
+      meaningB: "現実・実際",
+      nuance: "үнэн は「嘘偽りがないこと」、бодит は客観的な「実在・現実」を強調します。"
+    }
+  ],
+
+  // --- 語根ファミリー（同一語根からの派生語ツリー） ---
+  families: [
+    {
+      root: "ном",
+      rootMeaning: "本・経典",
+      derivations: [
+        { word: "номын сан", meaning: "図書館 (本＋蔵)" },
+        { word: "номхон", meaning: "おとなしい、従順な (本のように静かな)" },
+        { word: "номтой", meaning: "学問のある、博識な" }
+      ]
+    },
+    {
+      root: "үзэх",
+      rootMeaning: "見る・経験する",
+      derivations: [
+        { word: "үзэсгэлэн", meaning: "展覧会・美しいもの" },
+        { word: "үзэгч", meaning: "観客・視聴者 (-гч = 〜する人)" },
+        { word: "үзэл", meaning: "見解・思想・主義" },
+        { word: "үзүүлэх", meaning: "見せる・示す (使役)" }
+      ]
+    },
+    {
+      root: "гэр",
+      rootMeaning: "家・ゲル",
+      derivations: [
+        { word: "гэр бүл", meaning: "家族・家庭" },
+        { word: "гэрлэх", meaning: "結婚する (所帯を持つ)" },
+        { word: "гэрийн даалгавар", meaning: "宿題 (家庭の課題)" }
+      ]
+    },
+    {
+      root: "хэл",
+      rootMeaning: "舌・言葉・言語",
+      derivations: [
+        { word: "хэлэх", meaning: "言う・話す" },
+        { word: "хэлэлцүүлэг", meaning: "ディスカッション・協議" },
+        { word: "хэлний дүрэм", meaning: "文法 (言語の規則)" }
+      ]
+    }
+  ]
+};
+
+
+// === js/data/expeditionData.js ===
+// ペンギン探検隊（モンゴル名所めぐり旅・コレクション）データ
+const expeditionDestinations = [
+  {
+    id: "ulaanbaatar",
+    nameMn: "Улаанбаатар",
+    nameJa: "ウランバートル（スフバートル広場）",
+    requiredXp: 0,
+    requiredCorrect: 0,
+    badgeIcon: "🏛️",
+    postcardColor: "from-sky-500 to-indigo-600",
+    description: "モンゴル国の首都。中心のスフバートル広場には革命の英雄像とチンギス・ハーン像が堂々と佇んでいます。",
+    highlightMn: "Нийслэл Улаанбаатар хот",
+    souvenir: "首都の記念バッジ 🎖️",
+    funFact: "世界で最も平均気温が低い首都として知られていますが、夏は爽やかでカフェや博物館巡りが楽しめます。"
+  },
+  {
+    id: "terelj",
+    nameMn: "Тэрэлж",
+    nameJa: "テレルジ国立公園（亀石と奇岩大草原）",
+    requiredXp: 150,
+    requiredCorrect: 15,
+    badgeIcon: "🐢",
+    postcardColor: "from-emerald-600 to-teal-700",
+    description: "ウランバートル近郊の大自然。有名な「亀石（Мэлхий хад）」や高原の花畑、ゲルキャンプが広がります。",
+    highlightMn: "Мэлхий хад ба байгалийн цогцолборт газар",
+    souvenir: "亀石のミニチュア彫刻 🗿",
+    funFact: "何億年もの風化でできた巨大な亀石は、頭から甲羅まで本物の亀そっくりで、旅の安全を守るパワースポットです。"
+  },
+  {
+    id: "tsonjin_boldog",
+    nameMn: "Чингис хааны морьт хөшөө",
+    nameJa: "チンギス・ハーン巨大騎馬像（ツォンジン・ボルドグ）",
+    requiredXp: 350,
+    requiredCorrect: 35,
+    badgeIcon: "🐎",
+    postcardColor: "from-amber-500 to-orange-600",
+    description: "大草原に突如現れる、高さ40メートルの銀色に輝く世界最大のチンギス・ハーン騎馬像。",
+    highlightMn: "Дэлхийн хамгийн том морьт хөшөө",
+    souvenir: "黄金の馬頭琴キーホルダー 🎻",
+    funFact: "馬のたてがみ部分までエレベーターで登ることができ、馬の頭の上から見渡す果てしない大草原のパノラマは圧巻です！"
+  },
+  {
+    id: "kharkhorin",
+    nameMn: "Хархорин",
+    nameJa: "カラコルム（古都とエルデネ・ゾー寺院）",
+    requiredXp: 600,
+    requiredCorrect: 60,
+    badgeIcon: "🕌",
+    postcardColor: "from-purple-600 to-pink-700",
+    description: "かつて世界を制覇したモンゴル帝国の首都。108の仏塔に囲まれた最古の仏教寺院エルデネ・ゾーが残ります。",
+    highlightMn: "Эртний Монгол улсын нийслэл",
+    souvenir: "108仏塔の記念お守り 📿",
+    funFact: "エルデネ・ゾーの境内には石造りの巨大な亀の台座があり、カラコルムの町の四方を守っていたと言われています。"
+  },
+  {
+    id: "khuvsgul",
+    nameMn: "Хөвсгөл нуур",
+    nameJa: "フブスグル湖（アジアのスイス・青い真珠）",
+    requiredXp: 1000,
+    requiredCorrect: 100,
+    badgeIcon: "🌊",
+    postcardColor: "from-cyan-500 to-blue-700",
+    description: "ロシア国境近くに広がる、モンゴル最大の淡水湖。クリスタルブルーに輝く透明度は世界屈指。",
+    highlightMn: "Монголын хөх сувд",
+    souvenir: "青い真珠のしずくボトル 💧",
+    funFact: "冬は湖全体が1メートル以上の厚い氷に覆われ、氷上を馬そりや車が走る「アイスフェスティバル」が開催されます。"
+  },
+  {
+    id: "gobi",
+    nameMn: "Говь цөл",
+    nameJa: "南ゴビ砂漠（恐竜の化石と鳴く砂丘）",
+    requiredXp: 1500,
+    requiredCorrect: 150,
+    badgeIcon: "🐪",
+    postcardColor: "from-amber-600 to-yellow-700",
+    description: "世界で初めて恐竜の卵の化石が発見されたバヤンザグ（燃える崖）と、風で歌う巨大砂丘ホンゴル砂丘。",
+    highlightMn: "Хонгорын элс ба үлэг гүрвэлийн өлгий",
+    souvenir: "二コブラクダのぬいぐるみ 🐫",
+    funFact: "風が吹くとパイプオルガンのように鳴り響く「ホンゴル砂丘」と、星空の美しさは息を呑むほどです。"
+  },
+  {
+    id: "altai",
+    nameMn: "Алтай таван богд",
+    nameJa: "アルタイ山脈・タワンボグド（最高峰と鷹匠）",
+    requiredXp: 2200,
+    requiredCorrect: 220,
+    badgeIcon: "🦅",
+    postcardColor: "from-slate-700 to-stone-900",
+    description: "モンゴル最高峰（4,374m）。カザフ族の伝統であるイヌワシを使った鷹匠（Бүргэдчин）が暮らす神秘の山岳地帯。",
+    highlightMn: "Монгол улсын ноён оргил",
+    souvenir: "イヌワシの羽のブローチ 🪶",
+    funFact: "毎年秋には鷹匠たちが伝統衣装と馬を従えて集まる「ゴールデン・イーグル・フェスティバル」が開かれます。"
+  }
+];
+
+
 // === js/services/srs.js ===
 // 間隔反復学習（Spaced Repetition System / 忘却曲線）エンジン
 // SuperMemo SM-2 および FSRS (Free Spaced Repetition Scheduler) の原理に基づく実装
@@ -26095,6 +26888,12 @@ class Navbar {
       { id: 'japanese_test', label: '日本語訳テスト', icon: '🇯🇵' },
       { id: 'grammar_test', label: '文法テスト', icon: '📐' },
       { id: 'declension_test', label: '格変化・活用', icon: '⚡' },
+      { id: 'roleplay', label: '会話ロールプレイ', icon: '🏕️' },
+      { id: 'number_master', label: '数字マスター', icon: '🔢' },
+      { id: 'shadowing_dictation', label: 'シャドーイング', icon: '🎙️' },
+      { id: 'culture', label: 'ことわざ・なぞなぞ', icon: '🐴' },
+      { id: 'word_family', label: '語根・対義語', icon: '🌳' },
+      { id: 'expedition', label: 'ペンギン探検隊', icon: '🗺️' },
       { id: 'listening_test', label: 'リスニング', icon: '🎧' },
       { id: 'reading_test', label: '読解テスト', icon: '📖' },
       { id: 'typing_test', label: 'タイピング', icon: '⌨️' },
@@ -26171,7 +26970,7 @@ class Navbar {
 
           <!-- デスクトップ用タブバー -->
           <div class="hidden md:block max-w-6xl mx-auto px-4 sm:px-6">
-            <nav class="flex space-x-1 border-t border-slate-100 pt-1 pb-1">
+            <nav class="flex space-x-1 border-t border-slate-100 pt-1 pb-1 overflow-x-auto no-scrollbar scroll-smooth">
               ${tabs.map(t => {
                 const isActive = this.currentTab === t.id;
                 return `
@@ -27005,6 +27804,150 @@ class HomeComponent {
               </div>
               <div class="mt-4 pt-3 border-t border-cyan-200/60 flex items-center justify-between text-xs font-black text-cyan-800">
                 <span>発音特訓を開始</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- 会話ロールプレイ（実践対話モード） -->
+            <div class="bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-emerald-500/15 rounded-xl p-5 border-2 border-amber-500 hover:border-amber-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="roleplay">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-emerald-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🏕️
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-600 text-white shadow-2xs">
+                    新モード ⚡ 実践対話
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-amber-700 transition-colors flex items-center gap-1.5">
+                  会話ロールプレイ
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  ゲル訪問・レストラン・ナラントール市場・タクシー道案内！リアルな選択肢とネイティブ音声で実践的な会話力を養う！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-between text-xs font-black text-amber-800">
+                <span>対話を始める</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- 数字・金額・時間スピードマスター -->
+            <div class="bg-gradient-to-br from-blue-500/15 via-indigo-500/10 to-sky-500/15 rounded-xl p-5 border-2 border-blue-500 hover:border-blue-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="number_master">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🔢
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-blue-600 text-white shadow-2xs">
+                    新モード ⚡ 瞬発力
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-blue-700 transition-colors flex items-center gap-1.5">
+                  数字・金額・時間マスター
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  「гурав / гурван」の接続形使い分け、トゥグルグの金額、時計の「хагас / дутуу」、日付・曜日をタイムアタック特訓！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-blue-200/60 flex items-center justify-between text-xs font-black text-blue-800">
+                <span>数字特訓を開始</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- シャドーイング ＆ ディクテーション -->
+            <div class="bg-gradient-to-br from-rose-500/15 via-pink-500/10 to-purple-500/15 rounded-xl p-5 border-2 border-rose-500 hover:border-rose-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="shadowing_dictation">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-pink-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🎙️
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-rose-600 text-white shadow-2xs">
+                    新モード ⚡ 聴覚＆打鍵
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-rose-700 transition-colors flex items-center gap-1.5">
+                  シャドーイング ＆ ディクテーション
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  0.75倍速／等速ネイティブ音声を聴いてカラオケ式追唱 ＆ キリル文字で耳取り書き取り！正解率自動採点。
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-rose-200/60 flex items-center justify-between text-xs font-black text-rose-800">
+                <span>特訓を開始</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- ことわざ ＆ 伝統なぞなぞ -->
+            <div class="bg-gradient-to-br from-amber-600/15 via-yellow-500/10 to-orange-500/15 rounded-xl p-5 border-2 border-amber-600 hover:border-amber-700 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="culture">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 to-yellow-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🐴
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-700 text-white shadow-2xs">
+                    新モード ⚡ 伝統知恵
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-amber-800 transition-colors flex items-center gap-1.5">
+                  ことわざ ＆ 伝統なぞなぞ
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  「馬には鞭、人には言葉」。遊牧民の暮らしと知恵が詰まった伝統ことわざ（Зүйр үг）とクイズ形式のなぞなぞ（Оньсого）！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-between text-xs font-black text-amber-800">
+                <span>知恵を学ぶ</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- 語根ファミリー ＆ 対義語 -->
+            <div class="bg-gradient-to-br from-emerald-600/15 via-green-500/10 to-teal-500/15 rounded-xl p-5 border-2 border-emerald-600 hover:border-emerald-700 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="word_family">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-green-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🌳
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-700 text-white shadow-2xs">
+                    新モード ⚡ 語彙ツリー
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-emerald-800 transition-colors flex items-center gap-1.5">
+                  語根ファミリー ＆ 対義語
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  語根「үз- (見る)」から「үзэх, үзэсгэлэн, үзэгч」へ広がる派生語ツリーや対義語・類義語のニュアンス比較で語彙を一気に倍増！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-emerald-200/60 flex items-center justify-between text-xs font-black text-emerald-800">
+                <span>派生語を広げる</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- ペンギン探検隊（モンゴル名所めぐり旅） -->
+            <div class="bg-gradient-to-br from-cyan-600/15 via-sky-500/10 to-blue-600/15 rounded-xl p-5 border-2 border-cyan-600 hover:border-cyan-700 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="expedition">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🗺️
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-cyan-700 text-white shadow-2xs">
+                    新モード ⚡ XP連動冒険
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-cyan-800 transition-colors flex items-center gap-1.5">
+                  ペンギン探検隊（名所めぐり）
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  ウランバートルからフブスグル湖・ゴビ砂漠・アルタイ山脈へ！学習で貯めたXPで名所を巡り、記念絵はがきとお土産を集めよう！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-cyan-200/60 flex items-center justify-between text-xs font-black text-cyan-800">
+                <span>探検に出発</span>
                 <span class="group-hover:translate-x-1 transition-transform">→</span>
               </div>
             </div>
@@ -37023,6 +37966,1441 @@ class PronunciationTestComponent {
 }
 
 
+// === js/components/RoleplayTest.js ===
+// 日常会話・旅行ロールプレイ対話コンポーネント
+
+
+
+
+
+class RoleplayComponent {
+  static state = {
+    view: 'select', // 'select' | 'dialogue' | 'result'
+    currentScenario: null,
+    currentStepIndex: 0,
+    selectedOption: null,
+    score: 0,
+    history: []
+  };
+
+  static render(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+
+    if (this.state.view === 'select') {
+      this.renderSelect();
+    } else if (this.state.view === 'dialogue') {
+      this.renderDialogue();
+    } else if (this.state.view === 'result') {
+      this.renderResult();
+    }
+  }
+
+  // 1. シナリオ選択画面
+  static renderSelect() {
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-3xl mx-auto px-4 py-4 space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl p-2 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-xs">🏕️</span>
+            <div>
+              <h2 class="text-lg font-bold text-slate-800">日常会話・旅行ロールプレイ</h2>
+              <p class="text-xs text-slate-500">リアルな場面を想定したモンゴル語対話シミュレーション</p>
+            </div>
+          </div>
+          <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
+            ✕ ホームへ
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          ${roleplayScenarios.map(sc => `
+            <div class="scenario-card bg-white rounded-2xl p-5 border border-slate-200 hover:border-amber-500 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-id="${sc.id}">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-3xl">${sc.icon}</span>
+                  <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                    全${sc.steps.length}ラリー
+                  </span>
+                </div>
+                <h3 class="text-base font-extrabold text-slate-900 group-hover:text-amber-700 transition-colors">
+                  ${sc.title}
+                </h3>
+                <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+                  ${sc.description}
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-amber-700">
+                <span>会話を始める</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    this.container.querySelector('#btn-back-home').addEventListener('click', () => {
+      if (this.onNavigate) this.onNavigate('home');
+    });
+
+    this.container.querySelectorAll('.scenario-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.id;
+        const sc = roleplayScenarios.find(s => s.id === id);
+        if (sc) this.startScenario(sc);
+      });
+    });
+  }
+
+  static startScenario(sc) {
+    this.state.currentScenario = sc;
+    this.state.currentStepIndex = 0;
+    this.state.selectedOption = null;
+    this.state.score = 0;
+    this.state.history = [];
+    this.state.view = 'dialogue';
+    this.renderDialogue();
+  }
+
+  // 2. 対話実行画面
+  static renderDialogue() {
+    const sc = this.state.currentScenario;
+    const step = sc.steps[this.state.currentStepIndex];
+    const total = sc.steps.length;
+    const progress = Math.round(((this.state.currentStepIndex + 1) / total) * 100);
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-4 space-y-4">
+        <!-- ヘッダー -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">${sc.icon}</span>
+            <span class="font-bold text-sm text-slate-800">${sc.title}</span>
+            <span class="text-xs text-slate-400">(${this.state.currentStepIndex + 1}/${total})</span>
+          </div>
+          <button type="button" id="btn-quit-dialogue" class="text-xs text-slate-500 hover:text-slate-800">
+            中断する ✕
+          </button>
+        </div>
+
+        <!-- プログレスバー -->
+        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+          <div class="bg-amber-500 h-full transition-all duration-300" style="width: ${progress}%"></div>
+        </div>
+
+        <!-- 場面説明 -->
+        <div class="bg-amber-50/80 p-3 rounded-xl border border-amber-200 text-xs text-amber-950 flex items-center gap-2">
+          <span>🎬</span>
+          <span>${sc.initialPrompt}</span>
+        </div>
+
+        <!-- 相手の発言（吹き出し） -->
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${sc.character.avatar}</span>
+              <span class="font-bold text-xs text-slate-700">${sc.character.name}</span>
+            </div>
+            <button type="button" id="btn-play-npc" class="text-xs px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold rounded-lg border border-amber-200 flex items-center gap-1">
+              <span>🔊</span> 発音を聞く
+            </button>
+          </div>
+          <div class="text-base sm:text-lg font-black text-slate-900 cyrillic-text pt-1">
+            ${step.npcText}
+          </div>
+          <div class="text-xs text-slate-500">
+            ${step.npcMeaning}
+          </div>
+        </div>
+
+        <!-- 選択肢リスト（未回答時） または フィードバック（回答後） -->
+        ${!this.state.selectedOption ? `
+          <div class="space-y-2.5">
+            <div class="text-xs font-bold text-slate-600 flex items-center gap-1">
+              <span>💬</span> あなたの返答を選んでください：
+            </div>
+            ${step.options.map((opt, idx) => `
+              <button type="button" class="btn-roleplay-choice w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-amber-500 hover:bg-amber-50/40 bg-white transition-all space-y-1 group" data-idx="${idx}">
+                <div class="font-bold text-sm text-slate-900 cyrillic-text group-hover:text-amber-800">
+                  ${opt.text}
+                </div>
+                <div class="text-xs text-slate-500">
+                  ${opt.meaning}
+                </div>
+              </button>
+            `).join('')}
+          </div>
+        ` : `
+          <!-- 回答後フィードバック -->
+          <div class="bg-white rounded-2xl p-4 border-2 ${this.state.selectedOption.isBest ? 'border-emerald-400 bg-emerald-50/20' : 'border-amber-400 bg-amber-50/20'} shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black px-2.5 py-0.5 rounded-full ${this.state.selectedOption.isBest ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white'}">
+                ${this.state.selectedOption.isBest ? '💮 最高の返答！ (+10点)' : '💡 アドバイス (+7点)'}
+              </span>
+              <button type="button" id="btn-play-user-choice" class="text-xs px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-lg border border-slate-200 flex items-center gap-1">
+                <span>🔊</span> 自分の返答を聞く
+              </button>
+            </div>
+            <div class="font-bold text-sm text-slate-900 cyrillic-text">
+              あなた：「${this.state.selectedOption.text}」
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed bg-white/80 p-2.5 rounded-lg border border-slate-200">
+              ${this.state.selectedOption.feedback}
+            </p>
+            <button type="button" id="btn-next-step" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1">
+              <span>次の会話へ</span> <span>→</span>
+            </button>
+          </div>
+        `}
+      </div>
+    `;
+
+    // イベントリスナー
+    this.container.querySelector('#btn-quit-dialogue').addEventListener('click', () => {
+      this.state.view = 'select';
+      this.renderSelect();
+    });
+
+    const playNpcBtn = this.container.querySelector('#btn-play-npc');
+    if (playNpcBtn) {
+      playNpcBtn.addEventListener('click', () => {
+        SpeechService.speak(step.npcText);
+      });
+    }
+
+    if (!this.state.selectedOption) {
+      this.container.querySelectorAll('.btn-roleplay-choice').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx, 10);
+          const opt = step.options[idx];
+          this.state.selectedOption = opt;
+          this.state.score += opt.score;
+          if (opt.isBest) {
+            SoundEffects.playCorrect();
+          } else {
+            SoundEffects.playWrong();
+          }
+          this.renderDialogue();
+        });
+      });
+    } else {
+      const playUserBtn = this.container.querySelector('#btn-play-user-choice');
+      if (playUserBtn) {
+        playUserBtn.addEventListener('click', () => {
+          SpeechService.speak(this.state.selectedOption.text);
+        });
+      }
+
+      this.container.querySelector('#btn-next-step').addEventListener('click', () => {
+        if (this.state.currentStepIndex + 1 < sc.steps.length) {
+          this.state.currentStepIndex++;
+          this.state.selectedOption = null;
+          this.renderDialogue();
+        } else {
+          // 終了
+          GamificationService.addXp(this.state.score * 2);
+          SoundEffects.playLevelUp();
+          this.state.view = 'result';
+          this.renderResult();
+        }
+      });
+    }
+  }
+
+  // 3. 結果画面
+  static renderResult() {
+    const sc = this.state.currentScenario;
+    const maxScore = sc.steps.length * 10;
+    const percent = Math.round((this.state.score / maxScore) * 100);
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-md mx-auto px-4 py-8 text-center space-y-5">
+        <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center text-4xl shadow-lg">
+          🎉
+        </div>
+
+        <div class="space-y-1">
+          <h2 class="text-xl font-black text-slate-900">${sc.title} 完了！</h2>
+          <p class="text-xs text-slate-500">対話シミュレーションのスコア結果</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+          <div class="text-3xl font-black text-amber-600">
+            ${this.state.score} <span class="text-sm font-normal text-slate-400">/ ${maxScore} 点</span>
+          </div>
+          <div class="text-xs font-bold text-slate-700">
+            ${percent >= 90 ? '🌟 会話マスター！遊牧民ともすぐに仲良くなれます！' : percent >= 70 ? '👍 意思疎通バッチリ！堂々と話してみましょう！' : '💪 もう一度練習して、文化に合った表現をマスターしよう！'}
+          </div>
+          <div class="text-[11px] text-emerald-700 bg-emerald-50 py-1 px-3 rounded-full font-bold inline-block">
+            +${this.state.score * 2} XP 獲得！
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <button type="button" id="btn-retry-roleplay" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all">
+            もう一度挑戦
+          </button>
+          <button type="button" id="btn-finish-roleplay" class="flex-1 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs shadow-xs transition-all">
+            シナリオ一覧へ
+          </button>
+        </div>
+      </div>
+    `;
+
+    this.container.querySelector('#btn-retry-roleplay').addEventListener('click', () => {
+      this.startScenario(sc);
+    });
+
+    this.container.querySelector('#btn-finish-roleplay').addEventListener('click', () => {
+      this.state.view = 'select';
+      this.renderSelect();
+    });
+  }
+}
+
+
+// === js/components/NumberMasterTest.js ===
+// 数字・金額・時刻・日付スピードマスターコンポーネント
+
+
+
+
+
+class NumberMasterComponent {
+  static state = {
+    view: 'settings', // 'settings' | 'testing' | 'result'
+    category: 'all',
+    quizzes: [],
+    currentIndex: 0,
+    currentQuiz: null,
+    shuffledOptions: [],
+    selectedOption: null,
+    isCorrect: false,
+    score: 0,
+    results: []
+  };
+
+  static render(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+
+    if (this.state.view === 'settings') {
+      this.renderSettings();
+    } else if (this.state.view === 'testing') {
+      this.renderTesting();
+    } else if (this.state.view === 'result') {
+      this.renderResult();
+    }
+  }
+
+  // 1. 設定画面
+  static renderSettings() {
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-xl mx-auto px-4 py-4 space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl p-2 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 text-white shadow-xs">🔢</span>
+            <div>
+              <h2 class="text-lg font-bold text-slate-800">数字・金額・時間スピードマスター</h2>
+              <p class="text-xs text-slate-500">接続形（гурван）、トゥグルグ（₮）、時刻、曜日特訓</p>
+            </div>
+          </div>
+          <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
+            ✕ ホームへ
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-2">特訓カテゴリーを選択</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              ${[
+                { id: 'all', label: '⚡ すべての数字問題', desc: '全ジャンルからランダム出題' },
+                { id: 'connecting', label: '🔗 名詞接続形 (гурван)', desc: '名詞の前に付くときの変化特訓' },
+                { id: 'currency', label: '💰 金額・トゥグルグ (₮)', desc: '買い物・万・億・桁数の計算' },
+                { id: 'time', label: '⏰ 時刻・時計の読み方', desc: '〜時半、〜時〜分前' },
+                { id: 'date', label: '📅 日付・曜日・月日', desc: '曜日名、ナショナルデー等' }
+              ].map(cat => `
+                <label class="flex items-start gap-2.5 p-3 rounded-xl border cursor-pointer hover:bg-slate-50 transition-all ${
+                  this.state.category === cat.id ? 'border-cyan-600 bg-cyan-50/60 font-bold text-cyan-950 shadow-2xs' : 'border-slate-200 text-slate-700'
+                }">
+                  <input type="radio" name="numCat" value="${cat.id}" ${this.state.category === cat.id ? 'checked' : ''} class="hidden">
+                  <div>
+                    <div>${cat.label}</div>
+                    <div class="text-[11px] font-normal text-slate-500 mt-0.5">${cat.desc}</div>
+                  </div>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+
+          <button type="button" id="btn-start-number-quiz" class="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm flex items-center justify-center gap-2">
+            <span>⚡</span> スピード特訓を開始する
+          </button>
+        </div>
+      </div>
+    `;
+
+    this.container.querySelector('#btn-back-home').addEventListener('click', () => {
+      if (this.onNavigate) this.onNavigate('home');
+    });
+
+    this.container.querySelectorAll('input[name="numCat"]').forEach(r => {
+      r.addEventListener('change', (e) => {
+        this.state.category = e.target.value;
+        this.renderSettings();
+      });
+    });
+
+    this.container.querySelector('#btn-start-number-quiz').addEventListener('click', () => {
+      this.startQuiz();
+    });
+  }
+
+  static startQuiz() {
+    let list = [...numberQuizzes];
+    if (this.state.category !== 'all') {
+      list = list.filter(q => q.category === this.state.category);
+    }
+    this.state.quizzes = shuffleArray(list);
+    this.state.currentIndex = 0;
+    this.state.score = 0;
+    this.state.results = [];
+    this.state.view = 'testing';
+    this.loadQuiz(0);
+  }
+
+  static loadQuiz(index) {
+    this.state.currentIndex = index;
+    const q = this.state.quizzes[index];
+    this.state.currentQuiz = q;
+    this.state.shuffledOptions = shuffleArray([...q.options]);
+    this.state.selectedOption = null;
+    this.state.isCorrect = false;
+    this.renderTesting();
+  }
+
+  // 2. 出題画面
+  static renderTesting() {
+    const q = this.state.currentQuiz;
+    const idx = this.state.currentIndex;
+    const total = this.state.quizzes.length;
+    const progress = Math.round(((idx) / total) * 100);
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-xl mx-auto px-4 py-4 space-y-4">
+        <!-- 上部ヘッダー -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🔢</span>
+            <span class="font-bold text-xs text-slate-500">問題 ${idx + 1} / ${total}</span>
+          </div>
+          <button type="button" id="btn-quit-number" class="text-xs text-slate-500 hover:text-slate-800">
+            中断する ✕
+          </button>
+        </div>
+
+        <!-- プログレスバー -->
+        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+          <div class="bg-cyan-600 h-full transition-all duration-300" style="width: ${progress}%"></div>
+        </div>
+
+        <!-- 問題カード -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-2 text-center">
+          <div class="text-xs font-bold text-cyan-700 bg-cyan-50 px-2.5 py-0.5 rounded-full inline-block">
+            ${q.category === 'connecting' ? '名詞接続形' : q.category === 'currency' ? '金額（トゥグルグ）' : q.category === 'time' ? '時刻・時計' : '日付・カレンダー'}
+          </div>
+          <h3 class="text-base sm:text-lg font-black text-slate-900 leading-snug">
+            ${q.question}
+          </h3>
+        </div>
+
+        <!-- 4択選択肢 -->
+        <div class="grid grid-cols-1 gap-2.5">
+          ${this.state.shuffledOptions.map((opt, i) => {
+            let style = 'bg-white border-slate-200 hover:border-cyan-500 hover:bg-cyan-50/30 text-slate-900';
+            if (this.state.selectedOption) {
+              if (opt === q.answer) {
+                style = 'bg-emerald-50 border-emerald-500 text-emerald-900 font-black ring-2 ring-emerald-300';
+              } else if (opt === this.state.selectedOption) {
+                style = 'bg-rose-50 border-rose-400 text-rose-900';
+              } else {
+                style = 'bg-slate-50 border-slate-200 text-slate-400 opacity-60';
+              }
+            }
+            return `
+              <button type="button" class="btn-num-choice p-3.5 rounded-xl border text-left text-sm font-bold cyrillic-text transition-all flex items-center justify-between ${style}" data-val="${opt}" ${this.state.selectedOption ? 'disabled' : ''}>
+                <span>${opt}</span>
+                <button type="button" class="btn-opt-speak text-xs text-slate-400 hover:text-cyan-700 p-1" data-word="${opt}" title="発音を聞く">🔊</button>
+              </button>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- 回答後の解説・次へボタン -->
+        ${this.state.selectedOption ? `
+          <div class="bg-white rounded-2xl p-4 border-2 ${this.state.isCorrect ? 'border-emerald-400 bg-emerald-50/20' : 'border-rose-400 bg-rose-50/20'} shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black px-2.5 py-0.5 rounded-full ${this.state.isCorrect ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'}">
+                ${this.state.isCorrect ? '💮 正解！' : '❌ 不正解...'}
+              </span>
+              <button type="button" id="btn-play-answer-audio" class="text-xs px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-lg border border-slate-200 flex items-center gap-1">
+                <span>🔊</span> 正解の発音
+              </button>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed bg-white/80 p-2.5 rounded-lg border border-slate-200">
+              ${q.explanation}
+            </p>
+            <div class="text-[11px] font-bold text-slate-500">
+              📌 ポイント: ${q.rule}
+            </div>
+            <button type="button" id="btn-next-num-quiz" class="w-full py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1">
+              <span>次の問題へ</span> <span>→</span>
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    this.container.querySelector('#btn-quit-number').addEventListener('click', () => {
+      this.state.view = 'settings';
+      this.renderSettings();
+    });
+
+    // 選択肢読み上げ
+    this.container.querySelectorAll('.btn-opt-speak').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        SpeechService.speak(btn.dataset.word);
+      });
+    });
+
+    if (!this.state.selectedOption) {
+      this.container.querySelectorAll('.btn-num-choice').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const val = btn.dataset.val;
+          const isOk = val === q.answer;
+          this.state.selectedOption = val;
+          this.state.isCorrect = isOk;
+          if (isOk) {
+            this.state.score++;
+            SoundEffects.playCorrect();
+          } else {
+            SoundEffects.playWrong();
+          }
+          this.state.results.push({ quiz: q, userAns: val, isOk });
+          this.renderTesting();
+        });
+      });
+    } else {
+      const playAnsBtn = this.container.querySelector('#btn-play-answer-audio');
+      if (playAnsBtn) {
+        playAnsBtn.addEventListener('click', () => {
+          SpeechService.speak(q.answer);
+        });
+      }
+
+      this.container.querySelector('#btn-next-num-quiz').addEventListener('click', () => {
+        if (this.state.currentIndex + 1 < this.state.quizzes.length) {
+          this.loadQuiz(this.state.currentIndex + 1);
+        } else {
+          GamificationService.addXp(this.state.score * 5);
+          SoundEffects.playLevelUp();
+          this.state.view = 'result';
+          this.renderResult();
+        }
+      });
+    }
+  }
+
+  // 3. 結果画面
+  static renderResult() {
+    const total = this.state.quizzes.length;
+    const score = this.state.score;
+    const percent = Math.round((score / total) * 100);
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-md mx-auto px-4 py-8 text-center space-y-5">
+        <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-cyan-600 to-blue-600 text-white flex items-center justify-center text-4xl shadow-lg">
+          🔢
+        </div>
+
+        <div class="space-y-1">
+          <h2 class="text-xl font-black text-slate-900">数字マスター特訓 終了！</h2>
+          <p class="text-xs text-slate-500">接続形・金額・時刻・日付のテスト結果</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+          <div class="text-3xl font-black text-cyan-600">
+            ${score} <span class="text-sm font-normal text-slate-400">/ ${total} 問正解 (${percent}%)</span>
+          </div>
+          <div class="text-xs font-bold text-slate-700">
+            ${percent >= 90 ? '🌟 完璧な計算力！モンゴルの買い物も時間管理もバッチリ！' : percent >= 70 ? '👍 よく出来ました！接続形（-н）も身についています！' : '💪 間違えたルールを復習して、もう一度スピード特訓しよう！'}
+          </div>
+          <div class="text-[11px] text-emerald-700 bg-emerald-50 py-1 px-3 rounded-full font-bold inline-block">
+            +${score * 5} XP 獲得！
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <button type="button" id="btn-retry-num" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all">
+            もう一度挑戦
+          </button>
+          <button type="button" id="btn-finish-num" class="flex-1 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-xl text-xs shadow-xs transition-all">
+            カテゴリー選択へ
+          </button>
+        </div>
+      </div>
+    `;
+
+    this.container.querySelector('#btn-retry-num').addEventListener('click', () => {
+      this.startQuiz();
+    });
+
+    this.container.querySelector('#btn-finish-num').addEventListener('click', () => {
+      this.state.view = 'settings';
+      this.renderSettings();
+    });
+  }
+}
+
+
+// === js/components/ShadowingDictationTest.js ===
+// シャドーイング ＆ ディクテーション（聞き取り書き取り）コンポーネント
+
+
+
+
+
+
+class ShadowingDictationComponent {
+  static state = {
+    mode: 'dictation', // 'dictation' | 'shadowing'
+    sentences: [],
+    currentIndex: 0,
+    currentSentence: null,
+    userInput: '',
+    isChecked: false,
+    score: 0,
+    accuracy: 0
+  };
+
+  static render(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+
+    if (!this.state.currentSentence) {
+      this.state.sentences = [...typingSentences];
+      this.loadSentence(0);
+    }
+
+    const s = this.state.currentSentence;
+    const idx = this.state.currentIndex;
+    const total = this.state.sentences.length;
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-4 space-y-4">
+        <!-- ヘッダー -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl p-2 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white shadow-xs">🎙️</span>
+            <div>
+              <h2 class="text-lg font-bold text-slate-800">シャドーイング ＆ ディクテーション</h2>
+              <p class="text-xs text-slate-500">ネイティブ音声を聴いて発音練習 ＆ 耳で聞き取りキリル文字書き取り</p>
+            </div>
+          </div>
+          <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
+            ✕ ホームへ
+          </button>
+        </div>
+
+        <!-- モード切り替えタブ -->
+        <div class="flex gap-2 border-b border-slate-200 pb-2">
+          <button type="button" class="btn-submode px-4 py-2 rounded-xl text-xs font-black transition-all ${
+            this.state.mode === 'dictation' ? 'bg-purple-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }" data-mode="dictation">
+            ✍️ ディクテーション（耳で聴いて入力）
+          </button>
+          <button type="button" class="btn-submode px-4 py-2 rounded-xl text-xs font-black transition-all ${
+            this.state.mode === 'shadowing' ? 'bg-purple-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }" data-mode="shadowing">
+            🗣️ シャドーイング（声に出して追唱）
+          </button>
+        </div>
+
+        <!-- メイン学習カード -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-200">
+              文 ${idx + 1} / ${total}
+            </span>
+            <div class="flex gap-2">
+              <button type="button" id="btn-play-normal" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1">
+                <span>🔊</span> 通常速
+              </button>
+              <button type="button" id="btn-play-slow" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold flex items-center gap-1">
+                <span>🐢</span> 0.75x ゆっくり
+              </button>
+            </div>
+          </div>
+
+          <!-- 日本語の文意 -->
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-center">
+            <div class="text-[11px] font-bold text-slate-400 mb-0.5">日本語訳</div>
+            <div class="text-sm sm:text-base font-bold text-slate-800">
+              ${s.japanese}
+            </div>
+          </div>
+
+          ${this.state.mode === 'shadowing' ? `
+            <!-- シャドーイングモード: テキスト表示と音読プロンプト -->
+            <div class="p-5 rounded-2xl bg-purple-50/50 border border-purple-200 text-center space-y-3">
+              <div class="text-lg sm:text-xl font-black text-slate-900 cyrillic-text">
+                ${s.mongolian}
+              </div>
+              <div class="text-xs text-purple-800 font-medium">
+                💡 音声のすぐ後ろにピッタリくっついて、リズムとイントネーションを真似しながら声に出してみましょう！
+              </div>
+            </div>
+          ` : `
+            <!-- ディクテーションモード: 入力エリア -->
+            <div class="space-y-2">
+              <label class="block text-xs font-bold text-slate-700">
+                聴こえたモンゴル語を一文まるごと入力してください：
+              </label>
+              <input type="text" id="dictation-input" value="${this.state.userInput}" placeholder="ここに入力..." class="w-full text-base sm:text-lg p-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:border-purple-600 cyrillic-text bg-white" ${this.state.isChecked ? 'readonly' : ''}>
+              
+              <!-- 特有キリル文字ボタンバー -->
+              <div class="flex flex-wrap items-center gap-1 pt-1">
+                <span class="text-[10px] text-slate-400 font-bold mr-1">特有文字:</span>
+                ${['ө', 'ү', 'Ө', 'Ү', 'ь', 'ъ', 'э', 'ы', 'я', 'ё', 'ю'].map(ch => `
+                  <button type="button" class="btn-char-input px-2 py-1 bg-slate-100 hover:bg-purple-100 active:bg-purple-200 text-slate-800 rounded font-bold text-xs border border-slate-200" data-char="${ch}">
+                    ${ch}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          `}
+
+          <!-- 回答採点結果表示 -->
+          ${this.state.isChecked && this.state.mode === 'dictation' ? `
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black ${this.state.accuracy >= 90 ? 'text-emerald-700' : 'text-amber-700'}">
+                  一致度: ${this.state.accuracy}% ${this.state.accuracy >= 90 ? '💮 素晴らしい聞き取り！' : '💡 おしい！'}
+                </span>
+                <span class="text-xs text-slate-400 font-mono">正解の文：</span>
+              </div>
+              <div class="text-base font-black text-slate-900 cyrillic-text">
+                ${s.mongolian}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- アクションボタン -->
+          <div class="pt-2">
+            ${this.state.mode === 'dictation' && !this.state.isChecked ? `
+              <button type="button" id="btn-check-dictation" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm">
+                書き取りを判定する 🎯
+              </button>
+            ` : `
+              <button type="button" id="btn-next-sentence" class="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm flex items-center justify-center gap-1">
+                <span>次の文へ進む</span> <span>→</span>
+              </button>
+            `}
+          </div>
+        </div>
+      </div>
+    `;
+
+    // イベントリスナー
+    this.container.querySelector('#btn-back-home').addEventListener('click', () => {
+      if (this.onNavigate) this.onNavigate('home');
+    });
+
+    this.container.querySelectorAll('.btn-submode').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.mode = btn.dataset.mode;
+        this.state.isChecked = false;
+        this.render(this.container, this.onNavigate);
+      });
+    });
+
+    this.container.querySelector('#btn-play-normal').addEventListener('click', () => {
+      SpeechService.speak(s.mongolian);
+    });
+
+    this.container.querySelector('#btn-play-slow').addEventListener('click', () => {
+      SpeechService.speakSlow(s.mongolian);
+    });
+
+    // キリル特有文字クリック
+    const inputEl = this.container.querySelector('#dictation-input');
+    if (inputEl) {
+      inputEl.addEventListener('input', (e) => {
+        this.state.userInput = e.target.value;
+      });
+
+      this.container.querySelectorAll('.btn-char-input').forEach(b => {
+        b.addEventListener('click', () => {
+          const ch = b.dataset.char;
+          const pos = inputEl.selectionStart || inputEl.value.length;
+          const val = inputEl.value;
+          inputEl.value = val.slice(0, pos) + ch + val.slice(pos);
+          this.state.userInput = inputEl.value;
+          inputEl.focus();
+        });
+      });
+    }
+
+    // 判定ボタン
+    const checkBtn = this.container.querySelector('#btn-check-dictation');
+    if (checkBtn) {
+      checkBtn.addEventListener('click', () => {
+        const cleanA = (this.state.userInput || '').trim().toLowerCase().replace(/[.,!?:;«»"'\s]/g, '');
+        const cleanB = (s.mongolian || '').trim().toLowerCase().replace(/[.,!?:;«»"'\s]/g, '');
+        
+        let matches = 0;
+        const maxLen = Math.max(cleanA.length, cleanB.length);
+        for (let i = 0; i < Math.min(cleanA.length, cleanB.length); i++) {
+          if (cleanA[i] === cleanB[i]) matches++;
+        }
+        const acc = maxLen > 0 ? Math.round((matches / maxLen) * 100) : 0;
+        this.state.accuracy = acc;
+        this.state.isChecked = true;
+        if (acc >= 85) {
+          SoundEffects.playCorrect();
+          GamificationService.addXp(10);
+        } else {
+          SoundEffects.playWrong();
+          GamificationService.addXp(3);
+        }
+        this.render(this.container, this.onNavigate);
+      });
+    }
+
+    // 次へボタン
+    const nextBtn = this.container.querySelector('#btn-next-sentence');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        const nextIdx = (this.state.currentIndex + 1) % this.state.sentences.length;
+        this.loadSentence(nextIdx);
+        this.render(this.container, this.onNavigate);
+      });
+    }
+  }
+
+  static loadSentence(index) {
+    this.state.currentIndex = index;
+    this.state.currentSentence = this.state.sentences[index];
+    this.state.userInput = '';
+    this.state.isChecked = false;
+    this.state.accuracy = 0;
+  }
+}
+
+
+// === js/components/CultureQuiz.js ===
+// モンゴル文化・ことわざ（Зүйр үг）＆ 伝統なぞなぞ（Оньсого）コンポーネント
+
+
+
+
+
+class CultureComponent {
+  static state = {
+    tab: 'proverbs', // 'proverbs' | 'riddles'
+    currentRiddleIndex: 0,
+    selectedRiddleAnswer: null,
+    riddleScore: 0
+  };
+
+  static render(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-3xl mx-auto px-4 py-4 space-y-5">
+        <!-- ヘッダー -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl p-2 rounded-xl bg-gradient-to-tr from-amber-600 to-yellow-500 text-white shadow-xs">🐴</span>
+            <div>
+              <h2 class="text-lg font-bold text-slate-800">モンゴルのことわざ ＆ 伝統なぞなぞ</h2>
+              <p class="text-xs text-slate-500">遊牧民の知恵・自然観・比喩表現を学ぶカルチャーモード</p>
+            </div>
+          </div>
+          <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
+            ✕ ホームへ
+          </button>
+        </div>
+
+        <!-- タブ切り替え -->
+        <div class="flex gap-2 border-b border-slate-200 pb-2">
+          <button type="button" class="btn-culture-tab px-4 py-2 rounded-xl text-xs font-black transition-all ${
+            this.state.tab === 'proverbs' ? 'bg-amber-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }" data-tab="proverbs">
+            📜 ことわざ（Зүйр үг）一覧 ＆ 音声
+          </button>
+          <button type="button" class="btn-culture-tab px-4 py-2 rounded-xl text-xs font-black transition-all ${
+            this.state.tab === 'riddles' ? 'bg-amber-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }" data-tab="riddles">
+            🧩 伝統なぞなぞ（Оньсого）クイズ
+          </button>
+        </div>
+
+        ${this.state.tab === 'proverbs' ? this.renderProverbsHTML() : this.renderRiddlesHTML()}
+      </div>
+    `;
+
+    // イベントリスナー
+    this.container.querySelector('#btn-back-home').addEventListener('click', () => {
+      if (this.onNavigate) this.onNavigate('home');
+    });
+
+    this.container.querySelectorAll('.btn-culture-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.tab = btn.dataset.tab;
+        this.render(this.container, this.onNavigate);
+      });
+    });
+
+    // ことわざ音声再生
+    this.container.querySelectorAll('.btn-prov-audio').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        SpeechService.speak(btn.dataset.text);
+      });
+    });
+
+    // なぞなぞ回答
+    this.container.querySelectorAll('.btn-riddle-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        const currentRiddle = cultureData.riddles[this.state.currentRiddleIndex];
+        const isOk = val === currentRiddle.answer;
+        this.state.selectedRiddleAnswer = val;
+        if (isOk) {
+          this.state.riddleScore++;
+          SoundEffects.playCorrect();
+          GamificationService.addXp(10);
+        } else {
+          SoundEffects.playWrong();
+        }
+        this.render(this.container, this.onNavigate);
+      });
+    });
+
+    const nextRiddleBtn = this.container.querySelector('#btn-next-riddle');
+    if (nextRiddleBtn) {
+      nextRiddleBtn.addEventListener('click', () => {
+        this.state.currentRiddleIndex = (this.state.currentRiddleIndex + 1) % cultureData.riddles.length;
+        this.state.selectedRiddleAnswer = null;
+        this.render(this.container, this.onNavigate);
+      });
+    }
+  }
+
+  static renderProverbsHTML() {
+    return `
+      <div class="space-y-4">
+        <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-xs text-amber-950">
+          💡 モンゴル人は会話の中でことわざ（Зүйр үг）を巧みに引用して物事を例えるのが大好きです。知っておくと会話が何倍も盛り上がります！
+        </div>
+
+        <div class="grid grid-cols-1 gap-3.5">
+          ${cultureData.proverbs.map(p => `
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+              <div class="flex items-start justify-between gap-3">
+                <div class="space-y-1">
+                  <div class="text-base sm:text-lg font-black text-slate-900 cyrillic-text">
+                    ${p.mongolian}
+                  </div>
+                  <div class="text-[11px] text-slate-400 font-medium">
+                    ${p.pronunciation}
+                  </div>
+                </div>
+                <button type="button" class="btn-prov-audio text-xs px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg border border-amber-200 font-bold shrink-0 flex items-center gap-1 shadow-2xs" data-text="${p.mongolian}">
+                  <span>🔊</span> 発音
+                </button>
+              </div>
+
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1 text-xs">
+                <div class="text-slate-700">
+                  <strong class="text-amber-800">直訳：</strong> ${p.literalJa}
+                </div>
+                <div class="text-slate-900 font-bold">
+                  <strong class="text-emerald-700">日本語の相当句：</strong> ${p.japaneseMeaning}
+                </div>
+              </div>
+
+              <p class="text-[11px] text-slate-500 leading-relaxed bg-amber-50/40 p-2.5 rounded-lg border border-amber-100">
+                📌 <strong>文化的背景：</strong> ${p.culturalContext}
+              </p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  static renderRiddlesHTML() {
+    const idx = this.state.currentRiddleIndex;
+    const r = cultureData.riddles[idx];
+    const total = cultureData.riddles.length;
+
+    return `
+      <div class="space-y-4">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4 text-center">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+              なぞなぞ ${idx + 1} / ${total}
+            </span>
+            <span class="text-xs font-bold text-slate-400">
+              スコア: ${this.state.riddleScore} 点
+            </span>
+          </div>
+
+          <!-- なぞなぞの詩 -->
+          <div class="space-y-1.5 py-2">
+            <div class="text-lg sm:text-xl font-black text-slate-900 cyrillic-text">
+              ${r.riddleMn}
+            </div>
+            <div class="text-sm font-bold text-amber-900">
+              「${r.riddleJa}」
+            </div>
+          </div>
+
+          <!-- 4択選択肢 -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left">
+            ${r.options.map(opt => {
+              let style = 'bg-white border-slate-200 hover:border-amber-500 text-slate-900';
+              if (this.state.selectedRiddleAnswer) {
+                if (opt === r.answer) {
+                  style = 'bg-emerald-50 border-emerald-500 text-emerald-900 font-black ring-2 ring-emerald-300';
+                } else if (opt === this.state.selectedRiddleAnswer) {
+                  style = 'bg-rose-50 border-rose-400 text-rose-900';
+                } else {
+                  style = 'bg-slate-50 border-slate-200 text-slate-400 opacity-60';
+                }
+              }
+              return `
+                <button type="button" class="btn-riddle-opt p-3.5 rounded-xl border text-xs sm:text-sm font-bold transition-all ${style}" data-val="${opt}" ${this.state.selectedRiddleAnswer ? 'disabled' : ''}>
+                  ${opt}
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- 回答後解説 -->
+          ${this.state.selectedRiddleAnswer ? `
+            <div class="bg-amber-50/80 p-4 rounded-xl border border-amber-200 text-left space-y-2 mt-3 animate-fade-in">
+              <div class="font-bold text-xs text-amber-900 flex items-center gap-1.5">
+                <span>💡</span> 遊牧民のなぞなぞ解説：
+              </div>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                ${r.explanation}
+              </p>
+              <button type="button" id="btn-next-riddle" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs shadow-xs transition-all mt-2">
+                次のなぞなぞへ →
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }
+}
+
+
+// === js/components/WordFamilyQuiz.js ===
+// 類義語・対義語・語根ファミリーコンポーネント
+
+
+
+
+
+class WordFamilyComponent {
+  static state = {
+    tab: 'antonyms', // 'antonyms' | 'synonyms' | 'families'
+    quizIndex: 0,
+    selectedAnswer: null,
+    score: 0
+  };
+
+  static render(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-3xl mx-auto px-4 py-4 space-y-5">
+        <!-- ヘッダー -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl p-2 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-xs">🌳</span>
+            <div>
+              <h2 class="text-lg font-bold text-slate-800">類義語・対義語・語根ファミリー</h2>
+              <p class="text-xs text-slate-500">1つの語根から芋づる式に語彙を3倍増やすネットワーク学習</p>
+            </div>
+          </div>
+          <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
+            ✕ ホームへ
+          </button>
+        </div>
+
+        <!-- タブ切り替え -->
+        <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
+          <button type="button" class="btn-wf-tab px-4 py-2 rounded-xl text-xs font-black transition-all ${
+            this.state.tab === 'antonyms' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }" data-tab="antonyms">
+            🔄 対義語ペア（Эсрэг утга）
+          </button>
+          <button type="button" class="btn-wf-tab px-4 py-2 rounded-xl text-xs font-black transition-all ${
+            this.state.tab === 'synonyms' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }" data-tab="synonyms">
+            🤝 類義語＆ニュアンス（Ойролцоо утга）
+          </button>
+          <button type="button" class="btn-wf-tab px-4 py-2 rounded-xl text-xs font-black transition-all ${
+            this.state.tab === 'families' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }" data-tab="families">
+            🌳 語根ツリー（同一語根の派生語）
+          </button>
+        </div>
+
+        ${this.state.tab === 'antonyms' ? this.renderAntonymsHTML() : this.state.tab === 'synonyms' ? this.renderSynonymsHTML() : this.renderFamiliesHTML()}
+      </div>
+    `;
+
+    this.container.querySelector('#btn-back-home').addEventListener('click', () => {
+      if (this.onNavigate) this.onNavigate('home');
+    });
+
+    this.container.querySelectorAll('.btn-wf-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.tab = btn.dataset.tab;
+        this.render(this.container, this.onNavigate);
+      });
+    });
+
+    this.container.querySelectorAll('.btn-wf-speak').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        SpeechService.speak(btn.dataset.word);
+      });
+    });
+  }
+
+  // 1. 対義語
+  static renderAntonymsHTML() {
+    return `
+      <div class="space-y-3">
+        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs text-emerald-950">
+          💡 対義語（反対の意味の単語）をペアで覚えると、記憶の定着率が2倍以上高まります！
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          ${wordFamilyData.antonyms.map(pair => `
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <button type="button" class="btn-wf-speak text-xs text-emerald-600 hover:text-emerald-800" data-word="${pair.wordA}">🔊</button>
+                  <span class="text-base font-black text-slate-900 cyrillic-text">${pair.wordA}</span>
+                  <span class="text-xs text-slate-500">(${pair.meaningA})</span>
+                </div>
+                <span class="text-xs font-bold text-slate-400">⇔</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-base font-black text-slate-900 cyrillic-text">${pair.wordB}</span>
+                  <span class="text-xs text-slate-500">(${pair.meaningB})</span>
+                  <button type="button" class="btn-wf-speak text-xs text-emerald-600 hover:text-emerald-800" data-word="${pair.wordB}">🔊</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 bg-slate-50 p-2 rounded-lg">
+                <div>・${pair.exampleA}</div>
+                <div>・${pair.exampleB}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // 2. 類義語
+  static renderSynonymsHTML() {
+    return `
+      <div class="space-y-3">
+        <div class="bg-teal-50 p-3 rounded-xl border border-teal-200 text-xs text-teal-950">
+          💡 似た意味の言葉の「微妙なニュアンスの違い」を知ることで、自然で豊かなモンゴル語が話せるようになります。
+        </div>
+
+        <div class="grid grid-cols-1 gap-3">
+          ${wordFamilyData.synonyms.map(syn => `
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+              <div class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-1.5">
+                  <button type="button" class="btn-wf-speak text-xs text-teal-600 hover:text-teal-800" data-word="${syn.wordA}">🔊</button>
+                  <span class="text-lg font-black text-slate-900 cyrillic-text">${syn.wordA}</span>
+                  <span class="text-xs font-bold text-slate-500">【${syn.meaningA}】</span>
+                </div>
+                <span class="text-xs font-bold text-teal-600">≒ 近い意味 ≒</span>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" class="btn-wf-speak text-xs text-teal-600 hover:text-teal-800" data-word="${syn.wordB}">🔊</button>
+                  <span class="text-lg font-black text-slate-900 cyrillic-text">${syn.wordB}</span>
+                  <span class="text-xs font-bold text-slate-500">【${syn.meaningB}】</span>
+                </div>
+              </div>
+              <div class="p-3 bg-teal-50/50 rounded-xl border border-teal-100 text-xs text-slate-700 leading-relaxed">
+                📌 <strong>使い分けのコツ：</strong> ${syn.nuance}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // 3. 語根ツリー
+  static renderFamiliesHTML() {
+    return `
+      <div class="space-y-4">
+        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs text-emerald-950">
+          💡 モンゴル語は「語根（根っこの単語）」に接尾辞をくっつけて新しい単語を作る言語です。語根を知れば、初めて見る単語の意味も推測できるようになります！
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          ${wordFamilyData.families.map(fam => `
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">🌱</span>
+                  <div>
+                    <span class="text-xs font-bold text-emerald-700">語根：</span>
+                    <strong class="text-base font-black text-slate-900 cyrillic-text">${fam.root}</strong>
+                  </div>
+                </div>
+                <span class="text-xs font-bold text-slate-500">意味：${fam.rootMeaning}</span>
+              </div>
+
+              <!-- 派生語リスト -->
+              <div class="space-y-2">
+                ${fam.derivations.map(d => `
+                  <div class="flex items-center justify-between p-2.5 bg-slate-50 hover:bg-emerald-50/40 rounded-xl border border-slate-100 transition-colors">
+                    <div class="flex items-center gap-1.5">
+                      <button type="button" class="btn-wf-speak text-xs text-slate-400 hover:text-emerald-700" data-word="${d.word}">🔊</button>
+                      <span class="font-bold text-sm text-slate-900 cyrillic-text">${d.word}</span>
+                    </div>
+                    <span class="text-xs text-slate-600">${d.meaning}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+}
+
+
+// === js/components/PenguinExpedition.js ===
+// ペンギン探検隊（モンゴル名所めぐり旅・コレクション）コンポーネント
+
+
+
+
+
+
+class PenguinExpeditionComponent {
+  static state = {
+    selectedDestination: null
+  };
+
+  static render(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+    const profile = GamificationService.getProfile();
+    const currentXp = profile.totalXp;
+
+    const unlockedCount = expeditionDestinations.filter(d => currentXp >= d.requiredXp).length;
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-4xl mx-auto px-4 py-4 space-y-5">
+        <!-- ヘッダー -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl p-2 rounded-xl bg-gradient-to-tr from-sky-500 to-emerald-500 text-white shadow-xs">🗺️</span>
+            <div>
+              <h2 class="text-lg font-bold text-slate-800">ペンギン探検隊（モンゴル名所めぐり）</h2>
+              <p class="text-xs text-slate-500">学習XPを貯めてモンゴルの絶景と名所を旅しよう！</p>
+            </div>
+          </div>
+          <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
+            ✕ ホームへ
+          </button>
+        </div>
+
+        <!-- 旅の進捗ステータス -->
+        <div class="bg-gradient-to-r from-sky-600 to-indigo-600 rounded-3xl p-5 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl shadow-xs">
+              🐧
+            </div>
+            <div>
+              <div class="text-xs font-bold text-sky-200">探検隊の冒険記録</div>
+              <h3 class="text-lg font-black">
+                7大名所中 <span class="text-amber-300 text-xl">${unlockedCount}</span> ヶ所を開拓！
+              </h3>
+            </div>
+          </div>
+          <div class="text-right sm:text-left bg-black/20 backdrop-blur-xs px-4 py-2 rounded-2xl border border-white/20 text-xs">
+            <span class="text-sky-200">現在の累計XP：</span>
+            <strong class="text-amber-300 text-sm font-black">${currentXp.toLocaleString()} XP</strong>
+          </div>
+        </div>
+
+        <!-- 名所グリッド一覧 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          ${expeditionDestinations.map((dest, i) => {
+            const isUnlocked = currentXp >= dest.requiredXp;
+            const remainingXp = dest.requiredXp - currentXp;
+
+            return `
+              <div class="dest-card rounded-2xl p-5 border-2 transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${
+                isUnlocked 
+                  ? 'bg-white border-sky-300 hover:border-sky-500 hover:shadow-md' 
+                  : 'bg-slate-50 border-slate-200 opacity-75'
+              }" data-id="${dest.id}">
+                <div>
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-3xl">${dest.badgeIcon}</span>
+                    <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${
+                      isUnlocked 
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' 
+                        : 'bg-slate-200 text-slate-600'
+                    }">
+                      ${isUnlocked ? '開拓済み 🚩' : `あと ${remainingXp} XP 🔒`}
+                    </span>
+                  </div>
+
+                  <div class="space-y-1">
+                    <div class="text-xs font-bold text-slate-400 font-mono">Stage ${i + 1}</div>
+                    <h4 class="text-base font-black text-slate-900 cyrillic-text">
+                      ${dest.nameMn}
+                    </h4>
+                    <div class="text-xs font-bold text-slate-700">
+                      ${dest.nameJa}
+                    </div>
+                  </div>
+
+                  <p class="text-xs text-slate-500 mt-2 leading-relaxed line-clamp-2">
+                    ${dest.description}
+                  </p>
+                </div>
+
+                <div class="mt-4 pt-3 border-t ${isUnlocked ? 'border-sky-100 text-sky-700' : 'border-slate-200 text-slate-400'} flex items-center justify-between text-xs font-bold">
+                  <span>${isUnlocked ? '名所記念カードを見る 📸' : '未到達'}</span>
+                  <span>${isUnlocked ? '→' : '🔒'}</span>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- 名所記念カードモーダル（選択時） -->
+        ${this.state.selectedDestination ? this.renderModalHTML(this.state.selectedDestination) : ''}
+      </div>
+    `;
+
+    this.container.querySelector('#btn-back-home').addEventListener('click', () => {
+      if (this.onNavigate) this.onNavigate('home');
+    });
+
+    this.container.querySelectorAll('.dest-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.id;
+        const dest = expeditionDestinations.find(d => d.id === id);
+        if (dest) {
+          this.state.selectedDestination = dest;
+          SoundEffects.playCorrect();
+          this.render(this.container, this.onNavigate);
+        }
+      });
+    });
+
+    // モーダルイベント
+    const closeBtn = this.container.querySelector('#btn-close-exp-modal');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.state.selectedDestination = null;
+        this.render(this.container, this.onNavigate);
+      });
+    }
+
+    const modalSpeakBtn = this.container.querySelector('#btn-exp-speak');
+    if (modalSpeakBtn) {
+      modalSpeakBtn.addEventListener('click', () => {
+        SpeechService.speak(this.state.selectedDestination.nameMn);
+      });
+    }
+  }
+
+  static renderModalHTML(dest) {
+    const profile = GamificationService.getProfile();
+    const isUnlocked = profile.totalXp >= dest.requiredXp;
+
+    return `
+      <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-100 flex flex-col space-y-0">
+          
+          <!-- カード上部バナー -->
+          <div class="bg-gradient-to-r ${dest.postcardColor} p-6 text-white text-center relative">
+            <button type="button" id="btn-close-exp-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white flex items-center justify-center text-sm font-bold transition-all">
+              ✕
+            </button>
+            <div class="text-5xl mb-2">${dest.badgeIcon}</div>
+            <div class="text-xs font-bold text-white/80 font-mono tracking-wider">MONGOLIA EXPEDITION POSTCARD</div>
+            <h3 class="text-xl font-black cyrillic-text mt-1">${dest.nameMn}</h3>
+            <div class="text-xs text-white/90 font-medium">${dest.nameJa}</div>
+          </div>
+
+          <!-- カード詳細本文 -->
+          <div class="p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="text-xs font-bold text-slate-500">
+                獲得記念品：<span class="text-slate-900">${dest.souvenir}</span>
+              </div>
+              <button type="button" id="btn-exp-speak" class="px-3 py-1 bg-sky-50 hover:bg-sky-100 text-sky-800 rounded-lg text-xs font-bold flex items-center gap-1 border border-sky-200">
+                <span>🔊</span> 発音を聞く
+              </button>
+            </div>
+
+            <p class="text-xs text-slate-700 leading-relaxed">
+              ${dest.description}
+            </p>
+
+            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs text-amber-950 space-y-1">
+              <div class="font-bold flex items-center gap-1 text-amber-900">
+                <span>💡</span> 探検隊の豆知識（Fun Fact）：
+              </div>
+              <p class="leading-relaxed">
+                ${dest.funFact}
+              </p>
+            </div>
+
+            <div class="text-center pt-2">
+              <span class="text-[11px] font-bold ${isUnlocked ? 'text-emerald-700 bg-emerald-50' : 'text-slate-500 bg-slate-100'} px-3 py-1 rounded-full">
+                ${isUnlocked ? '🎖️ 開拓バッジ コレクション済み' : `🔒 必要XP: ${dest.requiredXp} XP`}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+}
+
+
 // === js/components/Flashcards.js ===
 // フラッシュカードコンポーネント（3D反転アニメーション ＆ SRS 4段階評価）
 
@@ -39525,6 +41903,12 @@ class ReferenceGuideComponent {
 
 
 
+
+
+
+
+
+
 class App {
   static currentTab = 'home';
 
@@ -39625,6 +42009,24 @@ class App {
         break;
       case 'pronunciation_test':
         PronunciationTestComponent.render(mainContainer, onNavigate);
+        break;
+      case 'roleplay':
+        RoleplayComponent.render(mainContainer, onNavigate);
+        break;
+      case 'number_master':
+        NumberMasterComponent.render(mainContainer, onNavigate);
+        break;
+      case 'shadowing_dictation':
+        ShadowingDictationComponent.render(mainContainer, onNavigate);
+        break;
+      case 'culture':
+        CultureComponent.render(mainContainer, onNavigate);
+        break;
+      case 'word_family':
+        WordFamilyComponent.render(mainContainer, onNavigate);
+        break;
+      case 'expedition':
+        PenguinExpeditionComponent.render(mainContainer, onNavigate);
         break;
       case 'flashcards':
         FlashcardsComponent.render(mainContainer, onNavigate);

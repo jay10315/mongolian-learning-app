@@ -32,7 +32,8 @@ tests = [
     'test_unified_sync_and_review.py',
     'test_audio_batch_feature.py',
     'test_pronunciation_feature.py',
-    'test_hidden_letters_feature.py'
+    'test_hidden_letters_feature.py',
+    'test_all_new_modes.py'
 ]
 
 for t in tests:
