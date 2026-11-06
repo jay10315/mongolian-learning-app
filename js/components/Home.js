@@ -5,6 +5,7 @@ import { SyncService } from '../services/sync.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 import { BatchAudioModal } from './BatchAudioModal.js';
+import { DeclensionTestComponent } from './DeclensionTest.js';
 
 export class HomeComponent {
   static render(container, onNavigate) {
@@ -419,6 +420,30 @@ export class HomeComponent {
               </div>
             </div>
 
+            <!-- 隠れн・隠れг 特化テスト＆例外攻略カード -->
+            <div class="bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-pink-500/10 rounded-xl p-5 border-2 border-indigo-400 hover:border-indigo-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" id="home-card-hidden-letters">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🏛️
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-indigo-600 text-white shadow-2xs">
+                    新特訓 ⚡ 全32問
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-indigo-700 transition-colors flex items-center gap-1.5">
+                  隠れн・隠れг 特化テスト
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  最難関「нууц н（隠れн）」「нууц г（隠れг）」および落ちる母音などの例外を集中的に特訓！解説＆音声つき。
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-indigo-200/60 flex items-center justify-between text-xs font-black text-indigo-700">
+                <span>特化テストを開始</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- リスニング問題（新機能・穴埋め/ディクテーション/数字特化） -->
             <div class="bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-sky-500/10 rounded-xl p-5 border-2 border-teal-400 hover:border-teal-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="listening_test">
               <div>
@@ -654,6 +679,15 @@ export class HomeComponent {
     if (batchAudioCard) {
       batchAudioCard.addEventListener('click', () => {
         BatchAudioModal.show();
+      });
+    }
+
+    // 隠れ文字特化テストカード
+    const hiddenCard = container.querySelector('#home-card-hidden-letters');
+    if (hiddenCard) {
+      hiddenCard.addEventListener('click', () => {
+        DeclensionTestComponent.startWithCategory('hidden_n_g');
+        if (onNavigate) onNavigate('declension_test');
       });
     }
 

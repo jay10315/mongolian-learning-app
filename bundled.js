@@ -17821,6 +17821,456 @@ const initialDeclensionQuizzes = [
     explanation: "前の動作を完了させて次へ繋げる並列・順次は -аад/-ээд/-оод/-өөд です。тайл- ＋ -аад ＝ тайлаад。",
     rule: "並列: 語幹 ＋ -аад/-оод/-ээд/-өөд"
   }
+,
+  // --- 隠れн・隠れг 特化テスト問題（全32問） ---
+  {
+    id: "dec_hidden_1",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "мод",
+    baseMeaning: "木・林（男性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「木の（属格）」の正しい形を答えなさい。",
+    question: "мод ＋ 属格 →",
+    options: ["модны", "модын", "модгийн", "модийн"],
+    answer: "модны",
+    explanation: "мод は隠れн（нууц н）を持つ代表的な名詞です。属格では語末に -ны が付き модны（木の）になります。",
+    rule: "隠れн: 属格では -ны/-ний が接続"
+  },
+  {
+    id: "dec_hidden_2",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "мод",
+    baseMeaning: "木・林（男性名詞 / 隠れн）",
+    targetCase: "与位格（〜に、〜で / 隠れн出現）",
+    prompt: "「木に/林で（与位格）」の正しい形を答えなさい。",
+    question: "мод ＋ 与位格 →",
+    options: ["модонд", "модод", "модт", "модд"],
+    answer: "модонд",
+    explanation: "мод は隠れнを持つため、与位格では母音оとнが挟まり модонд（木に/林で）になります。",
+    rule: "隠れн: 与位格では -анд/-энд/-онд/-өнд"
+  },
+  {
+    id: "dec_hidden_3",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "мод",
+    baseMeaning: "木・林（男性名詞 / 隠れн）",
+    targetCase: "具格（〜で、木製で / 隠れн非出現・ひっかけ！）",
+    prompt: "「木で/木製で（具格）」の正しい形を答えなさい。",
+    question: "мод ＋ 具格 →",
+    options: ["модоор", "модноор", "модгоор", "модоноор"],
+    answer: "модоор",
+    explanation: "【超重要】隠れнは属格・与位格・奪格では現れますが、具格（-аар4）や共格（-тай3）では現れません！したがって модоор が正解です。",
+    rule: "隠れнの例外: 具格(-аар4)・共格(-тай3)では隠れнは出ない"
+  },
+  {
+    id: "dec_hidden_4",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "ус",
+    baseMeaning: "水（男性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「水の（属格）」の正しい形を答えなさい。",
+    question: "ус ＋ 属格 →",
+    options: ["усны", "усын", "усгийн", "усийн"],
+    answer: "усны",
+    explanation: "ус（水）は隠れн名詞です。属格は -ны が接続し усны（水の）になります（例：усны сав = 水筒）。",
+    rule: "隠れн: ус → усны（水の）"
+  },
+  {
+    id: "dec_hidden_5",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "ус",
+    baseMeaning: "水（男性名詞 / 隠れн）",
+    targetCase: "与位格（〜に、水中で / 隠れн出現）",
+    prompt: "「水に/水中で（与位格）」の正しい形を答えなさい。",
+    question: "ус ＋ 与位格 →",
+    options: ["усанд", "усад", "уст", "усд"],
+    answer: "усанд",
+    explanation: "ус の与位格は隠れнが現れて усанд（水に/水中で）になります（例：усанд сэлэх = 水泳する）。",
+    rule: "隠れн: ус → усанд（水に）"
+  },
+  {
+    id: "dec_hidden_6",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "ус",
+    baseMeaning: "水（男性名詞 / 隠れн）",
+    targetCase: "奪格（〜から / 隠れн出現）",
+    prompt: "「水から（奪格）」の正しい形を答えなさい。",
+    question: "ус ＋ 奪格 →",
+    options: ["уснаас", "усаас", "усноос", "усгаас"],
+    answer: "уснаас",
+    explanation: "ус の奪格は隠れнを伴う -наас が接続して уснаас（水から）になります。",
+    rule: "隠れн: 奪格では -наас/-нээс/-ноос/-нөөс"
+  },
+  {
+    id: "dec_hidden_7",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "хүү",
+    baseMeaning: "息子・男の子（長母音男性名詞 / 隠れг）",
+    targetCase: "属格（〜の / 隠れг出現）",
+    prompt: "「息子の（属格）」の正しい形を答えなさい。",
+    question: "хүү ＋ 属格 →",
+    options: ["хүүгийн", "хүүний", "хүйн", "хүүгийнх"],
+    answer: "хүүгийн",
+    explanation: "長母音 үү で終わる男性名詞 хүү の属格には、隠れгを含む -гийн が接続して хүүгийн（息子の）になります。",
+    rule: "隠れг: 長母音・二重母音終わりの名詞属格は -гийн/-гийн"
+  },
+  {
+    id: "dec_hidden_8",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "дүү",
+    baseMeaning: "弟・妹（長母音名詞 / 隠れг）",
+    targetCase: "属格（〜の / 隠れг出現）",
+    prompt: "「弟・妹の（属格）」の正しい形を答えなさい。",
+    question: "дүү ＋ 属格 →",
+    options: ["дүүгийн", "дүүний", "дүйн", "дүүгийнх"],
+    answer: "дүүгийн",
+    explanation: "дүү は長母音終わりなので属格は -гийн が付き дүүгийн（弟・妹の）になります。",
+    rule: "長母音末尾名詞の属格: -гийн / -гийн"
+  },
+  {
+    id: "dec_hidden_9",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "байшин",
+    baseMeaning: "建物・家屋（子音н末尾名詞 / 隠れг）",
+    targetCase: "属格（〜の / 隠れг出現）",
+    prompt: "「建物の（属格）」の正しい形を答えなさい。",
+    question: "байшин ＋ 属格 →",
+    options: ["байшингийн", "байшины", "байшиний", "байшинний"],
+    answer: "байшингийн",
+    explanation: "байшин のように子音 н で終わる名詞の属格には、-гийн が接続します（байшингийн）。",
+    rule: "子音н終わりの名詞の属格: -гийн / -гийн"
+  },
+  {
+    id: "dec_hidden_10",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "нар",
+    baseMeaning: "太陽・日（男性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「太陽の（属格）」の正しい形を答えなさい。",
+    question: "нар ＋ 属格 →",
+    options: ["нарны", "нарын", "нарийн", "наргийн"],
+    answer: "нарны",
+    explanation: "нар は隠れнを持つ名詞です。属格は нарны（太陽の、例：нарны шил = サングラス）になります。",
+    rule: "隠れн: нар → нарны（太陽の）"
+  },
+  {
+    id: "dec_hidden_11",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "нар",
+    baseMeaning: "太陽・日（男性名詞 / 隠れн）",
+    targetCase: "与位格（〜に、日なたに / 隠れн出現）",
+    prompt: "「太陽に/日なたに（与位格）」の正しい形を答えなさい。",
+    question: "нар ＋ 与位格 →",
+    options: ["наранд", "нарт", "нарад", "нарда"],
+    answer: "наранд",
+    explanation: "нар の与位格は隠れнが現れて наранд（太陽に/日なたで）になります（例：наранд суух = 日なたぼっこする）。",
+    rule: "隠れн: нар → наранд"
+  },
+  {
+    id: "dec_hidden_12",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "сар",
+    baseMeaning: "月（男性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「月の（属格）」の正しい形を答えなさい。",
+    question: "сар ＋ 属格 →",
+    options: ["сарны", "сарын", "сарийн", "саргийн"],
+    answer: "сарны",
+    explanation: "天体の сар（月）は隠れнを持ち、属格は сарны（月の、例：сарны гэрэл = 月光）になります。",
+    rule: "隠れн: сар → сарны（月の）"
+  },
+  {
+    id: "dec_hidden_13",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "гар",
+    baseMeaning: "手（男性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「手の（属格）」の正しい形を答えなさい。",
+    question: "гар ＋ 属格 →",
+    options: ["гарны", "гарын", "гарийн", "гаргийн"],
+    answer: "гарны",
+    explanation: "身体部位の гар（手）は隠れн名詞です。属格は гарны（手の）になります（例：гарны үсэг = 署名）。",
+    rule: "隠れн: гар → гарны（手の）"
+  },
+  {
+    id: "dec_hidden_14",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "гар",
+    baseMeaning: "手（男性名詞 / 隠れн）",
+    targetCase: "具格（〜で、手で / 隠れн非出現・ひっかけ！）",
+    prompt: "「手で/手作業で（具格）」の正しい形を答えなさい。",
+    question: "гар ＋ 具格 →",
+    options: ["гараар", "гарнаар", "гаргоор", "гарангаар"],
+    answer: "гараар",
+    explanation: "【要注意】具格では隠れнは現れません！したがって гар ＋ 具格は гараар（手で/手作業で）になります。",
+    rule: "隠れнの例外: 具格では гар → гараар"
+  },
+  {
+    id: "dec_hidden_15",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "хөл",
+    baseMeaning: "足・脚（女性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「足の（属格）」の正しい形を答えなさい。",
+    question: "хөл ＋ 属格 →",
+    options: ["хөлний", "хөлийн", "хөлгийн", "хөлнийх"],
+    answer: "хөлний",
+    explanation: "хөл（足）は女性母音の隠れн名詞です。属格は女性語の -ний が付き хөлний（足の）になります。",
+    rule: "隠れн(女性語): хөл → хөлний"
+  },
+  {
+    id: "dec_hidden_16",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "хөл",
+    baseMeaning: "足・脚（女性名詞 / 隠れн）",
+    targetCase: "与位格（〜に、足に / 隠れн出現）",
+    prompt: "「足に（与位格）」の正しい形を答えなさい。",
+    question: "хөл ＋ 与位格 →",
+    options: ["хөлөнд", "хөлд", "хөлт", "хөлнд"],
+    answer: "хөлөнд",
+    explanation: "хөл の与位格は女性母音 ө ＋ н が挟まり хөлөнд（足に）になります。",
+    rule: "隠れн: хөл → хөлөнд"
+  },
+  {
+    id: "dec_hidden_17",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "нүд",
+    baseMeaning: "目（女性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「目の（属格）」の正しい形を答えなさい。",
+    question: "нүд ＋ 属格 →",
+    options: ["нүдний", "нүдийн", "нүдгийн", "нүдны"],
+    answer: "нүдний",
+    explanation: "нүд（目）は女性母音の隠れн名詞です。属格は нүдний（目の、例：нүдний шил = メガネ）になります。",
+    rule: "隠れн: нүд → нүдний（目の）"
+  },
+  {
+    id: "dec_hidden_18",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "нүд",
+    baseMeaning: "目（女性名詞 / 隠れн）",
+    targetCase: "奪格（〜から / 隠れн出現）",
+    prompt: "「目から（奪格）」の正しい形を答えなさい。",
+    question: "нүд ＋ 奪格 →",
+    options: ["нүднээс", "нүдээс", "нүдноос", "нүдгээс"],
+    answer: "нүднээス",
+    explanation: "нүд の奪格は女性語の -нээс が接続し нүднээс（目から、例：нүднээс нулимс гарах = 目から涙が出る）になります。",
+    rule: "隠れн: нүд → нүднээс"
+  },
+  {
+    id: "dec_hidden_19",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "шүд",
+    baseMeaning: "歯（女性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「歯の（属格）」の正しい形を答えなさい。",
+    question: "шүд ＋ 属格 →",
+    options: ["шүдний", "шүдийн", "шүдгийн", "шүдны"],
+    answer: "шүдний",
+    explanation: "шүд（歯）は隠れн名詞です。属格は шүдний（歯の、例：шүдний оо = 歯磨き粉）になります。",
+    rule: "隠れн: шүд → шүдний"
+  },
+  {
+    id: "dec_hidden_20",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "хэл",
+    baseMeaning: "言葉・舌（女性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「言語の/舌の（属格）」の正しい形を答えなさい。",
+    question: "хэл ＋ 属格 →",
+    options: ["хэлний", "хэлийн", "хэлгийн", "хэлны"],
+    answer: "хэлний",
+    explanation: "хэл（言語、舌）は隠れн名詞です。属格は хэлний（言語の、例：хэлний дүрэм = 文法）になります。",
+    rule: "隠れн: хэл → хэлний"
+  },
+  {
+    id: "dec_hidden_21",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "нэр",
+    baseMeaning: "名前（女性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「名前の（属格）」の正しい形を答えなさい。",
+    question: "нэр ＋ 属格 →",
+    options: ["нэрний", "нэрийн", "нэргийн", "нэрны"],
+    answer: "нэрний",
+    explanation: "нэр（名前）は隠れн名詞です。属格は нэрний（名前の）になります（※文語や慣用句で нэрийн хуудас「名刺」のような固定表現もあります）。",
+    rule: "隠れн: нэр → нэрний"
+  },
+  {
+    id: "dec_hidden_22",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "цонх",
+    baseMeaning: "窓（男性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「窓の（属格）」の正しい形を答えなさい。",
+    question: "цонх ＋ 属格 →",
+    options: ["цонхны", "цонхын", "цонхийн", "цонхгийн"],
+    answer: "цонхны",
+    explanation: "цонх（窓）は隠れн名詞です。属格は男性語の -ны が付き цонхны（窓の、例：цонхны хөшиг = カーテン）になります。",
+    rule: "隠れн: цонх → цонхны"
+  },
+  {
+    id: "dec_hidden_23",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "цонх",
+    baseMeaning: "窓（男性名詞 / 隠れн）",
+    targetCase: "与位格（〜に、窓辺に / 隠れн出現）",
+    prompt: "「窓に/窓のところに（与位格）」の正しい形を答えなさい。",
+    question: "цонх ＋ 与位格 →",
+    options: ["цонхонд", "цонход", "цонхт", "цонхд"],
+    answer: "цонхонд",
+    explanation: "цонх の与位格は母音 о ＋ н が入って цонхонд（窓に/窓辺で）になります。",
+    rule: "隠れн: цонх → цонхонд"
+  },
+  {
+    id: "dec_hidden_24",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "өдөр",
+    baseMeaning: "日・昼（男性名詞 / 隠れнなし・落ちる母音）",
+    targetCase: "属格（〜の / 隠れн非出現・ひっかけ！）",
+    prompt: "「日の/昼の（属格）」の正しい形を答えなさい。",
+    question: "өдөр ＋ 属格 →",
+    options: ["өдрийн", "өдөрний", "өдөрийн", "өдөргийн"],
+    answer: "өдрийн",
+    explanation: "【超重要】өдөр（日）は隠れнを持ちません！第2母音 ө が脱落する「落ちる母音」の規則により、属格は өдрийн（日の/昼の、例：өдрийн хоол = 昼食）になります。",
+    rule: "隠れнなし（落ちる母音）: өдөр → өдрийн"
+  },
+  {
+    id: "dec_hidden_25",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "газар",
+    baseMeaning: "土地・場所（男性名詞 / 隠れнなし・落ちる母音）",
+    targetCase: "属格（〜の / 隠れн非出現・ひっかけ！）",
+    prompt: "「土地の/場所の（属格）」の正しい形を答えなさい。",
+    question: "газар ＋ 属格 →",
+    options: ["газрын", "газарны", "газарын", "газаргийн"],
+    answer: "газрын",
+    explanation: "【超重要】газар（土地・場所）は隠れнを持ちません！第2母音 а が脱落して газрын（土地の/場所の、例：газрын зураг = 地図）になります。",
+    rule: "隠れнなし（落ちる母音）: газар → газрын"
+  },
+  {
+    id: "dec_hidden_26",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "зам",
+    baseMeaning: "道・道路（男性名詞 / 隠れнなし）",
+    targetCase: "属格（〜の / 隠れн非出現）",
+    prompt: "「道の（属格）」の正しい形を答えなさい。",
+    question: "зам ＋ 属格 →",
+    options: ["замын", "замны", "замийн", "замгийн"],
+    answer: "замын",
+    explanation: "зам（道）は隠れн名詞ではありません。通常の子音末尾男性名詞として -ын が付き замын（道の、例：замын хөдөлгөөн = 交通）になります。",
+    rule: "隠れнなし: зам → замын"
+  },
+  {
+    id: "dec_hidden_27",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "мах",
+    baseMeaning: "肉（男性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「肉の（属格）」の正しい形を答えなさい。",
+    question: "мах ＋ 属格 →",
+    options: ["махны", "махын", "махийн", "махгийн"],
+    answer: "махны",
+    explanation: "мах（肉）は隠れн名詞です。属格は махны（肉の、例：махны дэлгүүр = 精肉店）になります。",
+    rule: "隠れн: мах → махны"
+  },
+  {
+    id: "dec_hidden_28",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "гал",
+    baseMeaning: "火（男性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「火の（属格）」の正しい形を答えなさい。",
+    question: "гал ＋ 属格 →",
+    options: ["галны", "галын", "галийн", "галгийн"],
+    answer: "галны",
+    explanation: "гал（火）は隠れн名詞です。属格は галны（火の、例：галны машин = 消防車）になります。",
+    rule: "隠れн: гал → галны"
+  },
+  {
+    id: "dec_hidden_29",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "номын сан",
+    baseMeaning: "図書館（隠れг名詞）",
+    targetCase: "奪格（〜から / 隠れг出現）",
+    prompt: "「図書館から（奪格）」の正しい形を答えなさい。",
+    question: "номын сан ＋ 奪格 →",
+    options: ["номын сангаас", "номын санээс", "номын санаас", "номын санд"],
+    answer: "номын сангаас",
+    explanation: "номын сан（図書館）の сан は隠れгを持ち、奪格では -гаас が接続して номын сангаас（図書館から）になります。",
+    rule: "隠れг: сан → сангаас"
+  },
+  {
+    id: "dec_hidden_30",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "сүү",
+    baseMeaning: "牛乳・ミルク（長母音名詞だが隠れн！）",
+    targetCase: "属格（〜の / 長母音の隠れн例外）",
+    prompt: "「牛乳の/ミルクの（属格）」の正しい形を答えなさい。",
+    question: "сүү ＋ 属格 →",
+    options: ["сүүний", "сүүгийн", "сүйн", "сүүнийх"],
+    answer: "сүүний",
+    explanation: "сүү は長母音で終わりますが、隠れгではなく隠れнを持つ代表的な例外名詞です！属格は сүүний（牛乳の、例：сүүний цай = ミルクティー）になります。",
+    rule: "長母音だが隠れнを持つ例外: сүү → сүүний"
+  },
+  {
+    id: "dec_hidden_31",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "толгой",
+    baseMeaning: "頭（二重母音名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「頭の（属格）」の正しい形を答えなさい。",
+    question: "толгой ＋ 属格 →",
+    options: ["толгойны", "толгойн", "толгойгийн", "толгойнх"],
+    answer: "толгойны",
+    explanation: "толгой（頭）は二重母音ですが隠れнを伴って толгойны（頭の、例：толгойны өвчин = 頭痛）と表現される代表語です。",
+    rule: "隠れн: толгой → толгойны"
+  },
+  {
+    id: "dec_hidden_32",
+    type: "declension",
+    kind: "hidden_n_g",
+    baseWord: "өвс",
+    baseMeaning: "草（女性名詞 / 隠れн）",
+    targetCase: "属格（〜の / 隠れн出現）",
+    prompt: "「草の（属格）」の正しい形を答えなさい。",
+    question: "өвс ＋ 属格 →",
+    options: ["өвсний", "өвсийн", "өвсгийн", "өвсөн"],
+    answer: "өвсний",
+    explanation: "өвс（草）は女性語の隠れн名詞です。属格は өвсний（草の）になります。",
+    rule: "隠れн: өвс → өвсний"
+  }
 ];
 
 
@@ -21184,7 +21634,7 @@ const STORAGE_KEYS = {
   WORD_PROGRESS: 'mongol_app_word_progress_v1',
   GRAMMAR: 'mongol_app_grammar_v4',
   GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v4',
-  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v3',
+  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v4',
   ILLUSTRATION_QUIZZES: 'mongol_app_illustration_quizzes_v1',
   LISTENING_QUIZZES: 'mongol_app_listening_quizzes_v1',
   READING_QUIZZES: 'mongol_app_reading_quizzes_v1',
@@ -21580,7 +22030,12 @@ class StorageService {
   static getDeclensionQuizzes() {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.DECLENSION_QUIZZES);
-      return data ? JSON.parse(data) : initialDeclensionQuizzes;
+      const parsed = data ? JSON.parse(data) : null;
+      if (parsed && Array.isArray(parsed) && parsed.length >= initialDeclensionQuizzes.length) {
+        return parsed;
+      }
+      this.saveDeclensionQuizzes(initialDeclensionQuizzes);
+      return initialDeclensionQuizzes;
     } catch (e) {
       return initialDeclensionQuizzes;
     }
@@ -26020,6 +26475,7 @@ class Navbar {
 
 
 
+
 class HomeComponent {
   static render(container, onNavigate) {
     const vocabList = StorageService.getVocabulary();
@@ -26433,6 +26889,30 @@ class HomeComponent {
               </div>
             </div>
 
+            <!-- 隠れн・隠れг 特化テスト＆例外攻略カード -->
+            <div class="bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-pink-500/10 rounded-xl p-5 border-2 border-indigo-400 hover:border-indigo-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" id="home-card-hidden-letters">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🏛️
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-indigo-600 text-white shadow-2xs">
+                    新特訓 ⚡ 全32問
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-indigo-700 transition-colors flex items-center gap-1.5">
+                  隠れн・隠れг 特化テスト
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  最難関「нууц н（隠れн）」「нууц г（隠れг）」および落ちる母音などの例外を集中的に特訓！解説＆音声つき。
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-indigo-200/60 flex items-center justify-between text-xs font-black text-indigo-700">
+                <span>特化テストを開始</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- リスニング問題（新機能・穴埋め/ディクテーション/数字特化） -->
             <div class="bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-sky-500/10 rounded-xl p-5 border-2 border-teal-400 hover:border-teal-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="listening_test">
               <div>
@@ -26668,6 +27148,15 @@ class HomeComponent {
     if (batchAudioCard) {
       batchAudioCard.addEventListener('click', () => {
         BatchAudioModal.show();
+      });
+    }
+
+    // 隠れ文字特化テストカード
+    const hiddenCard = container.querySelector('#home-card-hidden-letters');
+    if (hiddenCard) {
+      hiddenCard.addEventListener('click', () => {
+        DeclensionTestComponent.startWithCategory('hidden_n_g');
+        if (onNavigate) onNavigate('declension_test');
       });
     }
 
@@ -31456,6 +31945,12 @@ class DeclensionTestComponent {
     }
   }
 
+  static startWithCategory(category = 'hidden_n_g') {
+    this.state.settings.category = category;
+    this.state.settings.count = 'all';
+    this.startTest();
+  }
+
   // --- 1. 設定画面 ---
   static renderSettings() {
     this.container.innerHTML = `
@@ -31475,10 +31970,15 @@ class DeclensionTestComponent {
           <!-- テスト対象 -->
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1.5">学習カテゴリー</label>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <label class="flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer hover:bg-slate-50 ${this.state.settings.category === 'hidden_n_g' ? 'border-amber-600 bg-amber-50 text-amber-900 font-bold shadow-2xs' : 'border-slate-200'}">
+                <input type="radio" name="declensionCategory" value="hidden_n_g" ${this.state.settings.category === 'hidden_n_g' ? 'checked' : ''} class="hidden">
+                <span>🌟 隠れн・隠れг特化（32問）</span>
+              </label>
+
               <label class="flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer hover:bg-slate-50 ${this.state.settings.category === 'all' ? 'border-amber-600 bg-amber-50 text-amber-900 font-bold' : 'border-slate-200'}">
                 <input type="radio" name="declensionCategory" value="all" ${this.state.settings.category === 'all' ? 'checked' : ''} class="hidden">
-                <span>⚡ すべて（名詞・動詞）</span>
+                <span>⚡ すべて（全48問）</span>
               </label>
 
               <label class="flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer hover:bg-slate-50 ${this.state.settings.category === 'noun' ? 'border-amber-600 bg-amber-50 text-amber-900 font-bold' : 'border-slate-200'}">
@@ -31513,7 +32013,7 @@ class DeclensionTestComponent {
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1.5">出題数</label>
             <div class="grid grid-cols-4 gap-2">
-              ${[5, 10, 16, 'all'].map(num => `
+              ${[5, 10, 20, 'all'].map(num => `
                 <button type="button" class="btn-count py-2 text-xs font-bold rounded-lg border transition-all ${
                   this.state.settings.count === num ? 'bg-amber-600 text-white border-amber-600 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                 }" data-count="${num}">
@@ -38394,6 +38894,8 @@ class MaterialManagerComponent {
 
 
 // === js/components/ReferenceGuide.js ===
+
+
 // モンゴル語文法リファレンス・付録まとめコンポーネント（全48項目完全対応）
 
 
@@ -38416,6 +38918,278 @@ class ReferenceGuideComponent {
           <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
             ✕ ホームへ戻る
           </button>
+        </div>
+
+        <!-- 🌟 隠れн・隠れг＆重要例外マスター完全攻略欄 -->
+        <div id="hidden-letters-guide-section" class="bg-gradient-to-br from-indigo-50/80 via-purple-50/40 to-white rounded-2xl p-5 border-2 border-indigo-300 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-indigo-200/80 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl p-2 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white shadow-xs">🏛️</span>
+              <div>
+                <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                  <span>例外を覚える欄（隠れн・隠れг・落ちる母音）</span>
+                  <span class="text-[11px] bg-indigo-600 text-white px-2.5 py-0.5 rounded-full font-bold shadow-2xs">完全攻略</span>
+                </h3>
+                <p class="text-xs text-indigo-950 font-medium mt-0.5">モンゴル語最難関の「潜在文字の出現」と「母音脱落」を徹底解説。音声再生付き！</p>
+              </div>
+            </div>
+            
+            <button type="button" id="btn-ref-start-hidden-test" class="px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl text-xs font-black shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 shrink-0 cursor-pointer">
+              <span>⚡</span> 隠れ文字特化テストに挑戦（32問） →
+            </button>
+          </div>
+
+          <!-- サブタブ切り替え -->
+          <div class="flex flex-wrap gap-2 text-xs border-b border-indigo-100 pb-2.5">
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-black transition-all bg-indigo-600 text-white shadow-2xs" data-tab="ref-tab-hidden-n">
+              🟢 ① 隠れн (нууц н) の法則
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-hidden-g">
+              🔵 ② 隠れг (нууц г) の法則
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-dropping-vowel">
+              🟣 ③ 落ちる母音 (гээгдэх эгшиг)
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-compare">
+              ⚠️ ④ ひっかけ対比表
+            </button>
+          </div>
+
+          <!-- タブ1: 隠れн (нууц н) -->
+          <div id="ref-tab-hidden-n" class="ref-subtab-pane space-y-3">
+            <div class="bg-indigo-100/60 p-3.5 rounded-xl border border-indigo-200 text-xs text-indigo-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
+                <span>💡</span> 隠れн（нууц н）とは？
+              </div>
+              <p class="leading-relaxed">
+                原形（辞書形）では末尾に「н」が見えませんが、<strong>特定の格助詞（属格・与位格・奪格）が付く時に「н」が突如復活する名詞</strong>のことです。歴史的に語末にあった「н」が原形では脱落し、語尾接続時に再び姿を現します。
+              </p>
+              
+              <!-- 格ごとの出現ルール -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 font-sans">
+                <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg">
+                  <div class="font-bold text-emerald-900 flex items-center gap-1">
+                    <span>⭕</span> 隠れнが現れる格（重要！）
+                  </div>
+                  <ul class="list-disc list-inside mt-1 space-y-0.5 text-emerald-800 text-[11px]">
+                    <li><strong>属格（〜の）</strong>: -ны / -ний（例：мод → <strong>модны</strong>）</li>
+                    <li><strong>与位格（〜に/で）</strong>: -анд/-энд/-онд/-өнд（例：мод → <strong>модонд</strong>）</li>
+                    <li><strong>奪格（〜から）</strong>: -наас/-нээс/-ноос/-нөөс（例：мод → <strong>модноос</strong>）</li>
+                  </ul>
+                </div>
+                <div class="bg-rose-50 border border-rose-200 p-2.5 rounded-lg">
+                  <div class="font-bold text-rose-900 flex items-center gap-1">
+                    <span>❌</span> 隠れнが現れない格（超頻出ひっかけ！）
+                  </div>
+                  <ul class="list-disc list-inside mt-1 space-y-0.5 text-rose-800 text-[11px]">
+                    <li><strong>具格（〜で/手段）</strong>: -аар4（例：мод → <strong>модоор</strong> ◯ / модgоор ✕）</li>
+                    <li><strong>共格（〜と/所持）</strong>: -тай3（例：мод → <strong>модтой</strong> ◯ / модонтой ✕）</li>
+                    <li><strong>対格（〜を）</strong>: -ыг/-ийг（例：мод → <strong>модыг</strong> ◯）</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- 隠れн 代表名詞一覧テーブル -->
+            <div class="overflow-x-auto border border-indigo-200 rounded-xl bg-white shadow-2xs">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-indigo-50/80 text-indigo-950 font-bold border-b border-indigo-200">
+                  <tr>
+                    <th class="p-2.5">原形（主格）</th>
+                    <th class="p-2.5">意味</th>
+                    <th class="p-2.5 text-emerald-800">属格 (-ны/-ний)</th>
+                    <th class="p-2.5 text-emerald-800">与位格 (-нд)</th>
+                    <th class="p-2.5 text-emerald-800">奪格 (-наас)</th>
+                    <th class="p-2.5 text-rose-800">具格（н非出現!）</th>
+                    <th class="p-2.5">頻出表現・熟語</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-slate-700">
+                  ${[
+                    { w: "мод", m: "木・林", gen: "модны", dat: "модонд", abl: "модноос", ins: "модоор", ex: "модны навч (木の葉)" },
+                    { w: "ус", m: "水", gen: "усны", dat: "усанд", abl: "уснаас", ins: "усаар", ex: "усны сав (水筒), усанд сэлэх (水泳)" },
+                    { w: "нар", m: "太陽・日", gen: "нарны", dat: "наранд", abl: "наcapture".replace("capture", "рнаас"), ins: "нараар", ex: "нарны шил (サングラス)" },
+                    { w: "сар", m: "月", gen: "сарны", dat: "саранд", abl: "сарнаас", ins: "сараар", ex: "сарны гэрэл (月光)" },
+                    { w: "гар", m: "手", gen: "гарны", dat: "гаранд", abl: "гарнаас", ins: "гараар", ex: "гарны үсэг (署名), гараар (手作業で)" },
+                    { w: "хөл", m: "足・脚", gen: "хөлний", dat: "хөлөнд", abl: "хөлнөөс", ins: "хөлөөр", ex: "хөлний өвчин (足の痛み)" },
+                    { w: "нүд", m: "目", gen: "нүдний", dat: "нүдэнд", abl: "нүднээс", ins: "нүдээр", ex: "нүдний шил (メガネ)" },
+                    { w: "шүд", m: "歯", gen: "шүдний", dat: "шүдэнд", abl: "шүднээс", ins: "шүдээр", ex: "шүдний оо (歯磨き粉)" },
+                    { w: "хэл", m: "言語・舌", gen: "хэлний", dat: "хэлэнд", abl: "хэлнээс", ins: "хэлээр", ex: "хэлний дүрэм (文法)" },
+                    { w: "нэр", m: "名前", gen: "нэрний", dat: "нэрэнд", abl: "нэрнээс", ins: "нэрээр", ex: "нэрний хуудас (名刺)" },
+                    { w: "цонх", m: "窓", gen: "цонхны", dat: "цонхонд", abl: "цонхноос", ins: "цонхоор", ex: "цонхны хөшиг (カーテン)" },
+                    { w: "өвс", m: "草", gen: "өвсний", dat: "өвсөнд", abl: "өвснөөс", ins: "өвсөөр", ex: "өвсний үнэр (草の匂い)" },
+                    { w: "гал", m: "火", gen: "галны", dat: "галанд", abl: "галнаас", ins: "галаар", ex: "галны машин (消防車)" },
+                    { w: "мах", m: "肉", gen: "махны", dat: "маханд", abl: "махнаас", ins: "махаар", ex: "махны дэлгүүр (精肉店)" },
+                    { w: "сүү", m: "牛乳", gen: "сүүний", dat: "сүүнд", abl: "сүүнээс", ins: "сүүгээр", ex: "сүүний цай (ミルクティー) ※長母音例外" },
+                    { w: "толгой", m: "頭", gen: "толгойны", dat: "толгойнд", abl: "толгойноос", ins: "толгойгоор", ex: "толгойны өвчин (頭痛)" },
+                    { w: "хашаа", m: "柵・庭", gen: "хашааны", dat: "хашаанд", abl: "хашаанаас", ins: "хашаагаар", ex: "хашаанд суух (庭にいる)" },
+                    { w: "хуруу", m: "指", gen: "хурууны", dat: "хуруунд", abl: "хуруунаас", ins: "хуруугаар", ex: "хурууны хээ (指紋)" }
+                  ].map((row, i) => `
+                    <tr class="${i % 2 === 1 ? 'bg-indigo-50/20' : ''} hover:bg-indigo-50/50 transition-colors">
+                      <td class="p-2.5 cyrillic-text font-bold text-slate-900">
+                        <button type="button" class="btn-ref-speak text-indigo-600 hover:text-indigo-800 mr-1" data-text="${row.w}" title="発音を聞く">🔊</button>
+                        ${row.w}
+                      </td>
+                      <td class="p-2.5 font-medium text-slate-600">${row.m}</td>
+                      <td class="p-2.5 cyrillic-text font-bold text-emerald-800">
+                        <button type="button" class="btn-ref-speak text-emerald-600 hover:text-emerald-800 mr-0.5" data-text="${row.gen}">🔊</button>
+                        ${row.gen}
+                      </td>
+                      <td class="p-2.5 cyrillic-text font-semibold text-emerald-700">${row.dat}</td>
+                      <td class="p-2.5 cyrillic-text font-semibold text-emerald-700">${row.abl}</td>
+                      <td class="p-2.5 cyrillic-text font-bold text-rose-700 bg-rose-50/40">${row.ins}</td>
+                      <td class="p-2.5 text-[11px] text-slate-500">${row.ex}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- タブ2: 隠れг (нууц г) -->
+          <div id="ref-tab-hidden-g" class="ref-subtab-pane hidden space-y-3">
+            <div class="bg-sky-50 p-3.5 rounded-xl border border-sky-200 text-xs text-sky-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-sky-900">
+                <span>💡</span> 隠れг（нууц г）の出現パターン
+              </div>
+              <p class="leading-relaxed">
+                隠れг は主に<strong>「長母音・二重母音末尾名詞」</strong>や<strong>「子音н末尾名詞」</strong>の属格・奪格や、動詞接尾辞の接続時に出現します。
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="p-3.5 rounded-xl border border-sky-200 bg-white space-y-2">
+                <div class="font-black text-sky-900 flex items-center gap-1.5">
+                  <span>1️⃣</span> 長母音・二重母音終わりの名詞
+                </div>
+                <p class="text-slate-600 text-[11px]">
+                  属格で単なる「-н」ではなく、<strong>「-гийн / -гийн」</strong>が付きます。
+                </p>
+                <div class="bg-slate-50 p-2 rounded-lg space-y-1 font-mono text-[11px]">
+                  <div>・хүү（息子） → <strong class="text-sky-700">хүүгийн</strong>（息子の）</div>
+                  <div>・дүү（弟・妹） → <strong class="text-sky-700">дүүгийн</strong>（弟・妹の）</div>
+                  <div>・зураа（線） → <strong class="text-sky-700">зураагийн</strong></div>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl border border-sky-200 bg-white space-y-2">
+                <div class="font-black text-sky-900 flex items-center gap-1.5">
+                  <span>2️⃣</span> 子音「н」終わりの名詞の属格
+                </div>
+                <p class="text-slate-600 text-[11px]">
+                  子音 н で終わる語には、属格で<strong>「-гийн / -гийн」</strong>が接続します。
+                </p>
+                <div class="bg-slate-50 p-2 rounded-lg space-y-1 font-mono text-[11px]">
+                  <div>・байшин（建物） → <strong class="text-sky-700">байшингийн</strong>（建物の）</div>
+                  <div>・номын сан（図書館） → <strong class="text-sky-700">номын сангийн</strong></div>
+                  <div>・奪格: номын сан → <strong class="text-sky-700">номын сангаас</strong>（図書館から）</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- タブ3: 落ちる母音 (гээгдэх эгшиг) -->
+          <div id="ref-tab-dropping-vowel" class="ref-subtab-pane hidden space-y-3">
+            <div class="bg-purple-50 p-3.5 rounded-xl border border-purple-200 text-xs text-purple-950 space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5 text-purple-900">
+                <span>💡</span> 落ちる母音（гээгдэх эгшиг）とは？
+              </div>
+              <p class="leading-relaxed">
+                単語の<strong>第2音節にある短母音（а, э, о, ө, у, ү, и）</strong>に、母音から始まる格助詞や接尾辞（-ын, -ийн, -аас など）が付いたとき、その母音が<strong>脱落（消去）</strong>する現象です。隠れнと混同しないよう要注意！
+              </p>
+            </div>
+
+            <div class="overflow-x-auto border border-purple-200 rounded-xl bg-white">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-purple-50 text-purple-950 font-bold border-b border-purple-200">
+                  <tr>
+                    <th class="p-2.5">原形</th>
+                    <th class="p-2.5">意味</th>
+                    <th class="p-2.5 text-purple-800">属格（母音脱落）</th>
+                    <th class="p-2.5">脱落する母音</th>
+                    <th class="p-2.5">解説</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-slate-700">
+                  ${[
+                    { w: "өдөр", m: "日・昼", gen: "өдрийн", drop: "2番目の ө", note: "өдөрний ではない！隠れнなし" },
+                    { w: "газар", m: "土地・場所", gen: "газрын", drop: "2番目の а", note: "газарны ではない！隠れнなし" },
+                    { w: "нөхөр", m: "友人・夫", gen: "нөхрийн", drop: "2番目の ө", note: "нөхөрийн ではなく ө が脱落" },
+                    { w: "булан", m: "角・コーナー", gen: "булангийн", drop: "（н終わり名詞）", note: "-гийн が付く" },
+                    { w: "багш", m: "先生", gen: "багшийн", drop: "男性語だが ш 終わり", note: "-ийн が接続" }
+                  ].map((row, i) => `
+                    <tr class="${i % 2 === 1 ? 'bg-purple-50/20' : ''}">
+                      <td class="p-2.5 cyrillic-text font-bold text-slate-900">${row.w}</td>
+                      <td class="p-2.5">${row.m}</td>
+                      <td class="p-2.5 cyrillic-text font-bold text-purple-800">${row.gen}</td>
+                      <td class="p-2.5 text-rose-600 font-semibold">${row.drop}</td>
+                      <td class="p-2.5 text-slate-500">${row.note}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- タブ4: ひっかけ対比表 -->
+          <div id="ref-tab-compare" class="ref-subtab-pane hidden space-y-3">
+            <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-xs text-amber-950">
+              <div class="font-black text-sm flex items-center gap-1.5 text-amber-900 mb-1">
+                <span>⚠️</span> 似ているのにルールが違う！最重要対比ペア
+              </div>
+              <p>テストで最も狙われる「隠れнを持つ名詞」と「持たない名詞」の対比表です。</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="p-3.5 rounded-xl border-2 border-emerald-300 bg-emerald-50/30 space-y-2">
+                <div class="font-bold text-emerald-900 flex items-center justify-between">
+                  <span>🌿 мод（木）: 隠れнあり！</span>
+                  <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">隠れн</span>
+                </div>
+                <div class="space-y-1 text-slate-700">
+                  <div>属格: <strong class="text-emerald-800 cyrillic-text">модны</strong>（木の）</div>
+                  <div>与位格: <strong class="text-emerald-800 cyrillic-text">модонд</strong>（木に）</div>
+                  <div>具格: <strong class="text-rose-700 cyrillic-text">модоор</strong>（具格はн出ない!）</div>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl border-2 border-slate-300 bg-slate-50 space-y-2">
+                <div class="font-bold text-slate-900 flex items-center justify-between">
+                  <span>☀️ өдөр（日）: 隠れнなし！</span>
+                  <span class="text-[10px] bg-slate-600 text-white px-2 py-0.5 rounded-full font-bold">落ちる母音</span>
+                </div>
+                <div class="space-y-1 text-slate-700">
+                  <div>属格: <strong class="text-indigo-800 cyrillic-text">өдрийн</strong>（日の）</div>
+                  <div>与位格: <strong class="text-indigo-800 cyrillic-text">өдөрт</strong>（日に/昼に）</div>
+                  <div>具格: <strong class="text-indigo-800 cyrillic-text">өдрөөр</strong></div>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl border-2 border-emerald-300 bg-emerald-50/30 space-y-2">
+                <div class="font-bold text-emerald-900 flex items-center justify-between">
+                  <span>💧 ус（水）: 隠れнあり！</span>
+                  <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">隠れн</span>
+                </div>
+                <div class="space-y-1 text-slate-700">
+                  <div>属格: <strong class="text-emerald-800 cyrillic-text">усны</strong>（水の）</div>
+                  <div>与位格: <strong class="text-emerald-800 cyrillic-text">усанд</strong>（水に）</div>
+                  <div>奪格: <strong class="text-emerald-800 cyrillic-text">уснаас</strong>（水から）</div>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl border-2 border-slate-300 bg-slate-50 space-y-2">
+                <div class="font-bold text-slate-900 flex items-center justify-between">
+                  <span>🛣️ зам（道）: 隠れнなし！</span>
+                  <span class="text-[10px] bg-slate-600 text-white px-2 py-0.5 rounded-full font-bold">通常変化</span>
+                </div>
+                <div class="space-y-1 text-slate-700">
+                  <div>属格: <strong class="text-indigo-800 cyrillic-text">замын</strong>（道の）</div>
+                  <div>与位格: <strong class="text-indigo-800 cyrillic-text">замд</strong>（道で）</div>
+                  <div>奪格: <strong class="text-indigo-800 cyrillic-text">замаас</strong>（道から）</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- 1. 格助詞の全まとめ表（PDF p.68付録準拠） -->

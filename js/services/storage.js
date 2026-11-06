@@ -15,7 +15,7 @@ const STORAGE_KEYS = {
   WORD_PROGRESS: 'mongol_app_word_progress_v1',
   GRAMMAR: 'mongol_app_grammar_v4',
   GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v4',
-  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v3',
+  DECLENSION_QUIZZES: 'mongol_app_declension_quizzes_v4',
   ILLUSTRATION_QUIZZES: 'mongol_app_illustration_quizzes_v1',
   LISTENING_QUIZZES: 'mongol_app_listening_quizzes_v1',
   READING_QUIZZES: 'mongol_app_reading_quizzes_v1',
@@ -411,7 +411,12 @@ export class StorageService {
   static getDeclensionQuizzes() {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.DECLENSION_QUIZZES);
-      return data ? JSON.parse(data) : initialDeclensionQuizzes;
+      const parsed = data ? JSON.parse(data) : null;
+      if (parsed && Array.isArray(parsed) && parsed.length >= initialDeclensionQuizzes.length) {
+        return parsed;
+      }
+      this.saveDeclensionQuizzes(initialDeclensionQuizzes);
+      return initialDeclensionQuizzes;
     } catch (e) {
       return initialDeclensionQuizzes;
     }

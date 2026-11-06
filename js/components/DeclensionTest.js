@@ -36,6 +36,12 @@ export class DeclensionTestComponent {
     }
   }
 
+  static startWithCategory(category = 'hidden_n_g') {
+    this.state.settings.category = category;
+    this.state.settings.count = 'all';
+    this.startTest();
+  }
+
   // --- 1. 設定画面 ---
   static renderSettings() {
     this.container.innerHTML = `
@@ -55,10 +61,15 @@ export class DeclensionTestComponent {
           <!-- テスト対象 -->
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1.5">学習カテゴリー</label>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <label class="flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer hover:bg-slate-50 ${this.state.settings.category === 'hidden_n_g' ? 'border-amber-600 bg-amber-50 text-amber-900 font-bold shadow-2xs' : 'border-slate-200'}">
+                <input type="radio" name="declensionCategory" value="hidden_n_g" ${this.state.settings.category === 'hidden_n_g' ? 'checked' : ''} class="hidden">
+                <span>🌟 隠れн・隠れг特化（32問）</span>
+              </label>
+
               <label class="flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer hover:bg-slate-50 ${this.state.settings.category === 'all' ? 'border-amber-600 bg-amber-50 text-amber-900 font-bold' : 'border-slate-200'}">
                 <input type="radio" name="declensionCategory" value="all" ${this.state.settings.category === 'all' ? 'checked' : ''} class="hidden">
-                <span>⚡ すべて（名詞・動詞）</span>
+                <span>⚡ すべて（全48問）</span>
               </label>
 
               <label class="flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer hover:bg-slate-50 ${this.state.settings.category === 'noun' ? 'border-amber-600 bg-amber-50 text-amber-900 font-bold' : 'border-slate-200'}">
@@ -93,7 +104,7 @@ export class DeclensionTestComponent {
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1.5">出題数</label>
             <div class="grid grid-cols-4 gap-2">
-              ${[5, 10, 16, 'all'].map(num => `
+              ${[5, 10, 20, 'all'].map(num => `
                 <button type="button" class="btn-count py-2 text-xs font-bold rounded-lg border transition-all ${
                   this.state.settings.count === num ? 'bg-amber-600 text-white border-amber-600 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                 }" data-count="${num}">
