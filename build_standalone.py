@@ -152,6 +152,7 @@ html_template = f"""<!DOCTYPE html>
   <script>
     if (typeof tailwind !== 'undefined') {{
       tailwind.config = {{
+        darkMode: 'class',
         theme: {{
           extend: {{
             colors: {{

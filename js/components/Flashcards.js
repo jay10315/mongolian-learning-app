@@ -97,12 +97,15 @@ export class FlashcardsComponent {
               </div>
 
               <div class="text-center my-auto">
-                <div class="text-xs text-slate-400 mb-1">日本語</div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">
+                <div class="mb-3 flex justify-center">
+                  ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(card, { size: 'xl' }) : ''}
+                </div>
+                <div class="text-xs text-slate-400 dark:text-slate-400 mb-1">日本語</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">
                   ${card.japanese}
                 </div>
                 ${card.category ? `
-                  <div class="text-[11px] text-slate-400 mt-2">${card.category}</div>
+                  <div class="text-[11px] text-slate-400 dark:text-slate-400 mt-2">${card.category}</div>
                 ` : ''}
               </div>
 
@@ -126,8 +129,11 @@ export class FlashcardsComponent {
                 const details = getWordGrammarDetails(card);
                 return `
                   <div class="my-auto py-2 space-y-2">
-                    <div class="text-2xl sm:text-3xl font-black text-slate-900 cyrillic-text">
-                      ${details.dictForm || card.mongolian}
+                    <div class="flex items-center gap-3">
+                      ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(card, { size: 'lg' }) : ''}
+                      <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white cyrillic-text">
+                        ${details.dictForm || card.mongolian}
+                      </div>
                     </div>
 
                     ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(card) && card.pronunciation) ? `

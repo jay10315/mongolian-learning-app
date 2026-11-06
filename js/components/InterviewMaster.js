@@ -271,47 +271,47 @@ export class InterviewMasterComponent {
         <div class="space-y-4 mb-8">
           ${topic.sentences.map((s, sIdx) => {
             return `
-              <div class="interview-sentence-card bg-slate-50/70 border border-slate-200 hover:border-emerald-300 rounded-2xl p-4 sm:p-5 transition-all">
+              <div class="interview-sentence-card bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 rounded-2xl p-4 sm:p-5 transition-all shadow-xs">
                 <div class="flex items-start justify-between gap-3 mb-2">
                   <div class="flex items-center gap-2">
-                    <span class="sentence-num-badge w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center flex-shrink-0">
+                    <span class="sentence-num-badge w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center flex-shrink-0">
                       ${sIdx + 1}
                     </span>
-                    ${s.speaker ? `<span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${s.speaker === 'Би' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-800'}">${s.speaker}</span>` : ''}
+                    ${s.speaker ? `<span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${s.speaker === 'Би' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200'}">${s.speaker}</span>` : ''}
                   </div>
                   <button
                     type="button"
                     data-speech-text="${encodeURIComponent(s.mn)}"
-                    class="play-sentence-btn sentence-audio-btn text-xs text-emerald-700 hover:text-emerald-900 font-medium flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs cursor-pointer">
+                    class="play-sentence-btn sentence-audio-btn text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 font-medium flex items-center gap-1 bg-white dark:bg-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-600 shadow-2xs cursor-pointer">
                     <span>🔊 聴く</span>
                   </button>
                 </div>
 
                 <!-- モンゴル語文 -->
                 ${this.showMongolian ? `
-                  <p class="sentence-mn-text text-base sm:text-lg font-bold text-slate-900 mb-1 leading-relaxed">
+                  <p class="sentence-mn-text text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-1.5 leading-relaxed font-sans">
                     ${s.mn}
                   </p>
                 ` : `
-                  <p class="text-sm italic text-slate-400 mb-1">（キリル文字非表示中 - 声に出して言ってみよう！）</p>
+                  <p class="text-sm italic text-slate-400 dark:text-slate-500 mb-1">（キリル文字非表示中 - 声に出して言ってみよう！）</p>
                 `}
 
                 <!-- ローマ字 -->
                 ${this.showRomaji && s.romaji ? `
-                  <p class="text-xs text-emerald-800/80 font-mono mb-1">${s.romaji}</p>
+                  <p class="text-xs text-emerald-700 dark:text-emerald-400 font-mono mb-1.5">${s.romaji}</p>
                 ` : ''}
 
-                <!-- 日本語訳 -->
+                <!-- 日本語訳（夜間モード高視認性シアン／アイスブルー） -->
                 ${this.showJapanese ? `
-                  <p class="sentence-ja-text text-xs sm:text-sm text-slate-600 mb-2">${s.ja}</p>
+                  <p class="sentence-ja-text text-xs sm:text-sm text-slate-600 dark:text-sky-200 font-semibold mb-2.5 leading-relaxed">${s.ja}</p>
                 ` : `
-                  <p class="text-xs italic text-slate-400 mb-2">（和訳非表示中）</p>
+                  <p class="text-xs italic text-slate-400 dark:text-slate-500 mb-2">（和訳非表示中）</p>
                 `}
 
                 <!-- 文法・ポイント解説 -->
                 ${s.explanation ? `
-                  <div class="sentence-exp-box mt-2 pt-2 border-t border-slate-200/80 text-[11px] sm:text-xs text-slate-500 flex items-start gap-1.5">
-                    <span class="sentence-exp-badge text-emerald-600 font-bold">💡 解説:</span>
+                  <div class="sentence-exp-box mt-2 pt-2 border-t border-slate-200/80 dark:border-slate-700 text-[11px] sm:text-xs text-slate-600 dark:text-slate-200 flex items-start gap-1.5 leading-relaxed">
+                    <span class="sentence-exp-badge text-emerald-600 dark:text-emerald-400 font-bold shrink-0">💡 解説:</span>
                     <span class="sentence-exp-content">${s.explanation}</span>
                   </div>
                 ` : ''}

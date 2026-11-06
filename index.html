@@ -65,6 +65,7 @@
   <script>
     if (typeof tailwind !== 'undefined') {
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             colors: {
@@ -662,6 +663,26 @@ body.theme-dark .mnemonic-card .border-amber-400,
 body.theme-forest .mnemonic-card .border-amber-400,
 body.theme-ocean .mnemonic-card .border-amber-400 {
   border-color: #f59e0b !important;
+}
+
+
+/* ========================================================
+   単語イラスト・ビジュアルアイコン（夜間モード・テーマ対応）
+   ======================================================== */
+body.theme-dark .word-illustration-badge,
+body.theme-forest .word-illustration-badge,
+body.theme-ocean .word-illustration-badge {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.theme-dark .word-illustration-box,
+body.theme-forest .word-illustration-box,
+body.theme-ocean .word-illustration-box {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
 }
 
   </style>
@@ -1388,6 +1409,537 @@ if (typeof window !== 'undefined') {
   window.getWordMnemonicHTML = getWordMnemonicHTML;
 }
 
+/**
+ * 単語イラスト・ビジュアルアイコン完全対応マッピング
+ * すべての単語帳、解説カード、フラッシュカード、復習ノートで直感的なイメージ記憶を支援
+ */
+const WORD_ILLUSTRATIONS = {
+  // === 身体の部位 (Body Parts) ===
+  'гар': { icon: '🖐️', label: '手・腕', bg: 'from-amber-50 to-orange-50' },
+  'толгой': { icon: '🧠', label: '頭・頭部', bg: 'from-purple-50 to-pink-50' },
+  'үс': { icon: '💇', label: '髪の毛', bg: 'from-slate-50 to-stone-50' },
+  'хөмсөг': { icon: '〰️', label: '眉毛', bg: 'from-amber-50 to-yellow-50' },
+  'нүд': { icon: '👁️', label: '目', bg: 'from-sky-50 to-blue-50' },
+  'чих': { icon: '👂', label: '耳', bg: 'from-rose-50 to-pink-50' },
+  'хамар': { icon: '👃', label: '鼻', bg: 'from-orange-50 to-amber-50' },
+  'ам': { icon: '👄', label: '口', bg: 'from-rose-50 to-red-50' },
+  'уруул': { icon: '💋', label: '唇', bg: 'from-rose-50 to-red-50' },
+  'шүд': { icon: '🦷', label: '歯', bg: 'from-cyan-50 to-sky-50' },
+  'хэл': { icon: '👅', label: '舌・言葉', bg: 'from-rose-50 to-pink-50' },
+  'хүзүү': { icon: '🧣', label: '首', bg: 'from-teal-50 to-emerald-50' },
+  'мөр': { icon: '🤷', label: '肩', bg: 'from-indigo-50 to-blue-50' },
+  'цээж': { icon: '🫁', label: '胸', bg: 'from-cyan-50 to-teal-50' },
+  'хөх': { icon: '🤱', label: '胸・乳房', bg: 'from-pink-50 to-rose-50' },
+  'гэдэс': { icon: '🤰', label: 'お腹', bg: 'from-emerald-50 to-teal-50' },
+  'хүйс': { icon: '🔘', label: 'へそ', bg: 'from-amber-50 to-yellow-50' },
+  'нуруу': { icon: '🧍', label: '背中・腰', bg: 'from-blue-50 to-indigo-50' },
+  'бүсэлхий': { icon: '🥋', label: '腰', bg: 'from-violet-50 to-purple-50' },
+  'хөл': { icon: '🦶', label: '足・脚', bg: 'from-amber-50 to-orange-50' },
+  'өвдөг': { icon: '🦵', label: '膝', bg: 'from-orange-50 to-yellow-50' },
+  'гуя': { icon: '🦵', label: '太もも', bg: 'from-amber-50 to-orange-50' },
+  'тохой': { icon: '💪', label: '肘', bg: 'from-blue-50 to-sky-50' },
+  'гарын шуу': { icon: '💪', label: '腕・前腕', bg: 'from-blue-50 to-cyan-50' },
+  'гарын алга': { icon: '🤲', label: '手のひら', bg: 'from-amber-50 to-yellow-50' },
+  'хөлийн ул': { icon: '👣', label: '足の裏', bg: 'from-stone-50 to-slate-50' },
+  'хөлийн өсгий': { icon: '🦶', label: 'かかと', bg: 'from-amber-50 to-stone-50' },
+  'шилбэ': { icon: '🦵', label: 'すね', bg: 'from-orange-50 to-amber-50' },
+  'хуруу': { icon: '☝️', label: '指', bg: 'from-yellow-50 to-amber-50' },
+  'хумс': { icon: '💅', label: '爪', bg: 'from-pink-50 to-rose-50' },
+  'хөлийн хуруу': { icon: '🦶', label: '足の指', bg: 'from-amber-50 to-orange-50' },
+  'зүрх': { icon: '🫀', label: '心臓・心', bg: 'from-rose-50 to-red-50' },
+  'ходоод': { icon: '🥣', label: '胃', bg: 'from-orange-50 to-amber-50' },
+  'тархи': { icon: '🧠', label: '脳', bg: 'from-purple-50 to-pink-50' },
+  'яс': { icon: '🦴', label: '骨', bg: 'from-slate-50 to-zinc-50' },
+  'цус': { icon: '🩸', label: '血', bg: 'from-red-50 to-rose-50' },
+  'арьс': { icon: '🧖', label: '皮膚', bg: 'from-amber-50 to-orange-50' },
+  'дух': { icon: '👤', label: '額（おでこ）', bg: 'from-blue-50 to-indigo-50' },
+  'хацар': { icon: '😊', label: '頬（ほっぺ）', bg: 'from-pink-50 to-rose-50' },
+  'эрүү': { icon: '🧔', label: '顎（あご）', bg: 'from-slate-50 to-zinc-50' },
+  'нүүр': { icon: '🙂', label: '顔', bg: 'from-yellow-50 to-amber-50' },
+  'бие': { icon: '🧍', label: '体・身体', bg: 'from-emerald-50 to-teal-50' },
+  'цангах': { icon: '🥤', label: '喉が渇く', bg: 'from-cyan-50 to-sky-50' },
+  'цангалаа': { icon: '🥤', label: '喉が渇いた', bg: 'from-cyan-50 to-sky-50' },
+
+  // === 学校・文具・教室 (School & Stationery) ===
+  'ном': { icon: '📖', label: '本', bg: 'from-purple-50 to-indigo-50' },
+  'дэвтэр': { icon: '📓', label: 'ノート', bg: 'from-blue-50 to-sky-50' },
+  'үзэг': { icon: '✒️', label: 'ペン・万年筆', bg: 'from-slate-50 to-stone-50' },
+  'харандаа': { icon: '✏️', label: '鉛筆', bg: 'from-amber-50 to-yellow-50' },
+  'баллуур': { icon: '🧼', label: '消しゴム', bg: 'from-teal-50 to-emerald-50' },
+  'шугам': { icon: '📏', label: '定規', bg: 'from-sky-50 to-cyan-50' },
+  'хайч': { icon: '✂️', label: 'ハサミ', bg: 'from-rose-50 to-red-50' },
+  'цүнх': { icon: '🎒', label: 'カバン・リュック', bg: 'from-orange-50 to-amber-50' },
+  'ширээ': { icon: '🪑', label: '机', bg: 'from-amber-50 to-yellow-50' },
+  'сандал': { icon: '🪑', label: '椅子', bg: 'from-stone-50 to-zinc-50' },
+  'самбар': { icon: '📋', label: '黒板・掲示板', bg: 'from-emerald-50 to-green-50' },
+  'сургууль': { icon: '🏫', label: '学校', bg: 'from-blue-50 to-indigo-50' },
+  'их сургууль': { icon: '🏛️', label: '大学', bg: 'from-indigo-50 to-purple-50' },
+  'анги': { icon: '🏫', label: '教室・学級', bg: 'from-sky-50 to-blue-50' },
+  'багш': { icon: '👨‍🏫', label: '先生・教師', bg: 'from-emerald-50 to-teal-50' },
+  'оюутан': { icon: '🧑‍🎓', label: '学生・大学生', bg: 'from-cyan-50 to-sky-50' },
+  'сурагч': { icon: '🎒', label: '児童・生徒', bg: 'from-amber-50 to-yellow-50' },
+  'хичээл': { icon: '📚', label: '授業・レッスン', bg: 'from-purple-50 to-pink-50' },
+  'шалгалт': { icon: '📝', label: '試験・テスト', bg: 'from-rose-50 to-red-50' },
+  'диплом': { icon: '📜', label: '学位・卒業証書', bg: 'from-amber-50 to-yellow-50' },
+  'боловсрол': { icon: '🎓', label: '教育', bg: 'from-blue-50 to-indigo-50' },
+  'толь бичиг': { icon: '📕', label: '辞書', bg: 'from-red-50 to-rose-50' },
+
+  // === 衣類・服飾品 (Clothing) ===
+  'хувцас': { icon: '👕', label: '服・衣服', bg: 'from-blue-50 to-sky-50' },
+  'цамц': { icon: '👔', label: 'シャツ', bg: 'from-sky-50 to-cyan-50' },
+  'өмд': { icon: '👖', label: 'ズボン', bg: 'from-indigo-50 to-blue-50' },
+  'банзал': { icon: '👗', label: 'スカート', bg: 'from-pink-50 to-rose-50' },
+  'хүрэм': { icon: '🧥', label: 'ジャケット・上着', bg: 'from-amber-50 to-stone-50' },
+  'пальто': { icon: '🧥', label: 'コート', bg: 'from-stone-50 to-slate-50' },
+  'малгай': { icon: '🧢', label: '帽子', bg: 'from-teal-50 to-emerald-50' },
+  'бээлий': { icon: '🧤', label: '手袋', bg: 'from-yellow-50 to-amber-50' },
+  'ороолт': { icon: '🧣', label: 'マフラー', bg: 'from-rose-50 to-orange-50' },
+  'гутал': { icon: '👞', label: '靴・ブーツ', bg: 'from-stone-50 to-amber-50' },
+  'оймс': { icon: '🧦', label: '靴下', bg: 'from-purple-50 to-pink-50' },
+  'дээл': { icon: '🥋', label: 'デール（民族衣装）', bg: 'from-emerald-50 to-teal-50' },
+  'бүс': { icon: '🎗️', label: '帯・ベルト', bg: 'from-amber-50 to-yellow-50' },
+
+  // === 食べ物・レストラン (Food & Dining) ===
+  'талх': { icon: '🍞', label: 'パン', bg: 'from-amber-50 to-yellow-50' },
+  'мах': { icon: '🥩', label: '肉', bg: 'from-rose-50 to-red-50' },
+  'будаа': { icon: '🍚', label: 'ご飯・米', bg: 'from-stone-50 to-slate-50' },
+  'сүү': { icon: '🥛', label: '牛乳・ミルク', bg: 'from-sky-50 to-blue-50' },
+  'цай': { icon: '🍵', label: 'お茶・スーテイツァイ', bg: 'from-emerald-50 to-teal-50' },
+  'ус': { icon: '💧', label: '水', bg: 'from-cyan-50 to-sky-50' },
+  'шөл': { icon: '🍲', label: 'スープ', bg: 'from-orange-50 to-amber-50' },
+  'өндөг': { icon: '🥚', label: '卵', bg: 'from-yellow-50 to-amber-50' },
+  'загас': { icon: '🐟', label: '魚', bg: 'from-blue-50 to-cyan-50' },
+  'бууз': { icon: '🥟', label: 'ボーズ（蒸し餃子）', bg: 'from-amber-50 to-yellow-50' },
+  'хуушуур': { icon: '🥟', label: 'ホーショール（揚げ餃子）', bg: 'from-orange-50 to-amber-50' },
+  'цуйван': { icon: '🍜', label: 'ツィワン（炒め麺）', bg: 'from-amber-50 to-orange-50' },
+  'айраг': { icon: '🍶', label: 'アイラグ（馬乳酒）', bg: 'from-teal-50 to-cyan-50' },
+  'ааруул': { icon: '🧀', label: 'アーロール（乾燥チーズ）', bg: 'from-yellow-50 to-amber-50' },
+  'борц': { icon: '🥩', label: 'ボルツ（干し肉）', bg: 'from-stone-50 to-amber-50' },
+  'хоол': { icon: '🍽️', label: '料理・食事', bg: 'from-rose-50 to-orange-50' },
+  'чихэр': { icon: '🍬', label: 'お菓子・飴', bg: 'from-pink-50 to-rose-50' },
+  'жигнэмэг': { icon: '🍪', label: 'ビスケット・クッキー', bg: 'from-amber-50 to-yellow-50' },
+  'бялуу': { icon: '🎂', label: 'ケーキ', bg: 'from-pink-50 to-yellow-50' },
+  'давс': { icon: '🧂', label: '塩', bg: 'from-slate-50 to-zinc-50' },
+  'элсэн чихэр': { icon: '🧂', label: '砂糖', bg: 'from-amber-50 to-stone-50' },
+  'шар айраг': { icon: '🍺', label: 'ビール', bg: 'from-amber-50 to-yellow-50' },
+  'архи': { icon: '🍸', label: 'ウォッカ', bg: 'from-sky-50 to-indigo-50' },
+  'дарс': { icon: '🍷', label: 'ワイン', bg: 'from-rose-50 to-red-50' },
+  'өглөөний цай': { icon: '🍳', label: '朝食', bg: 'from-amber-50 to-yellow-50' },
+  'өдрийн хоол': { icon: '🍱', label: '昼食', bg: 'from-emerald-50 to-teal-50' },
+  'оройн хоол': { icon: '🍲', label: '夕食', bg: 'from-indigo-50 to-purple-50' },
+
+  // === 日用品・家電・家具 (Appliances & Furniture) ===
+  'гэр': { icon: '🛖', label: 'ゲル・家', bg: 'from-emerald-50 to-green-50' },
+  'байшин': { icon: '🏠', label: '建物・一軒家', bg: 'from-blue-50 to-sky-50' },
+  'өрөө': { icon: '🚪', label: '部屋', bg: 'from-slate-50 to-stone-50' },
+  'үүд': { icon: '🚪', label: '玄関・入口', bg: 'from-amber-50 to-orange-50' },
+  'хаалга': { icon: '🚪', label: 'ドア・扉', bg: 'from-amber-50 to-stone-50' },
+  'цонх': { icon: '🪟', label: '窓', bg: 'from-cyan-50 to-sky-50' },
+  'ор': { icon: '🛏️', label: 'ベッド', bg: 'from-indigo-50 to-blue-50' },
+  'шүүгээ': { icon: '🗄️', label: 'タンス・棚', bg: 'from-amber-50 to-stone-50' },
+  'толь': { icon: '🪞', label: '鏡', bg: 'from-sky-50 to-cyan-50' },
+  'зурагт': { icon: '📺', label: 'テレビ', bg: 'from-slate-50 to-stone-50' },
+  'хөргөгч': { icon: '🧊', label: '冷蔵庫', bg: 'from-cyan-50 to-blue-50' },
+  'угаалгын машин': { icon: '🫧', label: '洗濯機', bg: 'from-sky-50 to-indigo-50' },
+  'тоос сорогч': { icon: '🧹', label: '掃除機', bg: 'from-teal-50 to-emerald-50' },
+  'утас': { icon: '📱', label: '電話・スマホ', bg: 'from-blue-50 to-indigo-50' },
+  'гар утас': { icon: '📱', label: '携帯電話', bg: 'from-blue-50 to-cyan-50' },
+  'компьютер': { icon: '💻', label: 'パソコン', bg: 'from-indigo-50 to-violet-50' },
+  'аяга': { icon: '🥣', label: '茶碗・お椀', bg: 'from-sky-50 to-cyan-50' },
+  'халбага': { icon: '🥄', label: 'スプーン', bg: 'from-amber-50 to-stone-50' },
+  'сэрээ': { icon: '🍴', label: 'フォーク', bg: 'from-slate-50 to-zinc-50' },
+  'хутга': { icon: '🔪', label: 'ナイフ', bg: 'from-red-50 to-rose-50' },
+  'тогоо': { icon: '🍳', label: '鍋・フライパン', bg: 'from-stone-50 to-slate-50' },
+  'данх': { icon: '🫖', label: 'やかん・ポット', bg: 'from-amber-50 to-orange-50' },
+
+  // === 果物・野菜 (Fruits & Vegetables) ===
+  'алим': { icon: '🍎', label: 'りんご', bg: 'from-red-50 to-rose-50' },
+  'жүрж': { icon: '🍊', label: 'オレンジ・みかん', bg: 'from-orange-50 to-amber-50' },
+  'гадил': { icon: '🍌', label: 'バナナ', bg: 'from-yellow-50 to-amber-50' },
+  'гүзээлзгэнэ': { icon: '🍓', label: 'いちご', bg: 'from-rose-50 to-red-50' },
+  'усан үзэм': { icon: '🍇', label: 'ぶどう', bg: 'from-purple-50 to-indigo-50' },
+  'тарвас': { icon: '🍉', label: 'スイカ', bg: 'from-emerald-50 to-red-50' },
+  'төмс': { icon: '🥔', label: 'じゃがいも', bg: 'from-amber-50 to-yellow-50' },
+  'сонгино': { icon: '🧅', label: '玉ねぎ', bg: 'from-stone-50 to-amber-50' },
+  'лууван': { icon: '🥕', label: 'にんじん', bg: 'from-orange-50 to-amber-50' },
+  'байцаа': { icon: '🥬', label: 'キャベツ', bg: 'from-emerald-50 to-teal-50' },
+  'өргөст хэмх': { icon: '🥒', label: 'きゅうり', bg: 'from-green-50 to-emerald-50' },
+  'улаан лооль': { icon: '🍅', label: 'トマト', bg: 'from-red-50 to-rose-50' },
+  'сармис': { icon: '🧄', label: 'にんにく', bg: 'from-amber-50 to-stone-50' },
+
+  // === 方位・方角・位置 (Directions & Positions) ===
+  'хойд': { icon: '🧭', label: '北', bg: 'from-blue-50 to-indigo-50' },
+  'өмнөд': { icon: '🧭', label: '南', bg: 'from-rose-50 to-orange-50' },
+  'зүүн': { icon: '🧭', label: '東・左', bg: 'from-emerald-50 to-teal-50' },
+  'баруун': { icon: '🧭', label: '西・右', bg: 'from-amber-50 to-yellow-50' },
+  'дээр': { icon: '⬆️', label: '上', bg: 'from-sky-50 to-blue-50' },
+  'дор': { icon: '⬇️', label: '下', bg: 'from-slate-50 to-stone-50' },
+  'дооро': { icon: '⬇️', label: '下', bg: 'from-slate-50 to-stone-50' },
+  'дотор': { icon: '📥', label: '中', bg: 'from-teal-50 to-emerald-50' },
+  'гадна': { icon: '📤', label: '外', bg: 'from-orange-50 to-amber-50' },
+  'өмнө': { icon: '◀️', label: '前', bg: 'from-indigo-50 to-blue-50' },
+  'хойно': { icon: '▶️', label: '後ろ', bg: 'from-purple-50 to-pink-50' },
+  'хажууд': { icon: '↔️', label: '横・隣', bg: 'from-stone-50 to-slate-50' },
+  'дунд': { icon: '⏺️', label: '間・中央', bg: 'from-yellow-50 to-amber-50' },
+
+  // === 犯罪・法・司法 (Crime & Law) ===
+  'гэмт хэрэг': { icon: '🚨', label: '犯罪', bg: 'from-red-50 to-rose-50' },
+  'гэмт хэрэг судлал': { icon: '🔍', label: '犯罪学', bg: 'from-indigo-50 to-blue-50' },
+  'хууль': { icon: '⚖️', label: '法律', bg: 'from-amber-50 to-yellow-50' },
+  'цагдаа': { icon: '👮', label: '警察', bg: 'from-blue-50 to-sky-50' },
+  'шүүх': { icon: '🏛️', label: '裁判所', bg: 'from-purple-50 to-indigo-50' },
+  'шүүгч': { icon: '👨‍⚖️', label: '裁判官', bg: 'from-indigo-50 to-slate-50' },
+  'өмгөөлөгч': { icon: '🧑‍💼', label: '弁護士', bg: 'from-blue-50 to-teal-50' },
+  'хулгайч': { icon: '🦹', label: '泥棒', bg: 'from-stone-50 to-zinc-50' },
+  'шорон': { icon: '⛓️', label: '刑務所', bg: 'from-slate-50 to-stone-50' },
+  'ял': { icon: '⚖️', label: '刑罰・判決', bg: 'from-red-50 to-rose-50' },
+  'торгууль': { icon: '🎫', label: '罰金', bg: 'from-orange-50 to-amber-50' },
+  'хохирогч': { icon: '👤', label: '被害者', bg: 'from-stone-50 to-slate-50' },
+  'гэрч': { icon: '👁️', label: '目撃者・証人', bg: 'from-sky-50 to-blue-50' },
+  'хэрэг': { icon: '📁', label: '事件・案件', bg: 'from-amber-50 to-yellow-50' },
+
+  // === 自然・天気・動物 (Nature, Weather & Animals) ===
+  'нар': { icon: '☀️', label: '太陽・日', bg: 'from-amber-50 to-yellow-50' },
+  'сар': { icon: '🌙', label: '月', bg: 'from-indigo-50 to-sky-50' },
+  'од': { icon: '⭐', label: '星', bg: 'from-yellow-50 to-amber-50' },
+  'тэнгэр': { icon: '🌤️', label: '空', bg: 'from-sky-50 to-cyan-50' },
+  'үүл': { icon: '☁️', label: '雲', bg: 'from-slate-50 to-stone-50' },
+  'бороо': { icon: '🌧️', label: '雨', bg: 'from-blue-50 to-sky-50' },
+  'цас': { icon: '❄️', label: '雪', bg: 'from-cyan-50 to-sky-50' },
+  'салхи': { icon: '💨', label: '風', bg: 'from-teal-50 to-emerald-50' },
+  'аянга': { icon: '⚡', label: '雷', bg: 'from-yellow-50 to-amber-50' },
+  'уул': { icon: '🏔️', label: '山', bg: 'from-emerald-50 to-teal-50' },
+  'гол': { icon: '🏞️', label: '川', bg: 'from-blue-50 to-cyan-50' },
+  'нуур': { icon: '🌊', label: '湖', bg: 'from-cyan-50 to-blue-50' },
+  'ой': { icon: '🌲', label: '森', bg: 'from-emerald-50 to-green-50' },
+  'тал': { icon: '🌾', label: '草原', bg: 'from-lime-50 to-emerald-50' },
+  'цөл': { icon: '🏜️', label: '砂漠・ゴビ', bg: 'from-amber-50 to-orange-50' },
+  'цаг агаар': { icon: '⛅', label: '天気', bg: 'from-sky-50 to-blue-50' },
+  'агаарын хэм': { icon: '🌡️', label: '気温・温度', bg: 'from-rose-50 to-amber-50' },
+  'өвөл': { icon: '❄️', label: '冬', bg: 'from-cyan-50 to-blue-50' },
+  'хавар': { icon: '🌱', label: '春', bg: 'from-emerald-50 to-teal-50' },
+  'зун': { icon: '🌻', label: '夏', bg: 'from-amber-50 to-yellow-50' },
+  'намар': { icon: '🍁', label: '秋', bg: 'from-orange-50 to-amber-50' },
+  'морь': { icon: '🐎', label: '馬', bg: 'from-amber-50 to-orange-50' },
+  'тэмээ': { icon: '🐫', label: 'ラクダ', bg: 'from-amber-50 to-yellow-50' },
+  'хонь': { icon: '🐑', label: '羊', bg: 'from-emerald-50 to-teal-50' },
+  'ямаа': { icon: '🐐', label: '山羊', bg: 'from-stone-50 to-amber-50' },
+  'үхэр': { icon: '🐂', label: '牛', bg: 'from-amber-50 to-stone-50' },
+  'нохой': { icon: '🐕', label: '犬', bg: 'from-amber-50 to-yellow-50' },
+  'муур': { icon: '🐈', label: '猫', bg: 'from-orange-50 to-pink-50' },
+  'чоно': { icon: '🐺', label: '狼', bg: 'from-slate-50 to-zinc-50' },
+  'баавгай': { icon: '🐻', label: '熊', bg: 'from-stone-50 to-amber-50' },
+  'үнэг': { icon: '🦊', label: '狐', bg: 'from-orange-50 to-amber-50' },
+  'туулай': { icon: '🐇', label: 'うさぎ', bg: 'from-pink-50 to-rose-50' },
+  'шувуу': { icon: '🦅', label: '鳥', bg: 'from-sky-50 to-indigo-50' },
+
+  // === 街・交通・施設 (City, Transport & Places) ===
+  'хот': { icon: '🏙️', label: '都市・街', bg: 'from-blue-50 to-indigo-50' },
+  'гудамж': { icon: '🛣️', label: '通り・街路', bg: 'from-slate-50 to-stone-50' },
+  'талбай': { icon: '🏛️', label: '広場', bg: 'from-amber-50 to-yellow-50' },
+  'буудал': { icon: '🚏', label: '停留所・駅', bg: 'from-teal-50 to-emerald-50' },
+  'галт тэрэгний буудал': { icon: '🚉', label: '鉄道駅', bg: 'from-blue-50 to-sky-50' },
+  'нисэх буудал': { icon: '🛫', label: '空港', bg: 'from-sky-50 to-indigo-50' },
+  'дэлгүүр': { icon: '🏪', label: '店・商店', bg: 'from-emerald-50 to-teal-50' },
+  'зах': { icon: '🎪', label: '市場・バザール', bg: 'from-orange-50 to-amber-50' },
+  'зоогийн газар': { icon: '🍽️', label: 'レストラン', bg: 'from-rose-50 to-orange-50' },
+  'зочид буудал': { icon: '🏨', label: 'ホテル', bg: 'from-indigo-50 to-blue-50' },
+  'эмнэлэг': { icon: '🏥', label: '病院', bg: 'from-rose-50 to-red-50' },
+  'эмийн сан': { icon: '💊', label: '薬局', bg: 'from-emerald-50 to-teal-50' },
+  'банк': { icon: '🏦', label: '銀行', bg: 'from-emerald-50 to-cyan-50' },
+  'шуудан': { icon: '📮', label: '郵便局', bg: 'from-red-50 to-rose-50' },
+  'музей': { icon: '🏛️', label: '博物館', bg: 'from-purple-50 to-indigo-50' },
+  'машин': { icon: '🚗', label: '車・自動車', bg: 'from-blue-50 to-sky-50' },
+  'автобус': { icon: '🚌', label: 'バス', bg: 'from-amber-50 to-yellow-50' },
+  'галт тэрэг': { icon: '🚂', label: '電車・列車', bg: 'from-slate-50 to-stone-50' },
+  'онгоц': { icon: '✈️', label: '飛行機', bg: 'from-sky-50 to-cyan-50' },
+  'унадаг дугуй': { icon: '🚲', label: '自転車', bg: 'from-teal-50 to-emerald-50' },
+  'такси': { icon: '🚕', label: 'タクシー', bg: 'from-yellow-50 to-amber-50' },
+
+  // === 家族・人間関係 (Family & People) ===
+  'гэр бүл': { icon: '👨‍👩‍👧‍👦', label: '家族', bg: 'from-amber-50 to-orange-50' },
+  'аав': { icon: '👨', label: 'お父さん', bg: 'from-blue-50 to-sky-50' },
+  'эцэг': { icon: '👨', label: '父', bg: 'from-blue-50 to-indigo-50' },
+  'ээж': { icon: '👩', label: 'お母さん', bg: 'from-pink-50 to-rose-50' },
+  'эх': { icon: '👩', label: '母', bg: 'from-rose-50 to-red-50' },
+  'хүү': { icon: '👦', label: '息子・男の子', bg: 'from-sky-50 to-blue-50' },
+  'охин': { icon: '👧', label: '娘・女の子', bg: 'from-pink-50 to-purple-50' },
+  'ах': { icon: '🧑', label: '兄', bg: 'from-cyan-50 to-blue-50' },
+  'эгч': { icon: '👩', label: '姉', bg: 'from-rose-50 to-pink-50' },
+  'дүү': { icon: '🧒', label: '弟・妹', bg: 'from-amber-50 to-yellow-50' },
+  'өвөө': { icon: '👴', label: 'おじいちゃん', bg: 'from-stone-50 to-amber-50' },
+  'эмээ': { icon: '👵', label: 'おばあちゃん', bg: 'from-pink-50 to-amber-50' },
+  'нөхөр': { icon: '🤵', label: '夫', bg: 'from-indigo-50 to-slate-50' },
+  'эхнэр': { icon: '👰', label: '妻', bg: 'from-pink-50 to-rose-50' },
+  'хүүхэд': { icon: '👶', label: '子ども', bg: 'from-yellow-50 to-amber-50' },
+  'найз': { icon: '🤝', label: '友達', bg: 'from-emerald-50 to-teal-50' },
+  'хүн': { icon: '👤', label: '人', bg: 'from-slate-50 to-zinc-50' },
+
+  // === 音楽・芸能・日本文化 (Music & Culture) ===
+  'хөгжим': { icon: '🎵', label: '音楽', bg: 'from-fuchsia-50 to-pink-50' },
+  'дуу': { icon: '🎤', label: '歌', bg: 'from-rose-50 to-pink-50' },
+  'дуучин': { icon: '🧑‍🎤', label: '歌手', bg: 'from-purple-50 to-fuchsia-50' },
+  'морин хуур': { icon: '🎻', label: '馬頭琴', bg: 'from-amber-50 to-orange-50' },
+  'лимбэ': { icon: '🪈', label: '横笛', bg: 'from-emerald-50 to-teal-50' },
+  'бүжиг': { icon: '💃', label: 'ダンス・踊り', bg: 'from-pink-50 to-rose-50' },
+  'зураг': { icon: '🎨', label: '絵・写真', bg: 'from-yellow-50 to-amber-50' },
+  'сүши': { icon: '🍣', label: '寿司', bg: 'from-red-50 to-rose-50' },
+  'сакэ': { icon: '🍶', label: '日本酒', bg: 'from-teal-50 to-cyan-50' },
+  'сакура': { icon: '🌸', label: '桜', bg: 'from-pink-50 to-rose-50' },
+  'кимоно': { icon: '👘', label: '着物', bg: 'from-purple-50 to-pink-50' },
+  'сумо': { icon: '🤼', label: '相撲', bg: 'from-orange-50 to-amber-50' },
+  'цайны ёслол': { icon: '🍵', label: '茶道', bg: 'from-emerald-50 to-teal-50' },
+
+  // === 人称・指示代名詞・数字 (Pronouns & Numbers) ===
+  'би': { icon: '🙋', label: '私', bg: 'from-emerald-50 to-teal-50' },
+  'чи': { icon: '👉', label: '君', bg: 'from-blue-50 to-sky-50' },
+  'та': { icon: '🙇', label: 'あなた', bg: 'from-indigo-50 to-purple-50' },
+  'тэр': { icon: '👤', label: '彼・彼女・あれ', bg: 'from-slate-50 to-stone-50' },
+  'бид': { icon: '👥', label: '私たち', bg: 'from-teal-50 to-cyan-50' },
+  'та нар': { icon: '👥', label: 'あなたたち', bg: 'from-indigo-50 to-blue-50' },
+  'тэд': { icon: '👥', label: '彼ら', bg: 'from-stone-50 to-slate-50' },
+  'энэ': { icon: '👇', label: 'これ', bg: 'from-amber-50 to-yellow-50' },
+  'энд': { icon: '📍', label: 'ここ', bg: 'from-rose-50 to-red-50' },
+  'тэнд': { icon: '🧭', label: 'あそこ', bg: 'from-purple-50 to-indigo-50' },
+  'нэг': { icon: '1️⃣', label: '1', bg: 'from-blue-50 to-indigo-50' },
+  'хоёр': { icon: '2️⃣', label: '2', bg: 'from-emerald-50 to-teal-50' },
+  'гурав': { icon: '3️⃣', label: '3', bg: 'from-amber-50 to-yellow-50' },
+  'дөрөв': { icon: '4️⃣', label: '4', bg: 'from-purple-50 to-pink-50' },
+  'тав': { icon: '5️⃣', label: '5', bg: 'from-rose-50 to-orange-50' },
+  'зургаа': { icon: '6️⃣', label: '6', bg: 'from-cyan-50 to-blue-50' },
+  'долоо': { icon: '7️⃣', label: '7', bg: 'from-indigo-50 to-violet-50' },
+  'найм': { icon: '8️⃣', label: '8', bg: 'from-teal-50 to-emerald-50' },
+  'ес': { icon: '9️⃣', label: '9', bg: 'from-orange-50 to-amber-50' },
+  'арав': { icon: '🔟', label: '10', bg: 'from-red-50 to-rose-50' },
+
+  // === 感情・状態 (Emotions & States) ===
+  'баяртай': { icon: '😊', label: '嬉しい・さようなら', bg: 'from-yellow-50 to-amber-50' },
+  'гунигтай': { icon: '😢', label: '悲しい', bg: 'from-blue-50 to-indigo-50' },
+  'ууртай': { icon: '😡', label: '怒っている', bg: 'from-red-50 to-rose-50' },
+  'айдас': { icon: '😨', label: '恐れ', bg: 'from-purple-50 to-slate-50' },
+  'хайр': { icon: '❤️', label: '愛', bg: 'from-rose-50 to-pink-50' },
+  'итгэл': { icon: '🤝', label: '信頼・確信', bg: 'from-emerald-50 to-teal-50' },
+  'итгэлгүй': { icon: '🤷', label: '自信がない', bg: 'from-slate-50 to-stone-50' },
+  'зоригтой': { icon: '🦁', label: '勇敢な', bg: 'from-amber-50 to-orange-50' },
+  'гайхалтай': { icon: '✨', label: '素晴らしい', bg: 'from-yellow-50 to-amber-50' },
+  'үнэхээр мундаг': { icon: '🌟', label: '本当にすごい', bg: 'from-amber-50 to-yellow-50' },
+  'дажгүй': { icon: '👍', label: 'まぁまぁ・悪くない', bg: 'from-teal-50 to-emerald-50' },
+  'зүгээр': { icon: '👌', label: '普通に・大丈夫', bg: 'from-slate-50 to-stone-50' },
+
+  // === 意思・日常動詞 (Verbs & Actions) ===
+  'мэдэх': { icon: '💡', label: '知る', bg: 'from-yellow-50 to-amber-50' },
+  'мэдэхгүй': { icon: '🤷', label: '知らない', bg: 'from-slate-50 to-stone-50' },
+  'ойлгох': { icon: '💡', label: '分かる・理解する', bg: 'from-teal-50 to-emerald-50' },
+  'ойлгохгүй': { icon: '❓', label: '分からない', bg: 'from-rose-50 to-red-50' },
+  'ойлголоо': { icon: '🙆', label: '分かりました', bg: 'from-emerald-50 to-teal-50' },
+  'бодох': { icon: '🤔', label: '思う・考える', bg: 'from-indigo-50 to-blue-50' },
+  'хийх': { icon: '🛠️', label: 'する・作る', bg: 'from-amber-50 to-orange-50' },
+  'үзэх': { icon: '👀', label: '見る・試す', bg: 'from-cyan-50 to-sky-50' },
+  'идэх': { icon: '🍽️', label: '食べる', bg: 'from-orange-50 to-amber-50' },
+  'уух': { icon: '🥤', label: '飲む', bg: 'from-sky-50 to-cyan-50' },
+  'явах': { icon: '🚶', label: '行く', bg: 'from-emerald-50 to-teal-50' },
+  'ирэх': { icon: '🏃', label: '来る', bg: 'from-blue-50 to-indigo-50' },
+  'сурах': { icon: '📖', label: '学ぶ・勉強する', bg: 'from-indigo-50 to-purple-50' },
+  'унших': { icon: '📖', label: '読む', bg: 'from-purple-50 to-pink-50' },
+  'бичих': { icon: '✍️', label: '書く', bg: 'from-amber-50 to-yellow-50' },
+  'сонсох': { icon: '🎧', label: '聴く', bg: 'from-teal-50 to-cyan-50' },
+  'ярих': { icon: '🗣️', label: '話す', bg: 'from-sky-50 to-blue-50' },
+  'унтах': { icon: '😴', label: '寝る', bg: 'from-indigo-50 to-purple-50' },
+  'сэрэх': { icon: '⏰', label: '起きる', bg: 'from-yellow-50 to-amber-50' },
+  'суух': { icon: '🪑', label: '座る', bg: 'from-stone-50 to-slate-50' },
+  'зогсох': { icon: '🧍', label: '立つ・止まる', bg: 'from-blue-50 to-indigo-50' },
+  'худалдаж авах': { icon: '🛒', label: '買う', bg: 'from-emerald-50 to-teal-50' },
+  'өгөх': { icon: '🎁', label: 'あげる・渡す', bg: 'from-rose-50 to-pink-50' },
+  'авах': { icon: '🤲', label: 'もらう・取る', bg: 'from-cyan-50 to-sky-50' },
+  'харах': { icon: '👁️', label: '見る', bg: 'from-sky-50 to-blue-50' },
+  'уулзах': { icon: '🤝', label: '会う', bg: 'from-teal-50 to-emerald-50' },
+  'инээх': { icon: '😄', label: '笑う', bg: 'from-yellow-50 to-amber-50' },
+  'уйлах': { icon: '😢', label: '泣く', bg: 'from-blue-50 to-sky-50' },
+  'дурлах': { icon: '🥰', label: '恋する', bg: 'from-pink-50 to-rose-50' },
+  'хайрлах': { icon: '❤️', label: '愛する', bg: 'from-rose-50 to-red-50' },
+  'хичээх': { icon: '💪', label: '努力する・頑張る', bg: 'from-amber-50 to-orange-50' },
+  'хичээнэ': { icon: '💪', label: '頑張ります', bg: 'from-amber-50 to-orange-50' },
+  'амрах': { icon: '🌴', label: '休む', bg: 'from-emerald-50 to-teal-50' },
+  'ажиллах': { icon: '💼', label: '働く', bg: 'from-blue-50 to-indigo-50' },
+  'тоглох': { icon: '🎮', label: '遊ぶ', bg: 'from-purple-50 to-pink-50' },
+
+  // === 便利な会話表現 (Useful Phrases) ===
+  'сайн байна уу': { icon: '🤝', label: 'こんにちは', bg: 'from-emerald-50 to-teal-50' },
+  'баярлалаа': { icon: '🙏', label: 'ありがとう', bg: 'from-amber-50 to-yellow-50' },
+  'маш их баярлалаа': { icon: '💐', label: '本当にありがとうございます', bg: 'from-rose-50 to-pink-50' },
+  'уучлаарай': { icon: '🙇', label: 'ごめんなさい・すみません', bg: 'from-slate-50 to-stone-50' },
+  'тийм': { icon: '✅', label: 'はい・そうです', bg: 'from-emerald-50 to-teal-50' },
+  'үгүй': { icon: '❌', label: 'いいえ・違います', bg: 'from-rose-50 to-red-50' },
+  'тийм шүү': { icon: '💡', label: 'その通り・確かに', bg: 'from-cyan-50 to-sky-50' },
+  'үнэн шүү': { icon: '💯', label: '確かに・本当です', bg: 'from-emerald-50 to-teal-50' },
+  'магадгүй': { icon: '🎲', label: '多分', bg: 'from-purple-50 to-pink-50' },
+  'бололтой': { icon: '🧐', label: 'おそらく・〜のようだ', bg: 'from-blue-50 to-indigo-50' },
+  'байхаа': { icon: '💭', label: '〜のはず・〜だろうな', bg: 'from-amber-50 to-yellow-50' },
+  'ёстой': { icon: '☝️', label: '〜すべき・本当に', bg: 'from-indigo-50 to-purple-50' },
+  'юу ч болно': { icon: '🆗', label: 'なんでもいい', bg: 'from-teal-50 to-emerald-50' },
+  'аль нь ч болно': { icon: '🆗', label: 'どっちでもいい', bg: 'from-teal-50 to-emerald-50' },
+  'тоохгүй': { icon: '😌', label: '気にしない', bg: 'from-slate-50 to-stone-50' },
+  'зүгээр л': { icon: '🕊️', label: 'ただ・〜だけ', bg: 'from-sky-50 to-blue-50' }
+};
+
+/**
+ * 単語イラスト・アイコン情報の取得
+ */
+function getWordIllustration(wordOrItem, options = {}) {
+  if (!wordOrItem) return { icon: '🏷️', label: '単語', bg: 'from-slate-50 to-stone-50', svg: null };
+
+  let rawWord = '';
+  let jaMeaning = '';
+  let category = '';
+  let item = null;
+
+  if (typeof wordOrItem === 'string') {
+    rawWord = wordOrItem;
+  } else if (typeof wordOrItem === 'object') {
+    item = wordOrItem;
+    rawWord = item.mongolian || item.dictForm || item.baseWord || item.word || item.correctAnswer || '';
+    jaMeaning = item.japanese || item.meaning || item.baseMeaning || item.translation || '';
+    category = item.category || item.genreId || '';
+  }
+
+  const cleanWord = rawWord.toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+
+  // 1. initialIllustrationQuizzes に登録されたSVGイラストがあるかチェック
+  let foundSvg = null;
+  try {
+    let quizList = [];
+    if (typeof initialIllustrationQuizzes !== 'undefined') quizList = initialIllustrationQuizzes;
+    else if (typeof window !== 'undefined' && window.initialIllustrationQuizzes) quizList = window.initialIllustrationQuizzes;
+
+    const matchedQuiz = quizList.find(q => {
+      const qMn = (q.mongolian || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+      const qDf = (q.dictForm || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+      return (qMn && (qMn === cleanWord || cleanWord.includes(qMn))) || (qDf && (qDf === cleanWord || cleanWord.includes(qDf)));
+    });
+    if (matchedQuiz && matchedQuiz.svg) {
+      foundSvg = matchedQuiz.svg;
+    }
+  } catch (_) {}
+
+  // 2. 完全一致・辞書マッチ
+  if (WORD_ILLUSTRATIONS[cleanWord]) {
+    const entry = WORD_ILLUSTRATIONS[cleanWord];
+    return { ...entry, svg: foundSvg };
+  }
+
+  // 単語中に含まれるキー（複合語や語幹など）
+  for (const [key, val] of Object.entries(WORD_ILLUSTRATIONS)) {
+    if (key.length >= 3 && cleanWord.includes(key)) {
+      return { ...val, svg: foundSvg };
+    }
+  }
+
+  // 3. 日本語の意味キーワードによるセマンティック推論
+  const ja = (jaMeaning || '').toLowerCase();
+  if (ja) {
+    if (/手|腕|指|掌/.test(ja)) return { icon: '🖐️', label: '手・腕', bg: 'from-amber-50 to-orange-50', svg: foundSvg };
+    if (/頭|脳|おでこ|額/.test(ja)) return { icon: '🧠', label: '頭部', bg: 'from-purple-50 to-pink-50', svg: foundSvg };
+    if (/目|瞳|視/.test(ja)) return { icon: '👁️', label: '目', bg: 'from-sky-50 to-blue-50', svg: foundSvg };
+    if (/耳|聴|聞/.test(ja)) return { icon: '👂', label: '耳', bg: 'from-rose-50 to-pink-50', svg: foundSvg };
+    if (/鼻|嗅/.test(ja)) return { icon: '👃', label: '鼻', bg: 'from-orange-50 to-amber-50', svg: foundSvg };
+    if (/口|唇|舌|歯/.test(ja)) return { icon: '👄', label: '口・歯', bg: 'from-rose-50 to-red-50', svg: foundSvg };
+    if (/足|脚|膝|すね|かかと/.test(ja)) return { icon: '🦶', label: '足', bg: 'from-amber-50 to-orange-50', svg: foundSvg };
+    if (/腹|胃|へそ|内臓/.test(ja)) return { icon: '🤰', label: 'お腹・胃', bg: 'from-emerald-50 to-teal-50', svg: foundSvg };
+    if (/背|腰|肩|首/.test(ja)) return { icon: '🧍', label: '体', bg: 'from-blue-50 to-indigo-50', svg: foundSvg };
+    if (/心|愛|恋/.test(ja)) return { icon: '❤️', label: '心・愛', bg: 'from-rose-50 to-red-50', svg: foundSvg };
+    if (/本|ノート|ペン|筆|辞書|読|書/.test(ja)) return { icon: '📖', label: '文具・読書', bg: 'from-indigo-50 to-purple-50', svg: foundSvg };
+    if (/学校|大学|先生|生徒|学生|勉強|試験/.test(ja)) return { icon: '🏫', label: '学校・学び', bg: 'from-blue-50 to-indigo-50', svg: foundSvg };
+    if (/服|シャツ|ズボン|靴|帽|着/.test(ja)) return { icon: '👕', label: '衣服', bg: 'from-sky-50 to-blue-50', svg: foundSvg };
+    if (/パン|肉|米|ご飯|スープ|魚|卵|料理|食/.test(ja)) return { icon: '🍽️', label: '食事・料理', bg: 'from-orange-50 to-amber-50', svg: foundSvg };
+    if (/茶|水|酒|牛乳|ミルク|飲/.test(ja)) return { icon: '🍵', label: '飲み物', bg: 'from-emerald-50 to-teal-50', svg: foundSvg };
+    if (/家|部屋|窓|ドア|机|椅子|ベッド|家具/.test(ja)) return { icon: '🏠', label: '住まい・家具', bg: 'from-amber-50 to-yellow-50', svg: foundSvg };
+    if (/テレビ|冷蔵庫|洗濯機|掃除機|電話|スマホ|パソコン|時計/.test(ja)) return { icon: '📱', label: '家電・機器', bg: 'from-cyan-50 to-blue-50', svg: foundSvg };
+    if (/林檎|りんご|オレンジ|バナナ|苺|果物|野菜|じゃがいも|トマト/.test(ja)) return { icon: '🍎', label: '果物・野菜', bg: 'from-red-50 to-rose-50', svg: foundSvg };
+    if (/馬|ラクダ|羊|山羊|牛|犬|猫|動物|鳥/.test(ja)) return { icon: '🐾', label: '動物', bg: 'from-amber-50 to-orange-50', svg: foundSvg };
+    if (/山|川|湖|森|草原|砂漠|自然/.test(ja)) return { icon: '🏔️', label: '自然', bg: 'from-emerald-50 to-teal-50', svg: foundSvg };
+    if (/太陽|月|星|空|雲|雨|雪|風|天/.test(ja)) return { icon: '⛅', label: '天気・天体', bg: 'from-sky-50 to-cyan-50', svg: foundSvg };
+    if (/車|バス|電車|飛行機|自転車|交通|駅/.test(ja)) return { icon: '🚗', label: '交通・乗り物', bg: 'from-blue-50 to-indigo-50', svg: foundSvg };
+    if (/街|都市|店|市場|病院|ホテル|銀行/.test(ja)) return { icon: '🏙️', label: '街・施設', bg: 'from-indigo-50 to-purple-50', svg: foundSvg };
+    if (/家族|父|母|兄|姉|弟|妹|子|友/.test(ja)) return { icon: '👨‍👩‍👧‍👦', label: '家族・人', bg: 'from-amber-50 to-orange-50', svg: foundSvg };
+    if (/犯罪|警察|法|裁判|泥棒|刑/.test(ja)) return { icon: '⚖️', label: '法・警察', bg: 'from-red-50 to-amber-50', svg: foundSvg };
+    if (/音楽|歌|踊|楽器|琴/.test(ja)) return { icon: '🎵', label: '音楽・芸能', bg: 'from-fuchsia-50 to-pink-50', svg: foundSvg };
+    if (/寿司|着物|相撲|桜|日本/.test(ja)) return { icon: '🗾', label: '日本文化', bg: 'from-rose-50 to-red-50', svg: foundSvg };
+    if (/私|あなた|彼|彼女|これ|あれ|ここ/.test(ja)) return { icon: '👤', label: '代名詞・指示', bg: 'from-teal-50 to-cyan-50', svg: foundSvg };
+    if (/嬉|楽|喜/.test(ja)) return { icon: '😊', label: '喜び', bg: 'from-yellow-50 to-amber-50', svg: foundSvg };
+    if (/悲|泣/.test(ja)) return { icon: '😢', label: '悲しみ', bg: 'from-blue-50 to-indigo-50', svg: foundSvg };
+    if (/怒/.test(ja)) return { icon: '😡', label: '怒り', bg: 'from-red-50 to-rose-50', svg: foundSvg };
+    if (/行|来|走|歩|飛|泳/.test(ja)) return { icon: '🏃', label: '移動・行動', bg: 'from-emerald-50 to-teal-50', svg: foundSvg };
+    if (/見|視|観/.test(ja)) return { icon: '👀', label: '見る', bg: 'from-cyan-50 to-sky-50', svg: foundSvg };
+    if (/言|話|語/.test(ja)) return { icon: '🗣️', label: '話す', bg: 'from-sky-50 to-blue-50', svg: foundSvg };
+    if (/知|分か|思|考/.test(ja)) return { icon: '💡', label: '思考・理解', bg: 'from-yellow-50 to-amber-50', svg: foundSvg };
+    if (/ありがとう|こんにちは|さようなら|すみません/.test(ja)) return { icon: '🙏', label: '挨拶・表現', bg: 'from-amber-50 to-yellow-50', svg: foundSvg };
+  }
+
+  // 4. カテゴリーによるフォールバック
+  const cat = (category || '').toLowerCase();
+  if (/body|身体/.test(cat)) return { icon: '👤', label: '身体', bg: 'from-amber-50 to-orange-50', svg: foundSvg };
+  if (/school|学校|文具|教育/.test(cat)) return { icon: '📚', label: '学校・教育', bg: 'from-blue-50 to-indigo-50', svg: foundSvg };
+  if (/clothing|衣類|服/.test(cat)) return { icon: '👕', label: '衣類', bg: 'from-sky-50 to-blue-50', svg: foundSvg };
+  if (/dining|food|食べ物|食事/.test(cat)) return { icon: '🍽️', label: '食べ物', bg: 'from-orange-50 to-amber-50', svg: foundSvg };
+  if (/appliances|daily|家電|日用品|家具/.test(cat)) return { icon: '🏠', label: '日用品・家電', bg: 'from-teal-50 to-emerald-50', svg: foundSvg };
+  if (/produce|fruits|果物|野菜/.test(cat)) return { icon: '🍎', label: '果物・野菜', bg: 'from-red-50 to-rose-50', svg: foundSvg };
+  if (/directions|orientation|方位|方角/.test(cat)) return { icon: '🧭', label: '方位・方角', bg: 'from-indigo-50 to-purple-50', svg: foundSvg };
+  if (/law|crime|犯罪|法/.test(cat)) return { icon: '⚖️', label: '犯罪・法', bg: 'from-red-50 to-rose-50', svg: foundSvg };
+  if (/emotions|feelings|感情/.test(cat)) return { icon: '💭', label: '感情・心理', bg: 'from-yellow-50 to-amber-50', svg: foundSvg };
+  if (/weather|nature|自然|天気/.test(cat)) return { icon: '⛅', label: '天気・自然', bg: 'from-sky-50 to-cyan-50', svg: foundSvg };
+  if (/pronouns|人称|代名詞/.test(cat)) return { icon: '👤', label: '人称代名詞', bg: 'from-cyan-50 to-sky-50', svg: foundSvg };
+  if (/numbers|数字/.test(cat)) return { icon: '🔢', label: '数字', bg: 'from-purple-50 to-pink-50', svg: foundSvg };
+  if (/places|city|場所|施設|街/.test(cat)) return { icon: '📍', label: '場所・施設', bg: 'from-emerald-50 to-teal-50', svg: foundSvg };
+  if (/japan|日本文化/.test(cat)) return { icon: '🗾', label: '日本文化', bg: 'from-rose-50 to-red-50', svg: foundSvg };
+  if (/music|音楽/.test(cat)) return { icon: '🎵', label: '音楽・芸能', bg: 'from-fuchsia-50 to-pink-50', svg: foundSvg };
+  if (/useful|便利/.test(cat)) return { icon: '💬', label: '便利な言葉', bg: 'from-lime-50 to-emerald-50', svg: foundSvg };
+  if (/business|仕事/.test(cat)) return { icon: '💼', label: 'ビジネス', bg: 'from-cyan-50 to-blue-50', svg: foundSvg };
+  if (/medical|医療/.test(cat)) return { icon: '🩺', label: '医療', bg: 'from-rose-50 to-red-50', svg: foundSvg };
+
+  return { icon: '🏷️', label: '単語', bg: 'from-slate-50 to-stone-50', svg: foundSvg };
+}
+
+/**
+ * 単語イラストのHTMLバッジまたはSVGカードを生成
+ * options: { size: 'sm'|'md'|'lg'|'xl', inline: false, forceSvg: false, className: '' }
+ */
+function getWordIllustrationHTML(wordOrItem, options = {}) {
+  const ill = getWordIllustration(wordOrItem, options);
+  if (!ill) return '';
+
+  if (options.inline) {
+    return ill.icon || '🏷️';
+  }
+
+  const size = options.size || 'md';
+  let sizeClasses = 'w-10 h-10 text-xl rounded-xl';
+  if (size === 'sm') sizeClasses = 'w-8 h-8 text-base rounded-lg';
+  else if (size === 'lg') sizeClasses = 'w-12 h-12 text-2xl rounded-2xl';
+  else if (size === 'xl') sizeClasses = 'w-16 h-16 sm:w-20 sm:h-20 text-3xl sm:text-4xl rounded-2xl sm:rounded-3xl';
+
+  // SVG表示（大画面・クイズ用）
+  if (ill.svg && (size === 'xl' || options.forceSvg)) {
+    return `
+      <div class="word-illustration-box inline-flex items-center justify-center p-2 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs ${options.className || ''}">
+        ${ill.svg}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="word-illustration-badge inline-flex items-center justify-center ${sizeClasses} bg-gradient-to-br ${ill.bg} dark:from-slate-800 dark:to-slate-700 text-slate-800 dark:text-white border border-slate-200/90 dark:border-slate-700 shadow-2xs shrink-0 select-none ${options.className || ''}" title="${ill.label || ''}">
+      <span>${ill.icon}</span>
+    </div>
+  `;
+}
+
+if (typeof window !== 'undefined') {
+  window.WORD_ILLUSTRATIONS = WORD_ILLUSTRATIONS;
+  window.getWordIllustration = getWordIllustration;
+  window.getWordIllustrationHTML = getWordIllustrationHTML;
+}
+
+
 
 
 function renderGrammarExplanationHTML({
@@ -1425,11 +1977,17 @@ function renderGrammarExplanationHTML({
 
   return `
     <div class="space-y-2.5 text-xs sm:text-sm">
-      <!-- 1. 正解表示 -->
-      <div class="flex items-center flex-wrap gap-2">
-        <span class="text-slate-500 font-medium">正解: </span>
-        <span class="font-extrabold text-base cyrillic-text text-emerald-800 correct-answer-text">${correctAnswer}</span>
-        ${pron && isPronunciationCautionWord(item || { mongolian: correctAnswer, pronunciation: pron }) ? `<span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md text-xs font-bold border border-amber-200 ml-1">⚠️ 読み注意: ${pron}</span>` : ''}
+      <!-- 1. 正解表示（ビジュアルイラスト付き・要件10準拠） -->
+      <div class="flex items-center gap-2.5 flex-wrap">
+        ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(item || { mongolian: correctAnswer, japanese: meaning }, { size: 'md' }) : ''}
+        <div>
+          <div class="flex items-center flex-wrap gap-2">
+            <span class="text-slate-500 dark:text-slate-400 font-medium">正解: </span>
+            <span class="font-extrabold text-base sm:text-lg cyrillic-text text-emerald-800 dark:text-emerald-400 correct-answer-text">${correctAnswer}</span>
+            ${pron && isPronunciationCautionWord(item || { mongolian: correctAnswer, pronunciation: pron }) ? `<span class="text-amber-700 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800 px-2 py-0.5 rounded-md text-xs font-bold border border-amber-200 ml-1">⚠️ 読み注意: ${pron}</span>` : ''}
+          </div>
+          ${meaning ? `<div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${meaning}</div>` : ''}
+        </div>
       </div>
 
       ${!isCorrect && userAnswer ? `
@@ -47838,6 +48396,11 @@ class ThemeService {
     body.classList.remove('theme-dark', 'theme-sepia', 'theme-forest', 'theme-ocean', 'theme-lavender', 'theme-custom');
     body.style.backgroundColor = '';
 
+    const isDark = (themeId === 'dark' || themeId === 'forest' || themeId === 'ocean' || (themeId === 'custom' && this.isColorDark(customBgColor)));
+    if (document.documentElement) {
+      document.documentElement.classList.toggle('dark', isDark);
+    }
+
     if (themeId === 'dark') {
       body.classList.add('theme-dark');
     } else if (themeId === 'sepia') {
@@ -63750,47 +64313,47 @@ class InterviewMasterComponent {
         <div class="space-y-4 mb-8">
           ${topic.sentences.map((s, sIdx) => {
             return `
-              <div class="interview-sentence-card bg-slate-50/70 border border-slate-200 hover:border-emerald-300 rounded-2xl p-4 sm:p-5 transition-all">
+              <div class="interview-sentence-card bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 rounded-2xl p-4 sm:p-5 transition-all shadow-xs">
                 <div class="flex items-start justify-between gap-3 mb-2">
                   <div class="flex items-center gap-2">
-                    <span class="sentence-num-badge w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center flex-shrink-0">
+                    <span class="sentence-num-badge w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center flex-shrink-0">
                       ${sIdx + 1}
                     </span>
-                    ${s.speaker ? `<span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${s.speaker === 'Би' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-800'}">${s.speaker}</span>` : ''}
+                    ${s.speaker ? `<span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${s.speaker === 'Би' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200'}">${s.speaker}</span>` : ''}
                   </div>
                   <button
                     type="button"
                     data-speech-text="${encodeURIComponent(s.mn)}"
-                    class="play-sentence-btn sentence-audio-btn text-xs text-emerald-700 hover:text-emerald-900 font-medium flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs cursor-pointer">
+                    class="play-sentence-btn sentence-audio-btn text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 font-medium flex items-center gap-1 bg-white dark:bg-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-600 shadow-2xs cursor-pointer">
                     <span>🔊 聴く</span>
                   </button>
                 </div>
 
                 <!-- モンゴル語文 -->
                 ${this.showMongolian ? `
-                  <p class="sentence-mn-text text-base sm:text-lg font-bold text-slate-900 mb-1 leading-relaxed">
+                  <p class="sentence-mn-text text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-1.5 leading-relaxed font-sans">
                     ${s.mn}
                   </p>
                 ` : `
-                  <p class="text-sm italic text-slate-400 mb-1">（キリル文字非表示中 - 声に出して言ってみよう！）</p>
+                  <p class="text-sm italic text-slate-400 dark:text-slate-500 mb-1">（キリル文字非表示中 - 声に出して言ってみよう！）</p>
                 `}
 
                 <!-- ローマ字 -->
                 ${this.showRomaji && s.romaji ? `
-                  <p class="text-xs text-emerald-800/80 font-mono mb-1">${s.romaji}</p>
+                  <p class="text-xs text-emerald-700 dark:text-emerald-400 font-mono mb-1.5">${s.romaji}</p>
                 ` : ''}
 
-                <!-- 日本語訳 -->
+                <!-- 日本語訳（夜間モード高視認性シアン／アイスブルー） -->
                 ${this.showJapanese ? `
-                  <p class="sentence-ja-text text-xs sm:text-sm text-slate-600 mb-2">${s.ja}</p>
+                  <p class="sentence-ja-text text-xs sm:text-sm text-slate-600 dark:text-sky-200 font-semibold mb-2.5 leading-relaxed">${s.ja}</p>
                 ` : `
-                  <p class="text-xs italic text-slate-400 mb-2">（和訳非表示中）</p>
+                  <p class="text-xs italic text-slate-400 dark:text-slate-500 mb-2">（和訳非表示中）</p>
                 `}
 
                 <!-- 文法・ポイント解説 -->
                 ${s.explanation ? `
-                  <div class="sentence-exp-box mt-2 pt-2 border-t border-slate-200/80 text-[11px] sm:text-xs text-slate-500 flex items-start gap-1.5">
-                    <span class="sentence-exp-badge text-emerald-600 font-bold">💡 解説:</span>
+                  <div class="sentence-exp-box mt-2 pt-2 border-t border-slate-200/80 dark:border-slate-700 text-[11px] sm:text-xs text-slate-600 dark:text-slate-200 flex items-start gap-1.5 leading-relaxed">
+                    <span class="sentence-exp-badge text-emerald-600 dark:text-emerald-400 font-bold shrink-0">💡 解説:</span>
                     <span class="sentence-exp-content">${s.explanation}</span>
                   </div>
                 ` : ''}
@@ -69481,51 +70044,54 @@ class GenreWordMasterComponent {
           </div>
         </div>
 
-        <!-- 単語一覧グリッド -->
+        <!-- 単語一覧グリッド（ビジュアルイラスト付き・要件10準拠） -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           ${words.map(w => `
-            <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-3">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-3">
               <div>
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <div class="text-xl font-black text-slate-900 tracking-wide font-sans">
-                      ${w.mongolian}
-                    </div>
-                    ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(w) && w.pronunciation) ? `
-                      <div class="text-xs font-bold text-amber-600">
-                        ⚠️ [ ${w.pronunciation} ]
+                <div class="flex items-start justify-between gap-2.5">
+                  <div class="flex items-center gap-3">
+                    ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(w, { size: 'lg' }) : ''}
+                    <div>
+                      <div class="text-xl font-black text-slate-900 dark:text-white tracking-wide font-sans">
+                        ${w.mongolian}
                       </div>
-                    ` : ''}
+                      ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(w) && w.pronunciation) ? `
+                        <div class="text-xs font-bold text-amber-600 dark:text-amber-400">
+                          ⚠️ [ ${w.pronunciation} ]
+                        </div>
+                      ` : ''}
+                    </div>
                   </div>
-                  <button type="button" class="btn-play-word-audio p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition-colors cursor-pointer" data-word="${w.mongolian}" title="音声を聴く">
+                  <button type="button" class="btn-play-word-audio p-2 rounded-xl bg-emerald-50 dark:bg-slate-700 hover:bg-emerald-100 dark:hover:bg-slate-600 text-emerald-700 dark:text-emerald-400 transition-colors cursor-pointer shrink-0" data-word="${w.mongolian}" title="音声を聴く">
                     <span class="text-base">🔊</span>
                   </button>
                 </div>
 
-                <div class="mt-2.5 pt-2.5 border-t border-slate-100">
-                  <div class="text-sm font-black text-slate-800">
+                <div class="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-700">
+                  <div class="text-sm font-black text-slate-800 dark:text-slate-100">
                     ${w.japanese}
                   </div>
-                  <div class="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+                  <div class="text-[11px] text-slate-400 dark:text-slate-400 font-medium flex items-center justify-between">
                     <span>品詞: ${w.pos || '名詞'}</span>
-                    ${w.caseGovernment ? `<span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 font-black text-[10px] border border-purple-200">⚡ ${w.caseGovernment}</span>` : ''}
+                    ${w.caseGovernment ? `<span class="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-900 dark:text-purple-200 font-black text-[10px] border border-purple-200 dark:border-purple-800">⚡ ${w.caseGovernment}</span>` : ''}
                   </div>
                 </div>
 
                 ${w.caseGovernment ? `
-                  <div class="mt-2 p-2.5 bg-gradient-to-br from-purple-50 to-indigo-50/50 rounded-xl border border-purple-200 text-xs space-y-1">
-                    <div class="font-black text-purple-950 flex items-center gap-1.5">
+                  <div class="mt-2 p-2.5 bg-gradient-to-br from-purple-50 to-indigo-50/50 dark:from-purple-950/40 dark:to-indigo-950/40 rounded-xl border border-purple-200 dark:border-purple-800 text-xs space-y-1">
+                    <div class="font-black text-purple-950 dark:text-purple-200 flex items-center gap-1.5">
                       <span>⚡ 格支配:</span>
-                      <span class="text-purple-800 font-bold">${w.caseGovernment}</span>
+                      <span class="text-purple-800 dark:text-purple-300 font-bold">${w.caseGovernment}</span>
                     </div>
-                    ${w.caseNote ? `<div class="text-[11px] text-purple-900 leading-relaxed">${w.caseNote}</div>` : ''}
+                    ${w.caseNote ? `<div class="text-[11px] text-purple-900 dark:text-purple-300 leading-relaxed">${w.caseNote}</div>` : ''}
                   </div>
                 ` : ''}
 
                 ${w.exampleMn ? `
-                  <div class="mt-2 p-2 bg-slate-50 rounded-xl border border-slate-100 text-xs space-y-0.5">
-                    <div class="font-bold text-slate-700 font-sans">${w.exampleMn}</div>
-                    <div class="text-[11px] text-slate-500">${w.exampleJa || ''}</div>
+                  <div class="mt-2 p-2 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs space-y-0.5">
+                    <div class="font-bold text-slate-700 dark:text-slate-200 font-sans">${w.exampleMn}</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">${w.exampleJa || ''}</div>
                   </div>
                 ` : ''}
               </div>
@@ -69712,8 +70278,11 @@ class GenreWordMasterComponent {
             <span>${isMnToJa ? '🇲🇳 モンゴル語 ➜ 🇯🇵 日本語' : '🇯🇵 日本語 ➜ 🇲🇳 モンゴル語'}</span>
           </div>
 
-          <!-- メイン問題文 -->
+          <!-- メイン問題文（ビジュアルイラスト付き） -->
           <div class="my-4">
+            <div class="flex justify-center mb-3">
+              ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(currentQuestion, { size: 'xl' }) : ''}
+            </div>
             ${isMnToJa ? `
               <h3 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-wide font-sans mb-2">
                 ${currentQuestion.mongolian}
@@ -71340,12 +71909,15 @@ class FlashcardsComponent {
               </div>
 
               <div class="text-center my-auto">
-                <div class="text-xs text-slate-400 mb-1">日本語</div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">
+                <div class="mb-3 flex justify-center">
+                  ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(card, { size: 'xl' }) : ''}
+                </div>
+                <div class="text-xs text-slate-400 dark:text-slate-400 mb-1">日本語</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">
                   ${card.japanese}
                 </div>
                 ${card.category ? `
-                  <div class="text-[11px] text-slate-400 mt-2">${card.category}</div>
+                  <div class="text-[11px] text-slate-400 dark:text-slate-400 mt-2">${card.category}</div>
                 ` : ''}
               </div>
 
@@ -71369,8 +71941,11 @@ class FlashcardsComponent {
                 const details = getWordGrammarDetails(card);
                 return `
                   <div class="my-auto py-2 space-y-2">
-                    <div class="text-2xl sm:text-3xl font-black text-slate-900 cyrillic-text">
-                      ${details.dictForm || card.mongolian}
+                    <div class="flex items-center gap-3">
+                      ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(card, { size: 'lg' }) : ''}
+                      <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white cyrillic-text">
+                        ${details.dictForm || card.mongolian}
+                      </div>
                     </div>
 
                     ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(card) && card.pronunciation) ? `
@@ -71812,10 +72387,13 @@ class ReviewNotebookComponent {
                   </div>
                 </div>
 
-                <!-- 問題文（答えの漏洩を防止） -->
-                <div class="text-sm font-bold text-slate-800 cyrillic-text flex items-center gap-1.5 flex-wrap">
-                  <span class="text-xs px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold">${parsed.displayPrefix}</span>
-                  <span>${parsed.promptText}</span>
+                <!-- 問題文（イラスト付き・答えの漏洩を防止） -->
+                <div class="flex items-center gap-2.5">
+                  ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML({ mongolian: m.correctAnswer, japanese: m.japanese || parsed.promptText }, { size: 'sm' }) : ''}
+                  <div class="text-sm font-bold text-slate-800 dark:text-white cyrillic-text flex items-center gap-1.5 flex-wrap">
+                    <span class="text-xs px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold">${parsed.displayPrefix}</span>
+                    <span>${parsed.promptText}</span>
+                  </div>
                 </div>
 
                 <!-- 回答対比または単語意味 -->
@@ -72228,8 +72806,8 @@ class ReviewNotebookComponent {
           </div>
         ` : `
           <div class="animate-fade-in space-y-4">
-            <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950' : 'bg-rose-50/90 border-rose-300 text-rose-950'} shadow-sm">
-              <div class="text-2xl font-bold mb-2">
+            <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50 dark:bg-rose-950/50 border-rose-300 dark:border-rose-900/60 text-rose-950 dark:text-rose-100'} shadow-sm">
+              <div class="text-2xl font-black mb-3">
                 ${this.state.isCorrect ? '🎉 見事克服！正解です！' : '❌ まだ克服できていません'}
               </div>
 
@@ -72248,25 +72826,34 @@ class ReviewNotebookComponent {
                   });
                 }
 
-                // マッチ単語がない場合のフォールバック（成り立ち解析＆語呂合わせつき）
+                // マッチ単語がない場合のフォールバック（イラスト・成り立ち解析・語呂合わせ・ダークモード高コントラスト対応）
                 const etymologyHTML = (typeof getWordEtymologyHTML === 'function')
                   ? getWordEtymologyHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
                   : '';
                 const mnemonicHTML = (typeof getWordMnemonicHTML === 'function')
                   ? getWordMnemonicHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
                   : '';
+                const illustrationHTML = (typeof getWordIllustrationHTML === 'function')
+                  ? getWordIllustrationHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, { size: 'md' })
+                  : '';
 
                 return `
-                  <div class="space-y-2 text-xs sm:text-sm">
-                    <div>
-                      <span class="text-slate-500 font-medium">正解: </span>
-                      <span class="font-extrabold text-base cyrillic-text text-emerald-700 correct-answer-text">${item.correctAnswer}</span>
+                  <div class="space-y-3 text-xs sm:text-sm">
+                    <div class="flex items-center gap-3">
+                      ${illustrationHTML}
+                      <div>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                          <span class="text-slate-500 dark:text-slate-400 font-bold">正解: </span>
+                          <span class="font-black text-lg cyrillic-text text-emerald-700 dark:text-emerald-400 correct-answer-text">${item.correctAnswer}</span>
+                        </div>
+                        ${item.japanese ? `<div class="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5">${item.japanese}</div>` : ''}
+                      </div>
                     </div>
 
                     ${!this.state.isCorrect && this.state.userAnswer ? `
-                      <div class="text-rose-700">
+                      <div class="p-2.5 rounded-xl bg-rose-100/80 dark:bg-rose-900/40 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200">
                         <span>あなたの回答: </span>
-                        <span class="font-semibold line-through">${this.state.userAnswer}</span>
+                        <span class="font-bold line-through cyrillic-text">${this.state.userAnswer}</span>
                       </div>
                     ` : ''}
 
@@ -72274,7 +72861,7 @@ class ReviewNotebookComponent {
                     ${mnemonicHTML}
 
                     ${item.explanation ? `
-                      <div class="p-3 bg-white/90 rounded-xl border border-slate-200 text-slate-700 text-xs">
+                      <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
                         💡 ${item.explanation}
                       </div>
                     ` : ''}

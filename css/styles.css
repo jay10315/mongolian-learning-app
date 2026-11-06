@@ -577,3 +577,23 @@ body.theme-forest .mnemonic-card .border-amber-400,
 body.theme-ocean .mnemonic-card .border-amber-400 {
   border-color: #f59e0b !important;
 }
+
+
+/* ========================================================
+   単語イラスト・ビジュアルアイコン（夜間モード・テーマ対応）
+   ======================================================== */
+body.theme-dark .word-illustration-badge,
+body.theme-forest .word-illustration-badge,
+body.theme-ocean .word-illustration-badge {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.theme-dark .word-illustration-box,
+body.theme-forest .word-illustration-box,
+body.theme-ocean .word-illustration-box {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+}

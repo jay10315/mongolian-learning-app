@@ -459,51 +459,54 @@ export class GenreWordMasterComponent {
           </div>
         </div>
 
-        <!-- 単語一覧グリッド -->
+        <!-- 単語一覧グリッド（ビジュアルイラスト付き・要件10準拠） -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           ${words.map(w => `
-            <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-3">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-3">
               <div>
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <div class="text-xl font-black text-slate-900 tracking-wide font-sans">
-                      ${w.mongolian}
-                    </div>
-                    ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(w) && w.pronunciation) ? `
-                      <div class="text-xs font-bold text-amber-600">
-                        ⚠️ [ ${w.pronunciation} ]
+                <div class="flex items-start justify-between gap-2.5">
+                  <div class="flex items-center gap-3">
+                    ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(w, { size: 'lg' }) : ''}
+                    <div>
+                      <div class="text-xl font-black text-slate-900 dark:text-white tracking-wide font-sans">
+                        ${w.mongolian}
                       </div>
-                    ` : ''}
+                      ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(w) && w.pronunciation) ? `
+                        <div class="text-xs font-bold text-amber-600 dark:text-amber-400">
+                          ⚠️ [ ${w.pronunciation} ]
+                        </div>
+                      ` : ''}
+                    </div>
                   </div>
-                  <button type="button" class="btn-play-word-audio p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition-colors cursor-pointer" data-word="${w.mongolian}" title="音声を聴く">
+                  <button type="button" class="btn-play-word-audio p-2 rounded-xl bg-emerald-50 dark:bg-slate-700 hover:bg-emerald-100 dark:hover:bg-slate-600 text-emerald-700 dark:text-emerald-400 transition-colors cursor-pointer shrink-0" data-word="${w.mongolian}" title="音声を聴く">
                     <span class="text-base">🔊</span>
                   </button>
                 </div>
 
-                <div class="mt-2.5 pt-2.5 border-t border-slate-100">
-                  <div class="text-sm font-black text-slate-800">
+                <div class="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-700">
+                  <div class="text-sm font-black text-slate-800 dark:text-slate-100">
                     ${w.japanese}
                   </div>
-                  <div class="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+                  <div class="text-[11px] text-slate-400 dark:text-slate-400 font-medium flex items-center justify-between">
                     <span>品詞: ${w.pos || '名詞'}</span>
-                    ${w.caseGovernment ? `<span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 font-black text-[10px] border border-purple-200">⚡ ${w.caseGovernment}</span>` : ''}
+                    ${w.caseGovernment ? `<span class="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-900 dark:text-purple-200 font-black text-[10px] border border-purple-200 dark:border-purple-800">⚡ ${w.caseGovernment}</span>` : ''}
                   </div>
                 </div>
 
                 ${w.caseGovernment ? `
-                  <div class="mt-2 p-2.5 bg-gradient-to-br from-purple-50 to-indigo-50/50 rounded-xl border border-purple-200 text-xs space-y-1">
-                    <div class="font-black text-purple-950 flex items-center gap-1.5">
+                  <div class="mt-2 p-2.5 bg-gradient-to-br from-purple-50 to-indigo-50/50 dark:from-purple-950/40 dark:to-indigo-950/40 rounded-xl border border-purple-200 dark:border-purple-800 text-xs space-y-1">
+                    <div class="font-black text-purple-950 dark:text-purple-200 flex items-center gap-1.5">
                       <span>⚡ 格支配:</span>
-                      <span class="text-purple-800 font-bold">${w.caseGovernment}</span>
+                      <span class="text-purple-800 dark:text-purple-300 font-bold">${w.caseGovernment}</span>
                     </div>
-                    ${w.caseNote ? `<div class="text-[11px] text-purple-900 leading-relaxed">${w.caseNote}</div>` : ''}
+                    ${w.caseNote ? `<div class="text-[11px] text-purple-900 dark:text-purple-300 leading-relaxed">${w.caseNote}</div>` : ''}
                   </div>
                 ` : ''}
 
                 ${w.exampleMn ? `
-                  <div class="mt-2 p-2 bg-slate-50 rounded-xl border border-slate-100 text-xs space-y-0.5">
-                    <div class="font-bold text-slate-700 font-sans">${w.exampleMn}</div>
-                    <div class="text-[11px] text-slate-500">${w.exampleJa || ''}</div>
+                  <div class="mt-2 p-2 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs space-y-0.5">
+                    <div class="font-bold text-slate-700 dark:text-slate-200 font-sans">${w.exampleMn}</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">${w.exampleJa || ''}</div>
                   </div>
                 ` : ''}
               </div>
@@ -690,8 +693,11 @@ export class GenreWordMasterComponent {
             <span>${isMnToJa ? '🇲🇳 モンゴル語 ➜ 🇯🇵 日本語' : '🇯🇵 日本語 ➜ 🇲🇳 モンゴル語'}</span>
           </div>
 
-          <!-- メイン問題文 -->
+          <!-- メイン問題文（ビジュアルイラスト付き） -->
           <div class="my-4">
+            <div class="flex justify-center mb-3">
+              ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML(currentQuestion, { size: 'xl' }) : ''}
+            </div>
             ${isMnToJa ? `
               <h3 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-wide font-sans mb-2">
                 ${currentQuestion.mongolian}

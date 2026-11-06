@@ -52,6 +52,11 @@ export class ThemeService {
     body.classList.remove('theme-dark', 'theme-sepia', 'theme-forest', 'theme-ocean', 'theme-lavender', 'theme-custom');
     body.style.backgroundColor = '';
 
+    const isDark = (themeId === 'dark' || themeId === 'forest' || themeId === 'ocean' || (themeId === 'custom' && this.isColorDark(customBgColor)));
+    if (document.documentElement) {
+      document.documentElement.classList.toggle('dark', isDark);
+    }
+
     if (themeId === 'dark') {
       body.classList.add('theme-dark');
     } else if (themeId === 'sepia') {

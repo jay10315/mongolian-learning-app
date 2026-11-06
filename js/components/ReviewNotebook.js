@@ -247,10 +247,13 @@ export class ReviewNotebookComponent {
                   </div>
                 </div>
 
-                <!-- 問題文（答えの漏洩を防止） -->
-                <div class="text-sm font-bold text-slate-800 cyrillic-text flex items-center gap-1.5 flex-wrap">
-                  <span class="text-xs px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold">${parsed.displayPrefix}</span>
-                  <span>${parsed.promptText}</span>
+                <!-- 問題文（イラスト付き・答えの漏洩を防止） -->
+                <div class="flex items-center gap-2.5">
+                  ${(typeof getWordIllustrationHTML === 'function') ? getWordIllustrationHTML({ mongolian: m.correctAnswer, japanese: m.japanese || parsed.promptText }, { size: 'sm' }) : ''}
+                  <div class="text-sm font-bold text-slate-800 dark:text-white cyrillic-text flex items-center gap-1.5 flex-wrap">
+                    <span class="text-xs px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold">${parsed.displayPrefix}</span>
+                    <span>${parsed.promptText}</span>
+                  </div>
                 </div>
 
                 <!-- 回答対比または単語意味 -->
@@ -663,8 +666,8 @@ export class ReviewNotebookComponent {
           </div>
         ` : `
           <div class="animate-fade-in space-y-4">
-            <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950' : 'bg-rose-50/90 border-rose-300 text-rose-950'} shadow-sm">
-              <div class="text-2xl font-bold mb-2">
+            <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50 dark:bg-rose-950/50 border-rose-300 dark:border-rose-900/60 text-rose-950 dark:text-rose-100'} shadow-sm">
+              <div class="text-2xl font-black mb-3">
                 ${this.state.isCorrect ? '🎉 見事克服！正解です！' : '❌ まだ克服できていません'}
               </div>
 
@@ -683,25 +686,34 @@ export class ReviewNotebookComponent {
                   });
                 }
 
-                // マッチ単語がない場合のフォールバック（成り立ち解析＆語呂合わせつき）
+                // マッチ単語がない場合のフォールバック（イラスト・成り立ち解析・語呂合わせ・ダークモード高コントラスト対応）
                 const etymologyHTML = (typeof getWordEtymologyHTML === 'function')
                   ? getWordEtymologyHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
                   : '';
                 const mnemonicHTML = (typeof getWordMnemonicHTML === 'function')
                   ? getWordMnemonicHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
                   : '';
+                const illustrationHTML = (typeof getWordIllustrationHTML === 'function')
+                  ? getWordIllustrationHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, { size: 'md' })
+                  : '';
 
                 return `
-                  <div class="space-y-2 text-xs sm:text-sm">
-                    <div>
-                      <span class="text-slate-500 font-medium">正解: </span>
-                      <span class="font-extrabold text-base cyrillic-text text-emerald-700 correct-answer-text">${item.correctAnswer}</span>
+                  <div class="space-y-3 text-xs sm:text-sm">
+                    <div class="flex items-center gap-3">
+                      ${illustrationHTML}
+                      <div>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                          <span class="text-slate-500 dark:text-slate-400 font-bold">正解: </span>
+                          <span class="font-black text-lg cyrillic-text text-emerald-700 dark:text-emerald-400 correct-answer-text">${item.correctAnswer}</span>
+                        </div>
+                        ${item.japanese ? `<div class="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5">${item.japanese}</div>` : ''}
+                      </div>
                     </div>
 
                     ${!this.state.isCorrect && this.state.userAnswer ? `
-                      <div class="text-rose-700">
+                      <div class="p-2.5 rounded-xl bg-rose-100/80 dark:bg-rose-900/40 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200">
                         <span>あなたの回答: </span>
-                        <span class="font-semibold line-through">${this.state.userAnswer}</span>
+                        <span class="font-bold line-through cyrillic-text">${this.state.userAnswer}</span>
                       </div>
                     ` : ''}
 
@@ -709,7 +721,7 @@ export class ReviewNotebookComponent {
                     ${mnemonicHTML}
 
                     ${item.explanation ? `
-                      <div class="p-3 bg-white/90 rounded-xl border border-slate-200 text-slate-700 text-xs">
+                      <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
                         💡 ${item.explanation}
                       </div>
                     ` : ''}
