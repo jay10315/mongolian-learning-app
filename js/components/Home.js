@@ -493,6 +493,31 @@ export class HomeComponent {
             </div>
 
             <!-- 助詞・語尾ルール特訓道場カード -->
+            
+            <!-- 語源・神接尾辞マスター -->
+            <div class="bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-indigo-500/10 rounded-xl p-5 border-2 border-amber-400 hover:border-amber-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="etymology_master">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    💡
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-600 text-white shadow-2xs">
+                    語彙爆増 💡
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-amber-700 transition-colors">
+                  語源・神接尾辞マスター
+                </h4>
+                <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                  「ашгүй（よかった！）」の語源の謎や、単語が2倍になる「-тай ↔ -гүй」、なんでも動詞化する「-лах」など、語根＋接尾辞のレゴ構造を丸ごとマスター！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-amber-200/50 flex items-center justify-between text-xs font-bold text-amber-700">
+                <span>図鑑・クイズ・早見表</span>
+                <span class="group-hover:translate-x-1 transition-transform">➔</span>
+              </div>
+            </div>
+
             <div class="bg-gradient-to-br from-rose-500/10 via-amber-500/5 to-orange-500/10 rounded-xl p-5 border-2 border-rose-400 hover:border-rose-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="suffix_dojo">
               <div>
                 <div class="flex items-center justify-between mb-3">

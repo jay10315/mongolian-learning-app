@@ -34672,6 +34672,559 @@ const suffixRuleData = {
 };
 
 
+// === js/data/etymologySuffixData.js ===
+// モンゴル語 語源・接尾辞（エティモロジー・神接尾辞）マスターデータ
+// 語根＋接尾辞の体系的理解で語彙力を飛躍的に高めるデータベース
+
+const etymologyCategories = [
+  {
+    id: "unexpected_etymology",
+    title: "🔍 語源の意外な秘密（一見否定に見える肯定など）",
+    shortDesc: "「ашгүй」など、一見否定に見えて実は古用副詞化・肯定の意味になる語源の謎を解き明かす！",
+    icon: "💡"
+  },
+  {
+    id: "adjective_suffixes",
+    title: "✨ 単語が2倍になる！対義語・形容詞接尾辞",
+    shortDesc: "「-тай（有格）」↔「-гүй（否定）」、「-хан（愛称・控えめ）」など日常必須の接尾辞！",
+    icon: "⚖️"
+  },
+  {
+    id: "person_noun_suffixes",
+    title: "👤 人・職業・役割を作る接尾辞",
+    shortDesc: "「-ч / -чин」、「-гч / -аач」など、名詞や動詞から職業・専門家を作る魔法のルール！",
+    icon: "🧑‍💼"
+  },
+  {
+    id: "verbalizer_suffixes",
+    title: "⚙️ なんでも動詞化！万能接尾辞",
+    shortDesc: "「-лах / -лэх / -лох / -лөх」で名詞を行動へ変換する超多産接辞！",
+    icon: "⚡"
+  },
+  {
+    id: "action_noun_suffixes",
+    title: "📦 動詞から結果・制度・名詞を作る接尾辞",
+    shortDesc: "「-лт / -лга / -лгаа / -ц」でアクションを概念や道具へ名詞化！",
+    icon: "📦"
+  },
+  {
+    id: "verb_modifiers",
+    title: "🤝 使役・受動・相互の動詞拡張接尾辞",
+    shortDesc: "「-уулах（使役）」「-гдах（受動・自発）」「-лцах（相互）」で表現力を3倍に！",
+    icon: "🔄"
+  },
+  {
+    id: "prefix_reduplication",
+    title: "🎨 モンゴル語独自の超強調！重複接頭音",
+    shortDesc: "「ув улаан（真っ赤）」「цав цагаан（真っ白）」などの音節重複ルール！",
+    icon: "🎨"
+  }
+];
+
+const etymologyCards = [
+  // 1. 語源の意外な秘密
+  {
+    id: "etym_ashgui",
+    categoryId: "unexpected_etymology",
+    suffix: "-гүй（語源的副詞化 vs 否定）",
+    title: "ашгүй はなぜ「よかった！」になるのか？",
+    badge: "目からウロコ",
+    coreExplanation: "一見すると否定の接辞「-гүй（〜のない）」に見えますが、語源・文法的には格助詞・副詞化接尾辞の古い用法に由来します。名詞に結合して「〜の状態で」「〜のように」という様態・副詞を作る役割を果たしています。\nそのため「利益がない（無益）」ではなく、「利益・恵みのある状態で」→「好都合に」「幸いにも！」「よかった！」という安堵の肯定表現になります。",
+    rootWord: "аш",
+    rootMeaning: "利益、恩恵、成果、効果",
+    derivedWord: "ашгүй",
+    derivedMeaning: "幸いにも！よかった！助かった！",
+    contrastExample: {
+      standardNegative: "усгүй（水のない）、ажилгүй（仕事のない・無職）",
+      archaicAdverbial: "ашгүй（幸いにも）、лавтай / лавгүй（確かに・疑いなく）"
+    },
+    examples: [
+      {
+        mn: "Ашгүй, цагтаа ирлээ.",
+        ja: "よかった、時間通りに来られた。",
+        note: "安心・安堵したときの定番フレーズ"
+      },
+      {
+        mn: "Ашгүй дээ, бороо зогслоо.",
+        ja: "助かったよ、雨が止んだ。",
+        note: "語尾に「дээ」を添えて実感を込める"
+      }
+    ],
+    secretTip: "「аш（恩恵）」＋「-гүй（〜の状態で）」＝『恵みがある状態でラッキー！』と覚えると一生忘れません。"
+  },
+  {
+    id: "etym_directions_sh",
+    categoryId: "unexpected_etymology",
+    suffix: "-ш / -шаа / -шээ（古モンゴル語の方向格）",
+    title: "цааш / нааш（あちらへ / こちらへ）の「-ш」の正体",
+    badge: "歴史言語学",
+    coreExplanation: "現代モンゴル語では方向を表す格助詞として「-руу / -рүү」が一般的ですが、古いモンゴル語には「-gsi / -si（〜の方へ）」という方向格接辞がありました。\nこれが現代語に残ったものが「цааш（あちらへ）」「нааш（こちらへ）」「хаашаа（どこへ）」の『-ш』です！",
+    rootWord: "цаана / наана",
+    rootMeaning: "あちらで / こちらで（場所）",
+    derivedWord: "цааш / нааш",
+    derivedMeaning: "あちらへ / こちらへ（方向・移動）",
+    contrastExample: {
+      standardNegative: "цаана（あちらに）＋ -ш → цааш（あちらへ）",
+      archaicAdverbial: "наана（こちらに）＋ -ш → нааш（こちらへ）"
+    },
+    examples: [
+      {
+        mn: "Нааш ир, цааш яв.",
+        ja: "こっちにおいで、あっちへ行きなさい。",
+        note: "対句としてよく使われる基本表現"
+      },
+      {
+        mn: "Цаашаа суугаарай.",
+        ja: "もっと奥（あちら側）に座ってください。",
+        note: "-шаа と長母音化して強調"
+      }
+    ],
+    secretTip: "「-ш」がついている単語は『ベクトル（矢印の向き ➡️）』を表す古い方向格と見抜きましょう。"
+  },
+  {
+    id: "etym_saikhan",
+    categoryId: "unexpected_etymology",
+    suffix: "-хан / -хэн（親愛・美称の指小辞）",
+    title: "сайхан（美しい・良い）の語源",
+    badge: "語源トリビア",
+    coreExplanation: "モンゴル語で最も美しい挨拶「Сайхан амраарай（おやすみなさい）」や「Сайхан байна уу?」の『сайхан』。\nこれは語根『сай（良さ、善）』に、親愛や穏やかさを表す指小辞『-хан』がついたものです。直訳すると『心地よく良い感じ』という温かいニュアンスが語源です！",
+    rootWord: "сай / сайн",
+    rootMeaning: "良い、良好",
+    derivedWord: "сайхан",
+    derivedMeaning: "素晴らしい、美しい、心地よい",
+    contrastExample: {
+      standardNegative: "сайн（良い・単なる客観的評価）",
+      archaicAdverbial: "сайхан（美しく素晴らしい・情緒的評価）"
+    },
+    examples: [
+      {
+        mn: "Сайхан хоол байна.",
+        ja: "とても美味しい（素晴らしい）料理ですね。",
+        note: "味や見た目の良さを褒める"
+      },
+      {
+        mn: "Өдрийг сайхан өнгөрүүлээрэй.",
+        ja: "良い一日をお過ごしください。",
+        note: "別れ際の温かい挨拶"
+      }
+    ],
+    secretTip: "「сайн（良い）」＋「-хан（ほんのり愛らしい）」＝「心に染みるほど素晴らしい（сайхан）」！"
+  },
+
+  // 2. 対義語・形容詞接尾辞
+  {
+    id: "etym_tai_gui",
+    categoryId: "adjective_suffixes",
+    suffix: "-тай / -тэй / -той ↔ -гүй",
+    title: "有格（〜のある）↔ 否定（〜のない）の黄金ペア",
+    badge: "語彙2倍増",
+    coreExplanation: "モンゴル語で最も強力な単語形成ルールです。名詞の末尾に「-тай/-тэй/-той」をつけると『〜を持っている、〜味の、〜のある』という形容詞になり、「-гүй」をつけると『〜のない、〜なしの』になります。1つの名詞を覚えるだけで、形容詞が2つ一瞬で手に入ります！",
+    rootWord: "давс（塩） / амт（味） / сонирхол（興味）",
+    rootMeaning: "名詞（塩・味・興味）",
+    derivedWord: "давстай ↔ давсгүй",
+    derivedMeaning: "塩味のある（しょっぱい） ↔ 塩気のない（味気ない）",
+    contrastExample: {
+      standardNegative: "амттай（美味しい） ↔ амтгүй（まずい・味がない）",
+      archaicAdverbial: "сонирхолтой（面白い） ↔ сонирхолгүй（つまらない）"
+    },
+    examples: [
+      {
+        mn: "Энэ цай чихэртэй, тэр цай чихэргүй.",
+        ja: "このお茶は砂糖入りで、あのお茶は無糖です。",
+        note: "砂糖（чихэр）の有無"
+      },
+      {
+        mn: "Би өнөөдөр завтай, маргааш завгүй.",
+        ja: "私は今日暇（時間がある）ですが、明日は忙しい（時間がない）です。",
+        note: "暇・ゆとり（зав）の有無"
+      }
+    ],
+    secretTip: "「〜tai（〜鯛＝鯛を持ってる＝ある）」↔「〜gui（〜無＝ない）」と語呂で定着させましょう。"
+  },
+  {
+    id: "etym_khan_diminutive",
+    categoryId: "adjective_suffixes",
+    suffix: "-хан / -хэн / -хон",
+    title: "指小辞：こじんまり・可愛らしさ・控えめ",
+    badge: "ニュアンスの達人",
+    coreExplanation: "形容詞や副詞につくことで、「ほんのり〜」「こじんまりと〜」「少しだけ〜」「愛らしく〜」という、尖った印象を和らげる魔法の接尾辞です。日本人の感覚にも非常にマッチする表現です。",
+    rootWord: "ойр（近い） / бага（小さい） / аяар（静かに）",
+    rootMeaning: "近い / 小さい / 静かに",
+    derivedWord: "ойрхон / багахан / аяархан",
+    derivedMeaning: "すぐ近くに / ほんの少し小さめ / そっと静かに",
+    contrastExample: {
+      standardNegative: "ойр（近い） → ойрхон（すぐ目と鼻の先、身近に）",
+      archaicAdverbial: "хөөр（興奮・喜び） → хөөрхөн（可愛い、愛くるしい）"
+    },
+    examples: [
+      {
+        mn: "Манай гэр эндээс ойрхон.",
+        ja: "私の家はここからすぐ近くだよ。",
+        note: "親しみやすい距離感"
+      },
+      {
+        mn: "Аяархан яриарай.",
+        ja: "そっと（小さな声で）話してくださいね。",
+        note: "丁寧で柔らかな指示"
+      }
+    ],
+    secretTip: "「-хан」がつくと、言葉に笑顔が添えられる（マイルドになる）イメージです。"
+  },
+  {
+    id: "etym_lag_adjective",
+    categoryId: "adjective_suffixes",
+    suffix: "-лаг / -лэг / -лог / -лөг",
+    title: "含有・成分・性質を表す接尾辞（〜分を多く含む）",
+    badge: "日常会話必須",
+    coreExplanation: "名詞の後に結合して「〜の成分がたっぷり含まれている」「〜の気質が強い」という形容詞を作ります。食品や体質、気候の描写で頻出します。",
+    rootWord: "чихэр（砂糖） / ус（水） / өөх（脂肪）",
+    rootMeaning: "砂糖 / 水 / 脂",
+    derivedWord: "чихэрлэг / услаг / өөхлөг",
+    derivedMeaning: "甘味のある / みずみずしい / 脂っこい・肥満気味の",
+    contrastExample: {
+      standardNegative: "чихэр（砂糖） → чихэрлэг（糖分が多い・甘い）",
+      archaicAdverbial: "мах（肉） → махлаг（ふくよかな・肉付きのよい）"
+    },
+    examples: [
+      {
+        mn: "Энэ алим их услаг, чихэрлэг амттай.",
+        ja: "このりんごはとてもみずみずしく、甘い味がする。",
+        note: "果物の食レポに最適"
+      },
+      {
+        mn: "Өөхлөг хоол биед муу.",
+        ja: "脂っこい料理は体に悪い。",
+        note: "健康や食事の話題で頻出"
+      }
+    ],
+    secretTip: "「〜lag」＝「〜がたっぷり含まれている（Rich in ...）」と覚えましょう。"
+  },
+
+  // 3. 人・職業・役割を作る接尾辞
+  {
+    id: "etym_chin_ch",
+    categoryId: "person_noun_suffixes",
+    suffix: "-ч / -чин",
+    title: "人・職業・専門家を作るアルタイ共通の接辞",
+    badge: "職業マスター",
+    coreExplanation: "名詞について「〜を職業とする人」「〜の専門家・従事者」を作ります。歴史的にもアルタイ諸語（チュルク語やモンゴル語など）で広く使われてきた行為者接辞です。",
+    rootWord: "мал（家畜） / дуу（歌） / жолоо（手綱） / зураг（絵）",
+    rootMeaning: "家畜 / 歌 / 手綱 / 絵",
+    derivedWord: "малчин / дуучин / жолооч / зураач",
+    derivedMeaning: "遊牧民・牧畜民 / 歌手 / 運転手 / 画家",
+    contrastExample: {
+      standardNegative: "дуу（歌） → дуучин（歌手）",
+      archaicAdverbial: "хууль（法律） → хуульч（弁護士・法律家）"
+    },
+    examples: [
+      {
+        mn: "Тэр хүн алдартай дуучин.",
+        ja: "あの人は有名な歌手です。",
+        note: "人物紹介の定番"
+      },
+      {
+        mn: "Жолооч ах аа, энд зогсоорой.",
+        ja: "運転手さん、ここで止めてください。",
+        note: "タクシーやバスでの呼びかけ"
+      }
+    ],
+    secretTip: "「-ч / -чин」＝ 英語の「-er / -ist（〜する人）」と完全に一致します！"
+  },
+  {
+    id: "etym_gch_agent",
+    categoryId: "person_noun_suffixes",
+    suffix: "-агч / -эгч / -огч / -өгч / -гч",
+    title: "動詞から「動作を行う人・機器」を作る接尾辞",
+    badge: "能動主マスター",
+    coreExplanation: "名詞につく「-ч/-чин」に対し、こちらは動詞の語幹について「その動作を行う人（または装置）」を作ります。",
+    rootWord: "унших（読む） / сурах（学ぶ） / туслах（助ける）",
+    rootMeaning: "読む / 学ぶ / 助ける",
+    derivedWord: "уншигч / сурагч / туслагч",
+    derivedMeaning: "読者 / 生徒・児童 / 助手・アシスタント",
+    contrastExample: {
+      standardNegative: "үзэх（見る） → үзэгч（観客・視聴者）",
+      archaicAdverbial: "хөргөх（冷やす） → хөргөгч（冷蔵庫）※機械にも適用！"
+    },
+    examples: [
+      {
+        mn: "Манай сургуулийн сурагчид сайн сурдаг.",
+        ja: "私たちの学校の生徒たちはよく勉強します。",
+        note: "生徒・学習者"
+      },
+      {
+        mn: "Хөргөгчинд ус байна.",
+        ja: "冷蔵庫に水があります。",
+        note: "冷やす機械＝冷蔵庫"
+      }
+    ],
+    secretTip: "「動詞語幹 ＋ -гч」＝「その動作を行う人（あるいはその機能を持つ道具）」。"
+  },
+
+  // 4. なんでも動詞化！万能接尾辞
+  {
+    id: "etym_lakh_verbalizer",
+    categoryId: "verbalizer_suffixes",
+    suffix: "-лах / -лэх / -лох / -лөх",
+    title: "名詞を1秒で動詞に変える万能接尾辞",
+    badge: "超多産接尾辞",
+    coreExplanation: "名詞の末尾に付けるだけで、「その名詞に関係する行動・作業を行う」動詞が完成します。現代の外来語（スマートフォンの操作や新概念）もこの接尾辞で次々に動詞化されています。",
+    rootWord: "ашиг（利益） / хоол（食事） / цэвэр（清潔） / ажил（仕事）",
+    rootMeaning: "利益 / ご飯 / 清潔 / 仕事",
+    derivedWord: "ашиглах / хооллох / цэвэрлэх / ажиллах",
+    derivedMeaning: "利用する / 食事する / 掃除する / 働く",
+    contrastExample: {
+      standardNegative: "бэлэг（プレゼント） → бэлэглэх（プレゼントを贈る）",
+      archaicAdverbial: "засвар（修理） → засварлах（修理する）"
+    },
+    examples: [
+      {
+        mn: "Та энэ үгийг ашиглаарай.",
+        ja: "この言葉を活用（使って）くださいね。",
+        note: "ашиг（利益）＋ -лах（動詞化）"
+      },
+      {
+        mn: "Би өрөөгөө цэвэрлэсэн.",
+        ja: "私は自分の部屋を掃除しました。",
+        note: "цэвэр（綺麗）＋ -лэх"
+      }
+    ],
+    secretTip: "名詞を見かけたら「-лах」を付ければ動詞になる！と覚えておくと語彙が爆発します。"
+  },
+
+  // 5. 動詞から名詞化
+  {
+    id: "etym_action_nouns",
+    categoryId: "action_noun_suffixes",
+    suffix: "-лт / -лт / -лга / -лгаа / -ц",
+    title: "動詞から「結果・出来事・名詞」を取り出すルール",
+    badge: "名詞化の極意",
+    coreExplanation: "動詞の語幹に付くことで、その動作の「結果」「制度」「イベント」「仕上がり」を名詞として抽出します。抽象名詞や公的用語の多くがこの接尾辞で出来ています。",
+    rootWord: "амрах（休む） / сурах（学ぶ） / уулзах（会う） / хийх（作る）",
+    rootMeaning: "休む / 学ぶ / 会う / 作る",
+    derivedWord: "амралт / сургалт / уулзалт / хийц",
+    derivedMeaning: "休暇・休み / 研修・講習 / ミーティング・面会 / 仕立て・細工",
+    contrastExample: {
+      standardNegative: "орчуулах（翻訳する） → орчуулга（翻訳物）",
+      archaicAdverbial: "бодох（考える） → бодлого（政策・算数の問題）"
+    },
+    examples: [
+      {
+        mn: "Сайхан амралт боллоо.",
+        ja: "良い休暇（休み）になりました。",
+        note: "амрах（休む）→ амралт"
+      },
+      {
+        mn: "Маргааш чухал уулзалттай.",
+        ja: "明日は大事なミーティング（面会）があります。",
+        note: "уулзах（会う）→ уулзалт"
+      }
+    ],
+    secretTip: "「-лт / -лга」は英語の「-tion / -ment」に相当します。"
+  },
+
+  // 6. 使役・受動・相互
+  {
+    id: "etym_verb_extensions",
+    categoryId: "verb_modifiers",
+    suffix: "-лцах（相互） / -гдах（受動・自発） / -уулах（使役）",
+    title: "1つの動詞から3方向へ広げる拡張トリオ",
+    badge: "文法力3倍",
+    coreExplanation: "動詞の語幹と原形語尾（-х）の間にこの接辞を挟み込むことで、意味がガラリと拡張します。\n① -лцах：お互いに〜し合う、一緒に参加する\n② -гдах：〜される（受身）、自然と〜になる（自発）\n③ -уулах：〜させる、〜してもらう（使役）",
+    rootWord: "ярих（話す） / харах（見る） / унших（読む）",
+    rootMeaning: "話す / 見る / 読む",
+    derivedWord: "ярилцах / харагдах / уншуулах",
+    derivedMeaning: "話し合う / 見える（視界に入る） / 読ませる",
+    contrastExample: {
+      standardNegative: "туслах（助ける） → туслалцах（助け合う）",
+      archaicAdverbial: "сонсох（聞く） → сонсогдох（聞こえる）"
+    },
+    examples: [
+      {
+        mn: "Бид хоорондоо ярилцсан.",
+        ja: "私たちは互いに話し合いました。",
+        note: "-лцах（相互動作）"
+      },
+      {
+        mn: "Цонхоор уул харагдаж байна.",
+        ja: "窓から山が見えています。",
+        note: "-гдах（自発・見える）"
+      },
+      {
+        mn: "Багш сурагчдаар ном уншуулсан.",
+        ja: "先生は生徒たちに本を読ませました。",
+        note: "-уулах（使役）"
+      }
+    ],
+    secretTip: "「-лцах＝手を取り合う」「-гдах＝自然に受ける」「-уулах＝人に頼む/させる」。"
+  },
+
+  // 7. モンゴル語独自の超強調！重複接頭音
+  {
+    id: "etym_reduplication_prefix",
+    categoryId: "prefix_reduplication",
+    suffix: "頭音節 ＋ [в / б / п]（完全強調接頭語）",
+    title: "「真っ赤」「真っ青」「真新しい」を作る音節反復の魔術",
+    badge: "ネイティブ感覚",
+    coreExplanation: "モンゴル語では、形容詞（特に色や状態）の最初の音節を取り出し、子音「в（または б/п）」を添えて前にポンと置くことで、「この上なく強烈に真っ〜！」という最高度の強調を表します。",
+    rootWord: "улаан（赤） / хар（黒） / цагаан（白） / шинэ（新しい）",
+    rootMeaning: "赤い / 黒い / 白い / 新しい",
+    derivedWord: "ув улаан / хав хар / цав цагаан / шив шинэ",
+    derivedMeaning: "真っ赤な / 真っ黒な / 真っ白な / 真新しい",
+    contrastExample: {
+      standardNegative: "хөх（青い） → хөв хөх（真っ青な）",
+      archaicAdverbial: "шулуун（まっすぐな） → шув шулуун（まっすぐ一直線の）"
+    },
+    examples: [
+      {
+        mn: "Тэнгэр цэв цэнхэр байна.",
+        ja: "空が一点の曇りもなく真っ青（澄み切った青）です。",
+        note: "ツェヴ・ツェンヘル"
+      },
+      {
+        mn: "Энэ дэвтэр шив шинэ.",
+        ja: "このノートは正真正銘の新品（ピッカピカ）です。",
+        note: "シヴ・シネ"
+      }
+    ],
+    secretTip: "日本語の「真っ〜（真っ赤・真っ黒・真っ白）」と全く同じ感覚で使えます！"
+  }
+];
+
+// 語源・神接尾辞クイズ問題（20問）
+const etymologyQuizzes = [
+  {
+    id: "eq_1",
+    question: "日常的によく使われる「Ашгүй дээ!（よかった！助かった！）」の「-гүй」の語源的意味として正しいものは？",
+    targetWord: "ашгүй",
+    options: [
+      "古い副詞化接尾辞に由来し、「利益・恵みのある状態で」という肯定の意味",
+      "「利益（аш）が全くない」という不満や落胆の否定表現",
+      "未来の予定を表す推量接辞",
+      "「誰にも言わない」という秘密を表す接尾語"
+    ],
+    answer: 0,
+    explanation: "「аш（恩恵・利益）」に古い副詞化接辞「-гүй（〜の状態で）」が結合したもので、「恵みのある状態で＝幸いにも！よかった！」という安堵の肯定表現になります。"
+  },
+  {
+    id: "eq_2",
+    question: "名詞「давс（塩）」に結合して「しょっぱい（塩味のある）」を作る接尾辞はどれ？",
+    targetWord: "давс",
+    options: [
+      "давстай",
+      "давсгүй",
+      "давсчин",
+      "давслаг"
+    ],
+    answer: 0,
+    explanation: "「-тай/-тэй/-той」は有格接辞で「〜を持っている、〜味の」を表します。「давстай」で「塩味のある＝しょっぱい」になります。"
+  },
+  {
+    id: "eq_3",
+    question: "「цааш（あちらへ）」「нааш（こちらへ）」の末尾にある「-ш」が表す語源的機能は？",
+    targetWord: "цааш / нааш",
+    options: [
+      "古モンゴル語の方向格（〜の方へ向かうベクトル）",
+      "過去の完了を表す時制語尾",
+      "複数形を表す接尾辞",
+      "疑問を表す終助詞"
+    ],
+    answer: 0,
+    explanation: "古いモンゴル語の方向格接辞「-gsi / -si」が現代語に残ったもので、方向・ベクトルを表します。"
+  },
+  {
+    id: "eq_4",
+    question: "名詞「ашиг（利益）」を動詞「利用する、活用する」に変える接尾辞は？",
+    targetWord: "ашиглах",
+    options: [
+      "-лах（ашиглах）",
+      "-чин（ашигчин）",
+      "-тай（ашигтай）",
+      "-лт（ашиглалт）"
+    ],
+    answer: 0,
+    explanation: "「-лах/-лэх/-лох/-лөх」は名詞を動詞化する万能接尾辞です。「ашиг（利益）」＋「-лах」＝「ашиглах（利用する・活用する）」。"
+  },
+  {
+    id: "eq_5",
+    question: "動詞「харах（見る）」に受動・自発接尾辞「-гдах」がついた「харагдах」の意味は？",
+    targetWord: "харагдах",
+    options: [
+      "見える（視界に入る）",
+      "見張る",
+      "見させられる",
+      "見失う"
+    ],
+    answer: 0,
+    explanation: "「-гдах」は受動だけでなく「自然とそうなる（自発）」を表し、「харах（見る）」→「харагдах（見える）」になります。（例：Цонхоор уул харагдана＝窓から山が見える）"
+  },
+  {
+    id: "eq_6",
+    question: "「真っ赤な」を表すモンゴル語の重複強調表現はどれ？",
+    targetWord: "ув улаан",
+    options: [
+      "ув улаан",
+      "улаан улаан",
+      "их улаан",
+      "улаанхан"
+    ],
+    answer: 0,
+    explanation: "モンゴル語の強調は頭音節＋「в」を前に置くルールです。「улаан（赤）」→「ув улаан（真っ赤な）」。"
+  },
+  {
+    id: "eq_7",
+    question: "名詞「чихэр（砂糖）」に接尾辞「-лэг」がついた「чихэрлэг」の意味は？",
+    targetWord: "чихэрлэг",
+    options: [
+      "甘い、糖分を多く含んだ",
+      "砂糖が全く入っていない",
+      "砂糖を作る人",
+      "砂糖壺"
+    ],
+    answer: 0,
+    explanation: "「-лаг/-лэг」は「その成分がたっぷり含まれている（〜質の）」を表すため、「甘い・糖分の多い」になります。"
+  },
+  {
+    id: "eq_8",
+    question: "動詞「амрах（休む）」から名詞「休暇・休み」を作る接尾辞はどれ？",
+    targetWord: "амралт",
+    options: [
+      "-лт（амралт）",
+      "-чин（амрагчин）",
+      "-гүй（амралтгүй）",
+      "-хан（амраххан）"
+    ],
+    answer: 0,
+    explanation: "「-лт」は動作の結果やイベント・概念を名詞化する接尾辞です。「амрах（休む）」→「амралт（休暇・休み）」。"
+  },
+  {
+    id: "eq_9",
+    question: "形容詞「ойр（近い）」に指小辞「-хон」がついた「ойрхон」のニュアンスは？",
+    targetWord: "ойрхон",
+    options: [
+      "すぐ近くに（身近でこじんまりと近い感じ）",
+      "非常に遠い",
+      "近づいてはいけない",
+      "一番近い場所"
+    ],
+    answer: 0,
+    explanation: "「-хан/-хэн/-хон」は親愛・控えめ・可愛らしさを添える接尾辞で、「すぐ近くに、身近に」という温かいニュアンスになります。"
+  },
+  {
+    id: "eq_10",
+    question: "名詞「дуу（歌）」に接尾辞「-чин」がついた「дуучин」の意味は？",
+    targetWord: "дуучин",
+    options: [
+      "歌手",
+      "楽器",
+      "歌詞",
+      "合唱団"
+    ],
+    answer: 0,
+    explanation: "「-ч / -чин」は職業や専門家を作る接尾辞です。「дуу（歌）」＋「-чин」＝「дуучин（歌手）」。"
+  }
+];
+
+
 // === js/data/interviewTopics.js ===
 // 口述試験・スピーチ特訓用 13テーマ完全マスターデータ
 const interviewTopics = [
@@ -43368,6 +43921,31 @@ class HomeComponent {
             </div>
 
             <!-- 助詞・語尾ルール特訓道場カード -->
+            
+            <!-- 語源・神接尾辞マスター -->
+            <div class="bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-indigo-500/10 rounded-xl p-5 border-2 border-amber-400 hover:border-amber-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="etymology_master">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    💡
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-600 text-white shadow-2xs">
+                    語彙爆増 💡
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-amber-700 transition-colors">
+                  語源・神接尾辞マスター
+                </h4>
+                <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                  「ашгүй（よかった！）」の語源の謎や、単語が2倍になる「-тай ↔ -гүй」、なんでも動詞化する「-лах」など、語根＋接尾辞のレゴ構造を丸ごとマスター！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-amber-200/50 flex items-center justify-between text-xs font-bold text-amber-700">
+                <span>図鑑・クイズ・早見表</span>
+                <span class="group-hover:translate-x-1 transition-transform">➔</span>
+              </div>
+            </div>
+
             <div class="bg-gradient-to-br from-rose-500/10 via-amber-500/5 to-orange-500/10 rounded-xl p-5 border-2 border-rose-400 hover:border-rose-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="suffix_dojo">
               <div>
                 <div class="flex items-center justify-between mb-3">
@@ -57771,6 +58349,655 @@ class SuffixRuleDojoComponent {
 }
 
 
+// === js/components/EtymologyMaster.js ===
+// 語源・神接尾辞マスターコンポーネント
+// 語根と接尾辞のレゴブロック構造を理解し、語彙を体系的に倍増させる特訓モジュール
+
+
+
+
+
+
+class EtymologyMasterComponent {
+  static container = null;
+  static onNavigate = null;
+
+  static state = {
+    activeTab: 'study', // 'study' | 'quiz' | 'cheatsheet'
+    activeCategory: 'all',
+    searchQuery: '',
+
+    // クイズ状態
+    quiz: {
+      questions: [],
+      currentIndex: 0,
+      currentQ: null,
+      selectedChoiceIndex: null,
+      hasAnswered: false,
+      score: 0,
+      streak: 0,
+      isFinished: false
+    }
+  };
+
+  static render(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+    if (!this.state.quiz.questions.length) {
+      this.initQuiz();
+    }
+    this.renderMain();
+  }
+
+  static initQuiz() {
+    this.state.quiz = {
+      questions: shuffleArray([...etymologyQuizzes]),
+      currentIndex: 0,
+      currentQ: null,
+      selectedChoiceIndex: null,
+      hasAnswered: false,
+      score: 0,
+      streak: 0,
+      isFinished: false
+    };
+    if (this.state.quiz.questions.length > 0) {
+      this.state.quiz.currentQ = this.state.quiz.questions[0];
+    }
+  }
+
+  static renderMain() {
+    if (!this.container) return;
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-4xl mx-auto px-3 sm:px-4 py-4 space-y-5">
+        <!-- ヘッダー -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-200 pb-3 gap-2">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl p-2.5 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-500 text-white shadow-sm">💡</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-xl font-black text-slate-800">語源・神接尾辞マスター</h2>
+                <span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-amber-100 text-amber-800 border border-amber-300">エティモロジー特訓</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">「語根＋接尾辞」のレゴ構造を見抜いて、語彙力を10倍に爆発させよう！</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" id="btn-back-home" class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all shadow-2xs">
+              🏠 ホームへ戻る
+            </button>
+          </div>
+        </div>
+
+        <!-- タブ切り替えボタン -->
+        <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl">
+          <button type="button" class="tab-btn flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 ${this.state.activeTab === 'study' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}" data-tab="study">
+            <span>📖</span> 語源・接尾辞 探検図鑑
+          </button>
+          <button type="button" class="tab-btn flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 ${this.state.activeTab === 'quiz' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}" data-tab="quiz">
+            <span>🎯</span> 語源クイズ特訓
+          </button>
+          <button type="button" class="tab-btn flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 ${this.state.activeTab === 'cheatsheet' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}" data-tab="cheatsheet">
+            <span>📋</span> 一発早見チートシート
+          </button>
+        </div>
+
+        <!-- コンテンツ領域 -->
+        <div id="etymology-tab-content">
+          ${this.renderTabContent()}
+        </div>
+      </div>
+    `;
+
+    this.attachEvents();
+  }
+
+  static renderTabContent() {
+    if (this.state.activeTab === 'study') {
+      return this.renderStudyTab();
+    } else if (this.state.activeTab === 'quiz') {
+      return this.renderQuizTab();
+    } else if (this.state.activeTab === 'cheatsheet') {
+      return this.renderCheatSheetTab();
+    }
+    return '';
+  }
+
+  // ==========================================
+  // タブ1: 探検図鑑
+  // ==========================================
+  static renderStudyTab() {
+    const query = this.state.searchQuery.toLowerCase().trim();
+    const filteredCards = etymologyCards.filter(card => {
+      const matchCat = this.state.activeCategory === 'all' || card.categoryId === this.state.activeCategory;
+      if (!matchCat) return false;
+      if (!query) return true;
+      return (
+        card.suffix.toLowerCase().includes(query) ||
+        card.title.toLowerCase().includes(query) ||
+        card.coreExplanation.toLowerCase().includes(query) ||
+        card.derivedWord.toLowerCase().includes(query) ||
+        card.rootWord.toLowerCase().includes(query)
+      );
+    });
+
+    return `
+      <div class="space-y-4 animate-fade-in">
+        <!-- 注目バナー：ашгүй の秘密 -->
+        <div class="bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 rounded-2xl p-4 sm:p-5 text-white shadow-sm space-y-2">
+          <div class="flex items-center gap-2 text-xs font-black tracking-wide uppercase bg-black/20 px-2.5 py-0.5 rounded-full w-fit">
+            <span>💡</span> 語源の目からウロコ法則
+          </div>
+          <h3 class="text-base sm:text-lg font-black leading-snug">
+            「ашгүй」の -гүй は「否定（〜なし）」ではなく、古い副詞化接尾辞！
+          </h3>
+          <p class="text-xs text-white/90 leading-relaxed">
+            「аш（恩恵・利益）」＋「-гүй（〜の状態で）」＝『恵みがある好都合な状態で』→『幸いにも！よかった！助かった！』<br class="hidden sm:inline">
+            接尾辞の語源を知ることで、丸暗記の苦痛から解放され、モンゴル語がパズルのように楽しく読めるようになります。
+          </p>
+        </div>
+
+        <!-- 検索バー ＆ カテゴリフィルター -->
+        <div class="space-y-2.5 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">🔍</span>
+            <input type="text" id="etym-search-input" value="${this.state.searchQuery}" placeholder="接尾辞・単語・意味で検索... (例: -гүй, аш, -ч, 赤)" class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-bold text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-amber-500 transition-all">
+          </div>
+
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+            <button type="button" class="btn-cat-filter px-3 py-1 rounded-xl text-xs font-black shrink-0 transition-all ${this.state.activeCategory === 'all' ? 'bg-amber-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}" data-cat="all">
+              すべて (${etymologyCards.length})
+            </button>
+            ${etymologyCategories.map(cat => {
+              const count = etymologyCards.filter(c => c.categoryId === cat.id).length;
+              const isActive = this.state.activeCategory === cat.id;
+              return `
+                <button type="button" class="btn-cat-filter px-3 py-1 rounded-xl text-xs font-black shrink-0 transition-all ${isActive ? 'bg-amber-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}" data-cat="${cat.id}">
+                  ${cat.icon} ${cat.title.split(' ')[1] || cat.title} (${count})
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- カード一覧 -->
+        <div class="grid grid-cols-1 gap-4">
+          ${filteredCards.length > 0 ? filteredCards.map(card => `
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-4 sm:p-5 space-y-3.5 hover:border-amber-300 transition-all">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-xs font-black font-mono">
+                    ${card.suffix}
+                  </span>
+                  <h4 class="text-sm sm:text-base font-black text-slate-800">
+                    ${card.title}
+                  </h4>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                  ${card.badge}
+                </span>
+              </div>
+
+              <!-- レゴブロック組み立てビジュアル -->
+              <div class="bg-gradient-to-r from-slate-50 to-amber-50/50 p-3 rounded-xl border border-slate-200/80 flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs font-black">
+                <div class="bg-white px-2.5 py-1.5 rounded-lg border border-slate-300 shadow-2xs text-slate-700 flex items-center gap-1">
+                  <span class="text-slate-400 font-normal">語根:</span>
+                  <span class="text-amber-700 font-bold font-mono">${card.rootWord}</span>
+                  <span class="text-[10px] text-slate-500 font-normal">(${card.rootMeaning})</span>
+                </div>
+                <span class="text-slate-400 font-black text-base">＋</span>
+                <div class="bg-amber-500 text-white px-2.5 py-1.5 rounded-lg shadow-2xs flex items-center gap-1">
+                  <span class="text-amber-200 font-normal">接尾辞:</span>
+                  <span class="font-mono font-bold">${card.suffix.split('（')[0]}</span>
+                </div>
+                <span class="text-slate-400 font-black text-base">＝</span>
+                <div class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-3 py-1.5 rounded-lg shadow-2xs flex items-center gap-1.5">
+                  <span class="font-bold font-mono text-sm">${card.derivedWord}</span>
+                  <span class="text-[11px] text-emerald-100 font-medium">(${card.derivedMeaning})</span>
+                  <button type="button" class="btn-play-sound ml-1 p-0.5 hover:text-amber-200 transition-all text-xs" data-text="${card.derivedWord}" title="音声再生">
+                    🔊
+                  </button>
+                </div>
+              </div>
+
+              <!-- 解説文 -->
+              <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-line">
+                ${card.coreExplanation}
+              </p>
+
+              <!-- 対比・実例 -->
+              <div class="bg-amber-50/60 rounded-xl p-3 border border-amber-200/80 text-xs text-amber-950 space-y-1">
+                <div class="font-black text-amber-900 flex items-center gap-1">
+                  <span>💡</span> 一生忘れない秘訣（Secret Tip）:
+                </div>
+                <div class="font-bold leading-relaxed">
+                  ${card.secretTip}
+                </div>
+              </div>
+
+              <!-- 例文リスト -->
+              <div class="space-y-1.5 pt-1">
+                <div class="text-[11px] font-black text-slate-500 uppercase tracking-wider">実践例文</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  ${card.examples.map(ex => `
+                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs space-y-0.5">
+                      <div class="flex items-center justify-between font-bold text-slate-800">
+                        <span class="cyrillic-text text-amber-800">${ex.mn}</span>
+                        <button type="button" class="btn-play-sound text-slate-400 hover:text-amber-600" data-text="${ex.mn}">🔊</button>
+                      </div>
+                      <div class="text-slate-600 font-medium">${ex.ja}</div>
+                      ${ex.note ? `<div class="text-[10px] text-slate-400">※ ${ex.note}</div>` : ''}
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `).join('') : `
+            <div class="text-center py-12 bg-white rounded-2xl border border-slate-200 text-slate-400 space-y-2">
+              <span class="text-3xl">🔍</span>
+              <p class="text-sm font-bold">該当する語源・接尾辞が見つかりませんでした</p>
+              <button type="button" id="btn-reset-filter" class="px-3 py-1 bg-amber-50 text-amber-700 rounded-lg text-xs font-bold border border-amber-200">
+                検索をリセット
+              </button>
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+  }
+
+  // ==========================================
+  // タブ2: クイズ特訓
+  // ==========================================
+  static renderQuizTab() {
+    const qState = this.state.quiz;
+    if (qState.isFinished) {
+      return this.renderQuizResult();
+    }
+
+    const currentQ = qState.currentQ;
+    if (!currentQ) {
+      return `<div class="text-center py-8">問題がありません</div>`;
+    }
+
+    return `
+      <div class="max-w-2xl mx-auto space-y-4 animate-fade-in">
+        <!-- 進捗バーとスコア -->
+        <div class="flex items-center justify-between text-xs font-bold text-slate-600">
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded-md bg-rose-100 text-rose-700 font-black">第 ${qState.currentIndex + 1} / ${qState.questions.length} 問</span>
+            ${qState.streak > 1 ? `<span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-700 font-black animate-pulse">🔥 ${qState.streak} 連続正解!</span>` : ''}
+          </div>
+          <div>スコア: <span class="text-rose-600 font-black text-sm">${qState.score}</span> 点</div>
+        </div>
+
+        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+          <div class="bg-gradient-to-r from-amber-500 to-rose-500 h-full transition-all duration-300" style="width: ${((qState.currentIndex + 1) / qState.questions.length) * 100}%"></div>
+        </div>
+
+        <!-- 問題カード -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 space-y-4">
+          <div class="space-y-2">
+            <div class="text-xs font-black text-rose-600 uppercase tracking-wider">QUESTION</div>
+            <h3 class="text-base sm:text-lg font-black text-slate-800 leading-snug">
+              ${currentQ.question}
+            </h3>
+            ${currentQ.targetWord ? `
+              <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 font-mono font-black text-sm">
+                <span>🎯 対象語:</span>
+                <span class="text-base text-rose-600">${currentQ.targetWord}</span>
+                <button type="button" class="btn-play-sound text-slate-400 hover:text-amber-600" data-text="${currentQ.targetWord}">🔊</button>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- 選択肢 -->
+          <div class="grid grid-cols-1 gap-2.5 pt-2">
+            ${currentQ.options.map((opt, idx) => {
+              let btnClass = "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800";
+              if (qState.hasAnswered) {
+                if (idx === currentQ.answer) {
+                  btnClass = "bg-emerald-50 border-emerald-500 text-emerald-800 font-black ring-2 ring-emerald-400";
+                } else if (idx === qState.selectedChoiceIndex) {
+                  btnClass = "bg-rose-50 border-rose-500 text-rose-800 line-through";
+                } else {
+                  btnClass = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                }
+              }
+              return `
+                <button type="button" class="btn-quiz-option w-full p-3.5 rounded-xl border-2 text-left text-xs sm:text-sm font-bold transition-all flex items-center justify-between ${btnClass}" data-idx="${idx}" ${qState.hasAnswered ? 'disabled' : ''}>
+                  <span>${opt}</span>
+                  ${qState.hasAnswered && idx === currentQ.answer ? '<span class="text-emerald-600 font-black text-base">✓ 正解</span>' : ''}
+                  ${qState.hasAnswered && idx === qState.selectedChoiceIndex && idx !== currentQ.answer ? '<span class="text-rose-600 font-black text-base">✗ 不正解</span>' : ''}
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- 解説（回答後に出現） -->
+          ${qState.hasAnswered ? `
+            <div class="animate-fade-in p-4 rounded-xl ${qState.selectedChoiceIndex === currentQ.answer ? 'bg-emerald-50 border border-emerald-200 text-emerald-950' : 'bg-rose-50 border border-rose-200 text-rose-950'} space-y-2">
+              <div class="font-black text-sm flex items-center gap-1.5">
+                <span>${qState.selectedChoiceIndex === currentQ.answer ? '🎉 大正解！' : '💡 ここがポイント！'}</span>
+              </div>
+              <p class="text-xs sm:text-sm leading-relaxed font-medium">
+                ${currentQ.explanation}
+              </p>
+              <div class="pt-2 flex justify-end">
+                <button type="button" id="btn-next-question" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-black text-xs sm:text-sm rounded-xl shadow-xs transition-all active:scale-98">
+                  ${qState.currentIndex + 1 < qState.questions.length ? '次の問題へ進む ➔' : '結果を見る 🏆'}
+                </button>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  static renderQuizResult() {
+    const qState = this.state.quiz;
+    const accuracy = Math.round((qState.score / (qState.questions.length * 10)) * 100);
+
+    return `
+      <div class="max-w-md mx-auto bg-white rounded-2xl border border-slate-200 shadow-sm p-6 text-center space-y-4 animate-scale-up">
+        <span class="text-5xl">🏆</span>
+        <h3 class="text-xl font-black text-slate-800">特訓完了！</h3>
+        <p class="text-xs text-slate-500">語源・神接尾辞クイズを全問やり遂げました！</p>
+
+        <div class="bg-gradient-to-tr from-amber-50 to-rose-50 p-4 rounded-2xl border border-amber-200 space-y-1">
+          <div class="text-xs font-bold text-slate-600">あなたのスコア</div>
+          <div class="text-3xl font-black text-rose-600">${qState.score} / ${qState.questions.length * 10} 点</div>
+          <div class="text-xs font-extrabold text-amber-700">正解率: ${accuracy}%</div>
+        </div>
+
+        <div class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200 text-left font-medium">
+          💡 <strong>アドバイス</strong><br>
+          接尾辞はモンゴル語の「レゴブロック」です！「-гүй（語源副詞）」「-тай（有格）」「-ч（人）」「-лах（動詞化）」などの基本ルールを意識しながら単語を見ると、新しい語彙に出会った時も直感的に意味が推測できるようになります。
+        </div>
+
+        <div class="flex items-center gap-2 pt-2">
+          <button type="button" id="btn-retry-quiz" class="flex-1 py-3 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-black text-xs rounded-xl shadow-xs transition-all">
+            もう一度挑戦 🔄
+          </button>
+          <button type="button" id="btn-switch-study" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs rounded-xl transition-all">
+            図鑑で復習 📖
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ==========================================
+  // タブ3: 一発早見チートシート
+  // ==========================================
+  static renderCheatSheetTab() {
+    return `
+      <div class="space-y-4 animate-fade-in">
+        <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 text-xs text-indigo-950 space-y-1">
+          <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
+            <span>📋</span> 神接尾辞・語源 完全マスター一覧表
+          </div>
+          <p class="leading-relaxed">
+            辞書を引かなくても意味が透けて見える！覚えておくと爆発的に楽になる主要接尾辞と語源の総まとめです。
+          </p>
+        </div>
+
+        <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200 shadow-2xs">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 font-black">
+                <th class="p-3">分類</th>
+                <th class="p-3 font-mono">接尾辞</th>
+                <th class="p-3">基本機能・語源</th>
+                <th class="p-3">代表例（語根 ➔ 派生語）</th>
+                <th class="p-3">覚えるコツ（Secret）</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-amber-700">語源の秘密</td>
+                <td class="p-3 font-mono font-black text-slate-900">-гүй (古用副詞)</td>
+                <td class="p-3">「〜の状態で」という古い様態副詞形成</td>
+                <td class="p-3"><strong class="text-amber-800">аш</strong>（恩恵）➔ <strong class="text-emerald-700">ашгүй</strong>（幸いにも！よかった！）</td>
+                <td class="p-3 text-[11px] text-slate-500">否定の「〜なし」と混同注意！恵みがあってラッキー</td>
+              </tr>
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-indigo-700">方向格</td>
+                <td class="p-3 font-mono font-black text-slate-900">-ш / -шаа</td>
+                <td class="p-3">古い方向格接辞（〜の方へ向かうベクトル）</td>
+                <td class="p-3"><strong>цаана</strong>（あちら）➔ <strong>цааш</strong>（あちらへ）<br><strong>наана</strong>（こちら）➔ <strong>нааш</strong>（こちらへ）</td>
+                <td class="p-3 text-[11px] text-slate-500">矢印（➡️）を表す古用接辞</td>
+              </tr>
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-emerald-700">有格（所有）</td>
+                <td class="p-3 font-mono font-black text-slate-900">-тай / -тэй / -той</td>
+                <td class="p-3">「〜を持つ、〜味の、〜のある」形容詞化</td>
+                <td class="p-3"><strong>давс</strong>（塩）➔ <strong>давстай</strong>（しょっぱい）<br><strong>амт</strong>（味）➔ <strong>амттай</strong>（美味しい）</td>
+                <td class="p-3 text-[11px] text-slate-500">-гүй と対義語ペアで語彙2倍増！</td>
+              </tr>
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-rose-700">否定（無格）</td>
+                <td class="p-3 font-mono font-black text-slate-900">-гүй (標準否定)</td>
+                <td class="p-3">「〜のない、〜抜きの」否定形容詞化</td>
+                <td class="p-3"><strong>давс</strong>（塩）➔ <strong>давсгүй</strong>（味気ない・塩気なし）<br><strong>зав</strong>（暇）➔ <strong>завгүй</strong>（忙しい）</td>
+                <td class="p-3 text-[11px] text-slate-500">英語の -less（careless等）と同じ</td>
+              </tr>
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-blue-700">人・職業</td>
+                <td class="p-3 font-mono font-black text-slate-900">-ч / -чин</td>
+                <td class="p-3">名詞を扱う「職能者・専門家・人」</td>
+                <td class="p-3"><strong>зураг</strong>（絵）➔ <strong>зураач</strong>（画家）<br><strong>дуу</strong>（歌）➔ <strong>дуучин</strong>（歌手）</td>
+                <td class="p-3 text-[11px] text-slate-500">英語の -er / -ist に完全一致</td>
+              </tr>
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-blue-700">行為者</td>
+                <td class="p-3 font-mono font-black text-slate-900">-гч / -агч</td>
+                <td class="p-3">動詞の動作を行う人（または装置）</td>
+                <td class="p-3"><strong>унших</strong>（読む）➔ <strong>уншигч</strong>（読者）<br><strong>хөргөх</strong>（冷やす）➔ <strong>хөргөгч</strong>（冷蔵庫）</td>
+                <td class="p-3 text-[11px] text-slate-500">人だけでなく道具・家電にも多用！</td>
+              </tr>
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-teal-700">万能動詞化</td>
+                <td class="p-3 font-mono font-black text-slate-900">-лах / -лэх / -лох / -лөх</td>
+                <td class="p-3">名詞を「行う・使う・機能させる」動詞化</td>
+                <td class="p-3"><strong>ашиг</strong>（利益）➔ <strong>ашиглах</strong>（利用する）<br><strong>цэвэр</strong>（清潔）➔ <strong>цэвэрлэх</strong>（掃除する）</td>
+                <td class="p-3 text-[11px] text-slate-500">新語や外来語もこれで全て動詞化！</td>
+              </tr>
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-purple-700">名詞化</td>
+                <td class="p-3 font-mono font-black text-slate-900">-лт / -лга / -ц</td>
+                <td class="p-3">動詞のアクションから結果・制度を抽出</td>
+                <td class="p-3"><strong>амрах</strong>（休む）➔ <strong>амралт</strong>（休暇）<br><strong>уулзах</strong>（会う）➔ <strong>уулзалт</strong>（面談・会合）</td>
+                <td class="p-3 text-[11px] text-slate-500">英語の -tion / -ment に相当</td>
+              </tr>
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-pink-700">指小辞</td>
+                <td class="p-3 font-mono font-black text-slate-900">-хан / -хэн / -хон</td>
+                <td class="p-3">親愛・控えめ・ほんのり・可愛らしさ</td>
+                <td class="p-3"><strong>ойр</strong>（近い）➔ <strong>ойрхон</strong>（すぐ間近に）<br><strong>хөөр</strong>（高揚）➔ <strong>хөөрхөн</strong>（可愛い）</td>
+                <td class="p-3 text-[11px] text-slate-500">言葉に笑顔とマイルドさを添える</td>
+              </tr>
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-orange-700">動詞拡張</td>
+                <td class="p-3 font-mono font-black text-slate-900">-гдах / -уулах / -лцах</td>
+                <td class="p-3">受動・自発 / 使役 / 相互協力</td>
+                <td class="p-3"><strong>харах</strong>（見る）➔ <strong>харагдах</strong>（見える）<br><strong>ярих</strong>（話す）➔ <strong>ярилцах</strong>（話し合う）</td>
+                <td class="p-3 text-[11px] text-slate-500">動詞の語幹と語尾の間に挟むだけ！</td>
+              </tr>
+              <tr class="hover:bg-amber-50/50 transition-all">
+                <td class="p-3 font-bold text-red-700">重複強調</td>
+                <td class="p-3 font-mono font-black text-slate-900">頭音節 ＋ [в / б]</td>
+                <td class="p-3">「真っ赤」「真っ青」「真新しい」の超強調</td>
+                <td class="p-3"><strong>улаан</strong>（赤）➔ <strong>ув улаан</strong>（真っ赤な）<br><strong>шинэ</strong>（新しい）➔ <strong>шив шинэ</strong>（真新しい）</td>
+                <td class="p-3 text-[11px] text-slate-500">日本語の「真っ〜」と同じ語感！</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  // ==========================================
+  // イベント登録
+  // ==========================================
+  static attachEvents() {
+    if (!this.container) return;
+
+    // ホーム戻る
+    const btnHome = this.container.querySelector('#btn-back-home');
+    if (btnHome) {
+      btnHome.addEventListener('click', () => {
+        if (this.onNavigate) this.onNavigate('home');
+      });
+    }
+
+    // タブ切り替え
+    const tabBtns = this.container.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        this.state.activeTab = tab;
+        this.renderMain();
+      });
+    });
+
+    // 音声再生
+    const soundBtns = this.container.querySelectorAll('.btn-play-sound');
+    soundBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const text = btn.dataset.text;
+        if (text) {
+          SpeechService.speak(text);
+        }
+      });
+    });
+
+    // 検索入力
+    const searchInput = this.container.querySelector('#etym-search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        this.state.searchQuery = e.target.value;
+        const contentDiv = this.container.querySelector('#etymology-tab-content');
+        if (contentDiv) {
+          contentDiv.innerHTML = this.renderTabContent();
+          this.attachEvents();
+        }
+      });
+    }
+
+    // カテゴリフィルター
+    const catBtns = this.container.querySelectorAll('.btn-cat-filter');
+    catBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.activeCategory = btn.dataset.cat;
+        const contentDiv = this.container.querySelector('#etymology-tab-content');
+        if (contentDiv) {
+          contentDiv.innerHTML = this.renderTabContent();
+          this.attachEvents();
+        }
+      });
+    });
+
+    // リセットボタン
+    const btnReset = this.container.querySelector('#btn-reset-filter');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        this.state.searchQuery = '';
+        this.state.activeCategory = 'all';
+        this.renderMain();
+      });
+    }
+
+    // クイズ選択肢クリック
+    const quizOptions = this.container.querySelectorAll('.btn-quiz-option');
+    quizOptions.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (this.state.quiz.hasAnswered) return;
+        const chosenIdx = parseInt(btn.dataset.idx, 10);
+        this.handleQuizAnswer(chosenIdx);
+      });
+    });
+
+    // クイズ次へ進む
+    const btnNext = this.container.querySelector('#btn-next-question');
+    if (btnNext) {
+      btnNext.addEventListener('click', () => {
+        this.handleNextQuestion();
+      });
+    }
+
+    // クイズリトライ
+    const btnRetry = this.container.querySelector('#btn-retry-quiz');
+    if (btnRetry) {
+      btnRetry.addEventListener('click', () => {
+        this.initQuiz();
+        this.renderMain();
+      });
+    }
+
+    // 図鑑へ戻る
+    const btnSwitchStudy = this.container.querySelector('#btn-switch-study');
+    if (btnSwitchStudy) {
+      btnSwitchStudy.addEventListener('click', () => {
+        this.state.activeTab = 'study';
+        this.renderMain();
+      });
+    }
+  }
+
+  static handleQuizAnswer(choiceIdx) {
+    const qState = this.state.quiz;
+    const currentQ = qState.currentQ;
+    if (!currentQ || qState.hasAnswered) return;
+
+    qState.hasAnswered = true;
+    qState.selectedChoiceIndex = choiceIdx;
+
+    const isCorrect = (choiceIdx === currentQ.answer);
+    if (isCorrect) {
+      SoundEffects.playCorrect();
+      qState.score += 10;
+      qState.streak += 1;
+      try {
+        if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+          GamificationService.addXp(15);
+        }
+      } catch (_) {}
+    } else {
+      SoundEffects.playWrong();
+      qState.streak = 0;
+    }
+
+    const contentDiv = this.container.querySelector('#etymology-tab-content');
+    if (contentDiv) {
+      contentDiv.innerHTML = this.renderTabContent();
+      this.attachEvents();
+    }
+  }
+
+  static handleNextQuestion() {
+    const qState = this.state.quiz;
+    if (qState.currentIndex + 1 < qState.questions.length) {
+      qState.currentIndex++;
+      qState.currentQ = qState.questions[qState.currentIndex];
+      qState.selectedChoiceIndex = null;
+      qState.hasAnswered = false;
+    } else {
+      qState.isFinished = true;
+    }
+
+    const contentDiv = this.container.querySelector('#etymology-tab-content');
+    if (contentDiv) {
+      contentDiv.innerHTML = this.renderTabContent();
+      this.attachEvents();
+    }
+  }
+}
+
+
 // === js/components/GenreWordMaster.js ===
 // ジャンル別単語マスター ＆ ジャンル別単語ゲーム コンポーネント
 // 身体部位・学校文房具・衣類・食べ物・日用品家電・果物野菜・方位 の全7分野を完全網羅
@@ -63264,6 +64491,7 @@ class ReferenceGuideComponent {
 
 
 
+
 class App {
   static currentTab = 'home';
 
@@ -63395,6 +64623,9 @@ class App {
         break;
       case 'suffix_dojo':
         SuffixRuleDojoComponent.render(mainContainer, onNavigate);
+        break;
+      case 'etymology_master':
+        EtymologyMasterComponent.render(mainContainer, onNavigate);
         break;
       case 'expedition':
         PenguinExpeditionComponent.render(mainContainer, onNavigate);

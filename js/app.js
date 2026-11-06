@@ -27,6 +27,7 @@ import { WordFamilyComponent } from './components/WordFamilyQuiz.js';
 import { PenguinExpeditionComponent } from './components/PenguinExpedition.js';
 import { SpellingGameComponent } from './components/SpellingGame.js';
 import { SuffixRuleDojoComponent } from './components/SuffixRuleDojo.js';
+import { EtymologyMasterComponent } from './components/EtymologyMaster.js';
 import { InterviewMasterComponent } from './components/InterviewMaster.js';
 import { GenreWordMasterComponent } from './components/GenreWordMaster.js';
 
@@ -161,6 +162,9 @@ class App {
         break;
       case 'suffix_dojo':
         SuffixRuleDojoComponent.render(mainContainer, onNavigate);
+        break;
+      case 'etymology_master':
+        EtymologyMasterComponent.render(mainContainer, onNavigate);
         break;
       case 'expedition':
         PenguinExpeditionComponent.render(mainContainer, onNavigate);
