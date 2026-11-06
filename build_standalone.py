@@ -84,6 +84,11 @@ for rel in files_order:
 
 all_js = "\n\n".join(combined_js)
 
+# HTMLパーサーがJSコード内の </script> タグを誤認識しないようエスケープ
+# （テンプレートリテラル内に </script> が含まれる場合に Unexpected token エラーが発生する）
+# 上記は複雑なので単純に：
+all_js = all_js.replace('</script', r'<\/script')
+
 css_content = read_f('css/styles.css')
 
 html_template = f"""<!DOCTYPE html>
