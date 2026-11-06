@@ -13831,4 +13831,56 @@ export const initialVocabulary = [
     "id": "v_note_118",
     "derivation": "見出し語「биеэ бодоорой」"
   }
+,
+{
+  "id": "v_tb_01",
+  "mongolian": "нийслэл салат",
+  "japanese": "首都サラダ、ポテトサラダ",
+  "pronunciation": "ニースレル サラト",
+  "root": "салат",
+  "pos": "名詞句",
+  "category": "食事",
+  "priority": "★★",
+  "exampleMn": "Нийслэл салат нэг тавгийг авъя.",
+  "exampleJa": "首都サラダを一皿ください。",
+  "note": "モンゴル定番の角切り肉やポテトの入ったサラダ。",
+  "lesson": 18,
+  "isVerb": false,
+  "dictForm": "нийслэл салат",
+  "derivation": "нийслэл（首都）＋ салат（サラダ）"
+},
+{
+  "id": "v_tb_03",
+  "mongolian": "дөнгөж сая",
+  "japanese": "つい先、たった今",
+  "pronunciation": "ドゥンゲジ サヤ",
+  "root": "сая",
+  "pos": "副詞句",
+  "category": "時間",
+  "priority": "★★",
+  "exampleMn": "Бид дөнгөж сая ирлээ.",
+  "exampleJa": "私たちはたった今到着しました。",
+  "note": "直近の完了を表す副詞句。",
+  "lesson": 10,
+  "isVerb": false,
+  "dictForm": "дөнгөж сая",
+  "derivation": "дөнгөж + сая"
+},
+{
+  "id": "v_tb_09",
+  "mongolian": "сургалтын танхим",
+  "japanese": "研修室、講義ホール",
+  "pronunciation": "スルガルティーン タンヒム",
+  "root": "танхим",
+  "pos": "名詞句",
+  "category": "教育",
+  "priority": "★★",
+  "exampleMn": "Сургалтын танхимд хурал болно.",
+  "exampleJa": "研修室でミーティングが行われます。",
+  "note": "сургалт（研修）＋ танхим（ホール・室）。",
+  "lesson": 5,
+  "isVerb": false,
+  "dictForm": "сургалтын танхим",
+  "derivation": "сургалт + танхим"
+}
 ];

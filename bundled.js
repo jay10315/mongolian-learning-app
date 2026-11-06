@@ -14761,6 +14761,58 @@ const initialVocabulary = [
     "id": "v_note_118",
     "derivation": "見出し語「биеэ бодоорой」"
   }
+,
+{
+  "id": "v_tb_01",
+  "mongolian": "нийслэл салат",
+  "japanese": "首都サラダ、ポテトサラダ",
+  "pronunciation": "ニースレル サラト",
+  "root": "салат",
+  "pos": "名詞句",
+  "category": "食事",
+  "priority": "★★",
+  "exampleMn": "Нийслэл салат нэг тавгийг авъя.",
+  "exampleJa": "首都サラダを一皿ください。",
+  "note": "モンゴル定番の角切り肉やポテトの入ったサラダ。",
+  "lesson": 18,
+  "isVerb": false,
+  "dictForm": "нийслэл салат",
+  "derivation": "нийслэл（首都）＋ салат（サラダ）"
+},
+{
+  "id": "v_tb_03",
+  "mongolian": "дөнгөж сая",
+  "japanese": "つい先、たった今",
+  "pronunciation": "ドゥンゲジ サヤ",
+  "root": "сая",
+  "pos": "副詞句",
+  "category": "時間",
+  "priority": "★★",
+  "exampleMn": "Бид дөнгөж сая ирлээ.",
+  "exampleJa": "私たちはたった今到着しました。",
+  "note": "直近の完了を表す副詞句。",
+  "lesson": 10,
+  "isVerb": false,
+  "dictForm": "дөнгөж сая",
+  "derivation": "дөнгөж + сая"
+},
+{
+  "id": "v_tb_09",
+  "mongolian": "сургалтын танхим",
+  "japanese": "研修室、講義ホール",
+  "pronunciation": "スルガルティーン タンヒム",
+  "root": "танхим",
+  "pos": "名詞句",
+  "category": "教育",
+  "priority": "★★",
+  "exampleMn": "Сургалтын танхимд хурал болно.",
+  "exampleJa": "研修室でミーティングが行われます。",
+  "note": "сургалт（研修）＋ танхим（ホール・室）。",
+  "lesson": 5,
+  "isVerb": false,
+  "dictForm": "сургалтын танхим",
+  "derivation": "сургалт + танхим"
+}
 ];
 
 
@@ -22025,6 +22077,1585 @@ const initialTypingSentences = [
       "далай": { dictForm: "далай", meaning: "海、大海、巨大な湖", pos: "名詞", pron: "ダライ" }
     }
   }
+,
+{
+  "id": "type_cls_01",
+  "level": "教室表現",
+  "category": "classroom",
+  "categoryLabel": "教室でのモンゴル語（Ангидаа монголоор яриарай）",
+  "textMn": "Ангидаа монголоор яриарай.",
+  "textJa": "教室でモンゴル語を話してください。",
+  "romaji": "Angidaa mongoloor yariarai.",
+  "explanation": "「ангидаа（教室で: 再帰与位格）」＋「монголоор（モンゴル語で: 造格）」＋「яриарай（話してください: 丁寧命令）」。授業の基本ルールです。",
+  "glossary": {
+    "ангидаа": {
+      "dictForm": "анги",
+      "meaning": "自分の教室で",
+      "pos": "名詞+格助詞",
+      "pron": "アンギダー"
+    },
+    "монголоор": {
+      "dictForm": "монгол",
+      "meaning": "モンゴル語で",
+      "pos": "名詞+格助詞",
+      "pron": "モンゴロール"
+    },
+    "яриарай": {
+      "dictForm": "ярих",
+      "meaning": "話してください",
+      "pos": "動詞",
+      "pron": "ヤリャーライ"
+    }
+  }
+},
+{
+  "id": "type_cls_02",
+  "level": "教室表現",
+  "category": "classroom",
+  "categoryLabel": "教室でのモンゴル語（Ангидаа монголоор яриарай）",
+  "textMn": "Орж болох уу? За, ороорой.",
+  "textJa": "入ってもいいですか？ はい、どうぞ入ってください。",
+  "romaji": "Orj bolokh uu? Za, oroorei.",
+  "explanation": "「-ж болох уу?（〜してもいいですか？許可求め）」に対して、「За, ороорой.（はい、入ってください: 丁寧命令）」と答えます。",
+  "glossary": {
+    "орж": {
+      "dictForm": "орох",
+      "meaning": "入って",
+      "pos": "動詞接続形",
+      "pron": "オルジ"
+    },
+    "болох уу": {
+      "dictForm": "болох",
+      "meaning": "いいですか",
+      "pos": "助動詞",
+      "pron": "ボロホ ウー"
+    },
+    "ороорой": {
+      "dictForm": "орох",
+      "meaning": "お入りください",
+      "pos": "動詞丁寧命令",
+      "pron": "オローロイ"
+    }
+  }
+},
+{
+  "id": "type_cls_03",
+  "level": "教室表現",
+  "category": "classroom",
+  "categoryLabel": "教室でのモンゴル語（Ангидаа монголоор яриарай）",
+  "textMn": "Энд суугаарай. Удаан хэлээрэй.",
+  "textJa": "ここに座ってください。ゆっくり言ってください。",
+  "romaji": "End suugaarai. Udaan kheleerei.",
+  "explanation": "「энд（ここに）」＋「суугаарай（座ってください）」、「удаан（ゆっくり）」＋「хэлээрэй（言ってください）」。",
+  "glossary": {
+    "энд": {
+      "dictForm": "энд",
+      "meaning": "ここに",
+      "pos": "指示副詞",
+      "pron": "エンド"
+    },
+    "суугаарай": {
+      "dictForm": "суух",
+      "meaning": "座ってください",
+      "pos": "動詞丁寧命令",
+      "pron": "スーガーライ"
+    },
+    "удаан": {
+      "dictForm": "удаан",
+      "meaning": "ゆっくり、遅く",
+      "pos": "副詞",
+      "pron": "オダーン"
+    },
+    "хэлээрэй": {
+      "dictForm": "хэлэх",
+      "meaning": "言ってください",
+      "pos": "動詞丁寧命令",
+      "pron": "ヘレーレイ"
+    }
+  }
+},
+{
+  "id": "type_cls_04",
+  "level": "教室表現",
+  "category": "classroom",
+  "categoryLabel": "教室でのモンゴル語（Ангидаа монголоор яриарай）",
+  "textMn": "Дахиад хэлээрэй. Хариулаарай.",
+  "textJa": "もう一度言ってください。答えてください。",
+  "romaji": "Dakhiad kheleerei. Khariulaarai.",
+  "explanation": "「дахиад（再び、もう一度）」＋「хэлээрэй（言ってください）」、「хариулаарай（答えてください）」。聞き取れなかったときの頻出フレーズです。",
+  "glossary": {
+    "дахиад": {
+      "dictForm": "дахиад",
+      "meaning": "もう一度、再び",
+      "pos": "副詞",
+      "pron": "ダヒャード"
+    },
+    "хариулаарай": {
+      "dictForm": "хариулах",
+      "meaning": "答えてください",
+      "pos": "動詞丁寧命令",
+      "pron": "ハリュウラーライ"
+    }
+  }
+},
+{
+  "id": "type_cls_05",
+  "level": "教室表現",
+  "category": "classroom",
+  "categoryLabel": "教室でのモンゴル語（Ангидаа монголоор яриарай）",
+  "textMn": "Шинэ үгээ сайн цээжлээрэй.",
+  "textJa": "新しい単語をしっかり覚えてください。",
+  "romaji": "Shine ugee sain tseejleerei.",
+  "explanation": "「шинэ（新しい）」＋「үгээ（自分の単語を: 再帰対格）」＋「сайн（よく）」＋「цээжлээрэй（暗記してください）」。",
+  "glossary": {
+    "шинэ": {
+      "dictForm": "шинэ",
+      "meaning": "新しい",
+      "pos": "形容詞",
+      "pron": "シネ"
+    },
+    "үгээ": {
+      "dictForm": "үг",
+      "meaning": "単語を",
+      "pos": "名詞再帰対格",
+      "pron": "ウゲー"
+    },
+    "цээжлээрэй": {
+      "dictForm": "цээжлэх",
+      "meaning": "覚えてください",
+      "pos": "動詞丁寧命令",
+      "pron": "ツェージレーレイ"
+    }
+  }
+},
+{
+  "id": "type_cls_06",
+  "level": "教室表現",
+  "category": "classroom",
+  "categoryLabel": "教室でのモンゴル語（Ангидаа монголоор яриарай）",
+  "textMn": "Түр амраарай. Жаахан хүлээгээрэй.",
+  "textJa": "少し休んでください。ちょっと待ってください。",
+  "romaji": "Tur amraarai. Jaakhan khuleegeerei.",
+  "explanation": "「түр（少しの間）」＋「амраарай（休んでください）」、「жаахан（少し）」＋「хүлээгээрэй（待ってください）」。",
+  "glossary": {
+    "түр": {
+      "dictForm": "түр",
+      "meaning": "少しの間",
+      "pos": "副詞",
+      "pron": "トゥル"
+    },
+    "амраарай": {
+      "dictForm": "амрах",
+      "meaning": "休んでください",
+      "pos": "動詞丁寧命令",
+      "pron": "アムラーライ"
+    },
+    "жаахан": {
+      "dictForm": "жаахан",
+      "meaning": "ちょっと、少し",
+      "pos": "副詞",
+      "pron": "ジャーハン"
+    },
+    "хүлээгээрэй": {
+      "dictForm": "хүлээх",
+      "meaning": "待ってください",
+      "pos": "動詞丁寧命令",
+      "pron": "フレージェーレイ"
+    }
+  }
+},
+{
+  "id": "type_cls_07",
+  "level": "教室表現",
+  "category": "classroom",
+  "categoryLabel": "教室でのモンゴル語（Ангидаа монголоор яриарай）",
+  "textMn": "Энэ зөв үү? Тийм ээ, зөв.",
+  "textJa": "これは合っていますか？ はい、合っています。",
+  "romaji": "Ene zov uu? Tiim ee, zov.",
+  "explanation": "「зөв（正しい、合っている）」に対するYes/No疑問「зөв үү?」と肯定の返答「Тийм ээ, зөв.」。不正解の場合は「Үгүй, буруу.（いいえ、間違いです）」。",
+  "glossary": {
+    "энэ": {
+      "dictForm": "энэ",
+      "meaning": "これ",
+      "pos": "指示代名詞",
+      "pron": "エネ"
+    },
+    "зөв": {
+      "dictForm": "зөв",
+      "meaning": "正しい、正解",
+      "pos": "形容詞",
+      "pron": "ゾブ"
+    },
+    "Тийм ээ": {
+      "dictForm": "тийм",
+      "meaning": "はい、そうです",
+      "pos": "感嘆詞",
+      "pron": "ティーメー"
+    }
+  }
+},
+{
+  "id": "type_cls_08",
+  "level": "教室表現",
+  "category": "classroom",
+  "categoryLabel": "教室でのモンゴル語（Ангидаа монголоор яриарай）",
+  "textMn": "Ойлгосон уу? Ойлгосон.",
+  "textJa": "分かりましたか？ 分かりました。",
+  "romaji": "Oilgoson uu? Oilgoson.",
+  "explanation": "「ойлгох（理解する）」の過去時制「ойлгосон（分かりました）」。分からなかったときは「Ойлгохгүй байна.（分かりません）」と答えます。",
+  "glossary": {
+    "ойлгосон": {
+      "dictForm": "ойлгох",
+      "meaning": "分かった、理解した",
+      "pos": "動詞過去形",
+      "pron": "オイルゴソン"
+    }
+  }
+},
+{
+  "id": "type_cls_09",
+  "level": "教室表現",
+  "category": "classroom",
+  "categoryLabel": "教室でのモンゴル語（Ангидаа монголоор яриарай）",
+  "textMn": "Асуулт байна уу? Байна.",
+  "textJa": "質問はありますか？ あります。",
+  "romaji": "Asuult baina uu? Baina.",
+  "explanation": "「асуулт（質問）」＋「байна уу?（ありますか？）」。ない場合は「Үгүй, байхгүй.（いいえ、ありません）」と答えます。",
+  "glossary": {
+    "асуулт": {
+      "dictForm": "асуулт",
+      "meaning": "質問",
+      "pos": "名詞",
+      "pron": "アスールト"
+    },
+    "байна": {
+      "dictForm": "байх",
+      "meaning": "あります、います",
+      "pos": "存在動詞",
+      "pron": "バイン"
+    }
+  }
+},
+{
+  "id": "type_cls_10",
+  "level": "教室表現",
+  "category": "classroom",
+  "categoryLabel": "教室でのモンゴル語（Ангидаа монголоор яриарай）",
+  "textMn": "Үүнийг монголоор юу гэдэг вэ?",
+  "textJa": "これはモンゴル語で何と言いますか？",
+  "romaji": "Uuniig mongoloor yuu gedeg ve?",
+  "explanation": "「үүнийг（これを: 対格）」＋「монголоор（モンゴル語で）」＋「юу гэдэг вэ?（何と言いますか？）」。現地で単語を尋ねる最強のフレーズです。",
+  "glossary": {
+    "үүнийг": {
+      "dictForm": "энэ",
+      "meaning": "これを",
+      "pos": "指示代名詞対格",
+      "pron": "ウーニーグ"
+    },
+    "юу гэдэг вэ": {
+      "dictForm": "гэх",
+      "meaning": "何と言うか",
+      "pos": "疑問表現",
+      "pron": "ユー ゲデグ ベ"
+    }
+  }
+},
+{
+  "id": "type_grt_01",
+  "level": "挨拶表現",
+  "category": "greetings",
+  "categoryLabel": "日常の挨拶（Мэндчилгээний үг хэллэг）",
+  "textMn": "Сайн байна уу? Сайн, сайн байна уу?",
+  "textJa": "こんにちは（お元気ですか）。元気です、お元気ですか。",
+  "romaji": "Sain baina uu? Sain, sain baina uu?",
+  "explanation": "モンゴル語で最も基本かつ重要な挨拶です。「元気ですか？」と尋ねられたら「元気です、お元気ですか？」と繰り返して返します。",
+  "glossary": {
+    "сайн": {
+      "dictForm": "сайн",
+      "meaning": "良い、元気な",
+      "pos": "形容詞",
+      "pron": "サイン"
+    },
+    "байна": {
+      "dictForm": "байх",
+      "meaning": "あります、います",
+      "pos": "助動詞",
+      "pron": "バイン"
+    }
+  }
+},
+{
+  "id": "type_grt_02",
+  "level": "挨拶表現",
+  "category": "greetings",
+  "categoryLabel": "日常の挨拶（Мэндчилгээний үг хэллэг）",
+  "textMn": "Сонин сайхан юу байна вэ? Юмгүй тайван.",
+  "textJa": "最近どうですか（変わりありませんか）？ 相変わらずです（平穏です）。",
+  "romaji": "Sonin saikhan yuu baina ve? Yumgui taivan.",
+  "explanation": "「сонин（ニュース・珍しいこと）」＋「сайхан（良いこと）」を尋ねる日常会話の決まり文句。返答は「Юмгүй тайван.（特に変わりなく平穏です）」が定番です。",
+  "glossary": {
+    "сонин": {
+      "dictForm": "сонин",
+      "meaning": "珍しいこと、ニュース",
+      "pos": "名詞",
+      "pron": "ソニン"
+    },
+    "юмгүй": {
+      "dictForm": "юм",
+      "meaning": "何もない",
+      "pos": "名詞+否定",
+      "pron": "ユムグイ"
+    },
+    "тайван": {
+      "dictForm": "тайван",
+      "meaning": "平穏な、静かな",
+      "pos": "形容詞",
+      "pron": "タイワン"
+    }
+  }
+},
+{
+  "id": "type_grt_03",
+  "level": "挨拶表現",
+  "category": "greetings",
+  "categoryLabel": "日常の挨拶（Мэндчилгээний үг хэллэг）",
+  "textMn": "Сайхан амарсан уу? Сайхан амарсан.",
+  "textJa": "よく休みましたか？ よく休みました。",
+  "romaji": "Saikhan amarsan uu? Saikhan amarsan.",
+  "explanation": "朝の挨拶や週末明けの定番表現。「сайхан（良く）」＋「амарсан уу?（休みましたか？）」。",
+  "glossary": {
+    "сайхан": {
+      "dictForm": "сайхан",
+      "meaning": "美しい、良い、良く",
+      "pos": "形容詞/副詞",
+      "pron": "サイハン"
+    },
+    "амарсан": {
+      "dictForm": "амрах",
+      "meaning": "休んだ",
+      "pos": "動詞過去形",
+      "pron": "アマルサン"
+    }
+  }
+},
+{
+  "id": "type_grt_04",
+  "level": "挨拶表現",
+  "category": "greetings",
+  "categoryLabel": "日常の挨拶（Мэндчилгээний үг хэллэг）",
+  "textMn": "Маш их баярлалаа. Зүгээр, зүгээр.",
+  "textJa": "どうもありがとうございます。 どういたしまして。",
+  "romaji": "Mash ikh bayarlalaa. Zugeer, zugeer.",
+  "explanation": "「маш их（非常に大いに）」＋「баярлалаа（ありがとう）」とお礼を述べられたら、「Зүгээр, зүгээр.（気にしないで、どういたしまして）」と答えます。",
+  "glossary": {
+    "маш": {
+      "dictForm": "маш",
+      "meaning": "非常に、とても",
+      "pos": "副詞",
+      "pron": "マシ"
+    },
+    "баярлалаа": {
+      "dictForm": "баярлах",
+      "meaning": "ありがとう",
+      "pos": "動詞過去形",
+      "pron": "バヤルララー"
+    },
+    "зүгээр": {
+      "dictForm": "зүгээр",
+      "meaning": "大丈夫、平気",
+      "pos": "形容詞/副詞",
+      "pron": "ズゲール"
+    }
+  }
+},
+{
+  "id": "type_grt_05",
+  "level": "挨拶表現",
+  "category": "greetings",
+  "categoryLabel": "日常の挨拶（Мэндчилгээний үг хэлルэг）",
+  "textMn": "Уучлаарай. Зүгээр ээ, зүгээр.",
+  "textJa": "すみません（ごめんなさい）。 大丈夫ですよ、平気です。",
+  "romaji": "Uuchlaarai. Zugeer ee, zugeer.",
+  "explanation": "謝罪や呼びかけの「Уучлаарай（すみません）」に対して、相手を安心させる返答が「Зүгээр ээ（平気です）」です。",
+  "glossary": {
+    "уучлаарай": {
+      "dictForm": "уучлах",
+      "meaning": "許してください、すみません",
+      "pos": "動詞丁寧命令",
+      "pron": "オーチラーライ"
+    }
+  }
+},
+{
+  "id": "type_grt_06",
+  "level": "挨拶表現",
+  "category": "greetings",
+  "categoryLabel": "日常の挨拶（Мэндчилгээний үг хэллэг）",
+  "textMn": "Сайхан амраарай. Баяртай.",
+  "textJa": "お休みなさい（良い休息を）。 さようなら。",
+  "romaji": "Saikhan amraarai. Bayartai.",
+  "explanation": "夜別れるときの挨拶「Сайхан амраарай（よく休んでね）」と別れの挨拶「Баяртай（さようなら）」。",
+  "glossary": {
+    "амраарай": {
+      "dictForm": "амрах",
+      "meaning": "休んでください",
+      "pos": "動詞丁寧命令",
+      "pron": "アムラーライ"
+    },
+    "баяртай": {
+      "dictForm": "баяр",
+      "meaning": "喜びと共に、さようなら",
+      "pos": "共同格・挨拶",
+      "pron": "バヤルタイ"
+    }
+  }
+},
+{
+  "id": "type_grt_07",
+  "level": "挨拶表現",
+  "category": "greetings",
+  "categoryLabel": "日常の挨拶（Мэндчилгээний үг хэллэг）",
+  "textMn": "Дараа уулзъя. Маргааш уулзъя.",
+  "textJa": "また会いましょう。 明日会いましょう。",
+  "romaji": "Daraa uulzya. Margaash uulzya.",
+  "explanation": "「дараа（後で）」＋「уулзъя（会いましょう: 希求形）」、「маргааш（明日）」＋「уулзъя（会いましょう）」。親しい人との別れ際によく使われます。",
+  "glossary": {
+    "дараа": {
+      "dictForm": "дараа",
+      "meaning": "後で",
+      "pos": "副詞",
+      "pron": "ダラー"
+    },
+    "маргааш": {
+      "dictForm": "маргааш",
+      "meaning": "明日",
+      "pos": "副詞",
+      "pron": "マルガーシ"
+    },
+    "уулзъя": {
+      "dictForm": "уулзах",
+      "meaning": "会いましょう",
+      "pos": "動詞希求形",
+      "pron": "オールズヤ"
+    }
+  }
+},
+{
+  "id": "type_ls_01_1",
+  "level": "初級・基礎",
+  "category": "lesson_basics",
+  "categoryLabel": "挨拶・自己紹介・コピュラ文",
+  "textMn": "Миний нэр Золбоо. Би багш биш, оюутан.",
+  "textJa": "私の名前はゾルボーです。私は先生ではなく学生です。",
+  "romaji": "Minii ner Zolboo. Bi bagsh bish, oyutan.",
+  "explanation": "「Миний нэр 〜（私の名前は〜）」、肯定コピュラ文「Би 〜（私は〜です）」、否定コピュラ文「〜 биш（〜ではありません）」。",
+  "glossary": {
+    "миний": {
+      "dictForm": "би",
+      "meaning": "私の",
+      "pos": "人称代名詞属格",
+      "pron": "ミニー"
+    },
+    "нэр": {
+      "dictForm": "нэр",
+      "meaning": "名前",
+      "pos": "名詞",
+      "pron": "ネル"
+    },
+    "биш": {
+      "dictForm": "биш",
+      "meaning": "〜ではない",
+      "pos": "否定詞",
+      "pron": "ビシ"
+    },
+    "оюутан": {
+      "dictForm": "оюутан",
+      "meaning": "学生",
+      "pos": "名詞",
+      "pron": "オユータン"
+    }
+  }
+},
+{
+  "id": "type_ls_01_2",
+  "level": "初級・基礎",
+  "category": "lesson_basics",
+  "categoryLabel": "挨拶・自己紹介・コピュラ文",
+  "textMn": "Таны нэр хэн бэ? Сайхан танилцлаа.",
+  "textJa": "あなたのお名前は何ですか？ お会いできて嬉しいです。",
+  "romaji": "Tany ner khen be? Saikhan taniltslaa.",
+  "explanation": "疑問詞「хэн（誰）」のある疑問文なので文末は「бэ」。初対面の定番「Сайхан танилцлаа.（お会いできて嬉しいです）」。",
+  "glossary": {
+    "таны": {
+      "dictForm": "та",
+      "meaning": "あなたの",
+      "pos": "人称代名詞属格",
+      "pron": "タニー"
+    },
+    "хэн": {
+      "dictForm": "хэн",
+      "meaning": "誰",
+      "pos": "疑問詞",
+      "pron": "ヘン"
+    },
+    "танилцлаа": {
+      "dictForm": "танилцах",
+      "meaning": "知り合いました",
+      "pos": "動詞過去形",
+      "pron": "タニルツラー"
+    }
+  }
+},
+{
+  "id": "type_ls_02_1",
+  "level": "初級・基礎",
+  "category": "lesson_basics",
+  "categoryLabel": "教室の持ち物と存在文",
+  "textMn": "Энэ юу вэ? Энэ сонин биш, сэтгүүл.",
+  "textJa": "これは何ですか？ これは新聞ではなく雑誌です。",
+  "romaji": "Ene yuu ve? Ene sonin bish, setguul.",
+  "explanation": "指示代名詞「энэ（これ）」＋疑問詞「юу（何）」＋「вэ」。否定詞「биш」で「新聞ではなく雑誌」と訂正します。",
+  "glossary": {
+    "энэ": {
+      "dictForm": "энэ",
+      "meaning": "これ",
+      "pos": "指示代名詞",
+      "pron": "エネ"
+    },
+    "сонин": {
+      "dictForm": "сонин",
+      "meaning": "新聞",
+      "pos": "名詞",
+      "pron": "ソニン"
+    },
+    "сэтгүүл": {
+      "dictForm": "сэтгүүл",
+      "meaning": "雑誌",
+      "pos": "名詞",
+      "pron": "セトゥグール"
+    }
+  }
+},
+{
+  "id": "type_ls_02_2",
+  "level": "初級・基礎",
+  "category": "lesson_basics",
+  "categoryLabel": "教室の持ち物と存在文",
+  "textMn": "Энд хоёр самбар, дөрвөн сандал байна.",
+  "textJa": "ここに2つの黒板と4脚の椅子があります。",
+  "romaji": "End khoyor sambar, dorvon sandal baina.",
+  "explanation": "場所の指示詞「энд（ここに）」＋数詞＋名詞＋存在動詞「байна（あります）」。数詞の後ろの名詞は単数形になります。",
+  "glossary": {
+    "хоёр": {
+      "dictForm": "хоёр",
+      "meaning": "2つの",
+      "pos": "数詞",
+      "pron": "ホヨル"
+    },
+    "самбар": {
+      "dictForm": "самбар",
+      "meaning": "黒板",
+      "pos": "名詞",
+      "pron": "サンバル"
+    },
+    "дөрвөн": {
+      "dictForm": "дөрөв",
+      "meaning": "4つの",
+      "pos": "数詞（交代語幹）",
+      "pron": "ドルウォン"
+    },
+    "сандал": {
+      "dictForm": "сандал",
+      "meaning": "椅子",
+      "pos": "名詞",
+      "pron": "サンダル"
+    }
+  }
+},
+{
+  "id": "type_ls_03_1",
+  "level": "初級・基礎",
+  "category": "lesson_basics",
+  "categoryLabel": "自己紹介・年齢・過去時制",
+  "textMn": "Би 26 настай. Токиогоос ирсэн.",
+  "textJa": "私は26歳です。東京から来ました。",
+  "romaji": "Bi 26 nastai. Tokiogoos irsen.",
+  "explanation": "「〜настай（〜歳です）」、奪格「-оос（〜から）」＋動詞過去時制「ирсэн（来ました）」。自己紹介の最重要構文です。",
+  "glossary": {
+    "настай": {
+      "dictForm": "нас",
+      "meaning": "〜歳の",
+      "pos": "名詞+接尾辞",
+      "pron": "ナスタイ"
+    },
+    "Токиогоос": {
+      "dictForm": "Токио",
+      "meaning": "東京から",
+      "pos": "固有名詞奪格",
+      "pron": "トキオゴース"
+    },
+    "ирсэн": {
+      "dictForm": "ирэх",
+      "meaning": "来た",
+      "pos": "動詞過去形",
+      "pron": "イルセン"
+    }
+  }
+},
+{
+  "id": "type_ls_03_2",
+  "level": "初級・基礎",
+  "category": "lesson_basics",
+  "categoryLabel": "自己紹介・年齢・過去時制",
+  "textMn": "Би ЖАЙКА-ийн сайн дурын гишүүн.",
+  "textJa": "私は海外協力隊のボランティア隊員です。",
+  "romaji": "Bi JAIKA-iin sain duryn gishuun.",
+  "explanation": "「сайн дурын гишүүн（ボランティア隊員）」。派遣先で自己紹介する際の最重要フレーズです。",
+  "glossary": {
+    "сайн дурын": {
+      "dictForm": "сайн дур",
+      "meaning": "自発的な、ボランティアの",
+      "pos": "名詞句属格",
+      "pron": "サイン ドゥリーン"
+    },
+    "гишүүн": {
+      "dictForm": "гишүүн",
+      "meaning": "隊員、会員、メンバー",
+      "pos": "名詞",
+      "pron": "ギシューン"
+    }
+  }
+},
+{
+  "id": "type_ls_04_1",
+  "level": "初級・基礎",
+  "category": "lesson_basics",
+  "categoryLabel": "所属（属格）と位置関係の後置詞",
+  "textMn": "Ширээн дээр япон хэлний сурах бичиг байна.",
+  "textJa": "机の上に日本語の教科書があります。",
+  "romaji": "Shireen deer yapon khelnii surakh bichig baina.",
+  "explanation": "位置後置詞「дээр（〜の上に）」、言語の属格「япон хэлний（日本語の）」＋「сурах бичиг（教科書）」。",
+  "glossary": {
+    "ширээн дээр": {
+      "dictForm": "ширээ",
+      "meaning": "机の上に",
+      "pos": "後置詞句",
+      "pron": "シレーン デール"
+    },
+    "хэлний": {
+      "dictForm": "хэл",
+      "meaning": "言語の",
+      "pos": "名詞属格",
+      "pron": "ヘルニー"
+    },
+    "сурах бичиг": {
+      "dictForm": "сурах бичиг",
+      "meaning": "教科書",
+      "pos": "名詞句",
+      "pron": "スラホ ビチグ"
+    }
+  }
+},
+{
+  "id": "type_ls_04_2",
+  "level": "初級・基礎",
+  "category": "lesson_basics",
+  "categoryLabel": "所属（属格）と位置関係の後置詞",
+  "textMn": "Энэ түлхүүр минийх, тэр компьютер ч бас таных.",
+  "textJa": "この鍵は私のものです。あのパソコンもあなたのものです。",
+  "romaji": "Ene tulkhuur miniikh, ter kompyuter ch bas tanykh.",
+  "explanation": "所属・所有を表す代名詞接尾辞「-х」: 「минийх（私のもの）」「таных（あなたのもの）」、「ч бас（〜もまた）」。",
+  "glossary": {
+    "түлхүүр": {
+      "dictForm": "түлхүүр",
+      "meaning": "鍵、キー",
+      "pos": "名詞",
+      "pron": "トゥルフール"
+    },
+    "минийх": {
+      "dictForm": "миний",
+      "meaning": "私のもの",
+      "pos": "所有代名詞",
+      "pron": "ミニーヒ"
+    },
+    "таных": {
+      "dictForm": "таны",
+      "meaning": "あなたのもの",
+      "pos": "所有代名詞",
+      "pron": "タニーヒ"
+    }
+  }
+},
+{
+  "id": "type_ls_05_1",
+  "level": "日常会話",
+  "category": "daily_actions",
+  "categoryLabel": "予定・未来時制・共同格",
+  "textMn": "Ажлын хамтрагчтай хамт өдрийн хоол иднэ.",
+  "textJa": "カウンターパートと一緒に昼食を食べます。",
+  "romaji": "Ajlyn khamtragchtai khamt odriin khool idne.",
+  "explanation": "共同格「-тай хамт（〜と一緒に）」＋「өдрийн хоол（昼食）」＋未来時制「иднэ（食べます）」。",
+  "glossary": {
+    "хамтрагчтай": {
+      "dictForm": "хамтрагч",
+      "meaning": "パートナーと",
+      "pos": "名詞共同格",
+      "pron": "ハムトラグチタイ"
+    },
+    "хамт": {
+      "dictForm": "хамт",
+      "meaning": "一緒に",
+      "pos": "後置詞",
+      "pron": "ハムト"
+    },
+    "иднэ": {
+      "dictForm": "идэх",
+      "meaning": "食べます",
+      "pos": "動詞未来形",
+      "pron": "イドネ"
+    }
+  }
+},
+{
+  "id": "type_ls_05_2",
+  "level": "日常会話",
+  "category": "daily_actions",
+  "categoryLabel": "予定・未来時制・共同格",
+  "textMn": "Би хурлын танхимд очно. Тэнд хуралтай.",
+  "textJa": "私は会議室に行きます。そこで会議があります。",
+  "romaji": "Bi khurlyn tankhimd ochno. Tend khuraltai.",
+  "explanation": "与位格「-д（〜に）」＋未来形「очно（行きます）」、「хуралтай（会議がある: 共同格）」。",
+  "glossary": {
+    "танхимд": {
+      "dictForm": "танхим",
+      "meaning": "室・ホールに",
+      "pos": "名詞与位格",
+      "pron": "タンヒムド"
+    },
+    "очно": {
+      "dictForm": "очих",
+      "meaning": "行きます",
+      "pos": "動詞未来形",
+      "pron": "オチノ"
+    },
+    "хуралтай": {
+      "dictForm": "хурал",
+      "meaning": "会議がある",
+      "pos": "名詞共同格",
+      "pron": "フラルタイ"
+    }
+  }
+},
+{
+  "id": "type_ls_06_1",
+  "level": "日常会話",
+  "category": "daily_actions",
+  "categoryLabel": "習慣動詞と丁寧な命令表現",
+  "textMn": "Оюутан өглөө бүр ангид эрт ирдэг.",
+  "textJa": "学生は毎朝教室に早く来ます。",
+  "romaji": "Oyutan ogloo bur angid ert irdeg.",
+  "explanation": "習慣を表す動詞形「-даг⁴」: 「өглөө бүр（毎朝）」＋「эрт（早く）」＋「ирдэг（来ます: 習慣）」。",
+  "glossary": {
+    "өглөө бүр": {
+      "dictForm": "өглөө бүр",
+      "meaning": "毎朝",
+      "pos": "副詞句",
+      "pron": "オグロー ブル"
+    },
+    "эрт": {
+      "dictForm": "эрт",
+      "meaning": "早く",
+      "pos": "副詞",
+      "pron": "エルト"
+    },
+    "ирдэг": {
+      "dictForm": "ирэх",
+      "meaning": "普段来る",
+      "pos": "動詞習慣形",
+      "pron": "イルデグ"
+    }
+  }
+},
+{
+  "id": "type_ls_06_2",
+  "level": "日常会話",
+  "category": "daily_actions",
+  "categoryLabel": "習慣動詞と丁寧な命令表現",
+  "textMn": "Хоолны өмнө гар угаагаарай. Цаас хайрцганд хийгээрэй.",
+  "textJa": "食事の前に手を洗ってください。紙を箱にしまってください。",
+  "romaji": "Khoolny omno gar ugaagaarai. Tsaas khairtsgand khiigeerei.",
+  "explanation": "丁寧な指示・命令「-аарай⁴」: 「угаагаарай（洗ってください: 隠れг出現）」、「хийгээрэй（入れてください）」。",
+  "glossary": {
+    "өмнө": {
+      "dictForm": "өмнө",
+      "meaning": "前に",
+      "pos": "後置詞",
+      "pron": "オムノ"
+    },
+    "угаагаарай": {
+      "dictForm": "угаах",
+      "meaning": "洗ってください",
+      "pos": "動詞丁寧命令",
+      "pron": "オガーガーライ"
+    },
+    "хайрцганд": {
+      "dictForm": "хайрцаг",
+      "meaning": "箱に",
+      "pos": "名詞与位格",
+      "pron": "ハイリツガンド"
+    }
+  }
+},
+{
+  "id": "type_ls_07_1",
+  "level": "初級・文法",
+  "category": "grammar_patterns",
+  "categoryLabel": "対格と集合数詞（〜人で）",
+  "textMn": "Бид тэр зузаан дэвтрийг хэрэглэдэг.",
+  "textJa": "私たちはあの厚いノートを使います。",
+  "romaji": "Bid ter zuzaan devtriig khereglegedeg.",
+  "explanation": "動作の目的語を表す対格「дэвтрийг（ノートを: 母音脱落＋-ийг）」＋習慣動詞「хэрэглэдэг（使います）」。",
+  "glossary": {
+    "зузаан": {
+      "dictForm": "зузаан",
+      "meaning": "厚い",
+      "pos": "形容詞",
+      "pron": "ズザーン"
+    },
+    "дэвтрийг": {
+      "dictForm": "дэвтэр",
+      "meaning": "ノートを",
+      "pos": "名詞対格",
+      "pron": "デフトリイグ"
+    },
+    "хэрэглэдэг": {
+      "dictForm": "хэрэглэх",
+      "meaning": "使う",
+      "pos": "動詞習慣形",
+      "pron": "ヘレグレデグ"
+    }
+  }
+},
+{
+  "id": "type_ls_07_2",
+  "level": "初級・文法",
+  "category": "grammar_patterns",
+  "categoryLabel": "対格と集合数詞（〜人で）",
+  "textMn": "Бид Монголд арвуулаа очно, бүгдээрээ ажиллана.",
+  "textJa": "私たちは10人でモンゴルに行きます。みんなで働きます。",
+  "romaji": "Bid Mongold arvuulaa ochno, bugdeeree ajillana.",
+  "explanation": "集合数詞「арвуулаа（10人で: -уулаа²）」、「бүгдээрээ（みんなで）」。",
+  "glossary": {
+    "арвуулаа": {
+      "dictForm": "арав",
+      "meaning": "10人で",
+      "pos": "集合数詞",
+      "pron": "アルウォーラー"
+    },
+    "бүгдээрээ": {
+      "dictForm": "бүгд",
+      "meaning": "みんなで",
+      "pos": "副詞句",
+      "pron": "ブグデーレー"
+    },
+    "ажиллана": {
+      "dictForm": "ажиллах",
+      "meaning": "働きます",
+      "pos": "動詞未来形",
+      "pron": "アジッラナ"
+    }
+  }
+},
+{
+  "id": "type_ls_08_1",
+  "level": "初級・文法",
+  "category": "grammar_patterns",
+  "categoryLabel": "方向格（へ）と連用節（〜するとき）",
+  "textMn": "Цагаан сарын өмнө төрсөн нутаг руу явна.",
+  "textJa": "お正月の前に故郷へ帰ります。",
+  "romaji": "Tsagaan saryn omno torson nutag ruu yavna.",
+  "explanation": "方向格「төрсөн нутаг руу（故郷へ: 名詞と離して書く）」＋「явна（行きます）」。",
+  "glossary": {
+    "Цагаан сар": {
+      "dictForm": "Цагаан сар",
+      "meaning": "ツァガーンサル、旧正月",
+      "pos": "固有名詞",
+      "pron": "ツァガーン サル"
+    },
+    "төрсөн нутаг": {
+      "dictForm": "төрсөн нутаг",
+      "meaning": "故郷、生まれ故郷",
+      "pos": "名詞句",
+      "pron": "トルソン ヌタグ"
+    },
+    "руу": {
+      "dictForm": "руу",
+      "meaning": "〜へ（方向格）",
+      "pos": "格助詞",
+      "pron": "ロー"
+    }
+  }
+},
+{
+  "id": "type_ls_08_2",
+  "level": "初級・文法",
+  "category": "grammar_patterns",
+  "categoryLabel": "方向格（へ）と連用節（〜するとき）",
+  "textMn": "Би Монгол руу явахдаа, дулаан дээл өмсөнө.",
+  "textJa": "私はモンゴルへ行くとき、暖かいデールを着ます。",
+  "romaji": "Bi Mongol ruu yavakhdaa, dulaan deel omsono.",
+  "explanation": "時点を表す連用節「-хдаа⁴（〜するとき）」: 「явахдаа（行くとき）」＋「өмсөнө（着ます）」。",
+  "glossary": {
+    "явахдаа": {
+      "dictForm": "явах",
+      "meaning": "行くとき",
+      "pos": "動詞連用形",
+      "pron": "ヤワハダー"
+    },
+    "дээл": {
+      "dictForm": "дээл",
+      "meaning": "デール（民族服）",
+      "pos": "名詞",
+      "pron": "デール"
+    },
+    "өмсөнө": {
+      "dictForm": "өмсөх",
+      "meaning": "着ます",
+      "pos": "動詞未来形",
+      "pron": "オムソノ"
+    }
+  }
+},
+{
+  "id": "type_ls_09_1",
+  "level": "訓練所・日課",
+  "category": "routine_schedule",
+  "categoryLabel": "時刻・時間の表現と再帰所有（自分の〜）",
+  "textMn": "8 цаг 45 минутаас 15 цаг хүртэл хичээлтэй байдаг.",
+  "textJa": "8時45分から15時まで授業があります。",
+  "romaji": "8 tsag 45 minutaas 15 tsag khurtel khicheeltei baidag.",
+  "explanation": "時間的起点「-аас」と終点「хүртэл（〜まで）」の組み合わせ。「хичээлтэй байдаг（授業がある）」。",
+  "glossary": {
+    "минутаас": {
+      "dictForm": "минут",
+      "meaning": "分から",
+      "pos": "名詞奪格",
+      "pron": "ミヌタース"
+    },
+    "хүртэл": {
+      "dictForm": "хүртэл",
+      "meaning": "〜まで",
+      "pos": "後置詞",
+      "pron": "フルテル"
+    },
+    "хичээлтэй": {
+      "dictForm": "хичээл",
+      "meaning": "授業がある",
+      "pos": "名詞共同格",
+      "pron": "ヒチェールテイ"
+    }
+  }
+},
+{
+  "id": "type_ls_09_2",
+  "level": "訓練所・日課",
+  "category": "routine_schedule",
+  "categoryLabel": "時刻・時間の表現と再帰所有（自分の〜）",
+  "textMn": "Сургалтгүй үед өрөөндөө хичээлээ давтдаг.",
+  "textJa": "講座がない時は自分の部屋で復習をします。",
+  "romaji": "Surgaltgui uyed oroondoo khicheelee davtdag.",
+  "explanation": "否定接尾辞「-гүй（〜のない）」＋「үед（〜の時に）」、再帰与位格「өрөөндөө（自分の部屋で）」、再帰対格「хичээлээ（自分の勉強を）」。",
+  "glossary": {
+    "сургалтгүй": {
+      "dictForm": "сургалт",
+      "meaning": "訓練・講座のない",
+      "pos": "形容詞",
+      "pron": "スルガルトグイ"
+    },
+    "өрөөндөө": {
+      "dictForm": "өрөө",
+      "meaning": "自分の部屋で",
+      "pos": "名詞再帰与位格",
+      "pron": "オローンドー"
+    },
+    "давтдаг": {
+      "dictForm": "давтах",
+      "meaning": "復習する",
+      "pos": "動詞習慣形",
+      "pron": "ダフタダグ"
+    }
+  }
+},
+{
+  "id": "type_ls_10_1",
+  "level": "日常会話",
+  "category": "conversations",
+  "categoryLabel": "進行時制と可能動詞（〜できる）",
+  "textMn": "Та монголоор уншиж ч бас бичиж ч чадах уу?",
+  "textJa": "あなたはモンゴル語を読むことも書くこともできますか？",
+  "romaji": "Ta mongoloor unshij ch bas bichij ch chadakh uu?",
+  "explanation": "並列「-ж ч бас（〜もまた）」＋可能動詞「чадах уу?（できますか？）」。",
+  "glossary": {
+    "уншиж": {
+      "dictForm": "унших",
+      "meaning": "読んで",
+      "pos": "動詞接続形",
+      "pron": "ウンシジ"
+    },
+    "бичиж": {
+      "dictForm": "бичих",
+      "meaning": "書いて",
+      "pos": "動詞接続形",
+      "pron": "ビチジ"
+    },
+    "чадах уу": {
+      "dictForm": "чадах",
+      "meaning": "できますか",
+      "pos": "助動詞",
+      "pron": "チャダホ ウー"
+    }
+  }
+},
+{
+  "id": "type_ls_10_2",
+  "level": "日常会話",
+  "category": "conversations",
+  "categoryLabel": "進行時制と可能動詞（〜できる）",
+  "textMn": "Би дунд сургуульд япон хэл зааж байна.",
+  "textJa": "私は中学校で日本語を教えています。",
+  "romaji": "Bi dund surguulid yapon khel zaaj baina.",
+  "explanation": "「дунд сургууль（中学校）」＋「зааж байна（教えています: 現在進行形）」。隊員の活動紹介の定番です。",
+  "glossary": {
+    "дунд сургуульд": {
+      "dictForm": "дунд сургууль",
+      "meaning": "中学校で",
+      "pos": "名詞句与位格",
+      "pron": "ドゥンド スルグーリド"
+    },
+    "зааж байна": {
+      "dictForm": "заах",
+      "meaning": "教えている",
+      "pos": "現在進行形",
+      "pron": "ザージ バイン"
+    }
+  }
+},
+{
+  "id": "type_ls_11_1",
+  "level": "気候・暮らし",
+  "category": "weather_seasons",
+  "categoryLabel": "天気・四季・好き嫌い・推量",
+  "textMn": "Өнөөдөр тэнгэр сайхан, цэлмэг байна шүү.",
+  "textJa": "今日は空が澄み渡って良い天気ですね。",
+  "romaji": "Onoodor tenger saikhan, tselmeg baina shuu.",
+  "explanation": "「тэнгэр（空・天気）」＋「цэлмэг（晴れた、澄んだ）」＋強調終助詞「шүү（〜ですね）」。",
+  "glossary": {
+    "өнөөдөр": {
+      "dictForm": "өнөөдөр",
+      "meaning": "今日",
+      "pos": "副詞",
+      "pron": "オノーデル"
+    },
+    "тэнгэр": {
+      "dictForm": "тэнгэр",
+      "meaning": "空、天",
+      "pos": "名詞",
+      "pron": "テンゲル"
+    },
+    "цэлмэг": {
+      "dictForm": "цэлмэг",
+      "meaning": "晴れている、澄んだ",
+      "pos": "形容詞",
+      "pron": "ツェルメグ"
+    }
+  }
+},
+{
+  "id": "type_ls_11_2",
+  "level": "気候・暮らし",
+  "category": "weather_seasons",
+  "categoryLabel": "天気・四季・好き嫌い・推量",
+  "textMn": "Маргааш тэнгэр муухайрч, бороо орж магадгүй.",
+  "textJa": "明日は天気が崩れて、雨が降るかもしれません。",
+  "romaji": "Margaash tenger muukhairch, boroo orj magadgui.",
+  "explanation": "可能性・推量「-ж/ч магадгүй（〜かもしれない）」: 「муухайрах（悪化する）」、「бороо орох（雨が降る）」。",
+  "glossary": {
+    "муухайрч": {
+      "dictForm": "муухайрах",
+      "meaning": "悪くなって",
+      "pos": "動詞接続形",
+      "pron": "モーハイリチ"
+    },
+    "бороо орж": {
+      "dictForm": "бороо орох",
+      "meaning": "雨が降って",
+      "pos": "動詞句接続形",
+      "pron": "ボロー オルジ"
+    },
+    "магадгүй": {
+      "dictForm": "магадгүй",
+      "meaning": "かもしれない",
+      "pos": "推量助詞",
+      "pron": "マゲドグイ"
+    }
+  }
+},
+{
+  "id": "type_ls_12_1",
+  "level": "出張・移動",
+  "category": "travel_logistics",
+  "categoryLabel": "序数詞・日付・手段（造格）",
+  "textMn": "Галт тэргээр 12 цаг гаруй явна шүү.",
+  "textJa": "列車で12時間以上かかりますよ。",
+  "romaji": "Galt tergeer 12 tsag garui yavna shuu.",
+  "explanation": "交通手段の造格「галт тэргээр（列車で）」＋数量の超過「гаруй（〜以上、あまり）」。",
+  "glossary": {
+    "галт тэргээр": {
+      "dictForm": "галт тэрэг",
+      "meaning": "列車で",
+      "pos": "名詞造格",
+      "pron": "ガルト テルゲール"
+    },
+    "гаруй": {
+      "dictForm": "гаруй",
+      "meaning": "以上、余り",
+      "pos": "接尾副詞",
+      "pron": "ガルイ"
+    }
+  }
+},
+{
+  "id": "type_ls_12_2",
+  "level": "出張・移動",
+  "category": "travel_logistics",
+  "categoryLabel": "序数詞・日付・手段（造格）",
+  "textMn": "7-р сарын 11-д Наадам эхэлнэ, уулзацгаая.",
+  "textJa": "7月11日にナーダム祭りが始まります。みんなで会いましょう。",
+  "romaji": "7-r saryn 11-d Naadam ekhelne, uulzatsgaaya.",
+  "explanation": "日付「7-р сарын 11-д（7月11日に）」＋全員の意思勧誘「уулзацгаая（みんなで会いましょう: -цгаа⁴＋-я）」。",
+  "glossary": {
+    "Наадам": {
+      "dictForm": "Наадам",
+      "meaning": "ナーダム祭り",
+      "pos": "固有名詞",
+      "pron": "ナーダム"
+    },
+    "эхэлнэ": {
+      "dictForm": "эхлэх",
+      "meaning": "始まります",
+      "pos": "動詞未来形",
+      "pron": "エヘルネ"
+    },
+    "уулзацгаая": {
+      "dictForm": "уулзах",
+      "meaning": "みんなで会おう",
+      "pos": "動詞共同希求形",
+      "pron": "オールザツガーヤ"
+    }
+  }
+},
+{
+  "id": "type_ls_13_1",
+  "level": "移動・手配",
+  "category": "travel_logistics",
+  "categoryLabel": "願望（-маар байна）と許可・禁止",
+  "textMn": "Зуунмод хот хүртэл явах 1 тасалбар авмаар байна.",
+  "textJa": "ゾーンモド市まで行く切符を1枚買いたいです。",
+  "romaji": "Zuunmod khot khurtel yavakh 1 tasalbar avmaar baina.",
+  "explanation": "願望の表現「-маар байна（〜したい）」: 「авмаар байна（買いたいです、取りたいです）」。",
+  "glossary": {
+    "Зуунмод": {
+      "dictForm": "Зуунмод",
+      "meaning": "ゾーンモド（トゥヴ県都）",
+      "pos": "固有名詞",
+      "pron": "ゾーンモド"
+    },
+    "тасалбар": {
+      "dictForm": "тасалбар",
+      "meaning": "切符、チケット",
+      "pos": "名詞",
+      "pron": "タサルバル"
+    },
+    "авмаар байна": {
+      "dictForm": "авах",
+      "meaning": "買いたい",
+      "pos": "願望構文",
+      "pron": "アウマール バイン"
+    }
+  }
+},
+{
+  "id": "type_ls_13_2",
+  "level": "移動・手配",
+  "category": "travel_logistics",
+  "categoryLabel": "願望（-маар байна）と許可・禁止",
+  "textMn": "Эндээс такси захиалж болох уу? Болно оо.",
+  "textJa": "ここでタクシーを予約できますか？ できますよ。",
+  "romaji": "Endees taksi zakhialj bolokh uu? Bolno oo.",
+  "explanation": "許可・可能の伺い「-ж болох уу?（〜できますか？）」と肯定の受諾「Болно оо.（いいですよ、できます）」。",
+  "glossary": {
+    "эндээс": {
+      "dictForm": "энд",
+      "meaning": "ここから",
+      "pos": "指示副詞奪格",
+      "pron": "エンデース"
+    },
+    "захиалж": {
+      "dictForm": "захиалах",
+      "meaning": "予約して",
+      "pos": "動詞接続形",
+      "pron": "ザヒャールジ"
+    },
+    "болно": {
+      "dictForm": "болох",
+      "meaning": "できます、かまわない",
+      "pos": "助動詞",
+      "pron": "ボルノ"
+    }
+  }
+},
+{
+  "id": "type_ls_14_1",
+  "level": "宿泊・ホテル",
+  "category": "travel_logistics",
+  "categoryLabel": "仮定（-вал）と義務（-хгүй бол болохгүй）",
+  "textMn": "Нэг хоновол, 45000 төгрөг. Паспортоо үзүүлнэ үү.",
+  "textJa": "一泊するなら45,000トゥグルグです。パスポートをお見せください。",
+  "romaji": "Neg khonovol, 45000 togrog. Pasportoo uzuulne uu.",
+  "explanation": "仮定形「-вол（〜するなら）」＋丁寧な依頼「-нэ үү（〜してください）」。",
+  "glossary": {
+    "хоновол": {
+      "dictForm": "хонох",
+      "meaning": "泊まるなら",
+      "pos": "動詞仮定形",
+      "pron": "ホノウォル"
+    },
+    "паспортоо": {
+      "dictForm": "паспорт",
+      "meaning": "自分の旅券を",
+      "pos": "名詞再帰対格",
+      "pron": "パスポルトー"
+    },
+    "үзүүлнэ үү": {
+      "dictForm": "үзүүлэх",
+      "meaning": "見せてください",
+      "pos": "丁寧依頼",
+      "pron": "ウズールネ ウー"
+    }
+  }
+},
+{
+  "id": "type_ls_14_2",
+  "level": "宿泊・ホテル",
+  "category": "travel_logistics",
+  "categoryLabel": "仮定（-вал）と義務（-хгүй бол болохгүй）",
+  "textMn": "Үг сайн цээжилбэл, монголоор ярьж сурна.",
+  "textJa": "単語をしっかり覚えれば、モンゴル語で話せるようになります。",
+  "romaji": "Ug sain tseejilbel, mongoloor yarij surna.",
+  "explanation": "子音語幹の仮定「-бэл」: 「цээжилбэл（覚えれば）」＋能力獲得の補助動詞「ярьж сурна（話せるようになる）」。",
+  "glossary": {
+    "цээжилбэл": {
+      "dictForm": "цээжлэх",
+      "meaning": "暗記すれば",
+      "pos": "動詞仮定形",
+      "pron": "ツェージルベル"
+    },
+    "ярьж сурна": {
+      "dictForm": "сурах",
+      "meaning": "話せるようになる",
+      "pos": "補助動詞構文",
+      "pron": "ヤリジ スルナ"
+    }
+  }
+},
+{
+  "id": "type_ls_14_3",
+  "level": "衛生・生活",
+  "category": "health_safety",
+  "categoryLabel": "仮定（-вал）と義務（-хгүй бол болохгүй）",
+  "textMn": "Гэртээ орохдоо гараа угааж, хоолойгоо зайлахгүй бол болохгүй.",
+  "textJa": "家に帰ったら手を洗い、うがいをしなければなりません。",
+  "romaji": "Gertee orokhdoo garaa ugaaj, khooloigoo zailakhgui bol bolokhgui.",
+  "explanation": "時点「орохдоо（帰ったとき）」＋義務「-хгүй бол болохгүй（〜しなければならない）」。現地生活の最重要衛生ルールです。",
+  "glossary": {
+    "гараа": {
+      "dictForm": "гар",
+      "meaning": "自分の手を",
+      "pos": "名詞再帰対格",
+      "pron": "ガラー"
+    },
+    "хоолойгоо": {
+      "dictForm": "хоолой",
+      "meaning": "自分の喉を",
+      "pos": "名詞再帰対格",
+      "pron": "ホーロイゴー"
+    },
+    "зайлахгүй бол болохгүй": {
+      "dictForm": "зайлах",
+      "meaning": "ゆすがなければならない",
+      "pos": "義務構文",
+      "pron": "ザイラフグイ ボル ボロフグイ"
+    }
+  }
+},
+{
+  "id": "type_ls_15_1",
+  "level": "医療・健康",
+  "category": "health_safety",
+  "categoryLabel": "体調・病気・病院・並列（-аад）",
+  "textMn": "Толгой өвдөөд, бас жаахан халуураад байна.",
+  "textJa": "頭が痛くて、少し熱もあります。",
+  "romaji": "Tolgoi ovdood, bas jaakhan khaluuraad baina.",
+  "explanation": "並列複文「-аад⁴（〜して、〜くて）」: 「өвдөөд（痛くて）」＋「халуураад байна（熱が出ている）」。",
+  "glossary": {
+    "толгой": {
+      "dictForm": "толгой",
+      "meaning": "頭",
+      "pos": "名詞",
+      "pron": "トルゴイ"
+    },
+    "өвдөөд": {
+      "dictForm": "өвдөх",
+      "meaning": "痛んで",
+      "pos": "動詞接続形",
+      "pron": "オウドード"
+    },
+    "халуураад байна": {
+      "dictForm": "халуурах",
+      "meaning": "熱が出ている",
+      "pos": "現在進行形",
+      "pron": "ハルーラード バイン"
+    }
+  }
+},
+{
+  "id": "type_ls_15_2",
+  "level": "医療・健康",
+  "category": "health_safety",
+  "categoryLabel": "体調・病気・病院・並列（-аад）",
+  "textMn": "Даараад, ханиад хүрсэн байна. Эмийн сангаас эм аваарай.",
+  "textJa": "冷えて風邪をひいてしまいましたね。薬局で薬をもらってください。",
+  "romaji": "Daaraad, khaniad khursen baina. Emiin sangaas em avaarai.",
+  "explanation": "理由「даараад（冷えて）」＋「ханиад хүрсэн（風邪をひいた）」＋「эмийн сангаас（薬局から）」＋丁寧命令「аваарай（手に入れてください）」。",
+  "glossary": {
+    "даараад": {
+      "dictForm": "даарах",
+      "meaning": "冷えて、凍えて",
+      "pos": "動詞接続形",
+      "pron": "ダーラード"
+    },
+    "ханиад хүрсэн": {
+      "dictForm": "ханиад хүрэх",
+      "meaning": "風邪をひいた",
+      "pos": "慣用句過去形",
+      "pron": "ハニヤド フルセン"
+    },
+    "эмийн сангаас": {
+      "dictForm": "эмийн сан",
+      "meaning": "薬局から",
+      "pos": "名詞奪格",
+      "pron": "エミーン サンガース"
+    }
+  }
+},
+{
+  "id": "type_ls_16_1",
+  "level": "日常会話",
+  "category": "conversations",
+  "categoryLabel": "理由（учраас / болохоор）と複数形",
+  "textMn": "Ханиадны эм уусан учраас өнөөдөр бие сайн байна.",
+  "textJa": "風邪薬を飲んだので、今日は体調が良いです。",
+  "romaji": "Khaniadny em uusan uchraas onoodor bie sain baina.",
+  "explanation": "理由・原因を表す接続詞「учраас（〜ので、〜から）」: 「эм уусан учраас（薬を飲んだので）」＋「бие сайн байна（元気です）」。",
+  "glossary": {
+    "ханиадны": {
+      "dictForm": "ханиад",
+      "meaning": "風邪の",
+      "pos": "名詞属格",
+      "pron": "ハニャドニー"
+    },
+    "учраас": {
+      "dictForm": "учраас",
+      "meaning": "〜だから、〜ので",
+      "pos": "接続詞",
+      "pron": "オチラース"
+    },
+    "бие": {
+      "dictForm": "бие",
+      "meaning": "体、体調",
+      "pos": "名詞",
+      "pron": "ビエ"
+    }
+  }
+},
+{
+  "id": "type_ls_16_2",
+  "level": "日常会話",
+  "category": "conversations",
+  "categoryLabel": "理由（учраас / болохоор）と複数形",
+  "textMn": "Маргааш өглөө эрт гарах учраас одоо унтъя.",
+  "textJa": "明日の朝早く出かけるので、もう寝ましょう。",
+  "romaji": "Margaash ogloo ert garakh uchraas odoo untya.",
+  "explanation": "理由「гарах учраас（出発するので）」＋希求形「унтъя（寝よう、寝ましょう）」。",
+  "glossary": {
+    "гарах": {
+      "dictForm": "гарах",
+      "meaning": "出る、出発する",
+      "pos": "動詞形動詞",
+      "pron": "ガラホ"
+    },
+    "одоо": {
+      "dictForm": "одоо",
+      "meaning": "今、もう",
+      "pos": "副詞",
+      "pron": "オドー"
+    },
+    "унтъя": {
+      "dictForm": "унтах",
+      "meaning": "寝ましょう",
+      "pos": "動詞希求形",
+      "pron": "ウンタヤ"
+    }
+  }
+},
+{
+  "id": "type_ls_17_1",
+  "level": "買い物・市場",
+  "category": "shopping_dining",
+  "categoryLabel": "買い物・助言（-сан нь дээр）と終助詞",
+  "textMn": "Ув улаан, шинэ улаан лооль зарж байна, аваарай.",
+  "textJa": "真っ赤で新鮮なトマトを売っていますよ、買っていって！",
+  "romaji": "Uv ulaan, shine ulaan looli zarj baina, avaarai.",
+  "explanation": "強調形容詞「ув улаан（真っ赤な）」＋「зарж байна（売っています）」＋呼び込み「аваарай（買ってください）」。",
+  "glossary": {
+    "ув улаан": {
+      "dictForm": "улаан",
+      "meaning": "真っ赤な",
+      "pos": "強調形容詞",
+      "pron": "ウヴ ウラーン"
+    },
+    "улаан лооль": {
+      "dictForm": "улаан лооль",
+      "meaning": "トマト",
+      "pos": "名詞句",
+      "pron": "ウラーン ローリ"
+    },
+    "зарж байна": {
+      "dictForm": "зарах",
+      "meaning": "売っている",
+      "pos": "現在進行形",
+      "pron": "ザルジ バイン"
+    }
+  }
+},
+{
+  "id": "type_ls_17_2",
+  "level": "買い物・市場",
+  "category": "shopping_dining",
+  "categoryLabel": "買い物・助言（-сан нь дээр）と終助詞",
+  "textMn": "Яасан үнэтэй юм бэ. Жаахан хямдруулбал, авмаар байна.",
+  "textJa": "なんて高いんでしょう。少し安くしてくれるなら買いたいです。",
+  "romaji": "Yaasan unetei yum be. Jaakhan khyamdruulbal, avmaar baina.",
+  "explanation": "感嘆疑問「Яасан 〜 юм бэ（なんて〜なんだ）」＋仮定「хямдруулбал（値引きしてくれるなら）」＋願望「авмаар байна（買いたいです）」。",
+  "glossary": {
+    "үнэтэй": {
+      "dictForm": "үнэ",
+      "meaning": "値段が高い",
+      "pos": "形容詞",
+      "pron": "ウネテイ"
+    },
+    "хямдруулбал": {
+      "dictForm": "хямдруулах",
+      "meaning": "安くしてくれるなら",
+      "pos": "動詞仮定形",
+      "pron": "ヒャムドロールベル"
+    }
+  }
+},
+{
+  "id": "type_ls_18_1",
+  "level": "食事・食堂",
+  "category": "shopping_dining",
+  "categoryLabel": "レストラン注文・過去終止形・様態（шиг）",
+  "textMn": "Би цангаад байна. Ямар нэг юм идье, би өлсөөд байна.",
+  "textJa": "喉が渇きました。何か食べましょう、お腹が空きました。",
+  "romaji": "Bi tsangaad baina. Yamar neg yum idye, bi olsood baina.",
+  "explanation": "「цангаад байна（喉が渇いている）」＋不定代名詞「ямар нэг юм（何か）」＋希求「идье（食べよう）」＋「өлсөөд байна（お腹が空いている）」。",
+  "glossary": {
+    "цангаад": {
+      "dictForm": "цангах",
+      "meaning": "喉が渇いて",
+      "pos": "動詞接続形",
+      "pron": "ツァンガード"
+    },
+    "өлсөөд": {
+      "dictForm": "өлсөх",
+      "meaning": "お腹が空いて",
+      "pos": "動詞接続形",
+      "pron": "オルソード"
+    }
+  }
+},
+{
+  "id": "type_ls_18_2",
+  "level": "食事・食堂",
+  "category": "shopping_dining",
+  "categoryLabel": "レストラン注文・過去終止形・様態（шиг）",
+  "textMn": "Би 5 бууз авна. Төмсний салат нэг тавгийг авъя.",
+  "textJa": "ボーズを5個ください。ポテトサラダを一皿ください。",
+  "romaji": "Bi 5 buuz avna. Tomsnii salat neg tavgiig avya.",
+  "explanation": "レストランでの注文「〜 авна / авъя（〜をください）」、助数詞「нэг таваг（一皿）」の対格「тавгийг」。",
+  "glossary": {
+    "бууз": {
+      "dictForm": "бууз",
+      "meaning": "ボーズ（蒸し餃子）",
+      "pos": "名詞",
+      "pron": "ボーズ"
+    },
+    "төмсний": {
+      "dictForm": "төмс",
+      "meaning": "じゃがいもの",
+      "pos": "名詞属格",
+      "pron": "トムスニー"
+    },
+    "тавгийг": {
+      "dictForm": "таваг",
+      "meaning": "皿を",
+      "pos": "名詞対格",
+      "pron": "タウギイグ"
+    }
+  }
+},
+{
+  "id": "type_ls_18_3",
+  "level": "食事・食堂",
+  "category": "shopping_dining",
+  "categoryLabel": "レストラン注文・過去終止形・様態（шиг）",
+  "textMn": "Айраг шиг амттай болохоор уух дуртай болсон.",
+  "textJa": "馬乳酒のような味がするので飲むのが好きになりました。",
+  "romaji": "Airag shig amttai bolokhoor uukh durtai bolson.",
+  "explanation": "類似・様態「шиг（〜のような）」＋理由「болохоор（〜なので）」＋「уух дуртай болсон（飲むのが好きになった）」。",
+  "glossary": {
+    "айраг": {
+      "dictForm": "айраг",
+      "meaning": "アイラグ（馬乳酒）",
+      "pos": "名詞",
+      "pron": "アイラグ"
+    },
+    "шиг": {
+      "dictForm": "шиг",
+      "meaning": "〜のような（様態後置詞）",
+      "pos": "後置詞",
+      "pron": "シグ"
+    },
+    "дуртай болсон": {
+      "dictForm": "болох",
+      "meaning": "好きになった",
+      "pos": "慣用句過去形",
+      "pron": "ドゥルタイ ボルソン"
+    }
+  }
+}
 ];
 
 const typingSentences = initialTypingSentences;
@@ -23348,6 +24979,1360 @@ const roleplayScenarios = [
           "isBest": true,
           "score": 10,
           "feedback": "「цонхны тал（窓側）」の指定まで完璧に話せました！"
+        }
+      ]
+    }
+  ]
+}
+,
+{
+  "id": "tb_conv_01",
+  "title": "初対面の挨拶・名前・自己紹介",
+  "category": "culture",
+  "icon": "🤝",
+  "description": "任地や語学研修の初日。教室で先生と初対面の挨拶を交わすシチュエーション。",
+  "initialPrompt": "語学研修の教室に入ると、担当教員のドルマー先生が温かく迎えてくれました。",
+  "character": {
+    "name": "Дулмаа багш (ドルマー先生)",
+    "avatar": "👩‍🏫"
+  },
+  "steps": [
+    {
+      "npcText": "Сайн байна уу? Таны нэр хэн бэ?",
+      "npcMeaning": "こんにちは。あなたのお名前は何ですか？",
+      "options": [
+        {
+          "text": "Сайн байна уу? Миний нэр Төмөр. Танилцсандаа баяртай байна.",
+          "meaning": "こんにちは。私の名前はツムルです。お会いできて嬉しいです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧です！疑問詞「хэн（誰）」に対する属格「миний нэр 〜」と、初対面の決まり文句が美しく使えています。"
+        },
+        {
+          "text": "Би Төмөр байна.",
+          "meaning": "私はツムルです。（ややぶっきらぼう）",
+          "isBest": false,
+          "score": 6,
+          "feedback": "通じますが、初対面では「Миний нэр 〜」と挨拶を添える方が丁寧で好印象です。"
+        },
+        {
+          "text": "Баяртай!",
+          "meaning": "さようなら！",
+          "isBest": false,
+          "score": 0,
+          "feedback": "出会ったばかりで「さようなら」と言ってしまいました！"
+        }
+      ]
+    },
+    {
+      "npcText": "Сайхан танилцлаа. Та монгол хэлний багш уу?",
+      "npcMeaning": "お会いできて嬉しいです。あなたはモンゴル語の先生ですか？",
+      "options": [
+        {
+          "text": "Би багш биш ээ. Би ЖАЙКА-ийн сайн дурын гишүүн.",
+          "meaning": "先生ではありません。私は海外協力隊のボランティア隊員です。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！否定コピュラ「〜 биш（〜ではない）」と「сайн дурын гишүүн（ボランティア隊員）」を正確に表現できました。"
+        },
+        {
+          "text": "Тийм, би багш.",
+          "meaning": "はい、先生です。（誤認）",
+          "isBest": false,
+          "score": 3,
+          "feedback": "あなたはボランティア隊員として学びにきた立場なので「〜 биш」で訂正しましょう。"
+        },
+        {
+          "text": "Мэдэхгүй.",
+          "meaning": "知りません。",
+          "isBest": false,
+          "score": 0,
+          "feedback": "自分の身分を聞かれて「知らない」と答えるのは不自然です。"
+        }
+      ]
+    },
+    {
+      "npcText": "Өө тийм үү! Монголд тавтай морил! Та хэдэн настай вэ?",
+      "npcMeaning": "おお、そうですか！モンゴルへようこそ！あなたはおいくつですか？",
+      "options": [
+        {
+          "text": "Баярлалаа. Би 25 настай.",
+          "meaning": "ありがとうございます。私は25歳です。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！感謝を述べてから数詞＋「настай（〜歳）」で正しく年齢を答えられました。"
+        },
+        {
+          "text": "Би 25 жил.",
+          "meaning": "私は25年です。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "年齢には「жил（年）」ではなく「настай（〜歳）」を用います。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_02",
+  "title": "教室の持ち物と文房具の確認",
+  "category": "culture",
+  "icon": "📚",
+  "description": "教室の机で、教材や文房具を整理しながら学生のボルド君と話すシチュエーション。",
+  "initialPrompt": "授業の合間、隣の席の学生ボルド君があなたの机の上にある本に興味深そうに目を留めました。",
+  "character": {
+    "name": "Болд (学生のボルド君)",
+    "avatar": "👨‍🎓"
+  },
+  "steps": [
+    {
+      "npcText": "Энэ сонин уу? Би уншиж болох уу?",
+      "npcMeaning": "これは新聞ですか？読んでもいいですか？",
+      "options": [
+        {
+          "text": "Энэ сонин биш ээ, япон хэлний сэтгүүл. Уншиж болно оо.",
+          "meaning": "新聞ではなく日本語の雑誌です。どうぞ読んでいいですよ。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "的確です！「〜 биш（〜ではなく）」と許可「-ж болно оо」が完璧に使い分けられています。"
+        },
+        {
+          "text": "Үгүй, энэ ном.",
+          "meaning": "いいえ、これは本です。",
+          "isBest": false,
+          "score": 6,
+          "feedback": "通じますが、「読んでもいいですか？」への許可の一言があるとさらに親切です。"
+        },
+        {
+          "text": "Болохгүй!",
+          "meaning": "だめ！",
+          "isBest": false,
+          "score": 2,
+          "feedback": "少し威圧的です。理由を添えるか「болно」と快く見せてあげましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Тэр ширээн дээр юу юу байна вэ?",
+      "npcMeaning": "あの机の上には何と何がありますか？",
+      "options": [
+        {
+          "text": "Энд хоёр самбар, дөрвөн сандал, бас олон ном байна.",
+          "meaning": "ここに2つの黒板と4脚の椅子、そしてたくさんの本があります。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！数詞＋名詞単数形「хоёр самбар, дөрвөн сандал」の文法規則がしっかり守られています。"
+        },
+        {
+          "text": "Мэдэхгүй байна.",
+          "meaning": "わかりません。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "目の前にある物品を「〜 байна」を使って描写してみましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Таны цүнхэнд өөр юу байгаа вэ?",
+      "npcMeaning": "あなたの鞄の中には他に何が入っていますか？",
+      "options": [
+        {
+          "text": "Цүнхэнд үзэг, харандаа, баллуур, дэвтэр байгаа.",
+          "meaning": "鞄の中にペン、鉛筆、消しゴム、ノートが入っています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！文房具の基本語彙（үзэг, харандаа, баллуур, дэвтэр）を正確に列挙できました。"
+        },
+        {
+          "text": "Юу ч байхгүй.",
+          "meaning": "何もありません。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "筆記用具が入っていることを教えてあげると会話が弾みます！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_03",
+  "title": "海外協力隊員としての派遣面談",
+  "category": "work",
+  "icon": "🌏",
+  "description": "現地事務所で活動開始前の面談。出身地やボランティア活動について話すシチュエーション。",
+  "initialPrompt": "ウランバートルのオフィスで、現地コーディネーターのツェツェグさんと活動前の面談を行っています。",
+  "character": {
+    "name": "Цэцэг (調整員・ツェツェグさん)",
+    "avatar": "👩‍💼"
+  },
+  "steps": [
+    {
+      "npcText": "Та хэзээ Японоос ирсэн бэ? Хаанаас ирсэн бэ?",
+      "npcMeaning": "いつ日本から来ましたか？日本のどこから来ましたか？",
+      "options": [
+        {
+          "text": "Би өнгөрсөн долоо хоногт Токиогоос ирсэн.",
+          "meaning": "私は先週東京から来ました。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！過去時制「ирсэн」と奪格「Токиогоос（東京から）」の組み合わせが自然です。"
+        },
+        {
+          "text": "Маргааш явна.",
+          "meaning": "明日行きます。（時制の不一致）",
+          "isBest": false,
+          "score": 1,
+          "feedback": "「いつ来たか」を尋ねられているので過去形で答えましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Та Монголд ямар үүрэгтэй сайн дурын гишүүн бэ?",
+      "npcMeaning": "あなたはモンゴルでどのような役割のボランティア隊員ですか？",
+      "options": [
+        {
+          "text": "Би боловсролын салбарт япон хэлний багшаар ажиллана.",
+          "meaning": "私は教育分野で日本語教師として活動します。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！手段・資格の造格「багшаар（教師として）」と未来形「ажиллана」が堂々としています。"
+        },
+        {
+          "text": "Би зүгээр л жуулчин.",
+          "meaning": "私はただの観光客です。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "あなたは海外協力隊のボランティア隊員です。胸を張って活動分野を伝えましょう！"
+        }
+      ]
+    },
+    {
+      "npcText": "Монголд ирэхэд ямар санагдаж байна вэ?",
+      "npcMeaning": "モンゴルに来てみてどのように感じていますか？",
+      "options": [
+        {
+          "text": "Хүмүүс нь маш найрсаг, байгаль нь үзэсгэлэнтэй санагдаж байна.",
+          "meaning": "人々がとても親切で、自然が美しいと感じています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！現地の印象を敬意を込めて温かく伝える最高の返しです。"
+        },
+        {
+          "text": "Хүйтэн байна.",
+          "meaning": "寒いです。",
+          "isBest": false,
+          "score": 6,
+          "feedback": "事実ですが、前向きな感想も付け加えると人間関係がグッと良くなります。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_04",
+  "title": "職員室での所属とデスクの確認",
+  "category": "work",
+  "icon": "🏢",
+  "description": "配属先の学校の職員室。同僚のバト先生からデスクや備品の説明を受けるシチュエーション。",
+  "initialPrompt": "配属先の学校に初出勤しました。同僚のバト先生が職員室のあなたのデスクへ案内してくれます。",
+  "character": {
+    "name": "Бат багш (同僚教員・バト先生)",
+    "avatar": "👨‍🏫"
+  },
+  "steps": [
+    {
+      "npcText": "Энэ таны ажлын ширээ шүү. Ширээн дээр юу байна вэ?",
+      "npcMeaning": "これが先生の執務机ですよ。机の上には何がありますか？",
+      "options": [
+        {
+          "text": "Ширээн дээр япон хэлний сурах бичиг, толь бичиг байна.",
+          "meaning": "机の上に日本語の教科書と辞書があります。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "的確です！後置詞「дээр（〜の上に）」と教材の語彙が自然に使えています。"
+        },
+        {
+          "text": "Ширээн доор байна.",
+          "meaning": "机の下にあります。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "机の上にあるものを確認しているので「дээр」を使いましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Энэ түлхүүр хэнийх вэ? Тэр компьютер таных уу?",
+      "npcMeaning": "この鍵は誰のものですか？あのパソコンはあなたのものですか？",
+      "options": [
+        {
+          "text": "Энэ түлхүүр минийх, тэр компьютер ч бас таных.",
+          "meaning": "この鍵は私のものです。あのパソコンもあなたのものです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！所属・所有を表す代名詞語尾「-х（минийх / таных）」と並列「ч бас」の模範解答です。"
+        },
+        {
+          "text": "Энэ миний биш.",
+          "meaning": "これは私のではないです。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "所属を尋ねられたら「минийх биш」と答えると文法的に一段と自然です。"
+        }
+      ]
+    },
+    {
+      "npcText": "Хичээлийн танхим хаана байдгийг мэдэх үү?",
+      "npcMeaning": "講義室がどこにあるかご存知ですか？",
+      "options": [
+        {
+          "text": "Тийм ээ, баруун талын хоёр давхарт байгаа гэж мэднэ.",
+          "meaning": "はい、右側の2階にあると知っています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！位置表現「баруун талын（右側の）」＋「хоёр давхарт（2階に）」が完璧です。"
+        },
+        {
+          "text": "Үгүй, мэдэхгүй.",
+          "meaning": "いいえ、知りません。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "「Хаана байгааг зааж өгнө үү?（どこか教えていただけますか？）」と頼むと好印象です。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_05",
+  "title": "今日の予定とカウンターパートとの打ち合わせ",
+  "category": "work",
+  "icon": "📅",
+  "description": "朝の始業時。カウンターパートのサラーさんと今日のスケジュールを確認するシチュエーション。",
+  "initialPrompt": "朝のオフィスで、カウンターパート（CP）のサラーさんと一日の予定を確認し合っています。",
+  "character": {
+    "name": "Сараа (カウンターパート・サラーさん)",
+    "avatar": "👩‍💻"
+  },
+  "steps": [
+    {
+      "npcText": "Өнөөдөр та юу хийх төлөвлөгөөтэй байна вэ?",
+      "npcMeaning": "今日は何をする予定ですか？",
+      "options": [
+        {
+          "text": "Өглөө сургалтын танхимд очиж, хичээл заана.",
+          "meaning": "午前中は講義室に行って授業を教えます。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！未来時制「-на/-нэ（очиж хичээл заана）」で予定を明瞭に伝えられました。"
+        },
+        {
+          "text": "Унтана.",
+          "meaning": "寝ます。",
+          "isBest": false,
+          "score": 1,
+          "feedback": "仕事中に寝る予定を言うのは避けましょう！"
+        }
+      ]
+    },
+    {
+      "npcText": "Үдээс хойш хамтдаа өдрийн хоол идэх үү?",
+      "npcMeaning": "午後、一緒に昼食を食べませんか？",
+      "options": [
+        {
+          "text": "Тэгье, ажлын хамтрагчтайгаа хамт өдрийн хоол идье.",
+          "meaning": "そうしましょう、カウンターパートと一緒に昼食を食べましょう。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！共同格「хамтрагчтайгаа хамт（パートナーと一緒に）」と希求形「идье（食べよう）」が自然です。"
+        },
+        {
+          "text": "Би ганцаараа иднэ.",
+          "meaning": "私は一人で食べます。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "断る時も「Уучлаарай, өнөөдөр өөр ажилтай（すみません、今日は別の用事があり）」と理由を添えましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Хоёр цагаас хурлын танхимд уулзалттай шүү.",
+      "npcMeaning": "14時から会議室で打ち合わせがありますよ。",
+      "options": [
+        {
+          "text": "Ойлголоо. Тэнд хуралдаа бэлтгээд очно оо.",
+          "meaning": "分かりました。会議の準備をして向かいます。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！「Ойлголоо（了解しました）」＋「бэлтгээд очно（準備して行きます）」はビジネスで信頼される対応です。"
+        },
+        {
+          "text": "За за.",
+          "meaning": "はいはい。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "「За за」は親しい友人向けです。職場では「Ойлголоо」が好まれます。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_06",
+  "title": "教室の設備管理と衛生習慣",
+  "category": "work",
+  "icon": "🧼",
+  "description": "放課後の教室で、用務員のドルジさんと備品や清掃・手洗い習慣について確認するシチュエーション。",
+  "initialPrompt": "授業が終わった放課後、用務員のドルジさんが教室の見回りにやってきました。",
+  "character": {
+    "name": "Дорж (用務員・ドルジさん)",
+    "avatar": "🧔"
+  },
+  "steps": [
+    {
+      "npcText": "Ангид самбар, шохой дутаж байна уу?",
+      "npcMeaning": "教室に黒板やチョークは足りていますか？",
+      "options": [
+        {
+          "text": "Ангид том самбар, хангалттай шохой байгаа. Баярлалаа.",
+          "meaning": "教室には大きな黒板と十分なチョークがあります。ありがとうございます。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！形容詞「том（大きい）」、「хангалттай（十分な）」を的確に使えています。"
+        },
+        {
+          "text": "Юу ч байхгүй.",
+          "meaning": "何もありません。",
+          "isBest": false,
+          "score": 3,
+          "feedback": "すでに備わっているものは「байгаа」と感謝を伝えましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Хүүхдүүдэд ямар зөвлөгөө өгөх вэ?",
+      "npcMeaning": "子どもたちにどんな衛生指導やアドバイスをしますか？",
+      "options": [
+        {
+          "text": "Хоолны өмнө гар угаагаарай. Цаас хайрцганд хийгээрэй.",
+          "meaning": "食事の前に手を洗ってください。紙くずは箱にしまってください。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！丁寧な命令・助言「-аарай⁴（угаагаарай, хийгээрэй）」が正確に使われています。"
+        },
+        {
+          "text": "Гараа угааж болохгүй.",
+          "meaning": "手を洗ってはいけません。（禁止）",
+          "isBest": false,
+          "score": 0,
+          "feedback": "衛生的に正反対になってしまいます！「угаагаарай」と促しましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Та өглөө бүр хэдэн цагт ирдэг вэ?",
+      "npcMeaning": "あなたは毎朝何時に来られますか？",
+      "options": [
+        {
+          "text": "Би өглөө бүр ангид эрт ирдэг.",
+          "meaning": "私は毎朝教室に早く来ます。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！習慣動詞「ирдэг（習慣的に来る）」＋「өглөө бүр эрт（毎朝早く）」の文型です。"
+        },
+        {
+          "text": "Өчигдөр ирсэн.",
+          "meaning": "昨日来ました。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "毎日の習慣を聞かれているので、習慣形「-даг⁴」で答えましょう。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_07",
+  "title": "家族の写真紹介と集合数詞",
+  "category": "culture",
+  "icon": "👨‍👩‍👧‍👦",
+  "description": "ホームステイ先のリビングで、家族の写真を見せながら団らんするシチュエーション。",
+  "initialPrompt": "夕食後、ホストファミリーのオユナーさんに家族の写真を見せながら語り合っています。",
+  "character": {
+    "name": "Оюунаа (友人のオユナーさん)",
+    "avatar": "👧"
+  },
+  "steps": [
+    {
+      "npcText": "Энэ зураг дээр байгаа хүмүүс хэн бэ? Манай гэр бүл үү?",
+      "npcMeaning": "この写真に写っている人たちは誰ですか？ご家族ですか？",
+      "options": [
+        {
+          "text": "Тийм ээ, энэ манай аав, ээж, эгч нар. Бид тавуулаа.",
+          "meaning": "はい、私の父と母と姉たちです。私たちは5人家族です。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "見事です！親族呼称と複数「-нар」、そして集合数詞「тавуулаа（5人で）」が美しく決まりました。"
+        },
+        {
+          "text": "Би мэдэхгүй хүмүүс.",
+          "meaning": "私の知らない人たちです。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "自分の家族の写真なので「манай гэр бүл」と紹介しましょう！"
+        }
+      ]
+    },
+    {
+      "npcText": "Та бүгдээрээ Монголд хамт ирсэн үү?",
+      "npcMeaning": "皆さん全員で一緒にモンゴルに来たのですか？",
+      "options": [
+        {
+          "text": "Үгүй ээ, би ганцаараа ирсэн. Багийнхантайгаа арвуулаа ажиллаж байна.",
+          "meaning": "いいえ、私一人で来ました。チームの10人の仲間と一緒に活動しています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！「ганцаараа（一人で）」と集合数詞「арвуулаа（10人で）」の対比が完璧です。"
+        },
+        {
+          "text": "Бүгдээрээ ирсэн.",
+          "meaning": "みんなで来ました。（家族全員移住？）",
+          "isBest": false,
+          "score": 5,
+          "feedback": "隊員一人で派遣されている場合は「Би ганцаараа ирсэн」と伝えましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Танай аав, ээж ямар ажил хийдэг вэ?",
+      "npcMeaning": "あなたのお父さんとお母さんはどんなお仕事をされていますか？",
+      "options": [
+        {
+          "text": "Аав компанид ажилладаг, ээж эмч хийдэг.",
+          "meaning": "父は会社で働いていて、母は医師をしています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！職業の習慣表現「ажилладаг / хийдэг」を使って端的に紹介できました。"
+        },
+        {
+          "text": "Ажил хийх дургүй.",
+          "meaning": "働くのが嫌いです。",
+          "isBest": false,
+          "score": 3,
+          "feedback": "親の職業を聞かれた時の丁寧な答え方を心がけましょう。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_08",
+  "title": "地方都市エルデネットへの出張と距離",
+  "category": "travel",
+  "icon": "🚙",
+  "description": "ウランバートルから地方都市（オルホン県エルデネット）への移動について運転手さんと話すシチュエーション。",
+  "initialPrompt": "地方出張の朝、四輪駆動車の前で運転手のバータルさんとルートを確認しています。",
+  "character": {
+    "name": "Баатар (運転手・バータルさん)",
+    "avatar": "🚙"
+  },
+  "steps": [
+    {
+      "npcText": "Эрдэнэт хот Улаанбаатараас хэр хол вэ?",
+      "npcMeaning": "エルデネット市はウランバートルからどれくらい遠いですか？",
+      "options": [
+        {
+          "text": "Машинаар 6 цаг, 400 орчим километр хол байна.",
+          "meaning": "車で6時間、約400キロ離れています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "的確です！所要時間「машинаар 6 цаг」と概数「400 орчим км」で距離感をしっかり把握できています。"
+        },
+        {
+          "text": "Маш ойрхон, 5 минут.",
+          "meaning": "とても近いです、5分です。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "エルデネットは遠方です！「хол юм аа（遠いですね）」が実感です。"
+        }
+      ]
+    },
+    {
+      "npcText": "Бид явахдаа замдаа хаана амрах вэ?",
+      "npcMeaning": "移動中、途中でどこで休憩しましょうか？",
+      "options": [
+        {
+          "text": "Замдаа Дархан хотод зогсож, цай ууцгаая.",
+          "meaning": "途中でダルハン市に立ち寄って、みんなでお茶にしましょう。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！連用形「зогсож」＋勧誘「ууцгаая（みんなで飲もう）」で円滑な旅の提案ができています。"
+        },
+        {
+          "text": "Амрахгүйгээр шууд явъя.",
+          "meaning": "休まずにノンストップで行きましょう。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "長距離悪路の移動では安全のため適度な休憩を取るのが鉄則です。"
+        }
+      ]
+    },
+    {
+      "npcText": "Өвлийн цагт явахдаа юу анхаарах хэрэгтэй вэ?",
+      "npcMeaning": "冬場に移動する時は何に気をつけるべきですか？",
+      "options": [
+        {
+          "text": "Хүйтэн учраас дулаан дээл, зузаан гутал өмсөх хэрэгтэй.",
+          "meaning": "とても寒いので、暖かいデールや厚手のブーツを履く必要があります。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！理由「учраас」と義務「-х хэрэгтэй（〜する必要がある）」で防寒の重要性を表現できました。"
+        },
+        {
+          "text": "Цамцтай явж болно.",
+          "meaning": "シャツ1枚で行っていいです。",
+          "isBest": false,
+          "score": 0,
+          "feedback": "モンゴルの冬の寒波でシャツ1枚は命に関わる危険があります！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_09",
+  "title": "訓練所・任地での日課スケジュール",
+  "category": "work",
+  "icon": "⏰",
+  "description": "朝の集いから夜の自主学習まで、一日のスケジュールを同期のガンバーさんと共有するシチュエーション。",
+  "initialPrompt": "語学訓練所のカフェテリアで、同期のガンバーさんと今日の日課について話しています。",
+  "character": {
+    "name": "Ганбаа (同期隊員・ガンバーさん)",
+    "avatar": "👨‍🎓"
+  },
+  "steps": [
+    {
+      "npcText": "Өглөөний сургалт хэдэн цагт эхэлдэг вエ?",
+      "npcMeaning": "朝の講義は何時に始まりますか？",
+      "options": [
+        {
+          "text": "8 цаг 45 минутаас 15 цаг хүртэл хичээлтэй байдаг.",
+          "meaning": "8時45分から15時まで授業があります。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！起点「-аас」と終点「хүртэл（〜まで）」、習慣「байдаг」を使いこなせています。"
+        },
+        {
+          "text": "Хэзээ ч хамаагүй.",
+          "meaning": "いつでも構いません。",
+          "isBest": false,
+          "score": 3,
+          "feedback": "訓練所の時間割は厳格です。具体的な時刻を答えましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Хичээл тарсны дараа өдөр бүр юу хийдэг вэ?",
+      "npcMeaning": "授業が終わった後は毎日何をしていますか？",
+      "options": [
+        {
+          "text": "Сургалтгүй үед өрөөндөө хичээлээ давтдаг.",
+          "meaning": "講座がない時は自分の部屋で復習をしています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "見事！再帰与位格「өрөөндөө（自分の部屋で）」と再帰対格「хичээлээ（自分の勉強を）」が正しく使われています。"
+        },
+        {
+          "text": "Зүгээр л тоглодог.",
+          "meaning": "ただ遊んでいます。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "「давтдаг（復習する）」を使って前向きな自習習慣を伝えましょう！"
+        }
+      ]
+    },
+    {
+      "npcText": "Амралтын өдрөөр юу хийх төлөвлөгөөтэй байна?",
+      "npcMeaning": "週末は何をする予定ですか？",
+      "options": [
+        {
+          "text": "Спорт зааланд дасгал хийж, найзуудтайгаа ярилцана.",
+          "meaning": "体育館で運動をして、友人たちと語り合います。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！並列「-ж」と共同格「найзуудтайгаа（友人たちと）」で充実した週末の予定を表現できました。"
+        },
+        {
+          "text": "Гэртээ ганцаараа сууна.",
+          "meaning": "家で一人で座っています。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "息抜きや友人との交流も大切です！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_10",
+  "title": "列車での出会いとモンゴル語での会話",
+  "category": "culture",
+  "icon": "🚆",
+  "description": "長距離列車の中で隣り合わせたモンゴル人のムンフーさんと語り合うシチュエーション。",
+  "initialPrompt": "縦貫鉄道のコンパートメント席。向かいに座ったモンゴル人男性のムンフーさんが話しかけてきました。",
+  "character": {
+    "name": "Мөнхөө (列車の同乗者・ムンフーさん)",
+    "avatar": "🧔"
+  },
+  "steps": [
+    {
+      "npcText": "Та монголоор маш сайн ярьж байна шүү! Монголоор уншиж, бичиж чадах уу?",
+      "npcMeaning": "モンゴル語がとてもお上手ですね！モンゴル語を読むことも書くこともできますか？",
+      "options": [
+        {
+          "text": "Та монголоор уншиж ч бас бичиж ч чадах уу гэж үү? Тийм ээ, би чадна.",
+          "meaning": "モンゴル語で読んだり書いたりできるかですか？はい、できますよ。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！並列「-ж ч бас（〜もまた）」と可能助動詞「чадах（〜できる）」を完璧に活用できました。"
+        },
+        {
+          "text": "Чадахгүй, юу ч мэдэхгүй.",
+          "meaning": "できません、何も知りません。",
+          "isBest": false,
+          "score": 3,
+          "feedback": "謙遜しすぎず、「Жаахан чадна（少しできます）」と答えると会話が広がります。"
+        }
+      ]
+    },
+    {
+      "npcText": "Та Монголд ямар ажил хийж байна вэ?",
+      "npcMeaning": "あなたはモンゴルでどんなお仕事をされているのですか？",
+      "options": [
+        {
+          "text": "Би дунд сургуульд япон хэл зааж байна.",
+          "meaning": "私は中学校で日本語を教えています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！現在進行形「зааж байна（教えている）」を使って自分の職務を明確に説明できました。"
+        },
+        {
+          "text": "Мэдэхгүй.",
+          "meaning": "分かりません。",
+          "isBest": false,
+          "score": 0,
+          "feedback": "自分自身の仕事なので堂々と答えましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Монгол орон танд таалагдаж байна уу?",
+      "npcMeaning": "モンゴルという国は気に入っていただけましたか？",
+      "options": [
+        {
+          "text": "Тийм ээ, хүмүүс нь найрсаг, байгаль нь уудам сайхан болохоор их дуртай.",
+          "meaning": "はい、人々が親切で、自然が広大で美しいので大好きです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！理由「болохоор」と感情表現「их дуртай（大好き）」で相手の国への好意が伝わります。"
+        },
+        {
+          "text": "Тийм.",
+          "meaning": "はい。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "一言だけでなく、気に入っている理由を添えると現地の人はとても喜びます。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_11",
+  "title": "モンゴルの四季と気候・推量の表現",
+  "category": "culture",
+  "icon": "🌤️",
+  "description": "澄み渡る青空の朝、同僚のアルタンツェツェグさんと気候や推量について話すシチュエーション。",
+  "initialPrompt": "職場のバルコニーで、同僚のアルタンツェツェグさんと青空を見上げながら談笑しています。",
+  "character": {
+    "name": "Алтанцэцэг (同僚・アルタンツェツェグさん)",
+    "avatar": "☀️"
+  },
+  "steps": [
+    {
+      "npcText": "Өнөөдөр тэнгэр ямар сайхан байна вэ!",
+      "npcMeaning": "今日は空がなんて素晴らしいのでしょう！",
+      "options": [
+        {
+          "text": "Өнөөдөр тэнгэр сайхан, цэлмэг байна шүү.",
+          "meaning": "今日は空が澄み渡って良い天気ですね。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！形容詞「цэлмэг（晴れ渡った、澄んだ）」と強調終助詞「шүү」が自然です。"
+        },
+        {
+          "text": "Тэнгэр муухай байна.",
+          "meaning": "天気が悪いです。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "快晴の空を見ながら「天気が悪い」と言うのは不自然です。"
+        }
+      ]
+    },
+    {
+      "npcText": "Маргаашийн цаг агаар ямар байх бол?",
+      "npcMeaning": "明日の天気はどうなるでしょうか？",
+      "options": [
+        {
+          "text": "Маргааш тэнгэр муухайрч, бороо орж магадгүй.",
+          "meaning": "明日は天気が崩れて、雨が降るかもしれません。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！推量表現「-ж/ч магадгүй（〜かもしれない）」が教科書通り見事に使えています。"
+        },
+        {
+          "text": "Цас заавал орно.",
+          "meaning": "雪が絶対に降ります。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "天気予報の推量には「магадгүй」を使う方が自然です。"
+        }
+      ]
+    },
+    {
+      "npcText": "Та жилийн дөрвөн улирлаас алинд нь хамгийн дуртай вэ?",
+      "npcMeaning": "四季の中でどの季節が一番好きですか？",
+      "options": [
+        {
+          "text": "Би намар дуртай. Учир нь тэнгэр цэлмэг, сайхан сэрүүн байдаг.",
+          "meaning": "私は秋が好きです。空が澄んでいて心地よく涼しいからです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！理由の接続詞「учир нь（なぜなら）」を使って好みの理由を明晰に説明できました。"
+        },
+        {
+          "text": "Мэдэхгүй.",
+          "meaning": "分かりません。",
+          "isBest": false,
+          "score": 3,
+          "feedback": "хавар（春）、зун（夏）、намар（秋）、өвөл（冬）から好きな季節を答えてみましょう。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_12",
+  "title": "セレンゲ県旅行とナーダム祭りの計画",
+  "category": "travel",
+  "icon": "🎪",
+  "description": "夏の休暇。北部のセレンゲ県へナーダム見学に行く旅行計画をトゥムルさんと相談するシチュエーション。",
+  "initialPrompt": "週末、旅行の幹事役のトゥムルさんと地図を広げてセレンゲ県への旅程程を打ち合わせています。",
+  "character": {
+    "name": "Төмөр (旅行幹事のトゥムルさん)",
+    "avatar": "🎫"
+  },
+  "steps": [
+    {
+      "npcText": "Сэлэнгэ аймаг руу яаж явах вэ? Галт тэргээр үү?",
+      "npcMeaning": "セレンゲ県へはどうやって行きますか？列車ですか？",
+      "options": [
+        {
+          "text": "Галт тэргээр 12 цаг гаруй явна шүү.",
+          "meaning": "列車で12時間以上かかりますよ。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "的確です！手段の造格「галт тэргээр」と数量超過「гаруй（〜以上）」が自然に使われています。"
+        },
+        {
+          "text": "Явган 10 минут явна.",
+          "meaning": "歩いて10分で行きます。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "セレンゲ県は北部の遠方です！徒歩10分では行けません。"
+        }
+      ]
+    },
+    {
+      "npcText": "Наадмын баяр хэзээ эхлэх вэ? Бид хэзээ уулзах вэ?",
+      "npcMeaning": "ナーダム祭りはいつ始まりますか？私たちはいつ集まりましょうか？",
+      "options": [
+        {
+          "text": "7-р сарын 11-д Наадам эхэлнэ, уулзацгаая.",
+          "meaning": "7月11日にナーダム祭りが始まります。みんなで会いましょう。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！日付の与位格「11-д」と集団勧誘「уулзацгаая（みんなで会おう）」が完璧です。"
+        },
+        {
+          "text": "Би очихгүй.",
+          "meaning": "私は行きません。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "ナーダムはモンゴル最大の祭典です！「уулзацгаая」と仲間と盛り上がりましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Тасалбараа хэзээ авах вэ?",
+      "npcMeaning": "切符はいつ買いに行きましょうか？",
+      "options": [
+        {
+          "text": "Наадмын үеэр хүн ихтэй тул, маргааш вокзал орж эртхэн авъя.",
+          "meaning": "ナーダム期間中は混み合うため、明日駅に行って早めに買いましょう。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！理由「тул」と希求「авъя（買おう）」で計画的な行動を提案できました。"
+        },
+        {
+          "text": "Дараа жил авъя.",
+          "meaning": "来年買いましょう。",
+          "isBest": false,
+          "score": 1,
+          "feedback": "今年のお祭りなので明日買いに行きましょう！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_13",
+  "title": "長距離バス窓口での切符購入とタクシー手配",
+  "category": "travel",
+  "icon": "🚌",
+  "description": "ドラゴンスターミナルで、地方都市への長距離バス切符を購入しタクシーを手配するシチュエーション。",
+  "initialPrompt": "ウランバートルのドラゴン・バスターミナル。切符売り場の窓口でバヤルマーさんに話しかけます。",
+  "character": {
+    "name": "Баярмаа (バスターミナル窓口係)",
+    "avatar": "🪟"
+  },
+  "steps": [
+    {
+      "npcText": "Сайн байна уу? Танд ямар чиглэлийн тасалбар хэрэгтэй вэ?",
+      "npcMeaning": "こんにちは。どちら方面の切符が必要ですか？",
+      "options": [
+        {
+          "text": "Зуунмод хот хүртэл явах 1 тасалбар авмаар байна.",
+          "meaning": "ゾーンモド市まで行く切符を1枚買いたいです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！到達点「хүртэл（〜まで）」と願望構文「-маар байна（買いたいです）」の模範的な使い方です。"
+        },
+        {
+          "text": "Мөнгө байхгүй.",
+          "meaning": "お金がありません。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "窓口では希望の行き先と枚数を「-маар байна」で伝えましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "14 цагийн автобус байна. Та суух уу? Үнэ нь 5000 төгрөг.",
+      "npcMeaning": "14時のバスがあります。乗られますか？料金は5000トゥグルグです。",
+      "options": [
+        {
+          "text": "Тэгье, 14 цагийн автобусны тасалбар авъя. Мөнгийг нь өгье.",
+          "meaning": "はい、14時のバスの切符にします。代金をお渡しします。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！希求形「авъя（買います）」でスムーズに購入手続きが進みます。"
+        },
+        {
+          "text": "Үгүй, явахгүй.",
+          "meaning": "いいえ、行きません。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "時間帯が合わない場合は「Өөр цагийн автобус бий юү?（他の時間のバスはありますか？）」と聞きましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Өөр асуух зүйл байна уу?",
+      "npcMeaning": "他に何かご質問はありますか？",
+      "options": [
+        {
+          "text": "Эндээс такси захиалж болох уу? Болно оо.",
+          "meaning": "ここでタクシーを予約できますか？ できますよ。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！許可伺い「-ж болох уу?」と受諾の決まり文句「Болно оо」が身についています。"
+        },
+        {
+          "text": "Байхгүй.",
+          "meaning": "ない。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "丁寧にお礼を添えて「Баярлалаа, байхгүй ээ」と答えると好印象です。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_14",
+  "title": "地方ホテルのチェックインと衛生ルール",
+  "category": "travel",
+  "icon": "🏨",
+  "description": "出張先の地方ホテルに到着。フロント係のアヌさんと宿泊手続きと生活ルールを確認するシチュエーション。",
+  "initialPrompt": "地方都市のホテルに到着しました。フロントデスクでスタッフのアヌさんが応対してくれます。",
+  "character": {
+    "name": "Ану (ホテルフロント係)",
+    "avatar": "🏨"
+  },
+  "steps": [
+    {
+      "npcText": "Сайн байна уу? Манай буудалд сул өрөө хайж байна уу?",
+      "npcMeaning": "こんにちは。当ホテルで空き部屋をお探しですか？",
+      "options": [
+        {
+          "text": "Тийм ээ, нэг өрөө захиалмаар байна. Нэг хоновол хэдэн төгрөг вэ?",
+          "meaning": "はい、1部屋予約したいです。一泊するならいくらですか？",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！願望「захиалмаар байна」と仮定「хоновол（泊まるなら）」が正確に使えています。"
+        },
+        {
+          "text": "Өрөө байхгүй бол яах вэ?",
+          "meaning": "部屋がなかったらどうしよう？（独り言）",
+          "isBest": false,
+          "score": 4,
+          "feedback": "まず空き部屋があるかをフロントに尋ねましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Нэг хоновол, 45000 төгрөг. Паспортоо үзүүлнэ үү.",
+      "npcMeaning": "一泊なら45,000トゥグルグです。パスポートをお見せください。",
+      "options": [
+        {
+          "text": "За, энэ миний гадаад паспорт. Шалгана уу.",
+          "meaning": "はい、これが私のパスポートです。ご確認ください。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "的確です！指示代名詞「энэ」と丁寧依頼「-на уу（шалгана уу）」で上品に手渡せました。"
+        },
+        {
+          "text": "Паспорт байхгүй.",
+          "meaning": "パスポートはありません。",
+          "isBest": false,
+          "score": 0,
+          "feedback": "外国人のホテル宿泊にはパスポート提示が義務付けられています！"
+        }
+      ]
+    },
+    {
+      "npcText": "Өрөөний түлхүүр энэ байна. Ариун цэврийг сайн сахиарай.",
+      "npcMeaning": "お部屋の鍵はこちらです。衛生・体調管理にはお気をつけくださいね。",
+      "options": [
+        {
+          "text": "Баярлалаа. Гэртээ орохдоо гараа угааж, хоолойгоо зайлахгүй бол болохгүй шүү дээ.",
+          "meaning": "ありがとうございます。部屋に入ったら手を洗い、うがいをしなければなりませんね。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！義務構文「-хгүй бол болохгүй（〜しなければならない）」を衛生管理の文脈で正しく使えています。"
+        },
+        {
+          "text": "Гараа угаахгүй.",
+          "meaning": "手は洗いません。",
+          "isBest": false,
+          "score": 1,
+          "feedback": "感染症予防のため、帰宅時の手洗いうがいは徹底しましょう！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_15",
+  "title": "診療所での体調不良と病院での相談",
+  "category": "emergency",
+  "icon": "🩺",
+  "description": "任地の診療所。寒気と頭痛があり、医師のナラン先生に症状を説明して薬を処方してもらうシチュエーション。",
+  "initialPrompt": "体がだるく寒気がするため、任地の診療所（Эмнэлэг）を訪れました。ナラン医師が診察室で迎えます。",
+  "character": {
+    "name": "Наран эмч (診療所の医師・ナラン先生)",
+    "avatar": "🩺"
+  },
+  "steps": [
+    {
+      "npcText": "Сайн байна уу? Таны бие хаанаа өвдөж байна вэ?",
+      "npcMeaning": "こんにちは。お体のどこが痛みますか？具合はどうですか？",
+      "options": [
+        {
+          "text": "Толгой өвдөөд, бас жаахан халуураад байна.",
+          "meaning": "頭が痛くて、少し熱もあります。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！並列形「өвдөөд（痛んで）」と進行形「халуураад байна（熱が出ている）」で症状を明確に伝えられました。"
+        },
+        {
+          "text": "Би маш эрүүл.",
+          "meaning": "私はとても健康です。",
+          "isBest": false,
+          "score": 1,
+          "feedback": "診療所に来ているので、具合の悪い箇所を正直に伝えましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Хэзээнээс ингэж эхэлсэн бэ? Даарсан уу?",
+      "npcMeaning": "いつからそうなりましたか？体が冷えましたか？",
+      "options": [
+        {
+          "text": "Өчигдөр орой даараад, ханиад хүрсэн байна.",
+          "meaning": "昨晩体が冷えて、風邪をひいてしまいました。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！理由「даараад」＋病気の罹患表現「ханиад хүрсэн」が的確に使えています。"
+        },
+        {
+          "text": "Мэдэхгүй, гэнэт болсон.",
+          "meaning": "分からない、突然なった。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "「Даарсан（冷えた）」などきっかけを話すと医師が診断しやすくなります。"
+        }
+      ]
+    },
+    {
+      "npcText": "Энэ эмийг өдөрт гурван удаа хоолны дараа уугаарай. Сайн амарна шүү.",
+      "npcMeaning": "この薬を1日3回、食後に飲んでください。しっかり休んでくださいね。",
+      "options": [
+        {
+          "text": "Ойлголоо, эмч ээ. Эмийн сангаас эм аваарай гэснийг биелүүлж, дулаан амарна.",
+          "meaning": "分かりました、先生。薬局で薬を受け取って温かくして休みます。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！指示への受諾「Ойлголоо」と服薬・休養の意思を丁寧に伝えられました。"
+        },
+        {
+          "text": "Эм уух дургүй.",
+          "meaning": "薬を飲むのは嫌いです。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "早く回復するために医師の指示に従いましょう！"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_16",
+  "title": "休日の過ごし方・柔道とウランバートル散策",
+  "category": "culture",
+  "icon": "🥋",
+  "description": "週末の金曜日、同僚のツルガさんと休日のリフレッシュや趣味、ウランバートル散策について話すシチュエーション。",
+  "initialPrompt": "金曜日の夕方、退勤前の職員室で同僚のツルガさんが週末の予定を尋ねてきました。",
+  "character": {
+    "name": "Тулга (同僚・ツルガさん)",
+    "avatar": "🥋"
+  },
+  "steps": [
+    {
+      "npcText": "Та чөлөөт цагаараа, амралтын өдрөөр юу хийдэг вэ?",
+      "npcMeaning": "あなたは自由な時間や休日は普段何をしていますか？",
+      "options": [
+        {
+          "text": "Би чөлөөт цагаараа жудогоор хичээллэж, бас хотоор зугаалдаг.",
+          "meaning": "私は自由時間に柔道を練習したり、街を散歩したりしています。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！手段の造格「жудогоор」＋習慣動詞「хийчээллэдэг / зугаалдаг」が完璧です。"
+        },
+        {
+          "text": "Юу ч хийдэггүй, зүгээр л хэвтдэг.",
+          "meaning": "何もせずただ寝転がっています。",
+          "isBest": false,
+          "score": 5,
+          "feedback": "趣味や好きな過ごし方を伝えると会話がさらに盛り上がります！"
+        }
+      ]
+    },
+    {
+      "npcText": "Ханиад тань эдгэсэн үү? Бие тань гайгүй юу?",
+      "npcMeaning": "風邪は治りましたか？お体の具合は大丈夫ですか？",
+      "options": [
+        {
+          "text": "Ханиадны эм уусан учраас өнөөдөр бие сайн байна.",
+          "meaning": "風邪薬を飲んだので、今日は体調が良いです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！理由・原因を表す「учраас（〜ので）」を使って体調の快復を論理的に説明できました。"
+        },
+        {
+          "text": "Маш муу байна.",
+          "meaning": "とても悪いです。（散歩する元気は？）",
+          "isBest": false,
+          "score": 4,
+          "feedback": "良くなっているなら「эм уусан учраас сайн байна」と伝えて安心させましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Маргааш өглөө эрт Зайсан толгой руу гарах уу?",
+      "npcMeaning": "明日の朝早くザイサンの丘へ登りに行きませんか？",
+      "options": [
+        {
+          "text": "Маргааш өглөө эрт гарах учраас одоо унтъя. Маргааш уулзъя!",
+          "meaning": "明日の朝早く出かけるので、もう寝ましょう。明日会いましょう！",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！理由「гарах учраас」＋希求形「унтъя / уулзъя」で快諾と休息のメリハリがついています。"
+        },
+        {
+          "text": "Өглөө эрт босох дургүй.",
+          "meaning": "朝早く起きるのは嫌いです。",
+          "isBest": false,
+          "score": 4,
+          "feedback": "「Тэгье, эрт явъя」と前向きに応じるか別の日を提案しましょう。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_17",
+  "title": "青空市場での野菜の買い物と値段交渉",
+  "category": "shopping",
+  "icon": "🍅",
+  "description": "ウランバートルの青空市場（ザハ）で、新鮮なトマトやじゃがいもを買い値引き交渉をするシチュエーション。",
+  "initialPrompt": "活気ある青空市場の野菜売り場。店主のスレンさんが採れたての野菜を並べています。",
+  "character": {
+    "name": "Сүрэн (市場の露天商・スレンさん)",
+    "avatar": "🧺"
+  },
+  "steps": [
+    {
+      "npcText": "Ув улаан, шинэ улаан лооль зарж байна, аваарай! Танд хэдэн килограмм хэрэгтэй вэ?",
+      "npcMeaning": "真っ赤で新鮮なトマトを売っているよ、買っていって！何キロいりますか？",
+      "options": [
+        {
+          "text": "Энэ ямар үнэтэй вэ? Нэг килограмм нь хэдэн төгрөг вэ?",
+          "meaning": "これはおいくらですか？1キロいくらですか？",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！値段を尋ねる定番表現「Энэ ямар үнэтэй вэ?」が自然に出ています。"
+        },
+        {
+          "text": "Үнэгүй өгөөч.",
+          "meaning": "タダでちょうだい。",
+          "isBest": false,
+          "score": 0,
+          "feedback": "市場でも無償を要求するのは失礼です！まず価格を確認しましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Кило нь 6000 төгрөг. Амттай шүү!",
+      "npcMeaning": "1キロ6000トゥグルグだよ。美味しいよ！",
+      "options": [
+        {
+          "text": "Яасан үнэтэй юм бэ. Жаахан хямдруулбал, авмаар байна.",
+          "meaning": "なんて高いんでしょう。少し安くしてくれるなら買いたいです。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！感嘆構文「Яасан 〜 юм бэ」と条件法「хямдруулбал（安くしてくれるなら）」で上手に交渉しています。"
+        },
+        {
+          "text": "Худалдан авахгүй, баяртай.",
+          "meaning": "買いません、さようなら。",
+          "isBest": false,
+          "score": 3,
+          "feedback": "すぐに諦めず、「Жаахан хямдруулбал（少し安くしてくれたら）」と交渉してみましょう！"
+        }
+      ]
+    },
+    {
+      "npcText": "За за, хоёр килограммыг авбал 10000 төгрөг болгоё. Болох уу?",
+      "npcMeaning": "よしよし、2キロ買ってくれるなら10,000トゥグルグにしてあげよう。どうだい？",
+      "options": [
+        {
+          "text": "Тэгье, хоёр килограммыг авъя. Баярлалаа!",
+          "meaning": "そうしましょう、2キロ買います。ありがとうございます！",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！希求「авъя」と感謝で気持ちよく買い物を締めくくることができました。"
+        },
+        {
+          "text": "Болохгүй, 1000 төгрөг болго.",
+          "meaning": "だめだ、1000トゥグルグにしろ。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "相手も歩み寄ってくれたので、妥当なラインで快諾するのが市場のマナーです。"
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "tb_conv_18",
+  "title": "モンゴル伝統料理店での注文とアイラグ体験",
+  "category": "culture",
+  "icon": "🥟",
+  "description": "ウランバートルの伝統料理店で夕食。ボーズやサラダを注文し、馬乳酒（アイラグ）を味わうシチュエーション。",
+  "initialPrompt": "カウンターパートと一緒にモンゴル料理店に入りました。店員のエンフマーさんが注文を取りに来ます。",
+  "character": {
+    "name": "Энхмаа (伝統料理店の店員さん)",
+    "avatar": "👩‍🍳"
+  },
+  "steps": [
+    {
+      "npcText": "Та юу захиалах вэ? Манай бууз их амттай шүү.",
+      "npcMeaning": "何をご注文されますか？当店のボーズ（蒸し餃子）はとても美味しいですよ。",
+      "options": [
+        {
+          "text": "Би цангаад байна. Би 5 бууз авна. Нийслэл салат нэг тавгийг авъя.",
+          "meaning": "喉が渇きました。ボーズを5個ください。首都サラダを一皿ください。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "完璧！注文動詞「авна / авъя」と助数対格「нэг тавгийг（一皿を）」が正確に使われています。"
+        },
+        {
+          "text": "Юу ч идэхгүй.",
+          "meaning": "何も食べません。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "レストランに入ったので、看板メニューの「бууз」などを頼んでみましょう。"
+        }
+      ]
+    },
+    {
+      "npcText": "Уух юманд юу авах вэ? Халуун сүүтэй цай уу, айраг уу?",
+      "npcMeaning": "お飲み物は何にしますか？温かいスーテイ・ツァイ（ミルクティー）ですか、馬乳酒ですか？",
+      "options": [
+        {
+          "text": "Би айраг уумаар байна. Нэг том аягыг авъя.",
+          "meaning": "私は馬乳酒（アイラグ）を飲んでみたいです。大きな器で一杯ください。",
+          "isBest": true,
+          "score": 10,
+          "feedback": "素晴らしい！願望「уумаар байна」と伝統の飲み物「айраг」を堂々と注文できました。"
+        },
+        {
+          "text": "Ус ууна.",
+          "meaning": "水を飲みます。",
+          "isBest": false,
+          "score": 6,
+          "feedback": "水も良いですが、伝統料理店では名物の「сүүтэй цай」や「айраг」を試すと旅情が高まります！"
+        }
+      ]
+    },
+    {
+      "npcText": "Айраг ямар байна вэ? Таалагдаж байна уу?",
+      "npcMeaning": "アイラグはいかがですか？お気に召しましたか？",
+      "options": [
+        {
+          "text": "Айраг шиг амттай болохоор уух дуртай болсон. Маш сайхан амттай байна!",
+          "meaning": "馬乳酒のような味がして飲むのが好きになりました。とても美味しいです！",
+          "isBest": true,
+          "score": 10,
+          "feedback": "満点！様態「шиг」＋理由「болохоор」＋変化「дуртай болсон（好きになった）」の高度な表現です。"
+        },
+        {
+          "text": "Муухай байна, би уухгүй.",
+          "meaning": "まずいです、飲みません。",
+          "isBest": false,
+          "score": 2,
+          "feedback": "独特の酸味がありますが、もてなしへの気遣いとして「Жаахан исгэлэн ч сонирхолтой амт байна（少し酸っぱいですが興味深い味です）」などと柔らかく表現しましょう。"
         }
       ]
     }

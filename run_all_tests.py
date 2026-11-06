@@ -41,7 +41,8 @@ tests = [
     'test_theme_and_night_mode.py',
     'test_expedition_map_all_aimags.py',
     'test_user_notes_added.py',
-    'test_pdf_grammar_supplement.py'
+    'test_pdf_grammar_supplement.py',
+    'test_textbook_comprehensive_integration.py'
 ]
 
 for t in tests:
