@@ -76,6 +76,146 @@ export const GENRE_CONFIG = [
     badgeClass: 'bg-cyan-100 text-cyan-800 border-cyan-300',
     headerGradient: 'from-cyan-500 to-blue-600',
     description: '東西南北、北東・南東・南西・北西、上下・内外などの方向表現'
+  },
+  {
+    id: 'law_crime',
+    titleJa: '犯罪・法・正義',
+    titleMn: 'Хууль, эрх зүй',
+    icon: '⚖️',
+    color: 'slate',
+    badgeClass: 'bg-slate-100 text-slate-800 border-slate-300',
+    headerGradient: 'from-slate-700 to-slate-900',
+    description: '警察・法律・裁判・弁護士・権利・刑罰・義務など法と社会の必須語彙'
+  },
+  {
+    id: 'education',
+    titleJa: '教育・大学・学問',
+    titleMn: 'Боловсрол, сургууль',
+    icon: '🎓',
+    color: 'indigo',
+    badgeClass: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+    headerGradient: 'from-indigo-600 to-blue-700',
+    description: '大学・教授・講義・試験・合格・奨学金・学位記・学術研究に関する語彙'
+  },
+  {
+    id: 'emotions',
+    titleJa: '感情・心理・気持ち',
+    titleMn: 'Сэтгэл хөдлөл',
+    icon: '💖',
+    color: 'pink',
+    badgeClass: 'bg-pink-100 text-pink-800 border-pink-300',
+    headerGradient: 'from-pink-500 to-rose-600',
+    description: '喜び・怒り・恐怖・愛・嫉妬・心配など感情語彙（動詞の格支配解説付き）'
+  },
+  {
+    id: 'weather',
+    titleJa: '天気・気候・自然現象',
+    titleMn: 'Цаг агаар, уур амьсгал',
+    icon: '🌤️',
+    color: 'sky',
+    badgeClass: 'bg-sky-100 text-sky-800 border-sky-300',
+    headerGradient: 'from-sky-500 to-blue-600',
+    description: '晴れ・雨・雪・風・砂嵐・寒害（ゾド）・気温・四季など気象気候の語彙'
+  },
+  {
+    id: 'pronouns',
+    titleJa: '人称代名詞・自分',
+    titleMn: 'Биеийн төлөөний нэр',
+    icon: '👤',
+    color: 'teal',
+    badgeClass: 'bg-teal-100 text-teal-800 border-teal-300',
+    headerGradient: 'from-teal-600 to-emerald-700',
+    description: '私・君・あなた・彼・私たち・自分自身（格変化パターン完全網羅）'
+  },
+  {
+    id: 'numbers',
+    titleJa: '数字・数量・序数',
+    titleMn: 'Тоо ширхэг, дэс дараалал',
+    icon: '🔢',
+    color: 'amber',
+    badgeClass: 'bg-amber-100 text-amber-800 border-amber-300',
+    headerGradient: 'from-amber-500 to-yellow-600',
+    description: '1〜10、十、百、千、万、億、第1・第2（序数）、2人とも（集合数詞）'
+  },
+  {
+    id: 'places',
+    titleJa: '場所・施設・街',
+    titleMn: 'Газар орон, барилга байгууламж',
+    icon: '🏛️',
+    color: 'emerald',
+    badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+    headerGradient: 'from-emerald-600 to-teal-700',
+    description: '病院・薬局・郵便局・銀行・空港・市場・図書館・公園・大使館など街の施設'
+  },
+  {
+    id: 'demonstratives',
+    titleJa: '指示代名詞・疑問詞',
+    titleMn: 'Заах, асуух төлөөний нэр',
+    icon: '👉',
+    color: 'orange',
+    badgeClass: 'bg-orange-100 text-orange-800 border-orange-300',
+    headerGradient: 'from-orange-500 to-amber-600',
+    description: 'これ・あれ・ここ・あそこ・こちら・あちら・こんな・どんな・なぜ・いつ'
+  },
+  {
+    id: 'postpositions',
+    titleJa: '後置詞（格支配の完全解説）',
+    titleMn: 'Дагавар үгс, тийн ялгалын захиргаа',
+    icon: '🔗',
+    color: 'purple',
+    badgeClass: 'bg-purple-100 text-purple-800 border-purple-300',
+    headerGradient: 'from-purple-600 to-indigo-700',
+    description: '〜について・〜のために・〜の前に・〜以来・〜と一緒に等（各支配の徹底解説）'
+  },
+  {
+    id: 'japan_culture',
+    titleJa: '日本文化・日本紹介',
+    titleMn: 'Японы соёл уламжлал',
+    icon: '🗾',
+    color: 'red',
+    badgeClass: 'bg-red-100 text-red-800 border-red-300',
+    headerGradient: 'from-red-600 to-rose-700',
+    description: '富士山・桜・相撲・寿司・着物・温泉・新幹線・茶道・漫画など日本を紹介する語彙'
+  },
+  {
+    id: 'music',
+    titleJa: '音楽・芸能・楽器',
+    titleMn: 'Хөгжим, дуу хуур',
+    icon: '🎵',
+    color: 'fuchsia',
+    badgeClass: 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-300',
+    headerGradient: 'from-fuchsia-600 to-pink-700',
+    description: '馬頭琴・ホーミー・長唄（オルティンドー）・歌・リズム・コンサート・楽器'
+  },
+  {
+    id: 'useful_phrases',
+    titleJa: '便利な言葉・日常決まり文句',
+    titleMn: 'Хэрэгтэй өдөр тутмын хэллэг',
+    icon: '💬',
+    color: 'lime',
+    badgeClass: 'bg-lime-100 text-lime-800 border-lime-300',
+    headerGradient: 'from-emerald-500 to-lime-600',
+    description: 'ありがとう・どういたしまして・どうぞ・乾杯・相槌・日常の潤滑油フレーズ'
+  },
+  {
+    id: 'business',
+    titleJa: 'ビジネス・仕事・経済',
+    titleMn: 'Бизнес, ажил хэрэг',
+    icon: '💼',
+    color: 'cyan',
+    badgeClass: 'bg-cyan-100 text-cyan-800 border-cyan-300',
+    headerGradient: 'from-cyan-600 to-teal-700',
+    description: '会社・社長・同僚・会議・契約・給料・プロジェクト・貿易・税金・請求書'
+  },
+  {
+    id: 'medical',
+    titleJa: '医療・健康・病院',
+    titleMn: 'Эрүүл мэнд, эмнэлэг',
+    icon: '🩺',
+    color: 'rose',
+    badgeClass: 'bg-rose-100 text-rose-800 border-rose-300',
+    headerGradient: 'from-rose-600 to-red-700',
+    description: '医師・看護師・患者・薬・注射・熱・頭痛・風邪・手術・救急車・血圧'
   }
 ];
 
@@ -344,10 +484,21 @@ export class GenreWordMasterComponent {
                   <div class="text-sm font-black text-slate-800">
                     ${w.japanese}
                   </div>
-                  <div class="text-[11px] text-slate-400 font-medium">
-                    品詞: ${w.pos || '名詞'}
+                  <div class="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+                    <span>品詞: ${w.pos || '名詞'}</span>
+                    ${w.caseGovernment ? `<span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 font-black text-[10px] border border-purple-200">⚡ ${w.caseGovernment}</span>` : ''}
                   </div>
                 </div>
+
+                ${w.caseGovernment ? `
+                  <div class="mt-2 p-2.5 bg-gradient-to-br from-purple-50 to-indigo-50/50 rounded-xl border border-purple-200 text-xs space-y-1">
+                    <div class="font-black text-purple-950 flex items-center gap-1.5">
+                      <span>⚡ 格支配:</span>
+                      <span class="text-purple-800 font-bold">${w.caseGovernment}</span>
+                    </div>
+                    ${w.caseNote ? `<div class="text-[11px] text-purple-900 leading-relaxed">${w.caseNote}</div>` : ''}
+                  </div>
+                ` : ''}
 
                 ${w.exampleMn ? `
                   <div class="mt-2 p-2 bg-slate-50 rounded-xl border border-slate-100 text-xs space-y-0.5">

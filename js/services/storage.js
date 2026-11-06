@@ -265,6 +265,10 @@ export class StorageService {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.VOCABULARY);
       baseList = data ? JSON.parse(data) : initialVocabulary;
+      if (baseList.length < initialVocabulary.length) {
+        baseList = initialVocabulary;
+        this.saveVocabulary(initialVocabulary);
+      }
     } catch (e) {
       baseList = initialVocabulary;
     }

@@ -15,8 +15,14 @@ def test_genre_vocab():
 
     assert len(vocab) >= 1100, f"Expected >= 1100 words, got {len(vocab)}"
 
-    expected_genres = ['body', 'school', 'clothing', 'dining', 'appliances', 'produce', 'directions']
+    expected_genres = [
+        'body', 'school', 'clothing', 'dining', 'appliances', 'produce', 'directions',
+        'law_crime', 'education', 'emotions', 'weather', 'pronouns', 'numbers',
+        'places', 'demonstratives', 'postpositions', 'japan_culture', 'music',
+        'useful_phrases', 'business', 'medical'
+    ]
     counts = {}
+    case_gov_count = 0
     for w in vocab:
         gid = w.get('genreId')
         if gid:
@@ -25,12 +31,18 @@ def test_genre_vocab():
             assert w.get('japanese'), f"Word missing japanese: {w}"
             assert w.get('pronunciation'), f"Word missing pronunciation: {w}"
             assert w.get('pos'), f"Word missing pos: {w}"
+            if w.get('caseGovernment'):
+                case_gov_count += 1
+                assert w.get('caseNote'), f"Word with caseGovernment missing caseNote: {w}"
 
+    assert len(counts) >= 21, f"Expected 21 genres, got {len(counts)}"
     for g in expected_genres:
         assert g in counts, f"Missing genre {g}"
         assert counts[g] >= 15, f"Genre {g} has only {counts[g]} words"
         print(f"  ✓ Genre '{g}': {counts[g]} words verified")
 
+    assert case_gov_count >= 20, f"Expected >= 20 words with caseGovernment, got {case_gov_count}"
+    print(f"  ✓ Case government verified on {case_gov_count} words (postpositions & emotion verbs)")
     total_genre_words = sum(counts.values())
     print(f"  ✓ Total genre-tagged words: {total_genre_words}")
 
