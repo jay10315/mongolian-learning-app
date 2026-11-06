@@ -1255,29 +1255,7 @@ export class WordGameComponent {
                   } else if (choice.id === this.state.selectedChoiceId && !this.state.isCorrect) {
                     btnClass = "bg-rose-600 border-rose-600 text-white font-bold animate-shake";
                     badgeClass = "bg-white text-rose-800";
-                  } else if (genre === 'visual') {
-                  return `
-                    <div class="py-2.5 flex items-center justify-between gap-3 text-xs">
-                      <div class="flex items-center gap-2.5">
-                        <div class="w-12 h-12 shrink-0 bg-white rounded-xl border border-slate-200 overflow-hidden p-1 shadow-2xs">
-                          ${item.svg}
-                        </div>
-                        <div>
-                          <div class="font-bold text-slate-800 text-sm">
-                            <span class="text-xs px-2 py-0.5 rounded-full bg-sky-100 text-sky-900 font-bold mr-1">イラスト</span>
-                            ${item.japanese}
-                          </div>
-                          <div class="text-slate-900 font-extrabold cyrillic-text mt-0.5">
-                            正解: ${item.dictForm || item.mongolian} ${item.pronunciation ? `[${item.pronunciation}]` : ''}
-                          </div>
-                        </div>
-                      </div>
-                      <button type="button" class="btn-speak-mistake text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-50" data-word="${item.mongolian}">
-                        🔊
-                      </button>
-                    </div>
-                  `;
-                } else {
+                  } else {
                     btnClass = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
                     badgeClass = "bg-slate-200 text-slate-500";
                   }
