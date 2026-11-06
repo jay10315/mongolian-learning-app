@@ -57,7 +57,8 @@ tests = [
     'test_native_mongolian_replacements.py',
     'test_interview_typing_drill.py',
     'test_word_illustrations_feature.py',
-    'test_choice_explanations_feature.py'
+    'test_choice_explanations_feature.py',
+    'test_similar_words_distinctions_feature.py'
 ]
 
 for t in tests:

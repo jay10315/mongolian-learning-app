@@ -164,6 +164,10 @@ export class FlashcardsComponent {
                       </div>
                     ` : ''}
 
+                    ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(card, card.mongolian) : ''}
+                    ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(card, card.mongolian) : ''}
+                    ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(card, card.mongolian) : ''}
+
                     ${card.exampleMn ? `
                       <div class="text-xs pt-1.5 border-t border-emerald-200/60">
                         <div class="font-bold cyrillic-text text-slate-800">${card.exampleMn}</div>

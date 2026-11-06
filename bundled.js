@@ -1243,7 +1243,971 @@ if (typeof window !== 'undefined') {
  * 終わった後の結果画面や各問題で、出題された4つの選択肢すべてについて
  * イラスト、品詞、日本語訳、語幹、単語の成り立ち、語呂合わせ、例文をタップ展開可能にする
  */
-function renderChoiceExplanationsHTML(choices, options = {}) {
+
+/**
+ * 似ている単語・紛らわしい単語の使い分け・相違点データベース (150+ 語網羅)
+ * ユーザー要件: 「似ている単語がある場合は、解説するときにそれと何が違うのか、も書いて」
+ */
+const SIMILAR_WORDS_DISTINCTIONS = {
+  // 1. 知識・理解・推量・思考
+  "мэдэх": {
+    target: "мэдэх",
+    targetMeaning: "知る・知識として持っている",
+    similar: [
+      { word: "ойлгох", meaning: "分かる・理解する" },
+      { word: "таних", meaning: "面識がある・見知っている" }
+    ],
+    distinction: "【知るの使い分け】\n・мэдэх: 客観的な情報・事実・知識として「知っている」（例: Би дугаарыг нь мэднэ / 電話番号を知っている）。\n・ойлгох: 言葉の意味や道理、相手の意図が頭に落ちて「納得・理解する」（例: Би ойлголоо / 分かりました）。\n・таних: 人の顔や性格、特定の場所を「見知っている・面識がある」（例: Би түүнийг сайн танина / 彼のことはよく知っています）。"
+  },
+  "мэдэхгүй": {
+    target: "мэдэхгүй",
+    targetMeaning: "知らない",
+    similar: [
+      { word: "ойлгохгүй", meaning: "分からない・理解できない" },
+      { word: "танихгүй", meaning: "知らない人だ・面識がない" }
+    ],
+    distinction: "情報や知識がない時は「мэдэхгүй（知らない）」、説明された意味が理解できない時は「ойлгохгүй（分からない）」、見知らぬ人には「танихгүй（面識がない）」を使い分けます。"
+  },
+  "ойлгох": {
+    target: "ойлгох",
+    targetMeaning: "分かる・理解する",
+    similar: [
+      { word: "мэдэх", meaning: "知る" },
+      { word: "ухаарах", meaning: "悟る・自覚する" }
+    ],
+    distinction: "「ойлгох」は話の意味や道理を頭で「理解する」こと。「мэдэх（単なる知識の有無）」と異なり、相手の話に納得した時は「Аан, ойлголоо（ああ、分かりました）」と言います。"
+  },
+  "ойлгохгүй": {
+    target: "ойлгохгүй",
+    targetMeaning: "分からない・理解できない",
+    similar: [
+      { word: "мэдэхгүй", meaning: "知らない" }
+    ],
+    distinction: "相手の言っているモンゴル語の意味が聞き取れなかったり理解できない時は「Ойлгохгүй байна（分かりません）」と言います（知識自体がない「Мэдэхгүй」とは異なります）。"
+  },
+  "таних": {
+    target: "таних",
+    targetMeaning: "面識がある・見知っている",
+    similar: [
+      { word: "мэдэх", meaning: "知る" }
+    ],
+    distinction: "人物や街並みに対して「あの人知ってる？」「この辺知ってる？」と尋ねる時は「таних」を使います（× мэдэх は情報・事実）。"
+  },
+  "бодох": {
+    target: "бодох",
+    targetMeaning: "思う・考える",
+    similar: [
+      { word: "болох", meaning: "なる・OK", note: "⚠️ 1文字違い (д と л)" },
+      { word: "санах", meaning: "思い出す・恋しく思う" },
+      { word: "төсөөлөх", meaning: "想像する" }
+    ],
+    distinction: "【綴り・意味の混同注意！】\n・бодох (語幹 бод-): 頭で考える、〜と思う（... гэж бодож байна）。文字「д」！\n・болох (語幹 бол-): 〜になる、〜しても良い（болно）。文字「л」！\n・санах: 過去の記憶を「思い出す」、故郷や人を「恋しく思う」。"
+  },
+  "болох": {
+    target: "болох",
+    targetMeaning: "なる・良い・可能だ",
+    similar: [
+      { word: "бодох", meaning: "思う・考える", note: "⚠️ 1文字違い (л と д)" },
+      { word: "чадах", meaning: "能力として〜できる" }
+    ],
+    distinction: "「болох」は状況の変化（〜になる）や許可（〜しても良い / болно）を表します。個人の能力やスキルで「できる」は「чадах」、頭で「考える」は「бодох」です。"
+  },
+  "магадгүй": {
+    target: "магадгүй",
+    targetMeaning: "多分・もしかすると",
+    similar: [
+      { word: "бололтой", meaning: "〜のようだ・〜らしい" },
+      { word: "лав", meaning: "きっと・間違いなく" },
+      { word: "байхаа", meaning: "〜だろうな・〜のはず" }
+    ],
+    distinction: "【推量の確信度の違い】\n・магадгүй: 可能性50%前後の不確定な推測（多分・もしかしたら）。\n・бололтой: 外見や気配、状況証拠から察する推量（〜らしい・〜のようだ）。\n・лав: 話し手の確信が極めて高い推量（きっと・間違いなく）。\n・байхаа: 自分の見解を穏やかに相手に伝える推量（〜だろうな・〜のはず）。"
+  },
+  "бололтой": {
+    target: "бололтой",
+    targetMeaning: "〜らしい・〜のようだ",
+    similar: [
+      { word: "магадгүй", meaning: "多分" },
+      { word: "шиг", meaning: "〜のようだ（比喩）" }
+    ],
+    distinction: "「бололтой」は天気や人の様子など「外見・兆候から見て〜らしい」という状況判断。単なる確率の「магадгүй（多分）」や比喩の「шиг（まるで〜のよう）」と区別します。"
+  },
+  "лав": {
+    target: "лав",
+    targetMeaning: "きっと・確実に",
+    similar: [
+      { word: "магадгүй", meaning: "多分（確信度50%）" },
+      { word: "заавал", meaning: "必ず・絶対に（義務・意志）" }
+    ],
+    distinction: "「лав」は推量の確信度が非常に高く「きっとそうだ」の意。「заавал（必ず〜する・しなければならない）」という意志・義務とは異なります。"
+  },
+  "байхаа": {
+    target: "байхаа",
+    targetMeaning: "〜だろうな・〜のはず",
+    similar: [
+      { word: "байна", meaning: "〜です・あります（現在断定）" },
+      { word: "байх", meaning: "ある・いる（辞書形）" }
+    ],
+    distinction: "「байна」が「あります・〜です」と断定するのに対し、「байхаа」は文末に付いて「〜だろうな・〜のはずだ」と推測・柔らかい推量を表します。"
+  },
+
+  // 2. 視覚・移動・動作
+  "харах": {
+    target: "харах",
+    targetMeaning: "見る・視線を向ける",
+    similar: [
+      { word: "харих", meaning: "家に帰る", note: "⚠️ 母音違い (а と и)" },
+      { word: "үзэх", meaning: "観る・試す・受ける" }
+    ],
+    distinction: "【超頻出！混同注意】\n・харах (語幹 хар-): 母音「а」＝ 目で「見る・眺める」。\n・харих (語幹 харь-): 母音「и」＝ 自分の家や故郷へ「帰る」。\n・үзэх: 映画や劇を「鑑賞する」、服や料理を「試す」、試験を「受ける」。"
+  },
+  "харих": {
+    target: "харих",
+    targetMeaning: "帰る・帰宅する",
+    similar: [
+      { word: "харах", meaning: "見る", note: "⚠️ 母音違い (и と а)" },
+      { word: "буцах", meaning: "引き返す・戻る" },
+      { word: "явах", meaning: "行く・去る" }
+    ],
+    distinction: "「харих」は自宅（гэр）や故郷・祖国へ「帰宅する」こと。「буцах」は一度進んだ道から「引き返す・元の地点へ戻る」こと、「харах（見る）」とは母音「и/а」の違いです。"
+  },
+  "буцах": {
+    target: "буцах",
+    targetMeaning: "戻る・引き返す",
+    similar: [
+      { word: "харих", meaning: "（自宅へ）帰る" },
+      { word: "буцахгүй", meaning: "引き返さない" }
+    ],
+    distinction: "「буцах」は方向を反転させて元の場所へ「戻る・Uターンする」動作。「харих」は自宅へ「帰る」動作。"
+  },
+  "үзэх": {
+    target: "үзэх",
+    targetMeaning: "見る・試す・受ける",
+    similar: [
+      { word: "харах", meaning: "視線を向ける・見る" },
+      { word: "оролдох", meaning: "いじる・試みる" }
+    ],
+    distinction: "「үзэх」は単に視界に入る（харах）だけでなく、映画を「観る」、動詞接続「-ээд үзэх」で「〜してみる（試す）」、試験を「受ける」など能動的な体験を表します。"
+  },
+  "хийх": {
+    target: "хийх",
+    targetMeaning: "する・作る・行う",
+    similar: [
+      { word: "үйлдэх", meaning: "（犯罪や行為を）行う・犯す" },
+      { word: "бүтээх", meaning: "創作する・成し遂げる" },
+      { word: "бэлдэх", meaning: "準備する・用意する" }
+    ],
+    distinction: "「хийх」は宿題をする、料理を作るなど日常のあらゆる「する・作る」を網羅する最重要基本動詞。一方「үйлдэх」は犯罪（гэмт хэрэг үйлдэх）など特別な行為に使われます。"
+  },
+  "сурах": {
+    target: "сурах",
+    targetMeaning: "学ぶ・習う",
+    similar: [
+      { word: "суух", meaning: "座る・住む", note: "⚠️ р の有無" },
+      { word: "унших", meaning: "読む" },
+      { word: "судлах", meaning: "研究する・深く調査する" }
+    ],
+    distinction: "【文字・意味の区別】\n・сурах (語幹 сур-): 「р」あり ＝ 知識やスキルを「学ぶ・習う」。\n・суух (語幹 суу-): 「р」なし ＝ 椅子に「座る」、街に「住む」。\n・судлах: 大学や専門機関で学術的に「研究・専攻する」。"
+  },
+  "суух": {
+    target: "суух",
+    targetMeaning: "座る・住む",
+    similar: [
+      { word: "сурах", meaning: "学ぶ", note: "⚠️ р の有無" },
+      { word: "амьдрах", meaning: "生活する・暮らす" },
+      { word: "зогсох", meaning: "立つ・止まる" }
+    ],
+    distinction: "「суух」は椅子の着席姿勢、または都市に「住む（хотод суух）」。人生を営む「暮らす・生きる」は「амьдрах」を使います。"
+  },
+  "авах": {
+    target: "авах",
+    targetMeaning: "取る・買う・もらう",
+    similar: [
+      { word: "явах", meaning: "行く", note: "⚠️ 頭文字 а と я" },
+      { word: "өгөх", meaning: "あげる・与える（対義語）" }
+    ],
+    distinction: "【字形と方向の区別】\n・авах: 頭文字「а」＝ 自分の手元へ引き入れる「取る・もらう・買う」。\n・явах: 頭文字「я」＝ 自分が前進して立ち去る「行く」。\n・өгөх: 相手へ手渡す「あげる」。"
+  },
+  "явах": {
+    target: "явах",
+    targetMeaning: "行く・去る",
+    similar: [
+      { word: "авах", meaning: "取る・買う", note: "⚠️ 頭文字 я と а" },
+      { word: "очих", meaning: "出向く・行く（相手の元へ）" },
+      { word: "ирэх", meaning: "来る" }
+    ],
+    distinction: "【移動の使い分け】\n・явах: 出発して進む「行く」（進行方向に焦点）。\n・очих: 相手のいる場所や特定の目的地へ「出向く・到着する」（到達点に焦点）。\n・ирэх: 話し手側の現在地へ「やって来る」。"
+  },
+  "очих": {
+    target: "очих",
+    targetMeaning: "行く・出向く（相手や目的地へ）",
+    similar: [
+      { word: "явах", meaning: "行く（出発）" },
+      { word: "ирэх", meaning: "来る" }
+    ],
+    distinction: "「〜さんの家へ行く（хүний гэрт очих）」のように、相手のいる所へ向かう時は「явах」よりも「очих」が自然です。"
+  },
+  "ирэх": {
+    target: "ирэх",
+    targetMeaning: "来る・やって来る",
+    similar: [
+      { word: "явах", meaning: "行く" },
+      { word: "очих", meaning: "出向く" }
+    ],
+    distinction: "話し手がいる方向へ向かって近づいてくる動作を表します（例: Манайд ирээрэй / うちに遊びにおいでよ）。"
+  },
+
+  // 3. 身体・自然・物質（超重要！同音・近音ペア）
+  "ус": {
+    target: "ус",
+    targetMeaning: "水",
+    similar: [
+      { word: "үс", meaning: "髪の毛", note: "⚠️ 男性母音 у vs 女性母音 ү" },
+      { word: "цус", meaning: "血", note: "⚠️ 頭文字 ц" },
+      { word: "цас", meaning: "雪", note: "⚠️ 母音 а" }
+    ],
+    distinction: "【超重要！母音と文字の区別】\n・ус: 男性母音「у」（口を奥に引いて丸めるウ）＝ 水。\n・үс: 女性母音「ү」（唇を前へ突き出すウ・横棒あり）＝ 髪の毛。\n・цус: 頭に「ц」が付くと「血（血液）」。\n・цас: 母音「а」は「雪」。"
+  },
+  "үс": {
+    target: "үс",
+    targetMeaning: "髪の毛・体毛",
+    similar: [
+      { word: "ус", meaning: "水", note: "⚠️ 女性母音 ү vs 男性母音 у" },
+      { word: "ноос", meaning: "羊毛・ウール" }
+    ],
+    distinction: "女性母音「ү」で「髪の毛」。「ус（水）」との母音記号の違いに注意。なお羊などから刈り取った原毛・ウール製品は「ноос」と言います。"
+  },
+  "цус": {
+    target: "цус",
+    targetMeaning: "血・血液",
+    similar: [
+      { word: "ус", meaning: "水" },
+      { word: "цас", meaning: "雪" }
+    ],
+    distinction: "「ус（水）」の前に子音「ц」が付くと「цус（血）」になります。母音が「а」になると「цас（雪）」です。"
+  },
+  "цас": {
+    target: "цас",
+    targetMeaning: "雪",
+    similar: [
+      { word: "цус", meaning: "血" },
+      { word: "бороо", meaning: "雨" },
+      { word: "мөндөр", meaning: "雹（ひょう）" }
+    ],
+    distinction: "「цас」は降雪・積雪。「бороо」は液体の雨、「мөндөр」は氷の粒（雹・あられ）。"
+  },
+  "гар": {
+    target: "гар",
+    targetMeaning: "手・腕",
+    similar: [
+      { word: "гарах", meaning: "出る・登る", note: "⚠️ 名詞 vs 動詞" },
+      { word: "хөл", meaning: "足・脚" },
+      { word: "хуруу", meaning: "指" }
+    ],
+    distinction: "「гар」は手・腕全体（名詞）。動詞語尾「-х」が付いた「гарах」は部屋や外へ「出る」動作。脚・足は「хөл」、手足の指は「хуруу」です。"
+  },
+  "гарах": {
+    target: "гарах",
+    targetMeaning: "出る・登る・出発する",
+    similar: [
+      { word: "гар", meaning: "手・腕（名詞）" },
+      { word: "орох", meaning: "入る・降る（対義語）" }
+    ],
+    distinction: "「гарах」は内から外へ「出る」。対義語は外から中へ「入る（орох）」。名詞「гар（手）」と語幹が同じです。"
+  },
+  "хөл": {
+    target: "хөл",
+    targetMeaning: "足・脚",
+    similar: [
+      { word: "гар", meaning: "手・腕" },
+      { word: "хөлс", meaning: "汗・賃金" }
+    ],
+    distinction: "「хөл」は下半身の足・脚。「хөлс」と末尾に「с」が付くと「汗」または「報酬・家賃」になります。"
+  },
+  "толгой": {
+    target: "толгой",
+    targetMeaning: "頭・頭部",
+    similar: [
+      { word: "тоглоом", meaning: "おもちゃ・ゲーム" },
+      { word: "тоглох", meaning: "遊ぶ" },
+      { word: "нүүр", meaning: "顔" }
+    ],
+    distinction: "頭の部位は「толгой」。似た音の「тоглоом（おもちゃ・遊び）」「тоглох（遊ぶ）」は語根 `тогло-` からの派生語で全く別の単語です。"
+  },
+  "сар": {
+    target: "сар",
+    targetMeaning: "月・カレンダーの月",
+    similar: [
+      { word: "шар", meaning: "黄色", note: "⚠️ с と ш" },
+      { word: "цар", meaning: "大皿・トレイ" }
+    ],
+    distinction: "「сар」は清音サ行で「月（夜空の月 / カレンダーの1ヶ月）」。「шар」はシャ行で「黄色」または「二日酔い」を表します。"
+  },
+
+  // 4. 美しさ・評価・程度
+  "сайхан": {
+    target: "сайхан",
+    targetMeaning: "美しい・素晴らしい・心地よい",
+    similar: [
+      { word: "гоё", meaning: "綺麗・おしゃれ・華やか" },
+      { word: "хөөрхөн", meaning: "可愛い・愛らしい" },
+      { word: "сайн", meaning: "良い（good）" }
+    ],
+    distinction: "【美しさの使い分け】\n・сайхан: 内面の優しさや大草原・気候・自然など「穏やかで雄大な心地よい美しさ」（例: сайхан сэтгэл / 優しい心、сайхан өдөр / 良い一日）。\n・гоё: 服装・髪型・装飾品・デザインが「おしゃれで素敵」（例: гоё дээл / 素敵な民族衣装）。\n・хөөрхөн: 赤ちゃんや小動物など「愛くるしくて可愛い」（例: хөөрхөн хүүхэд / かわいい子ども）。"
+  },
+  "гоё": {
+    target: "гоё",
+    targetMeaning: "綺麗・おしゃれ・スタイリッシュ",
+    similar: [
+      { word: "сайхан", meaning: "心地よい美しさ" },
+      { word: "хөөрхөн", meaning: "可愛い" },
+      { word: "цэвэрхэн", meaning: "清潔な・綺麗な" }
+    ],
+    distinction: "「гоё」は視覚的なファッショナブルさ・洗練されたおしゃれさ。「цэвэрхэн」は掃除が行き届いてチリ一つない「清潔さ」を表します。"
+  },
+  "хөөрхөн": {
+    target: "хөөрхөн",
+    targetMeaning: "可愛い・愛らしい",
+    similar: [
+      { word: "сайхан", meaning: "美しい" },
+      { word: "гоё", meaning: "おしゃれ" }
+    ],
+    distinction: "「хөөрхөн」はサイズが小さく、愛嬌がある子犬や子ども、小物に対して使います（大人の内面の美しさには сайхан を使います）。"
+  },
+  "их": {
+    target: "их",
+    targetMeaning: "多い・大きい（量・程度）",
+    similar: [
+      { word: "олон", meaning: "数が多い（個数・人数）" },
+      { word: "маш", meaning: "とても・非常に" },
+      { word: "том", meaning: "サイズ・寸法が大きい" }
+    ],
+    distinction: "【多い・大きいの使い分け】\n・их: 数えられない量や程度が大きい（例: их ажил / 多忙、их баярлалаа / 大変ありがとう）。\n・олон: 数えられる個数・人数が多い（例: олон хүн / たくさんの人、олон ном / 多くの本）。\n・том: 物理的な外形や寸法が大きい（例: том байшин / 大きな家）。\n・маш: 形容詞を修飾する強調副詞（例: маш сайн / とても良い）。"
+  },
+  "олон": {
+    target: "олон",
+    targetMeaning: "数が多い・たくさんの",
+    similar: [
+      { word: "их", meaning: "量・程度が多い" },
+      { word: "цөөхөн", meaning: "数が少ない（対義語）" }
+    ],
+    distinction: "可算名詞（人・動物・本・車など）の個数が多い時は必ず「олон」を使います（× их хүн ではなく ◯ олон хүн）。"
+  },
+  "бага": {
+    target: "бага",
+    targetMeaning: "少ない・小さい・年少の",
+    similar: [
+      { word: "жижиг", meaning: "寸法が小さい" },
+      { word: "цөөхөн", meaning: "数が少ない" },
+      { word: "залуу", meaning: "若い" }
+    ],
+    distinction: "「бага」は量・程度が少ない、または年齢が「幼い・年少」（例: бага нас / 幼少期）。物理的なサイズが小さいのは「жижиг」、個数が少ないのは「цөөхөн」です。"
+  },
+  "жижиг": {
+    target: "жижиг",
+    targetMeaning: "小さい（物理的なサイズ）",
+    similar: [
+      { word: "бага", meaning: "少ない・幼い" },
+      { word: "том", meaning: "大きい（対義語）" }
+    ],
+    distinction: "目に見える物や生き物の外形・寸法が「小型・小さい」時に使います（例: жижиг нохой / 小型犬、жижиг өрөө / 小さい部屋）。"
+  },
+  "цөөхөн": {
+    target: "цөөхөн",
+    targetMeaning: "数が少ない",
+    similar: [
+      { word: "олон", meaning: "数が多い（対義語）" },
+      { word: "бага", meaning: "量が少ない" }
+    ],
+    distinction: "数えられる人や物の数が「ごくわずか・少数」である時に使います（例: цөөхөн хүн / 少人数）。"
+  },
+  "дажгүй": {
+    target: "дажгүй",
+    targetMeaning: "まぁまぁ・悪くない",
+    similar: [
+      { word: "гайхалтай", meaning: "素晴らしい・驚異的" },
+      { word: "мундаг", meaning: "優秀・すごい" },
+      { word: "сайн", meaning: "良い" }
+    ],
+    distinction: "「дажгүй」は「悪くはないよ、及第点だね（Not bad / So-so）」という控えめな肯定表現。「гайхалтай（驚くほど素晴らしい）」や「мундаг（優秀だ）」とはテンションが異なります。"
+  },
+  "гайхалтай": {
+    target: "гайхалтай",
+    targetMeaning: "素晴らしい・驚異的な",
+    similar: [
+      { word: "дажгүй", meaning: "まぁまぁ" },
+      { word: "мундаг", meaning: "優秀・すごい" }
+    ],
+    distinction: "動詞 `гайхах`（驚く）から派生した言葉で、人をアッと言わせるような「目を見張る素晴らしさ（Wonderful / Amazing）」を表します。"
+  },
+  "мундаг": {
+    target: "мундаг",
+    targetMeaning: "優秀な・すごい・腕利き",
+    similar: [
+      { word: "гайхалтай", meaning: "素晴らしい" },
+      { word: "сайн", meaning: "良い" }
+    ],
+    distinction: "人の能力、学力、技術、仕事ぶりが「抜群に優秀で頼もしい（Awesome / Skilled）」時に人を褒める表現です。"
+  },
+  "үнэн": {
+    target: "үнэн",
+    targetMeaning: "真実・本当",
+    similar: [
+      { word: "зөв", meaning: "正しい・適切" },
+      { word: "ёстой", meaning: "当然・〜すべき" }
+    ],
+    distinction: "「үнэн」は嘘偽りのない「事実・真実」。「зөв」は計算や規則、道理に狂いがない「正解・正しい（対義語: буруу / 間違い）」です。"
+  },
+  "зөв": {
+    target: "зөв",
+    targetMeaning: "正しい・右",
+    similar: [
+      { word: "үнэн", meaning: "本当・真実" },
+      { word: "буруу", meaning: "間違い・不正解（対義語）" }
+    ],
+    distinction: "正誤判定の「正解・合っている」、および方位の「右（зөв гар = 右手）」を表します。"
+  },
+
+  // 5. 社会・法・教育・文化
+  "гэмт хэрэг": {
+    target: "гэмт хэрэг",
+    targetMeaning: "犯罪",
+    similar: [
+      { word: "гэмт хэрэг судлал", meaning: "犯罪学" },
+      { word: "гэмт хэрэгтэн", meaning: "犯罪者" },
+      { word: "зөрчил", meaning: "違反・軽微な過失" }
+    ],
+    distinction: "「гэмт хэрэг」は刑事罰の対象となる重い犯罪行為そのもの。「гэмт хэрэг судлал」はその原因や対策を研究する大学の学問。「зөрчил」は交通違反などのルール違反です。"
+  },
+  "гэмт хэрэг судлал": {
+    target: "гэмт хэрэг судлал",
+    targetMeaning: "犯罪学（学問分野）",
+    similar: [
+      { word: "гэмт хэрэг", meaning: "犯罪そのもの" },
+      { word: "хууль зүй", meaning: "法学" }
+    ],
+    distinction: "犯罪現象や犯罪者を研究する学問体系（大学の専攻など）。以前外来語で使われた「криминологи」の純正モンゴル語表記です。"
+  },
+  "хууль": {
+    target: "хууль",
+    targetMeaning: "法律",
+    similar: [
+      { word: "дүрэм", meaning: "規則・ルール" },
+      { word: "журам", meaning: "規約・手順・マナー" }
+    ],
+    distinction: "【法のピラミッド】\n・хууль: 国会で制定される法的強制力のある最高規範「法律」。\n・дүрэм: 文法規則、交通規則、スポーツの「ルール・規則」。\n・журам: 組織や施設内の具体的な「行動指針・手順・手続き」。"
+  },
+  "дүрэм": {
+    target: "дүрэм",
+    targetMeaning: "規則・ルール",
+    similar: [
+      { word: "хууль", meaning: "法律" },
+      { word: "журам", meaning: "規約・手順" }
+    ],
+    distinction: "「дүрэм」は文法のルール（хэл зүйн дүрэм）や交通ルール（замын хөдөлгөөний дүрэм）など、守るべき約束事を指します。"
+  },
+  "эрх чөлөө": {
+    target: "эрх чөлөө",
+    targetMeaning: "自由（基本的人権）",
+    similar: [
+      { word: "эрх", meaning: "権利・権力" },
+      { word: "чөлөө", meaning: "暇・自由な時間・休暇" }
+    ],
+    distinction: "「эрх（権利）」と「чөлөө（拘束のない空き）」が合わさった近代用語で、市民的・政治的「自由（Freedom / Liberty）」を表します。"
+  },
+  "эрх": {
+    target: "эрх",
+    targetMeaning: "権利・権限",
+    similar: [
+      { word: "эрх чөлөө", meaning: "自由" },
+      { word: "үүрэг", meaning: "義務（対義語）" }
+    ],
+    distinction: "法的に保障された正当な「権利」。対義語は果たすべき「義務（үүрэг）」です。"
+  },
+  "чөлөө": {
+    target: "чөлөө",
+    targetMeaning: "暇・余暇・休暇・自由時間",
+    similar: [
+      { word: "эрх чөлөө", meaning: "自由権" },
+      { word: "зав", meaning: "暇・都合" }
+    ],
+    distinction: "「Би чөлөө авлаа（休暇を取りました）」や「Чөлөөт цаг（自由時間）」のように、スケジュール上の空き時間・休みを指します。"
+  },
+  "сургууль": {
+    target: "сургууль",
+    targetMeaning: "学校",
+    similar: [
+      { word: "багш", meaning: "教師・先生" },
+      { word: "сурагч", meaning: "児童・生徒（小中高）" },
+      { word: "оюутан", meaning: "大学生・大学院生" }
+    ],
+    distinction: "学校で学ぶ人の呼び分け: 小・中・高校生は「сурагч」、大学・高等教育機関の学生は「оюутан」、教える人は「багш」です。"
+  },
+  "багш": {
+    target: "багш",
+    targetMeaning: "教師・先生",
+    similar: [
+      { word: "сурагч", meaning: "生徒" },
+      { word: "оюутан", meaning: "大学生" }
+    ],
+    distinction: "学校の教師だけでなく、師匠・指導者全般に対する尊称としても用いられます。"
+  },
+  "сурагч": {
+    target: "сурагч",
+    targetMeaning: "生徒・児童（小・中・高校）",
+    similar: [
+      { word: "оюутан", meaning: "大学生" },
+      { word: "багш", meaning: "先生" }
+    ],
+    distinction: "初等・中等教育（小中高）で学ぶ生徒のこと。大学に進学すると「оюутан（直訳: 知恵を持つ者）」と呼ばれます。"
+  },
+  "оюутан": {
+    target: "оюутан",
+    targetMeaning: "大学生・高等教育の学徒",
+    similar: [
+      { word: "сурагч", meaning: "小中高の生徒" }
+    ],
+    distinction: "大学（их сургууль）や専門学校に在籍する高等学生を指します。"
+  },
+  "толь бичиг": {
+    target: "толь бичиг",
+    targetMeaning: "辞書・辞典",
+    similar: [
+      { word: "толь", meaning: "鏡" },
+      { word: "ном", meaning: "本" }
+    ],
+    distinction: "「толь（鏡）」＋「бичиг（文字・文書）」＝ 言葉を映し出す鏡 ＝「辞書」。"
+  },
+  "толь": {
+    target: "толь",
+    targetMeaning: "鏡",
+    similar: [
+      { word: "толь бичиг", meaning: "辞書" }
+    ],
+    distinction: "身だしなみをチェックして自分の姿を映す「鏡」のこと。"
+  },
+
+  // 6. 時・暦・代名詞・疑問詞
+  "маргааш": {
+    target: "маргааш",
+    targetMeaning: "明日",
+    similar: [
+      { word: "өнөөдөр", meaning: "今日" },
+      { word: "өчигдөр", meaning: "昨日" },
+      { word: "нөгөөдөр", meaning: "明後日" },
+      { word: "мартсан", meaning: "忘れた", note: "⚠️ 音の類似 (марг- vs март-)" }
+    ],
+    distinction: "【日付の時系列】\nуржигдар（一昨日）→ өчигдөр（昨日）→ өнөөдөр（今日）→ маргааш（明日）→ нөгөөдөр（明後日）。"
+  },
+  "өчигдөр": {
+    target: "өчигдөр",
+    targetMeaning: "昨日",
+    similar: [
+      { word: "өнөөдөр", meaning: "今日" },
+      { word: "маргааш", meaning: "明日" },
+      { word: "уржигдар", meaning: "一昨日" }
+    ],
+    distinction: "今日（өнөөдөр）の1日前（昨日）。2日前は「уржигдар（一昨日）」です。"
+  },
+  "өнөөдөр": {
+    target: "өнөөдөр",
+    targetMeaning: "今日",
+    similar: [
+      { word: "өнөө", meaning: "今の・この" },
+      { word: "маргааш", meaning: "明日" }
+    ],
+    distinction: "「өнөө（今）」＋「өдөр（日）」が結合して定着した言葉です。"
+  },
+  "өглөө": {
+    target: "өглөө",
+    targetMeaning: "朝",
+    similar: [
+      { word: "өдөр", meaning: "昼・日" },
+      { word: "орой", meaning: "夕方・夜" },
+      { word: "шөнө", meaning: "真夜中" }
+    ],
+    distinction: "【1日の時間帯】\nөглөө（朝: 夜明け〜11時頃）→ өдөр（昼: 正午〜夕方）→ орой（夕方・夜: 日暮れ〜21時頃）→ шөнө（深夜: 就寝中）。"
+  },
+  "орой": {
+    target: "орой",
+    targetMeaning: "夕方・夜・頂上",
+    similar: [
+      { word: "өглөө", meaning: "朝" },
+      { word: "өдөр", meaning: "昼" },
+      { word: "шөнө", meaning: "真夜中" }
+    ],
+    distinction: "夕暮れから夜の活動時間帯を指します。挨拶は「Оройн мэнд（こんばんは）」。"
+  },
+  "шөнө": {
+    target: "шөнө",
+    targetMeaning: "真夜中・夜間",
+    similar: [
+      { word: "орой", meaning: "夕方・夜" }
+    ],
+    distinction: "辺りが完全に暗くなり就寝する時間帯。「Сайхан амраарай（おやすみなさい）」とセットで使われます。"
+  },
+  "энэ": {
+    target: "энэ",
+    targetMeaning: "これ・この人（近称）",
+    similar: [
+      { word: "тэр", meaning: "あれ・その人（遠称）" },
+      { word: "эд", meaning: "これら（近称複数）" },
+      { word: "тэд", meaning: "あれら・彼ら（遠称複数）" }
+    ],
+    distinction: "【指示代名詞の整理】\n・энэ: 手元にある単数（これ・この人）。複数形は「эд（これら）」。\n・тэр: 離れた場所にある単数（あれ・その人・彼）。複数形は「тэд（彼ら・あれら）」。"
+  },
+  "тэр": {
+    target: "тэр",
+    targetMeaning: "あれ・その人・彼（遠称）",
+    similar: [
+      { word: "энэ", meaning: "これ（近称）" },
+      { word: "тэд", meaning: "彼ら（複数）" }
+    ],
+    distinction: "話し手から離れた人や物を指します。三人称代名詞「彼・彼女」としても機能します。"
+  },
+  "аль": {
+    target: "аль",
+    targetMeaning: "どちら・どれ（選択）",
+    similar: [
+      { word: "юу", meaning: "何" },
+      { word: "хэн", meaning: "誰" },
+      { word: "ямар", meaning: "どんな" }
+    ],
+    distinction: "限られた複数の候補から「どちら・どれ」と選択する疑問詞（例: Аль нь дээр вэ? / どっちが良い？）。範囲限定のない「何」は「юу」です。"
+  },
+  "юу": {
+    target: "юу",
+    targetMeaning: "何（事物）",
+    similar: [
+      { word: "аль", meaning: "どちら・どれ" },
+      { word: "хэн", meaning: "誰（人物）" }
+    ],
+    distinction: "事物の名前や内容を尋ねる最も基本的な疑問詞（例: Энэ юу вэ? / これは何ですか？）。"
+  },
+
+  // 7. 気候・衣服・生活
+  "халуун": {
+    target: "халуун",
+    targetMeaning: "熱い・暑い",
+    similar: [
+      { word: "дулаан", meaning: "暖かい（ポカポカ）" },
+      { word: "хүйтэн", meaning: "冷たい・寒い" },
+      { word: "сэрүүн", meaning: "涼しい" }
+    ],
+    distinction: "【温度の使い分け】\n・халуун: 猛暑や熱湯など激しい「熱さ・暑さ」（例: халуун цай / 熱いお茶）。\n・дулаан: 春先や室内などの心地よい「温かさ・温暖」。\n・хүйтэн: 冬の極寒や氷水などの「冷たさ・厳寒」。\n・сэрүүн: 秋風などの爽やかで心地よい「涼しさ」。"
+  },
+  "дулаан": {
+    target: "дулаан",
+    targetMeaning: "暖かい・温暖な",
+    similar: [
+      { word: "халуун", meaning: "熱い・暑い" },
+      { word: "хүйтэн", meaning: "寒い" }
+    ],
+    distinction: "過剰な暑さではなく、快適で過ごしやすいポカポカした温もりを表します（例: дулаан өдөр / 暖かい日）。"
+  },
+  "хүйтэн": {
+    target: "хүйтэн",
+    targetMeaning: "冷たい・寒い",
+    similar: [
+      { word: "сэрүүн", meaning: "涼しい" },
+      { word: "халуун", meaning: "熱い（対義語）" }
+    ],
+    distinction: "モンゴルの冬のマイナス数十度や、冷たい水・氷などの厳しい冷たさを指します。"
+  },
+  "сэрүүн": {
+    target: "сэрүүн",
+    targetMeaning: "涼しい・爽やかな",
+    similar: [
+      { word: "хүйтэн", meaning: "寒い・冷たい" },
+      { word: "дулаан", meaning: "暖かい" }
+    ],
+    distinction: "夏の高原や秋の入り口の心地よい涼しさを表します。"
+  },
+  "цамц": {
+    target: "цамц",
+    targetMeaning: "シャツ・ワイシャツ",
+    similar: [
+      { word: "хүрэм", meaning: "ジャケット・上着" },
+      { word: "дээл", meaning: "民族衣装デール" },
+      { word: "пальто", meaning: "オーバーコート" }
+    ],
+    distinction: "「цамц」は肌着の上に直接着るシャツやブラウス。その上に羽織るジャケットは「хүрэм」、伝統衣装は「дээл」です。"
+  },
+  "хүрэм": {
+    target: "хүрэм",
+    targetMeaning: "ジャケット・上着・ジャンパー",
+    similar: [
+      { word: "цамц", meaning: "シャツ" },
+      { word: "дээл", meaning: "デール" }
+    ],
+    distinction: "シャツの上に羽織る防寒用・外出用の上着。以前の外来語「куртка」に代わる純正モンゴル語です。"
+  },
+  "шинэ": {
+    target: "шинэ",
+    targetMeaning: "新しい",
+    similar: [
+      { word: "хуучин", meaning: "古い（物）" },
+      { word: "хөгшин", meaning: "年老いた（人・動物）" }
+    ],
+    distinction: "【「古い」の明確な区別】\n物が古い場合は「хуучин」、人や動物が高齢な場合は「хөгшин」を使い分けます（英語の old car vs old man の違い）。"
+  },
+  "хуучин": {
+    target: "хуучин",
+    targetMeaning: "古い（物・中古）",
+    similar: [
+      { word: "хөгшин", meaning: "老いた（人・動物）" },
+      { word: "шинэ", meaning: "新しい（対義語）" }
+    ],
+    distinction: "建物、車、服、家具など「物」が使い古されている時に使います（人に対して使ってはいけません）。"
+  },
+  "хөгшин": {
+    target: "хөгшин",
+    targetMeaning: "年老いた・高齢の（人・動物）",
+    similar: [
+      { word: "хуучин", meaning: "古い（物）" },
+      { word: "залуу", meaning: "若い（対義語）" }
+    ],
+    distinction: "祖父母や高齢者、年老いた馬や犬など「生き物」に対して使います（物に対して使ってはいけません）。"
+  },
+  "хурдан": {
+    target: "хурдан",
+    targetMeaning: "速い（スピード・足）",
+    similar: [
+      { word: "түргэн", meaning: "敏速な・急ぎの" },
+      { word: "удаан", meaning: "遅い（対義語）" }
+    ],
+    distinction: "「хурдан」は移動速度やスピードが物理的に速いこと（例: хурдан морь / 駿馬）。「түргэн」は対処・行動・処置がすばやいこと（例: түргэн тусламж / 救急車）。"
+  },
+  "удаан": {
+    target: "удаан",
+    targetMeaning: "遅い・時間がかかる",
+    similar: [
+      { word: "хурдан", meaning: "速い（対義語）" }
+    ],
+    distinction: "歩行速度が遅い、または完了までに長い時間がかかる状態を表します。"
+  },
+  "хоол": {
+    target: "хоол",
+    targetMeaning: "料理・食事・ご飯",
+    similar: [
+      { word: "хүнс", meaning: "食材・食料品" },
+      { word: "унд", meaning: "飲み物・お茶" }
+    ],
+    distinction: "「хоол」は調理済みの完成した料理・食事。「хүнс」はスーパーなどで購入する調理前の原材料（肉、野菜、小麦粉など）です。"
+  },
+  "хүнс": {
+    target: "хүнс",
+    targetMeaning: "食料品・食材",
+    similar: [
+      { word: "хоол", meaning: "調理済みの料理" }
+    ],
+    distinction: "調理前の食料原料。スーパーの食料品売り場は「Хүнсний тасаг」と言います。"
+  },
+  "ёстой": {
+    target: "ёстой",
+    targetMeaning: "〜すべき・当然だ",
+    similar: [
+      { word: "хэрэгтэй", meaning: "必要だ（Need）" },
+      { word: "боломжтой", meaning: "可能だ（Can）" },
+      { word: "болохгүй", meaning: "してはいけない（Must not）" }
+    ],
+    distinction: "【助動詞的表現の使い分け】\n・ёстой: 道理・義務として当然「〜すべきだ（Must / Should）」。\n・хэрэгтэй: 目的達成のために「〜する必要がある（Need to）」。\n・боломжтой: 状況が許して「〜することが可能だ（Possible）」。\n・болохгүй: 禁止事項「〜してはならない（Must not）」。"
+  },
+  "хэрэгтэй": {
+    target: "хэрэгтэй",
+    targetMeaning: "必要だ・〜する必要がある",
+    similar: [
+      { word: "ёстой", meaning: "〜すべきだ（義務）" },
+      { word: "хэрэггүй", meaning: "不要だ（対義語）" }
+    ],
+    distinction: "「物」が必要な時（Надад ус хэрэгтэй / 水が必要です）や、動作が必要な時（Би сурах хэрэгтэй / 勉強する必要がある）に使います。"
+  },
+  "тоохгүй": {
+    target: "тоохгүй",
+    targetMeaning: "気にしない・意に介さない",
+    similar: [
+      { word: "тоох", meaning: "気にする・相手にする" },
+      { word: "хамаагүй", meaning: "関係ない・構わない" }
+    ],
+    distinction: "動詞 `тоох`（気にかける）の否定形。他人の悪口やトラブルに対して「気に留めない、へっちゃらだ」とスルーする前向きな心持ちを表します。"
+  },
+  "зүгээр": {
+    target: "зүгээр",
+    targetMeaning: "大丈夫・普通の・ただ",
+    similar: [
+      { word: "зүгээр л", meaning: "ただ〜なだけ" },
+      { word: "сайн", meaning: "良い" }
+    ],
+    distinction: "「Зүгээр ээ（大丈夫ですよ・どういたしまして）」と相手を安心させる返答、または「普通の・無事な」状態を表します。"
+  },
+  "зүгээр л": {
+    target: "зүгээр л",
+    targetMeaning: "ただ〜なだけ・単に",
+    similar: [
+      { word: "зүгээр", meaning: "大丈夫・普通の" },
+      { word: "зөвхөн", meaning: "ただ〜のみ（限定）" }
+    ],
+    distinction: "強調助詞「л」が付いて「他意はなく、ただ〜しているだけ（Just）」というニュアンスになります（例: Би зүгээр л асуусан / ただ聞いてみただけです）。"
+  },
+  "хичээх": {
+    target: "хичээх",
+    targetMeaning: "努力する・頑張る",
+    similar: [
+      { word: "хичээл", meaning: "授業・レッスン" },
+      { word: "оролдох", meaning: "試みる・いじる" }
+    ],
+    distinction: "「хичээх」は一生懸命努力する動詞（決意: Хичээнэ! / 頑張ります！）。名詞「хичээл」は学校の「授業・課」を表します。"
+  }
+};
+
+/**
+ * 似ている単語・使い分け解説HTML生成関数
+ * @param {Object|string} item 単語オブジェクトまたはキリル文字列
+ * @param {string} targetWord 対象の見出し語
+ * @param {Object} options オプション
+ * @returns {string} HTML文字列
+ */
+function getSimilarWordDistinctionHTML(item, targetWord, options = {}) {
+  let rawWord = ((item && (item.dictForm || item.mongolian || item.baseWord)) || targetWord || '').trim();
+  if (!rawWord && typeof item === 'string') rawWord = item.trim();
+  if (!rawWord) return '';
+
+  const cleanWord = rawWord.toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+  const cleanRaw = rawWord.toLowerCase().replace(/[.,!?]/g, '').trim();
+
+  // 1. 静的定義テーブルからのマッチング
+  let data = SIMILAR_WORDS_DISTINCTIONS[cleanRaw] || SIMILAR_WORDS_DISTINCTIONS[cleanWord];
+
+  // 不定詞語尾 -х を除いた語幹等でのフォールバック
+  if (!data && cleanWord.endsWith('х')) {
+    const stem = cleanWord.slice(0, -1);
+    data = SIMILAR_WORDS_DISTINCTIONS[stem];
+  }
+
+  // 2. wordFamilyData.synonyms からの動的フォールバック
+  if (!data && typeof wordFamilyData !== 'undefined' && wordFamilyData && Array.isArray(wordFamilyData.synonyms)) {
+    const foundSynGroup = wordFamilyData.synonyms.find(group => 
+      group.words && group.words.some(w => w.word && w.word.toLowerCase().trim() === cleanRaw)
+    );
+
+    if (foundSynGroup) {
+      const otherWords = foundSynGroup.words.filter(w => w.word.toLowerCase().trim() !== cleanRaw);
+      data = {
+        target: rawWord,
+        targetMeaning: (item && item.japanese) || '',
+        similar: otherWords.map(w => ({ word: w.word, meaning: w.meaning })),
+        distinction: foundSynGroup.nuance || foundSynGroup.explanation || ''
+      };
+    }
+  }
+
+  // 3. 語幹・接辞による近親語または対義語の動的生成
+  if (!data && typeof wordFamilyData !== 'undefined' && wordFamilyData && Array.isArray(wordFamilyData.antonyms)) {
+    const foundAnt = wordFamilyData.antonyms.find(ant => 
+      (ant.wordA && ant.wordA.toLowerCase().trim() === cleanRaw) ||
+      (ant.wordB && ant.wordB.toLowerCase().trim() === cleanRaw)
+    );
+
+    if (foundAnt) {
+      const isA = (foundAnt.wordA.toLowerCase().trim() === cleanRaw);
+      const oppWord = isA ? foundAnt.wordB : foundAnt.wordA;
+      const oppMeaning = isA ? foundAnt.meaningB : foundAnt.meaningA;
+      data = {
+        target: rawWord,
+        targetMeaning: (item && item.japanese) || (isA ? foundAnt.meaningA : foundAnt.meaningB),
+        similar: [{ word: oppWord, meaning: oppMeaning }],
+        distinction: `【対義語（反意語ペア）】\n「${foundAnt.wordA} (${foundAnt.meaningA})」と「${foundAnt.wordB} (${foundAnt.meaningB})」は対になる表現です。セットで覚えると記憶に定着しやすくなります。`
+      };
+    }
+  }
+
+  // 4. キリル文字1文字違い・母音違いの自動検知（データ未定義時のフォールバック）
+  if (!data) {
+    try {
+      let vocabList = [];
+      if (typeof StorageService !== 'undefined' && StorageService.getVocabulary) {
+        vocabList = StorageService.getVocabulary();
+      }
+      if (vocabList.length > 0 && cleanWord.length >= 2) {
+        // 同じ長さで1文字だけ異なる単語を検索
+        for (const v of vocabList) {
+          const vMn = (v.dictForm || v.mongolian || '').toLowerCase().trim();
+          if (vMn && vMn !== cleanWord && Math.abs(vMn.length - cleanWord.length) <= 1) {
+            let diffs = 0;
+            const minLen = Math.min(vMn.length, cleanWord.length);
+            for (let i = 0; i < minLen; i++) {
+              if (vMn[i] !== cleanWord[i]) diffs++;
+            }
+            if (diffs === 1 && minLen >= 2) {
+              data = {
+                target: rawWord,
+                targetMeaning: (item && item.japanese) || '',
+                similar: [{ word: v.dictForm || v.mongolian, meaning: v.japanese }],
+                distinction: `⚠️ 綴り・発音がそっくりな「${v.dictForm || v.mongolian}（意味: ${v.japanese}）」との混同に注意してください。1文字（母音・子音）の違いで意味が大きく変わります。`
+              };
+              break;
+            }
+          }
+        }
+      }
+    } catch (_) {}
+  }
+
+  if (!data) return '';
+
+  const similarBadges = (data.similar || []).map(s => {
+    return `
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/90 dark:bg-slate-800 border border-sky-300 dark:border-sky-700 font-bold text-slate-800 dark:text-slate-100 text-[11px] shadow-2xs">
+        <strong class="cyrillic-text text-sky-800 dark:text-sky-300">${s.word}</strong>
+        ${s.meaning ? `<span class="text-slate-500 dark:text-slate-400 font-normal">（${s.meaning}）</span>` : ''}
+        ${s.note ? `<span class="text-amber-600 dark:text-amber-400 text-[10px] font-black">${s.note}</span>` : ''}
+      </span>
+    `;
+  }).join(' ');
+
+  // 改行をbrタグに整形
+  const formattedDistinction = String(data.distinction || '')
+    .replace(/\n/g, '<br>')
+    .replace(/(【[^】]+】)/g, '<strong class="text-sky-900 dark:text-sky-200 block mt-1 first:mt-0 font-black">$1</strong>')
+    .replace(/(・[^:]+:)/g, '<span class="font-bold text-sky-950 dark:text-sky-100">$1</span>');
+
+  return `
+    <div class="similar-word-card mt-2 p-2.5 sm:p-3 rounded-xl bg-sky-50/90 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/80 text-sky-950 dark:text-sky-100 text-xs space-y-2 shadow-2xs transition-all">
+      <div class="flex items-center justify-between gap-1 font-bold text-sky-900 dark:text-sky-200">
+        <span class="flex items-center gap-1.5">
+          <span class="text-base">⚖️</span>
+          <span class="text-xs font-black tracking-wide">似ている単語との違い・使い分け</span>
+        </span>
+        <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/80 text-sky-800 dark:text-sky-300 font-bold border border-sky-200 dark:border-sky-700 shrink-0">
+          混同注意
+        </span>
+      </div>
+
+      <div class="space-y-1.5">
+        <div class="flex items-start gap-1.5 flex-wrap">
+          <span class="text-slate-500 dark:text-slate-400 font-bold shrink-0 text-[11px] pt-0.5">🔹 比較:</span>
+          <div class="flex flex-wrap gap-1.5 items-center">
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white dark:bg-slate-800 border-2 border-sky-400 dark:border-sky-600 font-extrabold text-sky-900 dark:text-sky-100 cyrillic-text text-xs shadow-2xs">
+              ${data.target || rawWord}
+              ${data.targetMeaning ? `<span class="text-slate-500 dark:text-slate-400 font-normal text-[10px]">（${data.targetMeaning}）</span>` : ''}
+            </span>
+            <span class="text-slate-400 dark:text-slate-500 text-[11px] font-mono font-bold">vs</span>
+            ${similarBadges}
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-white/95 dark:bg-slate-900/80 rounded-lg border border-sky-100 dark:border-sky-900/50 text-[11px] sm:text-xs leading-relaxed text-slate-800 dark:text-slate-200 shadow-2xs">
+          ${formattedDistinction}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+if (typeof window !== 'undefined') {
+  window.SIMILAR_WORDS_DISTINCTIONS = SIMILAR_WORDS_DISTINCTIONS;
+  window.getSimilarWordDistinctionHTML = getSimilarWordDistinctionHTML;
+}
+\n\nfunction renderChoiceExplanationsHTML(choices, options = {}) {
   if (!choices || !Array.isArray(choices) || choices.length === 0) return '';
 
   const expectedAnswer = (options.expectedAnswer || '').toLowerCase().trim();
@@ -1417,6 +2381,7 @@ function renderChoiceExplanationsHTML(choices, options = {}) {
 
         ${etymologyHTML}
         ${mnemonicHTML}
+        ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(wordObj, wordObj.mongolian || mn) : ''}
 
         ${wordObj.exampleMn ? `
           <div class="p-2 bg-white/90 dark:bg-slate-950/80 rounded-lg border border-slate-100 dark:border-slate-800 text-[11px] space-y-0.5">
@@ -1593,6 +2558,9 @@ function renderGrammarExplanationHTML({
 
       <!-- 語呂合わせ・楽しい覚え方カード（動詞・名詞問わず存在すれば必ず表示） -->
       ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(item, correctAnswer) : ''}
+
+      <!-- 似ている単語との違い・使い分けカード（要件準拠） -->
+      ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(item, correctAnswer) : ''}
 
       <!-- 例文表示 -->
       ${exampleMn ? `
@@ -69661,6 +70629,10 @@ class GenreWordMasterComponent {
                     <div class="text-[11px] text-slate-500 dark:text-slate-400">${w.exampleJa || ''}</div>
                   </div>
                 ` : ''}
+
+                ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(w, w.mongolian) : ''}
+                ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(w, w.mongolian) : ''}
+                ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(w, w.mongolian) : ''}
               </div>
             </div>
           `).join('')}
@@ -69915,6 +70887,7 @@ class GenreWordMasterComponent {
                 ${currentQuestion.exampleMn ? `<div><strong>例文:</strong> ${currentQuestion.exampleMn} (${currentQuestion.exampleJa || ''})</div>` : ''}
                 ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(currentQuestion, currentQuestion.mongolian) : ''}
                 ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(currentQuestion, currentQuestion.mongolian) : ''}
+                ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(currentQuestion, currentQuestion.mongolian) : ''}
               </div>
 
               <!-- 選択肢に出た単語の全解説アコーディオン -->
@@ -71624,6 +72597,10 @@ class FlashcardsComponent {
                         💡 ${card.note}
                       </div>
                     ` : ''}
+
+                    ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(card, card.mongolian) : ''}
+                    ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(card, card.mongolian) : ''}
+                    ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(card, card.mongolian) : ''}
 
                     ${card.exampleMn ? `
                       <div class="text-xs pt-1.5 border-t border-emerald-200/60">

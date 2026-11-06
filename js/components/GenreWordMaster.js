@@ -509,6 +509,10 @@ export class GenreWordMasterComponent {
                     <div class="text-[11px] text-slate-500 dark:text-slate-400">${w.exampleJa || ''}</div>
                   </div>
                 ` : ''}
+
+                ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(w, w.mongolian) : ''}
+                ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(w, w.mongolian) : ''}
+                ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(w, w.mongolian) : ''}
               </div>
             </div>
           `).join('')}
@@ -763,6 +767,7 @@ export class GenreWordMasterComponent {
                 ${currentQuestion.exampleMn ? `<div><strong>例文:</strong> ${currentQuestion.exampleMn} (${currentQuestion.exampleJa || ''})</div>` : ''}
                 ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(currentQuestion, currentQuestion.mongolian) : ''}
                 ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(currentQuestion, currentQuestion.mongolian) : ''}
+                ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(currentQuestion, currentQuestion.mongolian) : ''}
               </div>
 
               <!-- 選択肢に出た単語の全解説アコーディオン -->
