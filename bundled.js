@@ -57547,7 +57547,7 @@ class WordFamilyComponent {
             <span class="text-xl">⚡</span>
             <div>
               <div class="text-xs font-black text-amber-950">対義語スピードマッチング</div>
-              <div class="text-[11px] text-amber-800 font-medium">対になる「反対語カード」を2枚タップして消していこう！</div>
+              <div class="text-[11px] text-amber-800 font-medium">対になる「反対語カード」を2枚タップ！正解するとその場で捲れて和訳が出現するよ！</div>
             </div>
           </div>
           <div class="flex items-center gap-2 text-xs">
@@ -57561,14 +57561,24 @@ class WordFamilyComponent {
         <!-- カードグリッド（10枚） -->
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3">
           ${cards.map(card => `
-            <button type="button" class="antonym-card p-3 sm:p-4 rounded-2xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center text-center shadow-xs cursor-pointer min-h-[96px] ${
+            <button type="button" class="antonym-card p-3 sm:p-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center shadow-xs min-h-[96px] ${
               card.isMatched
-                ? 'opacity-0 pointer-events-none scale-75 transition-all duration-500'
+                ? 'bg-emerald-50 border-emerald-400 text-emerald-950 shadow-xs ring-2 ring-emerald-300/60 scale-100 cursor-pointer hover:bg-emerald-100/70'
                 : card.isSelected
-                  ? 'bg-amber-400 border-amber-500 text-slate-950 shadow-md ring-4 ring-amber-300/50 scale-102'
-                  : 'bg-white hover:bg-amber-50/50 border-slate-200 hover:border-amber-400 text-slate-800'
-            }" data-card-id="${card.id}">
-              <span class="text-base sm:text-xl font-black cyrillic-text leading-snug">${card.text}</span>
+                  ? 'bg-amber-400 border-amber-500 text-slate-950 shadow-md ring-4 ring-amber-300/50 scale-102 cursor-pointer'
+                  : 'bg-white hover:bg-amber-50/50 border-slate-200 hover:border-amber-400 text-slate-800 cursor-pointer active:scale-95'
+            }" data-card-id="${card.id}" title="${card.isMatched ? 'タップで音声を再生' : ''}">
+              ${card.isMatched ? `
+                <div class="animate-fadeIn flex flex-col items-center justify-center space-y-1 w-full">
+                  <span class="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-0.5">
+                    <span>✔</span> 成立
+                  </span>
+                  <span class="text-base sm:text-lg font-black cyrillic-text leading-tight text-emerald-950">${card.text}</span>
+                  <span class="text-xs sm:text-sm font-bold text-emerald-700 leading-tight">${card.subText}</span>
+                </div>
+              ` : `
+                <span class="text-base sm:text-xl font-black cyrillic-text leading-snug">${card.text}</span>
+              `}
             </button>
           `).join('')}
         </div>
@@ -57581,7 +57591,13 @@ class WordFamilyComponent {
     if (antonymGame.isCleared) return;
 
     const clickedCard = antonymGame.cards.find(c => c.id === cardId);
-    if (!clickedCard || clickedCard.isMatched) return;
+    if (!clickedCard) return;
+
+    // 既に正解・捲れたカードをタップした時は発音を再生
+    if (clickedCard.isMatched) {
+      SpeechService.speak(clickedCard.text, { rate: 0.9 });
+      return;
+    }
 
     // 音声発音
     SpeechService.speak(clickedCard.text, { rate: 0.9 });
@@ -57629,19 +57645,24 @@ class WordFamilyComponent {
         antonymGame.selectedCardId = null;
 
         if (antonymGame.matchedCount >= antonymGame.totalPairs) {
-          // 全ペアクリア
-          antonymGame.isCleared = true;
-          antonymGame.clearSeconds = Math.round((Date.now() - antonymGame.startTime) / 1000);
-          try {
-      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
-        GamificationService.addXp(35);
-      }
-    } catch (e) {
-      console.warn('GamificationService.addXp error:', e);
-    }
-          SoundEffects.playLevelUp();
+          // 全ペア成立後、最後のカードが捲れた状態を見せてからクリア画面へ移行
+          this.renderMain();
+          setTimeout(() => {
+            antonymGame.isCleared = true;
+            antonymGame.clearSeconds = Math.round((Date.now() - antonymGame.startTime) / 1000);
+            try {
+              if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+                GamificationService.addXp(35);
+              }
+            } catch (e) {
+              console.warn('GamificationService.addXp error:', e);
+            }
+            SoundEffects.playLevelUp();
+            this.renderMain();
+          }, 850);
+        } else {
+          this.renderMain();
         }
-        this.renderMain();
       }, 350);
 
     } else {
