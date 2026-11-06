@@ -485,7 +485,7 @@ export class GenreWordMasterComponent {
 
                 <div class="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-700">
                   <div class="text-sm font-black text-slate-800 dark:text-slate-100">
-                    ${w.japanese}
+                    ${w.japanese}${w.altMongolian ? ` <span class="text-xs font-normal text-slate-500 dark:text-slate-400">(${w.altMongolian})</span>` : ''}
                   </div>
                   <div class="text-[11px] text-slate-400 dark:text-slate-400 font-medium flex items-center justify-between">
                     <span>品詞: ${w.pos || '名詞'}</span>
@@ -500,6 +500,12 @@ export class GenreWordMasterComponent {
                       <span class="text-purple-800 dark:text-purple-300 font-bold">${w.caseGovernment}</span>
                     </div>
                     ${w.caseNote ? `<div class="text-[11px] text-purple-900 dark:text-purple-300 leading-relaxed">${w.caseNote}</div>` : ''}
+                  </div>
+                ` : ''}
+
+                ${w.note ? `
+                  <div class="mt-2 text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 p-2 rounded-xl border border-slate-100 dark:border-slate-700 leading-relaxed">
+                    💡 ${w.note}
                   </div>
                 ` : ''}
 

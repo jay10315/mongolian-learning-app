@@ -1959,7 +1959,7 @@ export class WordGameComponent {
             correctAnswer: correctDisplay,
             type: 'word',
             category: q.category || '単語ゲーム',
-            explanation: `正解: ${q.japanese} (辞書形: ${d.dictForm || q.mongolian}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
+            explanation: `正解: ${q.japanese} (辞書形: ${d.dictForm || q.mongolian}${q.altMongolian ? ` (${q.altMongolian})` : ''}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
           });
         }
       } catch (e) {
@@ -2407,7 +2407,7 @@ export class WordGameComponent {
               correctAnswer: m.correctAnswer,
               type: 'word',
               category: item.category || '単語ゲーム',
-              explanation: `正解: ${item.japanese} (辞書形: ${d.dictForm || item.mongolian}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
+              explanation: `正解: ${item.japanese} (辞書形: ${d.dictForm || item.mongolian}${item.altMongolian ? ` (${item.altMongolian})` : ''}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
             });
           }
         });

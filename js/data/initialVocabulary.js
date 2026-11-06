@@ -485,7 +485,7 @@ export const initialVocabulary = [
   },
   {
     "id": "v_greet_9",
-    "mongolian": "Уучлаарай.",
+    "mongolian": "Уучлаарай",
     "japanese": "すみません、ごめんなさい",
     "pronunciation": "ウーチラアライ",
     "root": "",
@@ -497,7 +497,7 @@ export const initialVocabulary = [
     "note": "уучлах（許す）の丁寧命令形 -аарай。",
     "lesson": 1,
     "isVerb": false,
-    "dictForm": "Уучлаарай.",
+    "dictForm": "Уучлаарай",
     "derivation": "見出し語「Уучлаарай.」",
     "mnemonic": "お茶（ууча）をこぼして【すみません（уучлаарай）】！"
   },
@@ -822,14 +822,20 @@ export const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "Зурагт үзээгүй.",
     "exampleJa": "テレビを見ませんでした。",
-    "note": "зураг（絵・写真）＋ т（を持つ）。",
+    "note": "物・場所 (別称: телевизор)",
     "lesson": 2,
     "isVerb": false,
     "dictForm": "зурагт",
-    "derivation": "見出し語「зурагт」",
+    "derivation": "зураг（絵・写真）＋ т（を持つもの）＝ 【テレビ】 (※ロシア語借用語: телевизор とも呼ばれます)",
     "genreId": "appliances",
     "genreName": "日用品・家電・家具",
-    "mnemonic": "絵（зураг）が動く箱（-т）＝「テレビ」！"
+    "mnemonic": "絵（зураг）が動く箱（-т）＝「テレビ」！",
+    "altMongolian": "телевизор",
+    "acceptableAnswers": [
+      "зурагт",
+      "телевизор"
+    ],
+    "explanation": "テレビ (別表現: телевизор)"
   },
   {
     "id": "v_2_11",
@@ -4989,7 +4995,7 @@ export const initialVocabulary = [
   },
   {
     "id": "v_gen_180",
-    "mongolian": "зураг авхуул(ах)",
+    "mongolian": "зураг авахуулах",
     "japanese": "写真を撮ってもらう",
     "pronunciation": "ズラグ アフーフーラハ",
     "root": "авхуул",
@@ -5000,7 +5006,7 @@ export const initialVocabulary = [
     "exampleJa": "写真を撮ってもらう。",
     "note": "品詞: 動詞句",
     "isVerb": true,
-    "dictForm": "зураг авхуулах",
+    "dictForm": "зураг авахуулах",
     "derivation": "動詞句「зураг авхуулах」の主要動詞「авхуулах」の語幹「авхуул」に語尾が接続します。動詞句全体の語幹形は「авхуул」です（男性母音語）。"
   },
   {
@@ -5398,7 +5404,7 @@ export const initialVocabulary = [
   },
   {
     "id": "v_gen_206",
-    "mongolian": "кинотеатр",
+    "mongolian": "кино театр",
     "japanese": "映画館",
     "pronunciation": "キノテアトル",
     "root": "",
@@ -5409,7 +5415,7 @@ export const initialVocabulary = [
     "exampleJa": "映画館。",
     "note": "品詞: 名詞",
     "isVerb": false,
-    "dictForm": "кинотеатр",
+    "dictForm": "кино театр",
     "derivation": "見出し語「кинотеатр」"
   },
   {
@@ -6829,7 +6835,7 @@ export const initialVocabulary = [
   },
   {
     "id": "v_gen_305",
-    "mongolian": "пиво(н)",
+    "mongolian": "шар айраг",
     "japanese": "ビール",
     "pronunciation": "ピウォ",
     "root": "",
@@ -6838,10 +6844,17 @@ export const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "пиво(н).",
     "exampleJa": "ビール。",
-    "note": "品詞: 名詞",
+    "note": "品詞: 名詞 (別称: пиво)",
     "isVerb": false,
-    "dictForm": "пиво",
-    "derivation": "基本形は「пиво」です。属格（-ны）や造格（-аар）などの格変化時に隠れ-нが現れます。"
+    "dictForm": "шар айраг",
+    "derivation": "「шар（黄色）」 ＋ 「айраг（酒）」 ＝ 【ビール】 (※ロシア語借用語: пиво とも呼ばれます)",
+    "altMongolian": "пиво",
+    "acceptableAnswers": [
+      "шар айраг",
+      "пиво",
+      "пиво(н)"
+    ],
+    "explanation": "ビール (別表現: пиво)"
   },
   {
     "id": "v_gen_306",
@@ -8128,7 +8141,7 @@ export const initialVocabulary = [
   },
   {
     "id": "v_gen_393",
-    "mongolian": "улаан лооль, помидор",
+    "mongolian": "улаан лооль",
     "japanese": "トマト",
     "pronunciation": "オラーン ロール / ポミドル",
     "root": "",
@@ -8137,11 +8150,17 @@ export const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "улаан лооль, помидор.",
     "exampleJa": "トマト。",
-    "note": "品詞: 名詞",
+    "note": "飲食・野菜 (別称: помидор)",
     "isVerb": false,
-    "dictForm": "улаан лооль, помидор",
-    "derivation": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】",
-    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】"
+    "dictForm": "улаан лооль",
+    "derivation": "「улаан（赤）」 ＋ 「лооль（実）」 ＝ 【トマト】 (※ロシア語借用語: помидор とも呼ばれます)",
+    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】",
+    "altMongolian": "помидор",
+    "acceptableAnswers": [
+      "улаан лооль",
+      "помидор"
+    ],
+    "explanation": "トマト (別表現: помидор)"
   },
   {
     "id": "v_gen_394",
@@ -10425,13 +10444,20 @@ export const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "шар айраг.",
     "exampleJa": "ビール。",
-    "note": "品詞: 名詞句",
+    "note": "飲食・お酒 (別称: пиво)",
     "isVerb": false,
     "dictForm": "шар айраг",
-    "derivation": "「шар」 ＋ 「айраг」 ＝ 【ビール】",
+    "derivation": "「шар（黄色）」 ＋ 「айраг（酒）」 ＝ 【ビール】 (※ロシア語借用語: пиво とも呼ばれます)",
     "genreId": "dining",
     "genreName": "食べ物・レストラン",
-    "etymologyBreakdown": "「шар」 ＋ 「айраг」 ＝ 【ビール】"
+    "etymologyBreakdown": "「шар」 ＋ 「айраг」 ＝ 【ビール】",
+    "altMongolian": "пиво",
+    "acceptableAnswers": [
+      "шар айраг",
+      "пиво",
+      "пиво(н)"
+    ],
+    "explanation": "ビール (別表現: пиво)"
   },
   {
     "id": "v_gen_546",
@@ -14435,7 +14461,7 @@ export const initialVocabulary = [
   },
   {
     "id": "v_note_126",
-    "mongolian": "хэн нэг",
+    "mongolian": "хэн нэгэн",
     "japanese": "誰か、ある人",
     "pronunciation": "ヘン ネグ",
     "root": "хэн",
@@ -14447,7 +14473,7 @@ export const initialVocabulary = [
     "note": "хэн нэгэн",
     "lesson": 1,
     "isVerb": false,
-    "dictForm": "хэн нэг",
+    "dictForm": "хэн нэгэн",
     "derivation": "хэн нэгэн"
   },
   {
@@ -15219,25 +15245,6 @@ export const initialVocabulary = [
     "isVerb": false,
     "dictForm": "хоч нэр",
     "derivation": "хоч（あだ名）＋ нэр（名前）"
-  },
-  {
-    "id": "v_note_172",
-    "mongolian": "помидор",
-    "japanese": "トマト（ロシア語借用語）",
-    "pronunciation": "ポミドル",
-    "root": "помидор",
-    "pos": "名詞",
-    "category": "食事",
-    "priority": "★★",
-    "exampleMn": "Улаан лоолийг помидор гэж бас нэрлэдэг.",
-    "exampleJa": "トマトはポミドールとも呼ばれます。",
-    "note": "улаан лооль のロシア語日常口語",
-    "lesson": 1,
-    "isVerb": false,
-    "dictForm": "помидор",
-    "derivation": "улаан лооль のロシア語日常口語",
-    "genreId": "produce",
-    "genreName": "果物・野菜"
   },
   {
     "id": "v_genre_801",
@@ -17164,10 +17171,10 @@ export const initialVocabulary = [
   },
   {
     "id": "v_genre_906",
-    "mongolian": "пиво",
+    "mongolian": "шар айраг",
     "japanese": "ビール",
     "pronunciation": "ピーヴォ",
-    "root": "пиво",
+    "root": "шар айраг",
     "pos": "名詞",
     "category": "食べ物・レストラン",
     "genreId": "dining",
@@ -17175,10 +17182,17 @@ export const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Пиво уух.",
     "exampleJa": "ビールを飲む。",
-    "note": "ジャンル: 食べ物・レストラン",
+    "note": "ジャンル: 食べ物・レストラン (別称: пиво)",
     "isVerb": false,
-    "dictForm": "пиво",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "dictForm": "шар айраг",
+    "derivation": "「шар（黄色）」 ＋ 「айраг（酒）」 ＝ 【ビール】 (※ロシア語借用語: пиво とも呼ばれます)",
+    "altMongolian": "пиво",
+    "acceptableAnswers": [
+      "шар айраг",
+      "пиво",
+      "пиво(н)"
+    ],
+    "explanation": "ビール (別表現: пиво)"
   },
   {
     "id": "v_genre_907",
@@ -17193,28 +17207,16 @@ export const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Улаан дарс.",
     "exampleJa": "赤ワイン。",
-    "note": "ジャンル: 食べ物・レストラン",
+    "note": "ジャンル: 食べ物・レストラン (別称: вино)",
     "isVerb": false,
     "dictForm": "дарс",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_908",
-    "mongolian": "вино",
-    "japanese": "ワイン",
-    "pronunciation": "ヴィーノ",
-    "root": "вино",
-    "pos": "名詞",
-    "category": "食べ物・レストラン",
-    "genreId": "dining",
-    "genreName": "食べ物・レストラン",
-    "priority": "★★★",
-    "exampleMn": "Франц вино.",
-    "exampleJa": "フランスワイン。",
-    "note": "ジャンル: 食べ物・レストラン",
-    "isVerb": false,
-    "dictForm": "вино",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "derivation": "モンゴル語固有語: 【дарс】 (※ロシア語借用語: вино とも呼ばれます)",
+    "altMongolian": "вино",
+    "acceptableAnswers": [
+      "дарс",
+      "вино"
+    ],
+    "explanation": "ワイン (別表現: вино)"
   },
   {
     "id": "v_genre_909",
@@ -17347,10 +17349,10 @@ export const initialVocabulary = [
   },
   {
     "id": "v_genre_916",
-    "mongolian": "телевизор",
+    "mongolian": "зурагт",
     "japanese": "テレビ",
     "pronunciation": "テレビーゾル",
-    "root": "телевизор",
+    "root": "зурагт",
     "pos": "名詞",
     "category": "日用品・家電・家具",
     "genreId": "appliances",
@@ -17358,10 +17360,16 @@ export const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Шинэ телевизор авах.",
     "exampleJa": "新しいテレビを買う。",
-    "note": "ジャンル: 日用品・家電・家具",
+    "note": "ジャンル: 日用品・家電・家具 (別称: телевизор)",
     "isVerb": false,
-    "dictForm": "телевизор",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "dictForm": "зурагт",
+    "derivation": "モンゴル固有語: 【зурагт】 (※ロシア語借用語: телевизор とも呼ばれます)",
+    "altMongolian": "телевизор",
+    "acceptableAnswers": [
+      "зурагт",
+      "телевизор"
+    ],
+    "explanation": "テレビ (別表現: телевизор)"
   },
   {
     "id": "v_genre_917",
@@ -17469,28 +17477,16 @@ export const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Зөөлөн буйдан дээр суух.",
     "exampleJa": "柔らかいソファーに座る。",
-    "note": "ジャンル: 日用品・家電・家具",
+    "note": "ジャンル: 日用品・家電・家具 (別称: диван)",
     "isVerb": false,
     "dictForm": "буйдан",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_923",
-    "mongolian": "диван",
-    "japanese": "ソファー",
-    "pronunciation": "ディヴァーン",
-    "root": "диван",
-    "pos": "名詞",
-    "category": "日用品・家電・家具",
-    "genreId": "appliances",
-    "genreName": "日用品・家電・家具",
-    "priority": "★★★",
-    "exampleMn": "Диван дээр амрах.",
-    "exampleJa": "ソファーで休む。",
-    "note": "ジャンル: 日用品・家電・家具",
-    "isVerb": false,
-    "dictForm": "диван",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "モンゴル語固有語: 【буйдан】 (※ロシア語借用語: диван とも呼ばれます)",
+    "altMongolian": "диван",
+    "acceptableAnswers": [
+      "буйдан",
+      "диван"
+    ],
+    "explanation": "ソファー (別表現: диван)"
   },
   {
     "id": "v_genre_924",
@@ -18080,28 +18076,17 @@ export const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Гадил идэх.",
     "exampleJa": "バナナを食べる。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: банана)",
     "isVerb": false,
     "dictForm": "гадил",
-    "derivation": "【果物・野菜】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_956",
-    "mongolian": "банана",
-    "japanese": "バナナ",
-    "pronunciation": "バナーナ",
-    "root": "банана",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Шар банана.",
-    "exampleJa": "黄色いバナナ。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "банана",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "モンゴル教科書・標準表記: 【гадил】 (※外来語: банана とも呼ばれます)",
+    "altMongolian": "банана",
+    "acceptableAnswers": [
+      "гадил",
+      "банана",
+      "гадил жимс"
+    ],
+    "explanation": "バナナ (別表現: банана)"
   },
   {
     "id": "v_genre_957",
@@ -18134,29 +18119,16 @@ export const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Зуны амтат тарвас.",
     "exampleJa": "夏の甘いスイカ。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: ший гуа)",
     "isVerb": false,
     "dictForm": "тарвас",
-    "derivation": "【果物・野菜】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_959",
-    "mongolian": "ший гуа",
-    "japanese": "スイカ",
-    "pronunciation": "シー グア",
-    "root": "ший",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Ший гуа хуваах.",
-    "exampleJa": "スイカを切り分ける。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "ший гуа",
-    "derivation": "「ший」 ＋ 「гуа」 ＝ 【スイカ】",
-    "etymologyBreakdown": "「ший」 ＋ 「гуа」 ＝ 【スイカ】"
+    "derivation": "モンゴル標準語: 【тарвас】 (※中国語由来: ший гуа とも呼ばれます)",
+    "altMongolian": "ший гуа",
+    "acceptableAnswers": [
+      "тарвас",
+      "ший гуа"
+    ],
+    "explanation": "スイカ (別表現: ший гуа)"
   },
   {
     "id": "v_genre_960",
@@ -18244,29 +18216,17 @@ export const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Хан боргоцой зүсэх.",
     "exampleJa": "パイナップルを切る。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: ананас)",
     "isVerb": false,
     "dictForm": "хан боргоцой",
-    "derivation": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】",
-    "etymologyBreakdown": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】"
-  },
-  {
-    "id": "v_genre_965",
-    "mongolian": "ананас",
-    "japanese": "パイナップル",
-    "pronunciation": "アナナス",
-    "root": "ананас",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Шинэхэн ананас.",
-    "exampleJa": "新鮮なパイナップル。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "ананас",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「хан（王）」 ＋ 「боргоцой（松かさ）」 ＝ 【パイナップル】 (※外来語: ананас とも呼ばれます)",
+    "etymologyBreakdown": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】",
+    "altMongolian": "ананас",
+    "acceptableAnswers": [
+      "хан боргоцой",
+      "ананас"
+    ],
+    "explanation": "パイナップル (別表現: ананас)"
   },
   {
     "id": "v_genre_966",
@@ -18497,29 +18457,17 @@ export const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Шинэхэн өргөст хэмх.",
     "exampleJa": "新鮮なきゅうり。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: огурцы)",
     "isVerb": false,
     "dictForm": "өргөст хэмх",
-    "derivation": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】",
-    "etymologyBreakdown": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】"
-  },
-  {
-    "id": "v_genre_979",
-    "mongolian": "огурцы",
-    "japanese": "きゅうり",
-    "pronunciation": "アグールツィ",
-    "root": "огурцы",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Давсалсан огурцы.",
-    "exampleJa": "きゅうりのピクルス。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "огурцы",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「өргөст（棘のある）」 ＋ 「хэмх（瓜）」 ＝ 【きゅうり】 (※ロシア語借用語: огурцы とも呼ばれます)",
+    "etymologyBreakdown": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】",
+    "altMongolian": "огурцы",
+    "acceptableAnswers": [
+      "өргөст хэмх",
+      "огурцы"
+    ],
+    "explanation": "きゅうり (別表現: огурцы)"
   },
   {
     "id": "v_genre_980",
@@ -18552,11 +18500,17 @@ export const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Улаан лоолийн салат.",
     "exampleJa": "トマトサラダ。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: помидор)",
     "isVerb": false,
     "dictForm": "улаан лооль",
-    "derivation": "「улаан」 ＋ 「лооль」 ＝ 【トマト】",
-    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＝ 【トマト】"
+    "derivation": "「улаан（赤）」 ＋ 「лооль（実）」 ＝ 【トマト】 (※ロシア語借用語: помидор とも呼ばれます)",
+    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＝ 【トマト】",
+    "altMongolian": "помидор",
+    "acceptableAnswers": [
+      "улаан лооль",
+      "помидор"
+    ],
+    "explanation": "トマト (別表現: помидор)"
   },
   {
     "id": "v_genre_982",
@@ -23487,7 +23441,7 @@ export const initialVocabulary = [
   },
   {
     "id": "v_gen_useful_phrases_8",
-    "mongolian": "Мэдээж",
+    "mongolian": "мэдээж",
     "japanese": "もちろん、当然",
     "pronunciation": "メデージ",
     "root": "Мэдээж",
@@ -23498,7 +23452,7 @@ export const initialVocabulary = [
     "exampleJa": "もちろん、一緒に行くよ。",
     "note": "",
     "isVerb": false,
-    "dictForm": "Мэдээж",
+    "dictForm": "мэдээж",
     "derivation": "見出し語「Мэдээж」",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",

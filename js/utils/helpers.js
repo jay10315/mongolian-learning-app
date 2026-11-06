@@ -285,6 +285,97 @@ export function getWordGrammarDetails(item) {
  * - 動詞の語幹を問う場合：語幹のキリル文字が一致しているか判定（ハイフン-の有無は不問、活用語尾付きは不可）
  * - 名詞等の場合：括弧を除去した形や隠れ-н付きの双方を正解として認識
  */
+// ==========================================
+// モード間統一語彙・別表記（固有語 vs ロシア語借用語等）の相互正解マッピング
+// 「モードによって表示される語彙が違うことがあるから、あっているよく使われる方で統一して。他の単語がある場合は()で解説時に表示して」
+// ==========================================
+export const VOCABULARY_SYNONYMS = {
+  // パイナップル: 固有語・教科書標準語 vs ロシア語借用語
+  'хан боргоцой': ['ананас'],
+  'ананас': ['хан боргоцой'],
+
+  // きゅうり: 固有語 vs ロシア語借用語
+  'өргөст хэмх': ['огурцы', 'огурци'],
+  'огурцы': ['өргөст хэмх'],
+
+  // トマト: 固有語 vs ロシア語借用語
+  'улаан лооль': ['помидор'],
+  'помидор': ['улаан лооль'],
+
+  // スイカ: モンゴル標準語 vs 中国語借用語
+  'тарвас': ['ший гуа', 'шийгуа'],
+  'ший гуа': ['тарвас'],
+
+  // バナナ: モンゴル標準・公式教科書語 vs 外来語
+  'гадил': ['банана', 'гадил жимс'],
+  'банана': ['гадил', 'гадил жимс'],
+
+  // ソファー: モンゴル語固有語 vs ロシア語借用語
+  'буйдан': ['диван'],
+  'диван': ['буйдан'],
+
+  // テレビ: モンゴル語固有語 vs ロシア語借用語
+  'зурагт': ['телевизор'],
+  'телевизор': ['зурагт'],
+
+  // ビール: モンゴル語固有語 vs ロシア語借用語
+  'шар айраг': ['пиво', 'пиво(н)'],
+  'пиво': ['шар айраг'],
+  'пиво(н)': ['шар айраг'],
+
+  // ワイン: モンゴル語固有語 vs ロシア語借用語
+  'дарс': ['вино'],
+  'вино': ['дарс'],
+
+  // 映画館
+  'кино театр': ['кинотеатр'],
+  'кинотеатр': ['кино театр'],
+
+  // 誰か
+  'хэн нэгэн': ['хэн нэг'],
+  'хэн нэг': ['хэн нэгэн'],
+
+  // 写真を撮ってもらう
+  'зураг авахуулах': ['зураг авхуул', 'зураг авхуулах'],
+  'зураг авхуул': ['зураг авахуулах']
+};
+
+export function getWordSynonyms(wordOrItem) {
+  if (!wordOrItem) return [];
+  const raw = typeof wordOrItem === 'string' 
+    ? wordOrItem 
+    : (wordOrItem.dictForm || wordOrItem.mongolian || wordOrItem.root || '');
+  const clean = raw.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+  if (!clean) return [];
+
+  const results = [];
+  if (typeof wordOrItem === 'object' && wordOrItem.altMongolian) {
+    results.push(wordOrItem.altMongolian);
+  }
+  if (typeof wordOrItem === 'object' && Array.isArray(wordOrItem.acceptableAnswers)) {
+    for (const ans of wordOrItem.acceptableAnswers) {
+      if (ans.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '') !== clean) {
+        results.push(ans);
+      }
+    }
+  }
+
+  for (const [key, syns] of Object.entries(VOCABULARY_SYNONYMS)) {
+    const kClean = key.replace(/\s+/g, '').toLowerCase();
+    if (kClean === clean) {
+      for (const s of syns) {
+        if (!results.includes(s)) results.push(s);
+      }
+    }
+  }
+  return results;
+}
+
+export function getWordSynonymNote(wordOrItem) {
+  const syns = getWordSynonyms(wordOrItem);
+  return syns.length > 0 ? syns[0] : '';
+}
+
 export function isWordAnswerMatch(userAnswer, item, mode) {
   if (!userAnswer || !item) return false;
   const u = userAnswer.trim().toLowerCase().replace(/[.,!?。、！？\s]/g, '').replace(/[«»"']/g, '');
@@ -362,6 +453,17 @@ export function isWordAnswerMatch(userAnswer, item, mode) {
     if (dClean === 'сайнуу' && (u === 'сайнбайнауу' || u === 'сайнбайна')) return true;
     if (dClean === 'баяртай' && (u === 'дараауулзъя' || u === 'маргаашуулзъя')) return true;
 
+    // 3. モード間統一語彙・別表記（固有語 vs ロシア語借用語等）の相互正解判定
+    //    パイナップル (хан боргоцой / ананас), きゅうり (өргөст хэмх / огурцы),
+    //    トマト (улаан лооль / помидор), スイカ (тарвас / ший гуа),
+    //    バナナ (гадил / банана), ソファー (буйдан / диван),
+    //    テレビ (зурагт / телевизор), ビール (шар айраг / пиво),
+    //    ワイン (дарс / вино) など
+    const knownSynonyms = getWordSynonyms(details.dictForm || item.mongolian || item);
+    for (const syn of knownSynonyms) {
+      const synClean = syn.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+      if (u === synClean) return true;
+    }
     return false;
   }
 
@@ -2475,6 +2577,7 @@ export function renderGrammarExplanationHTML({
   const derivation = (details && details.derivation) ? details.derivation : (item && item.derivation ? item.derivation : '');
   const pron = pronunciation || (item ? item.pronunciation : '');
   const note = item ? item.note : '';
+  const altSynNote = getWordSynonymNote(item || dictForm || correctAnswer);
   const exampleMn = item ? item.exampleMn : '';
   const exampleJa = item ? item.exampleJa : '';
 
@@ -2489,7 +2592,7 @@ export function renderGrammarExplanationHTML({
         <div>
           <div class="flex items-center flex-wrap gap-2">
             <span class="text-slate-500 dark:text-slate-400 font-medium">正解: </span>
-            <span class="font-extrabold text-base sm:text-lg cyrillic-text text-emerald-800 dark:text-emerald-400 correct-answer-text">${correctAnswer}</span>
+            <span class="font-extrabold text-base sm:text-lg cyrillic-text text-emerald-800 dark:text-emerald-400 correct-answer-text">${correctAnswer}${altSynNote ? ` <span class="text-xs text-slate-500 font-normal">(${altSynNote})</span>` : ''}</span>
             ${pron && isPronunciationCautionWord(item || { mongolian: correctAnswer, pronunciation: pron }) ? `<span class="text-amber-700 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800 px-2 py-0.5 rounded-md text-xs font-bold border border-amber-200 ml-1">⚠️ 読み注意: ${pron}</span>` : ''}
           </div>
           ${meaning ? `<div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${meaning}</div>` : ''}

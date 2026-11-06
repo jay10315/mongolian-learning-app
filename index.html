@@ -988,6 +988,97 @@ function getWordGrammarDetails(item) {
  * - 動詞の語幹を問う場合：語幹のキリル文字が一致しているか判定（ハイフン-の有無は不問、活用語尾付きは不可）
  * - 名詞等の場合：括弧を除去した形や隠れ-н付きの双方を正解として認識
  */
+// ==========================================
+// モード間統一語彙・別表記（固有語 vs ロシア語借用語等）の相互正解マッピング
+// 「モードによって表示される語彙が違うことがあるから、あっているよく使われる方で統一して。他の単語がある場合は()で解説時に表示して」
+// ==========================================
+const VOCABULARY_SYNONYMS = {
+  // パイナップル: 固有語・教科書標準語 vs ロシア語借用語
+  'хан боргоцой': ['ананас'],
+  'ананас': ['хан боргоцой'],
+
+  // きゅうり: 固有語 vs ロシア語借用語
+  'өргөст хэмх': ['огурцы', 'огурци'],
+  'огурцы': ['өргөст хэмх'],
+
+  // トマト: 固有語 vs ロシア語借用語
+  'улаан лооль': ['помидор'],
+  'помидор': ['улаан лооль'],
+
+  // スイカ: モンゴル標準語 vs 中国語借用語
+  'тарвас': ['ший гуа', 'шийгуа'],
+  'ший гуа': ['тарвас'],
+
+  // バナナ: モンゴル標準・公式教科書語 vs 外来語
+  'гадил': ['банана', 'гадил жимс'],
+  'банана': ['гадил', 'гадил жимс'],
+
+  // ソファー: モンゴル語固有語 vs ロシア語借用語
+  'буйдан': ['диван'],
+  'диван': ['буйдан'],
+
+  // テレビ: モンゴル語固有語 vs ロシア語借用語
+  'зурагт': ['телевизор'],
+  'телевизор': ['зурагт'],
+
+  // ビール: モンゴル語固有語 vs ロシア語借用語
+  'шар айраг': ['пиво', 'пиво(н)'],
+  'пиво': ['шар айраг'],
+  'пиво(н)': ['шар айраг'],
+
+  // ワイン: モンゴル語固有語 vs ロシア語借用語
+  'дарс': ['вино'],
+  'вино': ['дарс'],
+
+  // 映画館
+  'кино театр': ['кинотеатр'],
+  'кинотеатр': ['кино театр'],
+
+  // 誰か
+  'хэн нэгэн': ['хэн нэг'],
+  'хэн нэг': ['хэн нэгэн'],
+
+  // 写真を撮ってもらう
+  'зураг авахуулах': ['зураг авхуул', 'зураг авхуулах'],
+  'зураг авхуул': ['зураг авахуулах']
+};
+
+function getWordSynonyms(wordOrItem) {
+  if (!wordOrItem) return [];
+  const raw = typeof wordOrItem === 'string' 
+    ? wordOrItem 
+    : (wordOrItem.dictForm || wordOrItem.mongolian || wordOrItem.root || '');
+  const clean = raw.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+  if (!clean) return [];
+
+  const results = [];
+  if (typeof wordOrItem === 'object' && wordOrItem.altMongolian) {
+    results.push(wordOrItem.altMongolian);
+  }
+  if (typeof wordOrItem === 'object' && Array.isArray(wordOrItem.acceptableAnswers)) {
+    for (const ans of wordOrItem.acceptableAnswers) {
+      if (ans.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '') !== clean) {
+        results.push(ans);
+      }
+    }
+  }
+
+  for (const [key, syns] of Object.entries(VOCABULARY_SYNONYMS)) {
+    const kClean = key.replace(/\s+/g, '').toLowerCase();
+    if (kClean === clean) {
+      for (const s of syns) {
+        if (!results.includes(s)) results.push(s);
+      }
+    }
+  }
+  return results;
+}
+
+function getWordSynonymNote(wordOrItem) {
+  const syns = getWordSynonyms(wordOrItem);
+  return syns.length > 0 ? syns[0] : '';
+}
+
 function isWordAnswerMatch(userAnswer, item, mode) {
   if (!userAnswer || !item) return false;
   const u = userAnswer.trim().toLowerCase().replace(/[.,!?。、！？\s]/g, '').replace(/[«»"']/g, '');
@@ -1065,6 +1156,17 @@ function isWordAnswerMatch(userAnswer, item, mode) {
     if (dClean === 'сайнуу' && (u === 'сайнбайнауу' || u === 'сайнбайна')) return true;
     if (dClean === 'баяртай' && (u === 'дараауулзъя' || u === 'маргаашуулзъя')) return true;
 
+    // 3. モード間統一語彙・別表記（固有語 vs ロシア語借用語等）の相互正解判定
+    //    パイナップル (хан боргоцой / ананас), きゅうり (өргөст хэмх / огурцы),
+    //    トマト (улаан лооль / помидор), スイカ (тарвас / ший гуа),
+    //    バナナ (гадил / банана), ソファー (буйдан / диван),
+    //    テレビ (зурагт / телевизор), ビール (шар айраг / пиво),
+    //    ワイン (дарс / вино) など
+    const knownSynonyms = getWordSynonyms(details.dictForm || item.mongolian || item);
+    for (const syn of knownSynonyms) {
+      const synClean = syn.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+      if (u === synClean) return true;
+    }
     return false;
   }
 
@@ -3178,6 +3280,7 @@ function renderGrammarExplanationHTML({
   const derivation = (details && details.derivation) ? details.derivation : (item && item.derivation ? item.derivation : '');
   const pron = pronunciation || (item ? item.pronunciation : '');
   const note = item ? item.note : '';
+  const altSynNote = getWordSynonymNote(item || dictForm || correctAnswer);
   const exampleMn = item ? item.exampleMn : '';
   const exampleJa = item ? item.exampleJa : '';
 
@@ -3192,7 +3295,7 @@ function renderGrammarExplanationHTML({
         <div>
           <div class="flex items-center flex-wrap gap-2">
             <span class="text-slate-500 dark:text-slate-400 font-medium">正解: </span>
-            <span class="font-extrabold text-base sm:text-lg cyrillic-text text-emerald-800 dark:text-emerald-400 correct-answer-text">${correctAnswer}</span>
+            <span class="font-extrabold text-base sm:text-lg cyrillic-text text-emerald-800 dark:text-emerald-400 correct-answer-text">${correctAnswer}${altSynNote ? ` <span class="text-xs text-slate-500 font-normal">(${altSynNote})</span>` : ''}</span>
             ${pron && isPronunciationCautionWord(item || { mongolian: correctAnswer, pronunciation: pron }) ? `<span class="text-amber-700 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800 px-2 py-0.5 rounded-md text-xs font-bold border border-amber-200 ml-1">⚠️ 読み注意: ${pron}</span>` : ''}
           </div>
           ${meaning ? `<div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${meaning}</div>` : ''}
@@ -4358,7 +4461,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_greet_9",
-    "mongolian": "Уучлаарай.",
+    "mongolian": "Уучлаарай",
     "japanese": "すみません、ごめんなさい",
     "pronunciation": "ウーチラアライ",
     "root": "",
@@ -4370,7 +4473,7 @@ const initialVocabulary = [
     "note": "уучлах（許す）の丁寧命令形 -аарай。",
     "lesson": 1,
     "isVerb": false,
-    "dictForm": "Уучлаарай.",
+    "dictForm": "Уучлаарай",
     "derivation": "見出し語「Уучлаарай.」",
     "mnemonic": "お茶（ууча）をこぼして【すみません（уучлаарай）】！"
   },
@@ -4695,14 +4798,20 @@ const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "Зурагт үзээгүй.",
     "exampleJa": "テレビを見ませんでした。",
-    "note": "зураг（絵・写真）＋ т（を持つ）。",
+    "note": "物・場所 (別称: телевизор)",
     "lesson": 2,
     "isVerb": false,
     "dictForm": "зурагт",
-    "derivation": "見出し語「зурагт」",
+    "derivation": "зураг（絵・写真）＋ т（を持つもの）＝ 【テレビ】 (※ロシア語借用語: телевизор とも呼ばれます)",
     "genreId": "appliances",
     "genreName": "日用品・家電・家具",
-    "mnemonic": "絵（зураг）が動く箱（-т）＝「テレビ」！"
+    "mnemonic": "絵（зураг）が動く箱（-т）＝「テレビ」！",
+    "altMongolian": "телевизор",
+    "acceptableAnswers": [
+      "зурагт",
+      "телевизор"
+    ],
+    "explanation": "テレビ (別表現: телевизор)"
   },
   {
     "id": "v_2_11",
@@ -8862,7 +8971,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_gen_180",
-    "mongolian": "зураг авхуул(ах)",
+    "mongolian": "зураг авахуулах",
     "japanese": "写真を撮ってもらう",
     "pronunciation": "ズラグ アフーフーラハ",
     "root": "авхуул",
@@ -8873,7 +8982,7 @@ const initialVocabulary = [
     "exampleJa": "写真を撮ってもらう。",
     "note": "品詞: 動詞句",
     "isVerb": true,
-    "dictForm": "зураг авхуулах",
+    "dictForm": "зураг авахуулах",
     "derivation": "動詞句「зураг авхуулах」の主要動詞「авхуулах」の語幹「авхуул」に語尾が接続します。動詞句全体の語幹形は「авхуул」です（男性母音語）。"
   },
   {
@@ -9271,7 +9380,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_gen_206",
-    "mongolian": "кинотеатр",
+    "mongolian": "кино театр",
     "japanese": "映画館",
     "pronunciation": "キノテアトル",
     "root": "",
@@ -9282,7 +9391,7 @@ const initialVocabulary = [
     "exampleJa": "映画館。",
     "note": "品詞: 名詞",
     "isVerb": false,
-    "dictForm": "кинотеатр",
+    "dictForm": "кино театр",
     "derivation": "見出し語「кинотеатр」"
   },
   {
@@ -10702,7 +10811,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_gen_305",
-    "mongolian": "пиво(н)",
+    "mongolian": "шар айраг",
     "japanese": "ビール",
     "pronunciation": "ピウォ",
     "root": "",
@@ -10711,10 +10820,17 @@ const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "пиво(н).",
     "exampleJa": "ビール。",
-    "note": "品詞: 名詞",
+    "note": "品詞: 名詞 (別称: пиво)",
     "isVerb": false,
-    "dictForm": "пиво",
-    "derivation": "基本形は「пиво」です。属格（-ны）や造格（-аар）などの格変化時に隠れ-нが現れます。"
+    "dictForm": "шар айраг",
+    "derivation": "「шар（黄色）」 ＋ 「айраг（酒）」 ＝ 【ビール】 (※ロシア語借用語: пиво とも呼ばれます)",
+    "altMongolian": "пиво",
+    "acceptableAnswers": [
+      "шар айраг",
+      "пиво",
+      "пиво(н)"
+    ],
+    "explanation": "ビール (別表現: пиво)"
   },
   {
     "id": "v_gen_306",
@@ -12001,7 +12117,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_gen_393",
-    "mongolian": "улаан лооль, помидор",
+    "mongolian": "улаан лооль",
     "japanese": "トマト",
     "pronunciation": "オラーン ロール / ポミドル",
     "root": "",
@@ -12010,11 +12126,17 @@ const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "улаан лооль, помидор.",
     "exampleJa": "トマト。",
-    "note": "品詞: 名詞",
+    "note": "飲食・野菜 (別称: помидор)",
     "isVerb": false,
-    "dictForm": "улаан лооль, помидор",
-    "derivation": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】",
-    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】"
+    "dictForm": "улаан лооль",
+    "derivation": "「улаан（赤）」 ＋ 「лооль（実）」 ＝ 【トマト】 (※ロシア語借用語: помидор とも呼ばれます)",
+    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＋ 「помидор」 ＝ 【トマト】",
+    "altMongolian": "помидор",
+    "acceptableAnswers": [
+      "улаан лооль",
+      "помидор"
+    ],
+    "explanation": "トマト (別表現: помидор)"
   },
   {
     "id": "v_gen_394",
@@ -14298,13 +14420,20 @@ const initialVocabulary = [
     "priority": "★★",
     "exampleMn": "шар айраг.",
     "exampleJa": "ビール。",
-    "note": "品詞: 名詞句",
+    "note": "飲食・お酒 (別称: пиво)",
     "isVerb": false,
     "dictForm": "шар айраг",
-    "derivation": "「шар」 ＋ 「айраг」 ＝ 【ビール】",
+    "derivation": "「шар（黄色）」 ＋ 「айраг（酒）」 ＝ 【ビール】 (※ロシア語借用語: пиво とも呼ばれます)",
     "genreId": "dining",
     "genreName": "食べ物・レストラン",
-    "etymologyBreakdown": "「шар」 ＋ 「айраг」 ＝ 【ビール】"
+    "etymologyBreakdown": "「шар」 ＋ 「айраг」 ＝ 【ビール】",
+    "altMongolian": "пиво",
+    "acceptableAnswers": [
+      "шар айраг",
+      "пиво",
+      "пиво(н)"
+    ],
+    "explanation": "ビール (別表現: пиво)"
   },
   {
     "id": "v_gen_546",
@@ -18308,7 +18437,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_note_126",
-    "mongolian": "хэн нэг",
+    "mongolian": "хэн нэгэн",
     "japanese": "誰か、ある人",
     "pronunciation": "ヘン ネグ",
     "root": "хэн",
@@ -18320,7 +18449,7 @@ const initialVocabulary = [
     "note": "хэн нэгэн",
     "lesson": 1,
     "isVerb": false,
-    "dictForm": "хэн нэг",
+    "dictForm": "хэн нэгэн",
     "derivation": "хэн нэгэн"
   },
   {
@@ -19092,25 +19221,6 @@ const initialVocabulary = [
     "isVerb": false,
     "dictForm": "хоч нэр",
     "derivation": "хоч（あだ名）＋ нэр（名前）"
-  },
-  {
-    "id": "v_note_172",
-    "mongolian": "помидор",
-    "japanese": "トマト（ロシア語借用語）",
-    "pronunciation": "ポミドル",
-    "root": "помидор",
-    "pos": "名詞",
-    "category": "食事",
-    "priority": "★★",
-    "exampleMn": "Улаан лоолийг помидор гэж бас нэрлэдэг.",
-    "exampleJa": "トマトはポミドールとも呼ばれます。",
-    "note": "улаан лооль のロシア語日常口語",
-    "lesson": 1,
-    "isVerb": false,
-    "dictForm": "помидор",
-    "derivation": "улаан лооль のロシア語日常口語",
-    "genreId": "produce",
-    "genreName": "果物・野菜"
   },
   {
     "id": "v_genre_801",
@@ -21037,10 +21147,10 @@ const initialVocabulary = [
   },
   {
     "id": "v_genre_906",
-    "mongolian": "пиво",
+    "mongolian": "шар айраг",
     "japanese": "ビール",
     "pronunciation": "ピーヴォ",
-    "root": "пиво",
+    "root": "шар айраг",
     "pos": "名詞",
     "category": "食べ物・レストラン",
     "genreId": "dining",
@@ -21048,10 +21158,17 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Пиво уух.",
     "exampleJa": "ビールを飲む。",
-    "note": "ジャンル: 食べ物・レストラン",
+    "note": "ジャンル: 食べ物・レストラン (別称: пиво)",
     "isVerb": false,
-    "dictForm": "пиво",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "dictForm": "шар айраг",
+    "derivation": "「шар（黄色）」 ＋ 「айраг（酒）」 ＝ 【ビール】 (※ロシア語借用語: пиво とも呼ばれます)",
+    "altMongolian": "пиво",
+    "acceptableAnswers": [
+      "шар айраг",
+      "пиво",
+      "пиво(н)"
+    ],
+    "explanation": "ビール (別表現: пиво)"
   },
   {
     "id": "v_genre_907",
@@ -21066,28 +21183,16 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Улаан дарс.",
     "exampleJa": "赤ワイン。",
-    "note": "ジャンル: 食べ物・レストラン",
+    "note": "ジャンル: 食べ物・レストラン (別称: вино)",
     "isVerb": false,
     "dictForm": "дарс",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_908",
-    "mongolian": "вино",
-    "japanese": "ワイン",
-    "pronunciation": "ヴィーノ",
-    "root": "вино",
-    "pos": "名詞",
-    "category": "食べ物・レストラン",
-    "genreId": "dining",
-    "genreName": "食べ物・レストラン",
-    "priority": "★★★",
-    "exampleMn": "Франц вино.",
-    "exampleJa": "フランスワイン。",
-    "note": "ジャンル: 食べ物・レストラン",
-    "isVerb": false,
-    "dictForm": "вино",
-    "derivation": "【食べ物・レストラン】の基本語彙です。"
+    "derivation": "モンゴル語固有語: 【дарс】 (※ロシア語借用語: вино とも呼ばれます)",
+    "altMongolian": "вино",
+    "acceptableAnswers": [
+      "дарс",
+      "вино"
+    ],
+    "explanation": "ワイン (別表現: вино)"
   },
   {
     "id": "v_genre_909",
@@ -21220,10 +21325,10 @@ const initialVocabulary = [
   },
   {
     "id": "v_genre_916",
-    "mongolian": "телевизор",
+    "mongolian": "зурагт",
     "japanese": "テレビ",
     "pronunciation": "テレビーゾル",
-    "root": "телевизор",
+    "root": "зурагт",
     "pos": "名詞",
     "category": "日用品・家電・家具",
     "genreId": "appliances",
@@ -21231,10 +21336,16 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Шинэ телевизор авах.",
     "exampleJa": "新しいテレビを買う。",
-    "note": "ジャンル: 日用品・家電・家具",
+    "note": "ジャンル: 日用品・家電・家具 (別称: телевизор)",
     "isVerb": false,
-    "dictForm": "телевизор",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "dictForm": "зурагт",
+    "derivation": "モンゴル固有語: 【зурагт】 (※ロシア語借用語: телевизор とも呼ばれます)",
+    "altMongolian": "телевизор",
+    "acceptableAnswers": [
+      "зурагт",
+      "телевизор"
+    ],
+    "explanation": "テレビ (別表現: телевизор)"
   },
   {
     "id": "v_genre_917",
@@ -21342,28 +21453,16 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Зөөлөн буйдан дээр суух.",
     "exampleJa": "柔らかいソファーに座る。",
-    "note": "ジャンル: 日用品・家電・家具",
+    "note": "ジャンル: 日用品・家電・家具 (別称: диван)",
     "isVerb": false,
     "dictForm": "буйдан",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_923",
-    "mongolian": "диван",
-    "japanese": "ソファー",
-    "pronunciation": "ディヴァーン",
-    "root": "диван",
-    "pos": "名詞",
-    "category": "日用品・家電・家具",
-    "genreId": "appliances",
-    "genreName": "日用品・家電・家具",
-    "priority": "★★★",
-    "exampleMn": "Диван дээр амрах.",
-    "exampleJa": "ソファーで休む。",
-    "note": "ジャンル: 日用品・家電・家具",
-    "isVerb": false,
-    "dictForm": "диван",
-    "derivation": "【日用品・家電・家具】の基本語彙です。"
+    "derivation": "モンゴル語固有語: 【буйдан】 (※ロシア語借用語: диван とも呼ばれます)",
+    "altMongolian": "диван",
+    "acceptableAnswers": [
+      "буйдан",
+      "диван"
+    ],
+    "explanation": "ソファー (別表現: диван)"
   },
   {
     "id": "v_genre_924",
@@ -21953,28 +22052,17 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Гадил идэх.",
     "exampleJa": "バナナを食べる。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: банана)",
     "isVerb": false,
     "dictForm": "гадил",
-    "derivation": "【果物・野菜】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_956",
-    "mongolian": "банана",
-    "japanese": "バナナ",
-    "pronunciation": "バナーナ",
-    "root": "банана",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Шар банана.",
-    "exampleJa": "黄色いバナナ。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "банана",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "モンゴル教科書・標準表記: 【гадил】 (※外来語: банана とも呼ばれます)",
+    "altMongolian": "банана",
+    "acceptableAnswers": [
+      "гадил",
+      "банана",
+      "гадил жимс"
+    ],
+    "explanation": "バナナ (別表現: банана)"
   },
   {
     "id": "v_genre_957",
@@ -22007,29 +22095,16 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Зуны амтат тарвас.",
     "exampleJa": "夏の甘いスイカ。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: ший гуа)",
     "isVerb": false,
     "dictForm": "тарвас",
-    "derivation": "【果物・野菜】の基本語彙です。"
-  },
-  {
-    "id": "v_genre_959",
-    "mongolian": "ший гуа",
-    "japanese": "スイカ",
-    "pronunciation": "シー グア",
-    "root": "ший",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Ший гуа хуваах.",
-    "exampleJa": "スイカを切り分ける。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "ший гуа",
-    "derivation": "「ший」 ＋ 「гуа」 ＝ 【スイカ】",
-    "etymologyBreakdown": "「ший」 ＋ 「гуа」 ＝ 【スイカ】"
+    "derivation": "モンゴル標準語: 【тарвас】 (※中国語由来: ший гуа とも呼ばれます)",
+    "altMongolian": "ший гуа",
+    "acceptableAnswers": [
+      "тарвас",
+      "ший гуа"
+    ],
+    "explanation": "スイカ (別表現: ший гуа)"
   },
   {
     "id": "v_genre_960",
@@ -22117,29 +22192,17 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Хан боргоцой зүсэх.",
     "exampleJa": "パイナップルを切る。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: ананас)",
     "isVerb": false,
     "dictForm": "хан боргоцой",
-    "derivation": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】",
-    "etymologyBreakdown": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】"
-  },
-  {
-    "id": "v_genre_965",
-    "mongolian": "ананас",
-    "japanese": "パイナップル",
-    "pronunciation": "アナナス",
-    "root": "ананас",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Шинэхэн ананас.",
-    "exampleJa": "新鮮なパイナップル。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "ананас",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「хан（王）」 ＋ 「боргоцой（松かさ）」 ＝ 【パイナップル】 (※外来語: ананас とも呼ばれます)",
+    "etymologyBreakdown": "「хан」 ＋ 「боргоцой」 ＝ 【パイナップル】",
+    "altMongolian": "ананас",
+    "acceptableAnswers": [
+      "хан боргоцой",
+      "ананас"
+    ],
+    "explanation": "パイナップル (別表現: ананас)"
   },
   {
     "id": "v_genre_966",
@@ -22370,29 +22433,17 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Шинэхэн өргөст хэмх.",
     "exampleJa": "新鮮なきゅうり。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: огурцы)",
     "isVerb": false,
     "dictForm": "өргөст хэмх",
-    "derivation": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】",
-    "etymologyBreakdown": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】"
-  },
-  {
-    "id": "v_genre_979",
-    "mongolian": "огурцы",
-    "japanese": "きゅうり",
-    "pronunciation": "アグールツィ",
-    "root": "огурцы",
-    "pos": "名詞",
-    "category": "果物・野菜",
-    "genreId": "produce",
-    "genreName": "果物・野菜",
-    "priority": "★★★",
-    "exampleMn": "Давсалсан огурцы.",
-    "exampleJa": "きゅうりのピクルス。",
-    "note": "ジャンル: 果物・野菜",
-    "isVerb": false,
-    "dictForm": "огурцы",
-    "derivation": "【果物・野菜】の基本語彙です。"
+    "derivation": "「өргөст（棘のある）」 ＋ 「хэмх（瓜）」 ＝ 【きゅうり】 (※ロシア語借用語: огурцы とも呼ばれます)",
+    "etymologyBreakdown": "「өргөст」 ＋ 「хэмх」 ＝ 【きゅうり】",
+    "altMongolian": "огурцы",
+    "acceptableAnswers": [
+      "өргөст хэмх",
+      "огурцы"
+    ],
+    "explanation": "きゅうり (別表現: огурцы)"
   },
   {
     "id": "v_genre_980",
@@ -22425,11 +22476,17 @@ const initialVocabulary = [
     "priority": "★★★",
     "exampleMn": "Улаан лоолийн салат.",
     "exampleJa": "トマトサラダ。",
-    "note": "ジャンル: 果物・野菜",
+    "note": "ジャンル: 果物・野菜 (別称: помидор)",
     "isVerb": false,
     "dictForm": "улаан лооль",
-    "derivation": "「улаан」 ＋ 「лооль」 ＝ 【トマト】",
-    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＝ 【トマト】"
+    "derivation": "「улаан（赤）」 ＋ 「лооль（実）」 ＝ 【トマト】 (※ロシア語借用語: помидор とも呼ばれます)",
+    "etymologyBreakdown": "「улаан」 ＋ 「лооль」 ＝ 【トマト】",
+    "altMongolian": "помидор",
+    "acceptableAnswers": [
+      "улаан лооль",
+      "помидор"
+    ],
+    "explanation": "トマト (別表現: помидор)"
   },
   {
     "id": "v_genre_982",
@@ -27360,7 +27417,7 @@ const initialVocabulary = [
   },
   {
     "id": "v_gen_useful_phrases_8",
-    "mongolian": "Мэдээж",
+    "mongolian": "мэдээж",
     "japanese": "もちろん、当然",
     "pronunciation": "メデージ",
     "root": "Мэдээж",
@@ -27371,7 +27428,7 @@ const initialVocabulary = [
     "exampleJa": "もちろん、一緒に行くよ。",
     "note": "",
     "isVerb": false,
-    "dictForm": "Мэдээж",
+    "dictForm": "мэдээж",
     "derivation": "見出し語「Мэдээж」",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
@@ -48629,6 +48686,18 @@ class SyncService {
 
 
 // === js/services/storage.js ===
+const DEPRECATED_DUPLICATE_ID_MAP = {
+  'v_genre_965': 'v_genre_964', // ананас -> хан боргоцой
+  'v_genre_979': 'v_genre_978', // огурцы -> өргөст хэмх
+  'v_genre_959': 'v_genre_958', // ший гуа -> тарвас
+  'v_genre_956': 'v_genre_955', // банана -> гадил
+  'v_genre_923': 'v_genre_922', // диван -> буйдан
+  'v_genre_916': 'v_2_10',      // телевизор -> зурагт
+  'v_genre_906': 'v_gen_545',   // пиво -> шар айраг
+  'v_genre_908': 'v_genre_907', // вино -> дарс
+  'v_note_172': 'v_genre_981',  // помидор -> улаан лооль
+};
+
 // LocalStorage データ管理・永続化サービス（SRS忘却曲線・クラウド自動同期連携）
 
 
@@ -48732,6 +48801,62 @@ class StorageService {
             let rawQ = (m.question || '').trim();
             let correctAns = (m.correctAnswer || '').trim();
             let explanation = (m.explanation || '').trim();
+
+            // 語彙統一（モードによる語彙不一致・ロシア語借用語等の自動補正）
+            if (rawQ.includes('パイナップル') || correctAns === 'ананас' || explanation.includes('ананас')) {
+              m.correctAnswer = 'хан боргоцой';
+              m.acceptableAnswers = ['хан боргоцой', 'ананас'];
+              m.explanation = '正解: パイナップル (辞書形: хан боргоцой (ананас))';
+              updated = true;
+            }
+            if (rawQ.includes('きゅうり') || correctAns === 'огурцы' || explanation.includes('огурцы')) {
+              m.correctAnswer = 'өргөст хэмх';
+              m.acceptableAnswers = ['өргөст хэмх', 'огурцы'];
+              m.explanation = '正解: きゅうり (辞書形: өргөст хэмх (огурцы))';
+              updated = true;
+            }
+            if (rawQ.includes('トマト') || correctAns === 'помидор' || explanation.includes('помидор')) {
+              m.correctAnswer = 'улаан лооль';
+              m.acceptableAnswers = ['улаан лооль', 'помидор'];
+              m.explanation = '正解: トマト (辞書形: улаан лооль (помидор))';
+              updated = true;
+            }
+            if (rawQ.includes('スイカ') || correctAns === 'ший гуа' || explanation.includes('ший гуа')) {
+              m.correctAnswer = 'тарвас';
+              m.acceptableAnswers = ['тарвас', 'ший гуа'];
+              m.explanation = '正解: スイカ (辞書形: тарвас (ший гуа))';
+              updated = true;
+            }
+            if (rawQ.includes('バナナ') || correctAns === 'банана' || explanation.includes('банана')) {
+              m.correctAnswer = 'гадил';
+              m.acceptableAnswers = ['гадил', 'банана', 'гадил жимс'];
+              m.explanation = '正解: バナナ (辞書形: гадил (банана))';
+              updated = true;
+            }
+            if (rawQ.includes('ソファー') || correctAns === 'диван' || explanation.includes('диван')) {
+              m.correctAnswer = 'буйдан';
+              m.acceptableAnswers = ['буйдан', 'диван'];
+              m.explanation = '正解: ソファー (辞書形: буйдан (диван))';
+              updated = true;
+            }
+            if (rawQ.includes('テレビ') || correctAns === 'телевизор' || explanation.includes('телевизор')) {
+              m.correctAnswer = 'зурагт';
+              m.acceptableAnswers = ['зурагт', 'телевизор'];
+              m.explanation = '正解: テレビ (辞書形: зурагт (телевизор))';
+              updated = true;
+            }
+            if (rawQ.includes('ビール') || correctAns === 'пиво' || explanation.includes('пиво')) {
+              m.correctAnswer = 'шар айраг';
+              m.acceptableAnswers = ['шар айраг', 'пиво', 'пиво(н)'];
+              m.explanation = '正解: ビール (辞書形: шар айраг (пиво))';
+              updated = true;
+            }
+            if (rawQ.includes('ワイン') || correctAns === 'вино' || explanation.includes('вино')) {
+              m.correctAnswer = 'дарс';
+              m.acceptableAnswers = ['дарс', 'вино'];
+              m.explanation = '正解: ワイン (辞書形: дарс (вино))';
+              updated = true;
+            }
 
             const hasParenNoise = rawQ.includes('モンゴル語教科書語彙') || (explanation && explanation.includes('モンゴル語教科書語彙')) || /第\d+課|JICA/.test(rawQ) || /第\d+課|JICA/.test(explanation) || /第\d+課|JICA/.test(m.category || '');
             const hasArrow = /⇄|⇆|↔|<->|->/.test(rawQ);
@@ -48902,6 +49027,24 @@ class StorageService {
       }
     } catch (e) {
       baseList = initialVocabulary;
+    }
+
+    // 語彙統一: 重複・非推奨IDの最新化と重複排除
+    if (Array.isArray(baseList)) {
+      const seen = new Set();
+      baseList = baseList.map(item => {
+        if (item && DEPRECATED_DUPLICATE_ID_MAP[item.id]) {
+          const targetId = DEPRECATED_DUPLICATE_ID_MAP[item.id];
+          const fresh = initialVocabulary.find(v => v.id === targetId);
+          if (fresh) return { ...item, ...fresh };
+        }
+        return item;
+      }).filter(item => {
+        if (!item || !item.id) return false;
+        if (seen.has(item.id)) return false;
+        seen.add(item.id);
+        return true;
+      });
     }
 
     const progressMap = this.getAllWordProgress();
@@ -57338,7 +57481,7 @@ class WordGameComponent {
             correctAnswer: correctDisplay,
             type: 'word',
             category: q.category || '単語ゲーム',
-            explanation: `正解: ${q.japanese} (辞書形: ${d.dictForm || q.mongolian}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
+            explanation: `正解: ${q.japanese} (辞書形: ${d.dictForm || q.mongolian}${q.altMongolian ? ` (${q.altMongolian})` : ''}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
           });
         }
       } catch (e) {
@@ -57786,7 +57929,7 @@ class WordGameComponent {
               correctAnswer: m.correctAnswer,
               type: 'word',
               category: item.category || '単語ゲーム',
-              explanation: `正解: ${item.japanese} (辞書形: ${d.dictForm || item.mongolian}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
+              explanation: `正解: ${item.japanese} (辞書形: ${d.dictForm || item.mongolian}${item.altMongolian ? ` (${item.altMongolian})` : ''}${d.isVerb ? `, 語幹: ${d.root}` : ''})`
             });
           }
         });
@@ -73789,7 +73932,7 @@ class GenreWordMasterComponent {
 
                 <div class="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-700">
                   <div class="text-sm font-black text-slate-800 dark:text-slate-100">
-                    ${w.japanese}
+                    ${w.japanese}${w.altMongolian ? ` <span class="text-xs font-normal text-slate-500 dark:text-slate-400">(${w.altMongolian})</span>` : ''}
                   </div>
                   <div class="text-[11px] text-slate-400 dark:text-slate-400 font-medium flex items-center justify-between">
                     <span>品詞: ${w.pos || '名詞'}</span>
@@ -73804,6 +73947,12 @@ class GenreWordMasterComponent {
                       <span class="text-purple-800 dark:text-purple-300 font-bold">${w.caseGovernment}</span>
                     </div>
                     ${w.caseNote ? `<div class="text-[11px] text-purple-900 dark:text-purple-300 leading-relaxed">${w.caseNote}</div>` : ''}
+                  </div>
+                ` : ''}
+
+                ${w.note ? `
+                  <div class="mt-2 text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 p-2 rounded-xl border border-slate-100 dark:border-slate-700 leading-relaxed">
+                    💡 ${w.note}
                   </div>
                 ` : ''}
 
@@ -76834,7 +76983,7 @@ class ReviewNotebookComponent {
                       <div>
                         <div class="flex items-center gap-1.5 flex-wrap">
                           <span class="text-slate-500 dark:text-slate-400 font-bold">正解: </span>
-                          <span class="font-black text-lg cyrillic-text text-emerald-700 dark:text-emerald-400 correct-answer-text">${item.correctAnswer}</span>
+                          <span class="font-black text-lg cyrillic-text text-emerald-700 dark:text-emerald-400 correct-answer-text">${item.correctAnswer}${((typeof getWordSynonymNote === 'function' && getWordSynonymNote(item.correctAnswer)) ? ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">(${getWordSynonymNote(item.correctAnswer)})</span>` : '')}</span>
                         </div>
                         ${item.japanese ? `<div class="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5">${item.japanese}</div>` : ''}
                       </div>
@@ -76850,11 +76999,17 @@ class ReviewNotebookComponent {
                     ${etymologyHTML}
                     ${mnemonicHTML}
 
-                    ${item.explanation ? `
-                      <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
-                        💡 ${item.explanation}
-                      </div>
-                    ` : ''}
+                    ${(() => {
+                      const syn = (typeof getWordSynonymNote === 'function') ? getWordSynonymNote(item.correctAnswer) : '';
+                      const exp = item.explanation || (item.japanese ? `${item.japanese} (辞書形: ${item.correctAnswer})` : '');
+                      if (!exp) return '';
+                      const displayExp = (syn && !exp.includes(syn)) ? `${exp} (別表現: ${syn})` : exp;
+                      return `
+                        <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
+                          💡 ${displayExp}
+                        </div>
+                      `;
+                    })()}
                   </div>
                 `;
               })()}
@@ -76976,8 +77131,28 @@ class ReviewNotebookComponent {
       if (!isCorrect) {
         isCorrect = isFuzzyMatch(val, item.correctAnswer);
       }
+      if (!isCorrect && item.correctAnswer) {
+        const syns = (typeof getWordSynonyms === 'function') ? getWordSynonyms(item.correctAnswer) : [];
+        const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+        for (const s of syns) {
+          if (uClean === s.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '')) {
+            isCorrect = true;
+            break;
+          }
+        }
+      }
     } else {
       isCorrect = isFuzzyMatch(val, item.correctAnswer);
+      if (!isCorrect && item.correctAnswer) {
+        const syns = (typeof getWordSynonyms === 'function') ? getWordSynonyms(item.correctAnswer) : [];
+        const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+        for (const s of syns) {
+          if (uClean === s.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '')) {
+            isCorrect = true;
+            break;
+          }
+        }
+      }
     }
 
     this.state.hasAnswered = true;

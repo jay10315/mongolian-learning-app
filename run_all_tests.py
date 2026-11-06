@@ -66,7 +66,8 @@ tests = [
     'test_sentence_translation_test.py',
     'test_six_image_issues.py',
     'test_number_word_display.py',
-    'test_reorder_flicker_fix.py'
+    'test_reorder_flicker_fix.py',
+    'test_vocabulary_unification_and_synonyms.py'
 ]
 
 for t in tests:

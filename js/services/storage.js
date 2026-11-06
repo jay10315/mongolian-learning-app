@@ -1,3 +1,15 @@
+const DEPRECATED_DUPLICATE_ID_MAP = {
+  'v_genre_965': 'v_genre_964', // ананас -> хан боргоцой
+  'v_genre_979': 'v_genre_978', // огурцы -> өргөст хэмх
+  'v_genre_959': 'v_genre_958', // ший гуа -> тарвас
+  'v_genre_956': 'v_genre_955', // банана -> гадил
+  'v_genre_923': 'v_genre_922', // диван -> буйдан
+  'v_genre_916': 'v_2_10',      // телевизор -> зурагт
+  'v_genre_906': 'v_gen_545',   // пиво -> шар айраг
+  'v_genre_908': 'v_genre_907', // вино -> дарс
+  'v_note_172': 'v_genre_981',  // помидор -> улаан лооль
+};
+
 // LocalStorage データ管理・永続化サービス（SRS忘却曲線・クラウド自動同期連携）
 import { initialVocabulary } from '../data/initialVocabulary.js';
 import { initialGrammar } from '../data/initialGrammar.js';
@@ -101,6 +113,62 @@ export class StorageService {
             let rawQ = (m.question || '').trim();
             let correctAns = (m.correctAnswer || '').trim();
             let explanation = (m.explanation || '').trim();
+
+            // 語彙統一（モードによる語彙不一致・ロシア語借用語等の自動補正）
+            if (rawQ.includes('パイナップル') || correctAns === 'ананас' || explanation.includes('ананас')) {
+              m.correctAnswer = 'хан боргоцой';
+              m.acceptableAnswers = ['хан боргоцой', 'ананас'];
+              m.explanation = '正解: パイナップル (辞書形: хан боргоцой (ананас))';
+              updated = true;
+            }
+            if (rawQ.includes('きゅうり') || correctAns === 'огурцы' || explanation.includes('огурцы')) {
+              m.correctAnswer = 'өргөст хэмх';
+              m.acceptableAnswers = ['өргөст хэмх', 'огурцы'];
+              m.explanation = '正解: きゅうり (辞書形: өргөст хэмх (огурцы))';
+              updated = true;
+            }
+            if (rawQ.includes('トマト') || correctAns === 'помидор' || explanation.includes('помидор')) {
+              m.correctAnswer = 'улаан лооль';
+              m.acceptableAnswers = ['улаан лооль', 'помидор'];
+              m.explanation = '正解: トマト (辞書形: улаан лооль (помидор))';
+              updated = true;
+            }
+            if (rawQ.includes('スイカ') || correctAns === 'ший гуа' || explanation.includes('ший гуа')) {
+              m.correctAnswer = 'тарвас';
+              m.acceptableAnswers = ['тарвас', 'ший гуа'];
+              m.explanation = '正解: スイカ (辞書形: тарвас (ший гуа))';
+              updated = true;
+            }
+            if (rawQ.includes('バナナ') || correctAns === 'банана' || explanation.includes('банана')) {
+              m.correctAnswer = 'гадил';
+              m.acceptableAnswers = ['гадил', 'банана', 'гадил жимс'];
+              m.explanation = '正解: バナナ (辞書形: гадил (банана))';
+              updated = true;
+            }
+            if (rawQ.includes('ソファー') || correctAns === 'диван' || explanation.includes('диван')) {
+              m.correctAnswer = 'буйдан';
+              m.acceptableAnswers = ['буйдан', 'диван'];
+              m.explanation = '正解: ソファー (辞書形: буйдан (диван))';
+              updated = true;
+            }
+            if (rawQ.includes('テレビ') || correctAns === 'телевизор' || explanation.includes('телевизор')) {
+              m.correctAnswer = 'зурагт';
+              m.acceptableAnswers = ['зурагт', 'телевизор'];
+              m.explanation = '正解: テレビ (辞書形: зурагт (телевизор))';
+              updated = true;
+            }
+            if (rawQ.includes('ビール') || correctAns === 'пиво' || explanation.includes('пиво')) {
+              m.correctAnswer = 'шар айраг';
+              m.acceptableAnswers = ['шар айраг', 'пиво', 'пиво(н)'];
+              m.explanation = '正解: ビール (辞書形: шар айраг (пиво))';
+              updated = true;
+            }
+            if (rawQ.includes('ワイン') || correctAns === 'вино' || explanation.includes('вино')) {
+              m.correctAnswer = 'дарс';
+              m.acceptableAnswers = ['дарс', 'вино'];
+              m.explanation = '正解: ワイン (辞書形: дарс (вино))';
+              updated = true;
+            }
 
             const hasParenNoise = rawQ.includes('モンゴル語教科書語彙') || (explanation && explanation.includes('モンゴル語教科書語彙')) || /第\d+課|JICA/.test(rawQ) || /第\d+課|JICA/.test(explanation) || /第\d+課|JICA/.test(m.category || '');
             const hasArrow = /⇄|⇆|↔|<->|->/.test(rawQ);
@@ -271,6 +339,24 @@ export class StorageService {
       }
     } catch (e) {
       baseList = initialVocabulary;
+    }
+
+    // 語彙統一: 重複・非推奨IDの最新化と重複排除
+    if (Array.isArray(baseList)) {
+      const seen = new Set();
+      baseList = baseList.map(item => {
+        if (item && DEPRECATED_DUPLICATE_ID_MAP[item.id]) {
+          const targetId = DEPRECATED_DUPLICATE_ID_MAP[item.id];
+          const fresh = initialVocabulary.find(v => v.id === targetId);
+          if (fresh) return { ...item, ...fresh };
+        }
+        return item;
+      }).filter(item => {
+        if (!item || !item.id) return false;
+        if (seen.has(item.id)) return false;
+        seen.add(item.id);
+        return true;
+      });
     }
 
     const progressMap = this.getAllWordProgress();

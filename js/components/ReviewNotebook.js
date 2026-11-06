@@ -756,7 +756,7 @@ export class ReviewNotebookComponent {
                       <div>
                         <div class="flex items-center gap-1.5 flex-wrap">
                           <span class="text-slate-500 dark:text-slate-400 font-bold">正解: </span>
-                          <span class="font-black text-lg cyrillic-text text-emerald-700 dark:text-emerald-400 correct-answer-text">${item.correctAnswer}</span>
+                          <span class="font-black text-lg cyrillic-text text-emerald-700 dark:text-emerald-400 correct-answer-text">${item.correctAnswer}${((typeof getWordSynonymNote === 'function' && getWordSynonymNote(item.correctAnswer)) ? ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">(${getWordSynonymNote(item.correctAnswer)})</span>` : '')}</span>
                         </div>
                         ${item.japanese ? `<div class="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5">${item.japanese}</div>` : ''}
                       </div>
@@ -772,11 +772,17 @@ export class ReviewNotebookComponent {
                     ${etymologyHTML}
                     ${mnemonicHTML}
 
-                    ${item.explanation ? `
-                      <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
-                        💡 ${item.explanation}
-                      </div>
-                    ` : ''}
+                    ${(() => {
+                      const syn = (typeof getWordSynonymNote === 'function') ? getWordSynonymNote(item.correctAnswer) : '';
+                      const exp = item.explanation || (item.japanese ? `${item.japanese} (辞書形: ${item.correctAnswer})` : '');
+                      if (!exp) return '';
+                      const displayExp = (syn && !exp.includes(syn)) ? `${exp} (別表現: ${syn})` : exp;
+                      return `
+                        <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
+                          💡 ${displayExp}
+                        </div>
+                      `;
+                    })()}
                   </div>
                 `;
               })()}
@@ -898,8 +904,28 @@ export class ReviewNotebookComponent {
       if (!isCorrect) {
         isCorrect = isFuzzyMatch(val, item.correctAnswer);
       }
+      if (!isCorrect && item.correctAnswer) {
+        const syns = (typeof getWordSynonyms === 'function') ? getWordSynonyms(item.correctAnswer) : [];
+        const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+        for (const s of syns) {
+          if (uClean === s.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '')) {
+            isCorrect = true;
+            break;
+          }
+        }
+      }
     } else {
       isCorrect = isFuzzyMatch(val, item.correctAnswer);
+      if (!isCorrect && item.correctAnswer) {
+        const syns = (typeof getWordSynonyms === 'function') ? getWordSynonyms(item.correctAnswer) : [];
+        const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+        for (const s of syns) {
+          if (uClean === s.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '')) {
+            isCorrect = true;
+            break;
+          }
+        }
+      }
     }
 
     this.state.hasAnswered = true;
