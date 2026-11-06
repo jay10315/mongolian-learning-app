@@ -1954,6 +1954,403 @@ export const initialTypingSentences = [
     }
   }
 }
+,
+{
+  "id": "type_intv_01_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 自己紹介（Өөрийнхөө тухай）",
+  "textMn": "Намайг Кахо гэдэг. Би 22 настай. Би Японоос ирсэн.",
+  "textJa": "私の名前はカホです。22歳です。日本から来ました。",
+  "romaji": "Namaig Kaho gedeg. Bi 22 nastai. Bi Yaponoos irsen.",
+  "explanation": "口頭試験・面接の冒頭で名乗る最重要フレーズ。「Намайг 〜 гэдэг」「22 настай」「Японоос ирсэн」。",
+  "glossary": {
+    "намайг": {
+      "dictForm": "би",
+      "meaning": "私を",
+      "pos": "代名詞対格",
+      "pron": "ナマイグ"
+    },
+    "гэдэг": {
+      "dictForm": "гэх",
+      "meaning": "〜という",
+      "pos": "動詞習慣形",
+      "pron": "ゲデグ"
+    },
+    "настай": {
+      "dictForm": "нас",
+      "meaning": "〜歳の",
+      "pos": "名詞+接尾辞",
+      "pron": "ナスタイ"
+    }
+  }
+},
+{
+  "id": "type_intv_01_2",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 自己紹介（Өөрийнхөө тухай）",
+  "textMn": "Би их сургуульд криминологи сурсан. Нийгмийн асуудлыг сонирхдог.",
+  "textJa": "大学で犯罪学を学びました。社会問題に関心があります。",
+  "romaji": "Bi ikh surguulid kriminologi sursan. Niigmiin asuudlyg sonirkhdog.",
+  "explanation": "専攻分野「криминологи（犯罪学）」と関心「нийгмийн асуудлыг сонирхдог（社会問題に興味がある）」。",
+  "glossary": {
+    "сурсан": {
+      "dictForm": "сурах",
+      "meaning": "学んだ",
+      "pos": "動詞過去形",
+      "pron": "スルサン"
+    },
+    "сонирхдог": {
+      "dictForm": "сонирхох",
+      "meaning": "興味がある",
+      "pos": "動詞習慣形",
+      "pron": "ソニルホドグ"
+    }
+  }
+},
+{
+  "id": "type_intv_02_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 家族（Гэр бүлийнхээ тухай）",
+  "textMn": "Манай гэр бүл таван хүнтэй. Эмээ, аав, ээж, ах, би байдаг.",
+  "textJa": "私の家族は5人です。祖母、父、母、兄、私がいます。",
+  "romaji": "Manai ger bul tavan khuntei. Emee, aav, eej, akh, bi baidag.",
+  "explanation": "家族構成を述べる基本構文。「таван хүнтэй（5人家族）」＋家族メンバー。",
+  "glossary": {
+    "хүнтэй": {
+      "dictForm": "хүн",
+      "meaning": "〜人いる",
+      "pos": "名詞共同格",
+      "pron": "フンテイ"
+    },
+    "эмээ": {
+      "dictForm": "эмээ",
+      "meaning": "祖母",
+      "pos": "名詞",
+      "pron": "エメー"
+    }
+  }
+},
+{
+  "id": "type_intv_02_2",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 家族（Гэр бүлийнхээ тухай）",
+  "textMn": "Миний ах ганцаараа амьдардаг. Би ахтайгаа дотно.",
+  "textJa": "私の兄は一人暮らしをしています。私は兄と仲が良いです。",
+  "romaji": "Minii akh gantsaaraa amidardag. Bi akhtaigaa dotno.",
+  "explanation": "「ганцаараа амьдардаг（一人で暮らしている）」＋「дотно（親しい、仲が良い）」。",
+  "glossary": {
+    "ганцаараа": {
+      "dictForm": "ганцаараа",
+      "meaning": "一人で",
+      "pos": "副詞",
+      "pron": "ガンツァーラー"
+    },
+    "дотно": {
+      "dictForm": "дотно",
+      "meaning": "仲が良い、親密な",
+      "pos": "形容詞",
+      "pron": "ドトノ"
+    }
+  }
+},
+{
+  "id": "type_intv_03_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 故郷（Төрсөн нутгийнхаа тухай）",
+  "textMn": "Сока хот сенбэй гэдэг япон будааны жигнэмгээрээ алдартай.",
+  "textJa": "草加市は「せんべい」という日本の米菓で有名です。",
+  "romaji": "Soka khot senbei gedeg yapon budaany jignemgeeree aldartai.",
+  "explanation": "名物を述べる構文。「жигнэмгээрээ алдартай（お菓子で有名である）」。",
+  "glossary": {
+    "алдартай": {
+      "dictForm": "алдар",
+      "meaning": "有名な",
+      "pos": "形容詞",
+      "pron": "アルダルタイ"
+    }
+  }
+},
+{
+  "id": "type_intv_04_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 訓練所生活（Нихонмацү）",
+  "textMn": "Өдөр бүр өглөө зургаан цаг хагасд босдог. 8 цаг 45 минутад хичээл эхэлдэг.",
+  "textJa": "毎朝6時半に起きます。8時45分に授業が始まります。",
+  "romaji": "Odor bur ogloo zurgaan tsag khagasd bosdog. 8 tsag 45 minutad khicheel ekheldeg.",
+  "explanation": "訓練所の一日の時間割を述べる習慣動詞文。「босдог（起きる）」「эхэлдэг（始まる）」。",
+  "glossary": {
+    "босдог": {
+      "dictForm": "босох",
+      "meaning": "起きる",
+      "pos": "動詞習慣形",
+      "pron": "ボスドグ"
+    },
+    "эхэлдэг": {
+      "dictForm": "эхлэх",
+      "meaning": "始まる",
+      "pos": "動詞習慣形",
+      "pron": "エヘルデグ"
+    }
+  }
+},
+{
+  "id": "type_intv_05_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: モンゴルでの仕事（Хийх ажил）",
+  "textMn": "Би Дорнод аймгийн Чойбалсан хотод ажиллах гэж байна.",
+  "textJa": "私はドルノド県のチョイバルサン市で活動する予定です。",
+  "romaji": "Bi Dornod aimgiin Choibalsan khotod ajillakh gej baina.",
+  "explanation": "配属先と近接未来「-х гэж байна（〜する予定です）」。",
+  "glossary": {
+    "Дорнод": {
+      "dictForm": "Дорнод",
+      "meaning": "ドルノド（東部県）",
+      "pos": "固有名詞",
+      "pron": "ドルノド"
+    },
+    "Чойбалсан": {
+      "dictForm": "Чойбалсан",
+      "meaning": "チョイバルサン（ドルノド県都）",
+      "pos": "固有名詞",
+      "pron": "チョイバルサン"
+    }
+  }
+},
+{
+  "id": "type_intv_05_2",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: モンゴルでの仕事（Хийх ажил）",
+  "textMn": "Миний ажил хүүхэд, залуучуудын хөгжилд туслах юм.",
+  "textJa": "私の仕事は子どもや青少年の成長・発達を支援することです。",
+  "romaji": "Minii ajil khuukhed, zaluuchuudyn khogjild tuslakh yum.",
+  "explanation": "職種（青少年活動）のミッションを述べる表現。「хөгжилд туслах（成長を支援する）」。",
+  "glossary": {
+    "хөгжил": {
+      "dictForm": "хөгжил",
+      "meaning": "成長、発達",
+      "pos": "名詞",
+      "pron": "ホグジル"
+    },
+    "туслах": {
+      "dictForm": "туслах",
+      "meaning": "助ける、支援する",
+      "pos": "動詞形動詞",
+      "pron": "スラホ"
+    }
+  }
+},
+{
+  "id": "type_intv_06_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 休日にしたいこと（Амралтын өдөр）",
+  "textMn": "Би бууз, хуушуур хийж, морь унаж үзмээр байна.",
+  "textJa": "ボーズやホーショールを作り、馬に乗ってみたいです。",
+  "romaji": "Bi buuz, khuushuur khiij, mori unaj uzmeer baina.",
+  "explanation": "休日の願望構文。「морь унаж үзмээр байна（馬に乗ってみたい）」。",
+  "glossary": {
+    "унаж": {
+      "dictForm": "унах",
+      "meaning": "乗って",
+      "pos": "動詞接続形",
+      "pron": "オナジ"
+    },
+    "үзмээр байна": {
+      "dictForm": "үзэх",
+      "meaning": "〜してみたい",
+      "pos": "願望構文",
+      "pron": "ウズメール バイン"
+    }
+  }
+},
+{
+  "id": "type_intv_07_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 協力隊（ЖАЙКА-ийн тухай）",
+  "textMn": "ЖАЙКА 1974 онд байгуулагдсан. 1992 оноос Монголд ажиллаж эхэлсэн.",
+  "textJa": "海外協力隊（ЖАЙКА）は1974年に設立され、1992年からモンゴルで活動を始めました。",
+  "romaji": "JAIKA 1974 ond baiguulagdsan. 1992 onoos Mongold ajillaj ekhelsen.",
+  "explanation": "ЖАЙКА（海外協力隊）の歴史的事実の数値。「1974 онд байгуулагдсан」「1992 оноос эхэлсэн」。",
+  "glossary": {
+    "байгуулагдсан": {
+      "dictForm": "байгуулагдах",
+      "meaning": "設立された",
+      "pos": "動詞受動過去形",
+      "pron": "バイグーラグドサン"
+    }
+  }
+},
+{
+  "id": "type_intv_07_2",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 協力隊（ЖАЙКА-ийн тухай）",
+  "textMn": "2024 оны тавдугаар сарын эцсээр нийт 758 сайн дурын гишүүн Монголд ажиллаж байсан.",
+  "textJa": "2024年5月末時点で累計758人の隊員がモンゴルで活動しました。",
+  "romaji": "2024 ony tavdugaar saryn etsseer niit 758 sain duryn gishuun Mongold ajillaj baisan.",
+  "explanation": "「нийт 758 сайн дурын гишүүн（累計758名のボランティア隊員）」。",
+  "glossary": {
+    "нийт": {
+      "dictForm": "нийт",
+      "meaning": "合計、全体、累計",
+      "pos": "副詞",
+      "pron": "ニート"
+    }
+  }
+},
+{
+  "id": "type_intv_08_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 病院（Эмнэлэгт）",
+  "textMn": "Миний толгой өвдөж байна. Өчигдрөөс эхэлж өвдсөн.",
+  "textJa": "私の頭が痛いです。昨日から痛み始めました。",
+  "romaji": "Minii tolgoi ovdoj baina. Ochigdroos ekhelj ovdson.",
+  "explanation": "病院での症状説明。「өчигдрөөс（昨日から）」＋「өвдөж байна（痛んでいます）」。",
+  "glossary": {
+    "толгой": {
+      "dictForm": "толгой",
+      "meaning": "頭",
+      "pos": "名詞",
+      "pron": "トルゴイ"
+    },
+    "өвдөж": {
+      "dictForm": "өвдөх",
+      "meaning": "痛んで",
+      "pos": "動詞接続形",
+      "pron": "オウドジ"
+    }
+  }
+},
+{
+  "id": "type_intv_09_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: お店で買い物（Дэлгүүрт）",
+  "textMn": "Арай хямдхан зүйл байна уу? За, үүнийг авъя.",
+  "textJa": "もう少し安いものはありますか？ では、これをください。",
+  "romaji": "Arai khyamdkhan zuil baina uu? Za, uuniig avya.",
+  "explanation": "「арай хямдхан（もう少し安い）」＋「үүнийг авъя（これを買います）」。",
+  "glossary": {
+    "хямдхан": {
+      "dictForm": "хямд",
+      "meaning": "安い",
+      "pos": "形容詞",
+      "pron": "ヒャムドハン"
+    },
+    "авъя": {
+      "dictForm": "авах",
+      "meaning": "買おう、ください",
+      "pos": "動詞希求形",
+      "pron": "アウヤ"
+    }
+  }
+},
+{
+  "id": "type_intv_10_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 薬局（Эмийн санд）",
+  "textMn": "Толгойны эм байна уу? Өдөрт гурван удаа хоолны дараа уугаарай.",
+  "textJa": "頭痛薬はありますか？ 1日3回、食後に飲んでください。",
+  "romaji": "Tolgoiny em baina uu? Odort gurvan udaa khoolny daraa uugaarai.",
+  "explanation": "薬局での用法確認。「өдөрт гурван удаа（1日3回）」「хоолны дараа（食後）」。",
+  "glossary": {
+    "өдөрт": {
+      "dictForm": "өдөр",
+      "meaning": "1日に",
+      "pos": "名詞与位格",
+      "pron": "オドルト"
+    },
+    "удаа": {
+      "dictForm": "удаа",
+      "meaning": "回、度",
+      "pos": "名詞",
+      "pron": "オダー"
+    }
+  }
+},
+{
+  "id": "type_intv_11_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: ホテル宿泊（Зочид буудалд）",
+  "textMn": "Сул өрөө байна уу? Нэг хоногт хэдэн төгрөг вэ?",
+  "textJa": "空き部屋はありますか？ 1泊いくらですか？",
+  "romaji": "Sul oroo baina uu? Neg khonogt kheden togrog ve?",
+  "explanation": "ホテルでの空室と料金の確認。「сул өрөө（空き部屋）」「нэг хоногт（1泊で）」。",
+  "glossary": {
+    "сул": {
+      "dictForm": "сул",
+      "meaning": "空いている",
+      "pos": "形容詞",
+      "pron": "スル"
+    },
+    "хоногт": {
+      "dictForm": "хоног",
+      "meaning": "泊に、一昼夜に",
+      "pos": "名詞与位格",
+      "pron": "ホノグト"
+    }
+  }
+},
+{
+  "id": "type_intv_12_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: レストラン注文（Ресторанд）",
+  "textMn": "5 бууз, нэг таваг нийслэл салат авъя. Сүүтэй цай ууна.",
+  "textJa": "ボーズを5個、首都サラダを一皿ください。ミルクティーを飲みます。",
+  "romaji": "5 buuz, neg tavag niislel salat avya. Suutei tsai uuna.",
+  "explanation": "レストランでの注文。「нийслэл салат（ポテトサラダ）」「сүүтэй цай（ミルクティー）」。",
+  "glossary": {
+    "нийслэл": {
+      "dictForm": "нийслэл",
+      "meaning": "首都",
+      "pos": "名詞",
+      "pron": "ニースレル"
+    },
+    "сүүтэй": {
+      "dictForm": "сүү",
+      "meaning": "ミルク入りの",
+      "pos": "名詞共同格",
+      "pron": "スーテイ"
+    }
+  }
+},
+{
+  "id": "type_intv_13_1",
+  "level": "口述試験対策",
+  "category": "interview_prep",
+  "categoryLabel": "口述試験: 切符売り場（Тасалбар авах газар）",
+  "textMn": "Дархан хот хүртэл галт тэрэгний нэг тасалбар авмаар байна.",
+  "textJa": "ダルハン市までの列車切符を1枚買いたいです。",
+  "romaji": "Darkhan khot khurtel galt teregnii neg tasalbar avmaar baina.",
+  "explanation": "窓口での切符購入願望。「хүртэл（〜まで）」＋「галт тэрэгний тасалбар（列車切符）」。",
+  "glossary": {
+    "галт тэрэг": {
+      "dictForm": "галт тэрэг",
+      "meaning": "列車",
+      "pos": "名詞句",
+      "pron": "ガルト テルグ"
+    },
+    "тасалбар": {
+      "dictForm": "тасалбар",
+      "meaning": "切符",
+      "pos": "名詞",
+      "pron": "タサルバル"
+    }
+  }
+}
 ];
 
 export const typingSentences = initialTypingSentences;

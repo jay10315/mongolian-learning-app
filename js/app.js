@@ -27,6 +27,7 @@ import { WordFamilyComponent } from './components/WordFamilyQuiz.js';
 import { PenguinExpeditionComponent } from './components/PenguinExpedition.js';
 import { SpellingGameComponent } from './components/SpellingGame.js';
 import { SuffixRuleDojoComponent } from './components/SuffixRuleDojo.js';
+import { InterviewMasterComponent } from './components/InterviewMaster.js';
 
 class App {
   static currentTab = 'home';
@@ -135,6 +136,9 @@ class App {
         break;
       case 'pronunciation_test':
         PronunciationTestComponent.render(mainContainer, onNavigate);
+        break;
+      case 'interview_prep':
+        InterviewMasterComponent.render(mainContainer, onNavigate);
         break;
       case 'roleplay':
         RoleplayComponent.render(mainContainer, onNavigate);

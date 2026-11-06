@@ -588,6 +588,30 @@ export class HomeComponent {
               </div>
             </div>
 
+            <!-- 最終口述面接・スピーチ特訓（Сүүлийн шалгалт） -->
+            <div class="bg-gradient-to-br from-emerald-600/15 via-teal-500/10 to-cyan-500/15 rounded-xl p-5 border-2 border-emerald-500 hover:border-emerald-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="interview_prep">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🎙️
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
+                    口述試験 ⚡ 全13テーマ
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-emerald-700 transition-colors">
+                  口述試験・スピーチ特訓
+                </h4>
+                <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                  1〜7の4分スピーチ（自己紹介・家族・草加市・二本松・ドルノド・休日・ЖАЙКА）＆ 8〜13の実践対話を「暗記して言えるようにする」特化ドリル！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-emerald-500/20 flex items-center justify-between text-xs font-bold text-emerald-700">
+                <span>特訓を開始</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- 会話ロールプレイ（実践対話モード） -->
             <div class="bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-emerald-500/15 rounded-xl p-5 border-2 border-amber-500 hover:border-amber-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="roleplay">
               <div>

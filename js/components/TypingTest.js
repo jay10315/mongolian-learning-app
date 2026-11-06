@@ -113,6 +113,8 @@ export class TypingTestComponent {
       { id: 'beginner', label: '基本挨拶・自己紹介', icon: '👋', count: allSentences.filter(s => s.category === 'beginner').length },
       { id: 'daily', label: '日常会話・食事', icon: '☕', count: allSentences.filter(s => s.category === 'daily').length },
       { id: 'culture', label: '伝統文化・遊牧・ゲル', icon: '🐎', count: allSentences.filter(s => s.category === 'culture').length },
+      { id: 'interview_prep', label: '口述試験・面接スピーチ', icon: '🎙️', count: allSentences.filter(s => s.category === 'interview_prep').length },
+      { id: 'classroom', label: '教室・挨拶表現', icon: '🏫', count: allSentences.filter(s => s.category === 'classroom' || s.category === 'greetings').length },
       { id: 'proverbs', label: 'ことわざ・名言', icon: '📜', count: allSentences.filter(s => s.category === 'proverbs').length }
     ];
 

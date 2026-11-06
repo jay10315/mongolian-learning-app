@@ -42,7 +42,8 @@ tests = [
     'test_expedition_map_all_aimags.py',
     'test_user_notes_added.py',
     'test_pdf_grammar_supplement.py',
-    'test_textbook_comprehensive_integration.py'
+    'test_textbook_comprehensive_integration.py',
+    'test_interview_master_feature.py'
 ]
 
 for t in tests:
