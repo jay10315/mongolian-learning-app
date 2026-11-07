@@ -1,6 +1,15 @@
 {
-  "verbs_count": 176,
+  "verbs_count": 350,
   "verb_samples": [
+    {
+      "id": "v_2_1",
+      "mongolian": "юу",
+      "dictForm": "юу",
+      "root": "юу",
+      "is_verb": true,
+      "pos": "疑問代名詞",
+      "japanese": "何"
+    },
     {
       "id": "v_2_20",
       "mongolian": "байна",
@@ -16,7 +25,7 @@
       "dictForm": "байхгүй",
       "root": "байхгүй",
       "is_verb": true,
-      "pos": "動詞",
+      "pos": "否定述語",
       "japanese": "ない、いない"
     },
     {
@@ -62,7 +71,7 @@
       "root": "хий",
       "is_verb": true,
       "pos": "動詞",
-      "japanese": "する、作る、入れる"
+      "japanese": "する・行う・作る"
     },
     {
       "id": "v_3_6",
@@ -71,7 +80,7 @@
       "root": "үз",
       "is_verb": true,
       "pos": "動詞",
-      "japanese": "見る、試す"
+      "japanese": "試す・見る"
     },
     {
       "id": "v_3_7",
@@ -216,15 +225,6 @@
       "is_verb": true,
       "pos": "動詞",
       "japanese": "掃除する、綺麗にする"
-    },
-    {
-      "id": "v_10_1",
-      "mongolian": "мэдэх",
-      "dictForm": "мэдэх",
-      "root": "мэд",
-      "is_verb": true,
-      "pos": "動詞",
-      "japanese": "知る、分かる"
     }
   ],
   "non_verb_samples": [
@@ -236,78 +236,6 @@
       "is_verb": false,
       "pos": "名詞",
       "japanese": "紙"
-    },
-    {
-      "id": "v_num_3",
-      "mongolian": "гурав (名詞前: гурван)",
-      "dictForm": "гурав",
-      "root": "",
-      "is_verb": false,
-      "pos": "数詞",
-      "japanese": "3（みっつ）"
-    },
-    {
-      "id": "v_num_4",
-      "mongolian": "дөрөв (名詞前: дөрвөн)",
-      "dictForm": "дөрөв",
-      "root": "",
-      "is_verb": false,
-      "pos": "数詞",
-      "japanese": "4（よっつ）"
-    },
-    {
-      "id": "v_num_5",
-      "mongolian": "тав (名詞前: таван)",
-      "dictForm": "тав",
-      "root": "",
-      "is_verb": false,
-      "pos": "数詞",
-      "japanese": "5（いつつ）"
-    },
-    {
-      "id": "v_num_6",
-      "mongolian": "зургаа (名詞前: зургаан)",
-      "dictForm": "зургаа",
-      "root": "",
-      "is_verb": false,
-      "pos": "数詞",
-      "japanese": "6（むっつ）"
-    },
-    {
-      "id": "v_num_7",
-      "mongolian": "долоо (名詞前: долоон)",
-      "dictForm": "долоо",
-      "root": "",
-      "is_verb": false,
-      "pos": "数詞",
-      "japanese": "7（ななつ）"
-    },
-    {
-      "id": "v_num_8",
-      "mongolian": "найм (名詞前: найман)",
-      "dictForm": "найм",
-      "root": "",
-      "is_verb": false,
-      "pos": "数詞",
-      "japanese": "8（やっつ）"
-    },
-    {
-      "id": "v_num_9",
-      "mongolian": "ес (名詞前: есөн)",
-      "dictForm": "ес",
-      "root": "",
-      "is_verb": false,
-      "pos": "数詞",
-      "japanese": "9（ここのつ）"
-    },
-    {
-      "id": "v_num_10",
-      "mongolian": "арав (名詞前: арван)",
-      "dictForm": "арав",
-      "root": "",
-      "is_verb": false,
-      "pos": "数詞",
-      "japanese": "10（とお）"
     },
     {
       "id": "v_3_14",
@@ -452,6 +380,78 @@
       "is_verb": false,
       "pos": "名詞",
       "japanese": "帯、ベルト"
+    },
+    {
+      "id": "v_gen_86",
+      "mongolian": "гадаад хэл(н)",
+      "dictForm": "гадаад хэл",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞句",
+      "japanese": "外国語"
+    },
+    {
+      "id": "v_gen_91",
+      "mongolian": "галт тэрэг(н)",
+      "dictForm": "галт тэрэг",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "列車、汽車、電車"
+    },
+    {
+      "id": "v_gen_94",
+      "mongolian": "гар утас(н)",
+      "dictForm": "гар утас",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞句",
+      "japanese": "携帯電話、スマホ"
+    },
+    {
+      "id": "v_gen_143",
+      "mongolian": "дүү(г)",
+      "dictForm": "дүү",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "弟、妹、年下の人"
+    },
+    {
+      "id": "v_gen_152",
+      "mongolian": "жүдогийн дугуйлан(г)",
+      "dictForm": "жүдогийн дугуйлан",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞句",
+      "japanese": "柔道クラブ・柔道サークル"
+    },
+    {
+      "id": "v_gen_182",
+      "mongolian": "зуслан(г)",
+      "dictForm": "зуслан",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "別荘地、サマーキャンプ、夏の放牧地"
+    },
+    {
+      "id": "v_gen_205",
+      "mongolian": "кино(н)",
+      "dictForm": "кино",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "映画"
+    },
+    {
+      "id": "v_gen_208",
+      "mongolian": "кофе(н)",
+      "dictForm": "кофе",
+      "root": "",
+      "is_verb": false,
+      "pos": "名詞",
+      "japanese": "コーヒー"
     }
   ]
 }

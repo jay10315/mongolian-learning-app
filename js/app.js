@@ -61,7 +61,49 @@ class App {
           }
         }
 
-        // B. Magic Login Token による自動ログイン
+        // B. クラウド（Supabase）直結の超軽量QR同期（u=pen & sb_url/key）
+        const userParam = urlParams.get('u') || urlParams.get('user') || urlParams.get('username');
+        const autoSync = urlParams.get('auto_sync');
+
+        if (!token && userParam && (sbUrl || (typeof SyncService !== 'undefined' && SyncService.getConfig && SyncService.getConfig().supabaseUrl))) {
+          hasCustomParams = true;
+          const cleanUser = userParam.trim().toLowerCase();
+          const activeConfig = SyncService.getConfig();
+
+          // クラウドからアカウントを取得、または仮セッションを作成
+          const existingUsers = AuthService.getLocalUsers();
+          let matchedUser = existingUsers.find(u => AuthService.normalizeUsername(u.username) === cleanUser);
+          if (!matchedUser) {
+            matchedUser = {
+              id: `usr_${Date.now()}`,
+              username: cleanUser,
+              displayName: userParam.trim(),
+              createdAt: new Date().toISOString(),
+              lastLoginAt: new Date().toISOString()
+            };
+            existingUsers.push(matchedUser);
+            AuthService.saveLocalUsers(existingUsers);
+          }
+
+          const session = AuthService.setSession(matchedUser);
+
+          // クラウドから最新データ（XP 27,736, Lv.25, 間違い82件, 進捗97語）を完全Pull
+          if (activeConfig && activeConfig.supabaseUrl) {
+            SyncService.pullFromCloud(activeConfig, session).then((res) => {
+              if (res && res.success) {
+                // UI再描画
+                if (typeof App !== 'undefined' && App.render) {
+                  App.render();
+                }
+                setTimeout(() => {
+                  AuthService.showLoginSuccessToast(`PCのデータ同期完了（${cleanUser}）`);
+                }, 400);
+              }
+            }).catch(e => console.warn('[App] Direct cloud pull warning:', e));
+          }
+        }
+
+        // C. Magic Login Token による自動ログイン
         if (token) {
           hasCustomParams = true;
           const res = AuthService.processMagicLoginToken(token);
@@ -274,7 +316,7 @@ class App {
           if ('caches' in window && caches.keys) {
             caches.keys().then(keys => {
               keys.forEach(k => {
-                if (k !== 'mongol-app-cache-v3') {
+                if (k !== 'mongol-app-cache-v10') {
                   try { caches.delete(k); } catch (_) {}
                 }
               });

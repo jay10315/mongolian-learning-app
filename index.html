@@ -4026,23 +4026,56 @@ function getSimilarWordDistinctionHTML(item, targetWord, options = {}) {
 
   const targetMeaning = (item && item.japanese) || (data && data.targetMeaning) || '';
 
-  // ユーザーの誤答と正解の直接比較カード
+  // ユーザーの誤答と正解の直接比較カード（意味の似た単語・使い分けを最優先表示）
   let userComparisonHTML = '';
   if (userAns && userAns !== cleanRaw && userAns !== cleanWord) {
     // ユーザー回答が meaningSimilar または phoneticSimilar に含まれているかチェック
-    const matchedMeaning = meaningList.find(m => m.word && m.word.toLowerCase().trim() === userAns);
-    const matchedPhonetic = phoneticList.find(p => p.word && p.word.toLowerCase().trim() === userAns);
+    let matchedMeaning = meaningList.find(m => m.word && m.word.toLowerCase().trim() === userAns);
+    let matchedPhonetic = phoneticList.find(p => p.word && p.word.toLowerCase().trim() === userAns);
 
-    if (matchedMeaning) {
+    // 単語帳からの動的フォールバック（ユーザーの誤答と正解の意味比較）
+    let userAnsMeaning = (matchedMeaning && matchedMeaning.meaning) || (matchedPhonetic && matchedPhonetic.meaning) || '';
+    if (!userAnsMeaning) {
+      try {
+        let vocab = [];
+        if (typeof StorageService !== 'undefined' && StorageService.getVocabulary) {
+          vocab = StorageService.getVocabulary();
+        }
+        const vMatch = vocab.find(v => {
+          const mn = (v.dictForm || v.mongolian || '').toLowerCase().trim();
+          return mn === userAns;
+        });
+        if (vMatch) {
+          userAnsMeaning = vMatch.japanese || vMatch.meaning || '';
+        }
+      } catch (_) {}
+    }
+
+    if (matchedMeaning || (userAnsMeaning && targetMeaning)) {
       userComparisonHTML = `
-        <div class="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border-2 border-amber-300 dark:border-amber-700 text-amber-950 dark:text-amber-100 text-xs space-y-1">
-          <div class="font-black flex items-center gap-1.5 text-amber-900 dark:text-amber-200">
-            <span>🎯</span>
-            <span>あなたの回答「<strong class="cyrillic-text underline font-extrabold text-amber-800 dark:text-amber-300">${userAns}</strong>」と正解「<strong class="cyrillic-text font-extrabold text-emerald-700 dark:text-emerald-400">${rawWord}</strong>」の使い分け</span>
+        <div class="p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/60 dark:to-orange-950/50 border-2 border-amber-300 dark:border-amber-700 text-amber-950 dark:text-amber-100 text-xs space-y-2 shadow-xs">
+          <div class="font-black flex items-center justify-between text-amber-900 dark:text-amber-200">
+            <span class="flex items-center gap-1.5 text-xs sm:text-sm">
+              <span>🎯</span>
+              <span>あなたの回答「<span class="cyrillic-text font-black text-rose-600 dark:text-rose-400 underline">${userAns}</span>」と正解「<span class="cyrillic-text font-black text-emerald-700 dark:text-emerald-400">${rawWord}</span>」の使い分け</span>
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 font-bold">意味の違い</span>
           </div>
-          <p class="text-[11px] leading-relaxed opacity-95">
-            あなたが選んだ「<strong>${userAns}</strong>」は【${matchedMeaning.meaning || '類義語'}】を表しますが、この問題の正解は【${targetMeaning || '正解語'}】を表す「<strong>${rawWord}</strong>」です。
-          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] pt-1">
+            <div class="bg-white/90 dark:bg-slate-900/80 p-2 rounded-lg border border-amber-200 dark:border-amber-800/60">
+              <span class="text-rose-600 dark:text-rose-400 font-bold">❌ あなたの回答「${userAns}」:</span>
+              <div class="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">${userAnsMeaning || '期間・年齢など別のニュアンス'}</div>
+            </div>
+            <div class="bg-white/90 dark:bg-slate-900/80 p-2 rounded-lg border border-emerald-300 dark:border-emerald-800/60">
+              <span class="text-emerald-700 dark:text-emerald-400 font-bold">⭕ 正解「${rawWord}」:</span>
+              <div class="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">${targetMeaning || '西暦・年号'}</div>
+            </div>
+          </div>
+          ${meaningDistinction ? `
+            <div class="text-[11px] text-slate-800 dark:text-slate-200 leading-relaxed bg-white/60 dark:bg-slate-900/40 p-2 rounded-lg border-l-3 border-amber-500 whitespace-pre-line font-medium">
+              ${meaningDistinction}
+            </div>
+          ` : ''}
         </div>
       `;
     } else if (matchedPhonetic) {
@@ -81364,18 +81397,33 @@ class AuthService {
     let users = this.getLocalUsers();
     let user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
 
-    // 端末内に該当アカウントが存在しない場合、Webサーバー（LAN内）からアカウント一覧および同期データを自動検索
+    // 端末内に該当アカウントが存在しない場合、まずクラウド（Supabase）からアカウントを自動検索
     if (!user) {
       try {
-        const serverUsers = await this.fetchServerAccounts();
-        if (serverUsers && serverUsers.length > 0) {
-          this.mergeServerUsers(serverUsers);
-          users = this.getLocalUsers();
-          user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
+        if (typeof SyncService !== 'undefined' && SyncService.fetchAccountFromCloud) {
+          const cloudAccounts = await SyncService.fetchAccountFromCloud(cleanUsername);
+          if (cloudAccounts && cloudAccounts.length > 0) {
+            this.mergeServerUsers(cloudAccounts);
+            users = this.getLocalUsers();
+            user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
+          }
         }
-      } catch (_) {}
+      } catch (err) {
+        console.warn('[AuthService] fetchAccountFromCloud error:', err);
+      }
 
-      // アカウント一覧にまだない場合でも、サーバーのsync storeから直接取得を試みる
+      // Supabaseにない場合、LANサーバー（/api/accounts）からの取得を試みる
+      if (!user) {
+        try {
+          const serverUsers = await this.fetchServerAccounts();
+          if (serverUsers && serverUsers.length > 0) {
+            this.mergeServerUsers(serverUsers);
+            users = this.getLocalUsers();
+            user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
+          }
+        } catch (_) {}
+      }
+
       if (!user) {
         try {
           const syncData = await this.fetchServerUserData(cleanUsername);
@@ -81538,20 +81586,34 @@ class AuthService {
   }
 
   static async syncUserToServer(user) {
-    if (typeof window === 'undefined' || !window.fetch || !user) return;
+    if (typeof window === 'undefined' || !user) return;
+    
+    // 1. Supabase クラウドへの自動プッシュ
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
-      await fetch('/api/accounts/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user),
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
+      if (typeof SyncService !== 'undefined' && SyncService.pushAllLocalDataToCloud) {
+        const config = SyncService.getConfig();
+        if (config && config.supabaseUrl) {
+          SyncService.pushAllLocalDataToCloud(config, user).catch(() => {});
+        }
+      }
     } catch (_) {}
 
-    // アカウント情報だけでなく全学習データも同時にサーバーに永続化
+    // 2. LAN内Webサーバーへのプッシュ（ローカルWi-Fi用）
+    try {
+      if (window.fetch) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        await fetch('/api/accounts/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(user),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+      }
+    } catch (_) {}
+
+    // 全データの同期も実行
     this.syncAllToServer(user.username);
   }
 
@@ -82549,6 +82611,19 @@ class SyncService {
         const rows = await res.json();
         if (Array.isArray(rows) && rows.length > 0 && rows[0].payload) {
           const snap = rows[0].payload;
+          
+          // アカウントの自動復元
+          if (snap.account && typeof AuthService !== 'undefined') {
+            try {
+              AuthService.mergeServerUsers([snap.account]);
+              const curUser = AuthService.getCurrentUser();
+              if (!curUser || curUser.username !== snap.account.username) {
+                AuthService.setSession(snap.account);
+              }
+            } catch (_) {}
+          }
+
+          // 間違いノートの復元
           if (Array.isArray(snap.mistakes) && snap.mistakes.length > 0) {
             const currentMistakes = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
             snap.mistakes.forEach(m => {
@@ -82557,20 +82632,49 @@ class SyncService {
             });
             localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(currentMistakes));
           }
+
+          // 単語進捗の復元（両キー対応）
           if (snap.wordProgress && typeof snap.wordProgress === 'object') {
             const curProg = JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}');
             Object.assign(curProg, snap.wordProgress);
             localStorage.setItem('mongol_app_word_progress_v1', JSON.stringify(curProg));
           }
-          if (snap.gameStats && typeof snap.gameStats === 'object') {
-            localStorage.setItem('mongol_app_game_stats_v1', JSON.stringify(snap.gameStats));
+          if (snap.srsProgress && typeof snap.srsProgress === 'object') {
+            const curSrs = JSON.parse(localStorage.getItem('mongol_app_srs_progress_v1') || '{}');
+            Object.assign(curSrs, snap.srsProgress);
+            localStorage.setItem('mongol_app_srs_progress_v1', JSON.stringify(curSrs));
           }
+
+          // ゲーム統計・XP・レベル・称号の完全復元
+          if (snap.gameStats && typeof snap.gameStats === 'object') {
+            const curStats = JSON.parse(localStorage.getItem('mongol_app_game_stats_v1') || '{}');
+            const merged = { ...curStats, ...snap.gameStats };
+            // より高いXP・レベルを維持
+            if (snap.gameStats.totalXp && (!curStats.totalXp || snap.gameStats.totalXp > curStats.totalXp)) {
+              merged.totalXp = snap.gameStats.totalXp;
+              merged.level = snap.gameStats.level;
+              merged.currentTitle = snap.gameStats.currentTitle;
+            }
+            localStorage.setItem('mongol_app_game_stats_v1', JSON.stringify(merged));
+          }
+
+          // ペンギンマスコット育成・称号の復元
           if (snap.mascot && typeof snap.mascot === 'object') {
             localStorage.setItem('mongol_app_penguin_mascot_v1', JSON.stringify(snap.mascot));
           }
+          if (snap.penguinMascot && typeof snap.penguinMascot === 'object') {
+            localStorage.setItem('mongol_app_penguin_mascot_v1', JSON.stringify(snap.penguinMascot));
+          }
+
+          // 日別学習目標・進捗の復元
+          if (snap.dailyStats && typeof snap.dailyStats === 'object') {
+            localStorage.setItem('mongol_app_daily_stats_v1', JSON.stringify(snap.dailyStats));
+          }
+
           try {
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+              window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
             }
           } catch (_) {}
         }
@@ -82706,12 +82810,15 @@ class SyncService {
         username: user.username,
         updated_at: new Date().toISOString(),
         payload: {
+          account: user,
           mistakes: JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]'),
           wordProgress: JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}'),
+          srsProgress: JSON.parse(localStorage.getItem('mongol_app_srs_progress_v1') || '{}'),
           gameStats: JSON.parse(localStorage.getItem('mongol_app_game_stats_v1') || '{}'),
+          dailyStats: JSON.parse(localStorage.getItem('mongol_app_daily_stats_v1') || '{}'),
           mascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
-          history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]'),
-          account: user
+          penguinMascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
+          history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]')
         }
       };
       await fetch(`${url}/rest/v1/user_sync_snapshot`, {
@@ -82743,10 +82850,35 @@ class SyncService {
       if (targetUsername) {
         endpoint += `&username=ilike.${encodeURIComponent(targetUsername.trim())}`;
       }
-      const res = await fetch(endpoint, { headers });
-      if (!res.ok) return null;
-      const rows = await res.json();
-      if (!Array.isArray(rows) || rows.length === 0) return null;
+      let rows = [];
+      try {
+        const res = await fetch(endpoint, { headers });
+        if (res.ok) {
+          rows = await res.json();
+        }
+      } catch (_) {}
+
+      // user_accounts が空またはテーブル未存在の場合、user_sync_snapshot からもアカウントを自動抽出
+      if (!Array.isArray(rows) || rows.length === 0) {
+        try {
+          let snapEndpoint = `${url}/rest/v1/user_sync_snapshot?select=*`;
+          if (targetUsername) {
+            snapEndpoint += `&username=ilike.${encodeURIComponent(targetUsername.trim())}`;
+          }
+          const snapRes = await fetch(snapEndpoint, { headers });
+          if (snapRes.ok) {
+            const snaps = await snapRes.json();
+            if (Array.isArray(snaps) && snaps.length > 0) {
+              const fromSnap = snaps.filter(s => s.payload && s.payload.account).map(s => s.payload.account);
+              if (fromSnap.length > 0) {
+                AuthService.mergeServerUsers(fromSnap);
+                return fromSnap;
+              }
+            }
+          }
+        } catch (_) {}
+        return null;
+      }
 
       const matched = rows.map(r => ({
         id: r.id,
@@ -87592,10 +87724,8 @@ class CloudSettingsModal {
       params.set('sb_url', currentConfig.supabaseUrl);
       params.set('sb_key', currentConfig.supabaseAnonKey);
       if (user) {
-        params.set('u', user.username || '');
-        if (AuthService.generateMagicLoginToken) {
-          params.set('login_token', AuthService.generateMagicLoginToken(user));
-        }
+        params.set('u', user.username || 'pen');
+        params.set('auto_sync', '1');
       }
       shareUrl = `${vercelBase}/?${params.toString()}`;
       try {
@@ -89006,6 +89136,16 @@ class Navbar {
         base = `${origin}/`;
       } else {
         base = `${protocol}//${targetIp}:${port}${cleanPath}`;
+      }
+
+      // Supabase クラウド設定がある場合：超軽量＆高精度QRコード（スマホのカメラで一瞬で読めるURL）を最優先生成！
+      const sbConfig = (typeof SyncService !== 'undefined' && SyncService.getConfig) ? SyncService.getConfig() : null;
+      if (sbConfig && sbConfig.supabaseUrl && sbConfig.supabaseAnonKey) {
+        const cleanSbUrl = encodeURIComponent(sbConfig.supabaseUrl.trim());
+        const cleanSbKey = encodeURIComponent(sbConfig.supabaseAnonKey.trim());
+        const u = encodeURIComponent((currentUser && currentUser.username) || 'pen');
+        const sep = base.includes('?') ? '&' : '?';
+        return `${base}${sep}u=${u}&sb_url=${cleanSbUrl}&sb_key=${cleanSbKey}&auto_sync=1&session_id=${encodeURIComponent(sessionId)}`;
       }
 
       if (mode === 'quick' && isLocalhost && syncTargetMode === 'local') {
@@ -115504,7 +115644,49 @@ class App {
           }
         }
 
-        // B. Magic Login Token による自動ログイン
+        // B. クラウド（Supabase）直結の超軽量QR同期（u=pen & sb_url/key）
+        const userParam = urlParams.get('u') || urlParams.get('user') || urlParams.get('username');
+        const autoSync = urlParams.get('auto_sync');
+
+        if (!token && userParam && (sbUrl || (typeof SyncService !== 'undefined' && SyncService.getConfig && SyncService.getConfig().supabaseUrl))) {
+          hasCustomParams = true;
+          const cleanUser = userParam.trim().toLowerCase();
+          const activeConfig = SyncService.getConfig();
+
+          // クラウドからアカウントを取得、または仮セッションを作成
+          const existingUsers = AuthService.getLocalUsers();
+          let matchedUser = existingUsers.find(u => AuthService.normalizeUsername(u.username) === cleanUser);
+          if (!matchedUser) {
+            matchedUser = {
+              id: `usr_${Date.now()}`,
+              username: cleanUser,
+              displayName: userParam.trim(),
+              createdAt: new Date().toISOString(),
+              lastLoginAt: new Date().toISOString()
+            };
+            existingUsers.push(matchedUser);
+            AuthService.saveLocalUsers(existingUsers);
+          }
+
+          const session = AuthService.setSession(matchedUser);
+
+          // クラウドから最新データ（XP 27,736, Lv.25, 間違い82件, 進捗97語）を完全Pull
+          if (activeConfig && activeConfig.supabaseUrl) {
+            SyncService.pullFromCloud(activeConfig, session).then((res) => {
+              if (res && res.success) {
+                // UI再描画
+                if (typeof App !== 'undefined' && App.render) {
+                  App.render();
+                }
+                setTimeout(() => {
+                  AuthService.showLoginSuccessToast(`PCのデータ同期完了（${cleanUser}）`);
+                }, 400);
+              }
+            }).catch(e => console.warn('[App] Direct cloud pull warning:', e));
+          }
+        }
+
+        // C. Magic Login Token による自動ログイン
         if (token) {
           hasCustomParams = true;
           const res = AuthService.processMagicLoginToken(token);
@@ -115717,7 +115899,7 @@ class App {
           if ('caches' in window && caches.keys) {
             caches.keys().then(keys => {
               keys.forEach(k => {
-                if (k !== 'mongol-app-cache-v3') {
+                if (k !== 'mongol-app-cache-v10') {
                   try { caches.delete(k); } catch (_) {}
                 }
               });

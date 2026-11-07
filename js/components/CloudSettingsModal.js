@@ -55,10 +55,8 @@ export class CloudSettingsModal {
       params.set('sb_url', currentConfig.supabaseUrl);
       params.set('sb_key', currentConfig.supabaseAnonKey);
       if (user) {
-        params.set('u', user.username || '');
-        if (AuthService.generateMagicLoginToken) {
-          params.set('login_token', AuthService.generateMagicLoginToken(user));
-        }
+        params.set('u', user.username || 'pen');
+        params.set('auto_sync', '1');
       }
       shareUrl = `${vercelBase}/?${params.toString()}`;
       try {

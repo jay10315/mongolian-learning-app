@@ -214,18 +214,33 @@ export class AuthService {
     let users = this.getLocalUsers();
     let user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
 
-    // 端末内に該当アカウントが存在しない場合、Webサーバー（LAN内）からアカウント一覧および同期データを自動検索
+    // 端末内に該当アカウントが存在しない場合、まずクラウド（Supabase）からアカウントを自動検索
     if (!user) {
       try {
-        const serverUsers = await this.fetchServerAccounts();
-        if (serverUsers && serverUsers.length > 0) {
-          this.mergeServerUsers(serverUsers);
-          users = this.getLocalUsers();
-          user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
+        if (typeof SyncService !== 'undefined' && SyncService.fetchAccountFromCloud) {
+          const cloudAccounts = await SyncService.fetchAccountFromCloud(cleanUsername);
+          if (cloudAccounts && cloudAccounts.length > 0) {
+            this.mergeServerUsers(cloudAccounts);
+            users = this.getLocalUsers();
+            user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
+          }
         }
-      } catch (_) {}
+      } catch (err) {
+        console.warn('[AuthService] fetchAccountFromCloud error:', err);
+      }
 
-      // アカウント一覧にまだない場合でも、サーバーのsync storeから直接取得を試みる
+      // Supabaseにない場合、LANサーバー（/api/accounts）からの取得を試みる
+      if (!user) {
+        try {
+          const serverUsers = await this.fetchServerAccounts();
+          if (serverUsers && serverUsers.length > 0) {
+            this.mergeServerUsers(serverUsers);
+            users = this.getLocalUsers();
+            user = users.find(u => this.normalizeUsername(u.username) === cleanUsername);
+          }
+        } catch (_) {}
+      }
+
       if (!user) {
         try {
           const syncData = await this.fetchServerUserData(cleanUsername);
@@ -388,20 +403,34 @@ export class AuthService {
   }
 
   static async syncUserToServer(user) {
-    if (typeof window === 'undefined' || !window.fetch || !user) return;
+    if (typeof window === 'undefined' || !user) return;
+    
+    // 1. Supabase クラウドへの自動プッシュ
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
-      await fetch('/api/accounts/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user),
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
+      if (typeof SyncService !== 'undefined' && SyncService.pushAllLocalDataToCloud) {
+        const config = SyncService.getConfig();
+        if (config && config.supabaseUrl) {
+          SyncService.pushAllLocalDataToCloud(config, user).catch(() => {});
+        }
+      }
     } catch (_) {}
 
-    // アカウント情報だけでなく全学習データも同時にサーバーに永続化
+    // 2. LAN内Webサーバーへのプッシュ（ローカルWi-Fi用）
+    try {
+      if (window.fetch) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        await fetch('/api/accounts/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(user),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+      }
+    } catch (_) {}
+
+    // 全データの同期も実行
     this.syncAllToServer(user.username);
   }
 

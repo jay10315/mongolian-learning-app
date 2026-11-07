@@ -379,6 +379,19 @@ export class SyncService {
         const rows = await res.json();
         if (Array.isArray(rows) && rows.length > 0 && rows[0].payload) {
           const snap = rows[0].payload;
+          
+          // アカウントの自動復元
+          if (snap.account && typeof AuthService !== 'undefined') {
+            try {
+              AuthService.mergeServerUsers([snap.account]);
+              const curUser = AuthService.getCurrentUser();
+              if (!curUser || curUser.username !== snap.account.username) {
+                AuthService.setSession(snap.account);
+              }
+            } catch (_) {}
+          }
+
+          // 間違いノートの復元
           if (Array.isArray(snap.mistakes) && snap.mistakes.length > 0) {
             const currentMistakes = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
             snap.mistakes.forEach(m => {
@@ -387,20 +400,49 @@ export class SyncService {
             });
             localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(currentMistakes));
           }
+
+          // 単語進捗の復元（両キー対応）
           if (snap.wordProgress && typeof snap.wordProgress === 'object') {
             const curProg = JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}');
             Object.assign(curProg, snap.wordProgress);
             localStorage.setItem('mongol_app_word_progress_v1', JSON.stringify(curProg));
           }
-          if (snap.gameStats && typeof snap.gameStats === 'object') {
-            localStorage.setItem('mongol_app_game_stats_v1', JSON.stringify(snap.gameStats));
+          if (snap.srsProgress && typeof snap.srsProgress === 'object') {
+            const curSrs = JSON.parse(localStorage.getItem('mongol_app_srs_progress_v1') || '{}');
+            Object.assign(curSrs, snap.srsProgress);
+            localStorage.setItem('mongol_app_srs_progress_v1', JSON.stringify(curSrs));
           }
+
+          // ゲーム統計・XP・レベル・称号の完全復元
+          if (snap.gameStats && typeof snap.gameStats === 'object') {
+            const curStats = JSON.parse(localStorage.getItem('mongol_app_game_stats_v1') || '{}');
+            const merged = { ...curStats, ...snap.gameStats };
+            // より高いXP・レベルを維持
+            if (snap.gameStats.totalXp && (!curStats.totalXp || snap.gameStats.totalXp > curStats.totalXp)) {
+              merged.totalXp = snap.gameStats.totalXp;
+              merged.level = snap.gameStats.level;
+              merged.currentTitle = snap.gameStats.currentTitle;
+            }
+            localStorage.setItem('mongol_app_game_stats_v1', JSON.stringify(merged));
+          }
+
+          // ペンギンマスコット育成・称号の復元
           if (snap.mascot && typeof snap.mascot === 'object') {
             localStorage.setItem('mongol_app_penguin_mascot_v1', JSON.stringify(snap.mascot));
           }
+          if (snap.penguinMascot && typeof snap.penguinMascot === 'object') {
+            localStorage.setItem('mongol_app_penguin_mascot_v1', JSON.stringify(snap.penguinMascot));
+          }
+
+          // 日別学習目標・進捗の復元
+          if (snap.dailyStats && typeof snap.dailyStats === 'object') {
+            localStorage.setItem('mongol_app_daily_stats_v1', JSON.stringify(snap.dailyStats));
+          }
+
           try {
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+              window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
             }
           } catch (_) {}
         }
@@ -536,12 +578,15 @@ export class SyncService {
         username: user.username,
         updated_at: new Date().toISOString(),
         payload: {
+          account: user,
           mistakes: JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]'),
           wordProgress: JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}'),
+          srsProgress: JSON.parse(localStorage.getItem('mongol_app_srs_progress_v1') || '{}'),
           gameStats: JSON.parse(localStorage.getItem('mongol_app_game_stats_v1') || '{}'),
+          dailyStats: JSON.parse(localStorage.getItem('mongol_app_daily_stats_v1') || '{}'),
           mascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
-          history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]'),
-          account: user
+          penguinMascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
+          history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]')
         }
       };
       await fetch(`${url}/rest/v1/user_sync_snapshot`, {
@@ -573,10 +618,35 @@ export class SyncService {
       if (targetUsername) {
         endpoint += `&username=ilike.${encodeURIComponent(targetUsername.trim())}`;
       }
-      const res = await fetch(endpoint, { headers });
-      if (!res.ok) return null;
-      const rows = await res.json();
-      if (!Array.isArray(rows) || rows.length === 0) return null;
+      let rows = [];
+      try {
+        const res = await fetch(endpoint, { headers });
+        if (res.ok) {
+          rows = await res.json();
+        }
+      } catch (_) {}
+
+      // user_accounts が空またはテーブル未存在の場合、user_sync_snapshot からもアカウントを自動抽出
+      if (!Array.isArray(rows) || rows.length === 0) {
+        try {
+          let snapEndpoint = `${url}/rest/v1/user_sync_snapshot?select=*`;
+          if (targetUsername) {
+            snapEndpoint += `&username=ilike.${encodeURIComponent(targetUsername.trim())}`;
+          }
+          const snapRes = await fetch(snapEndpoint, { headers });
+          if (snapRes.ok) {
+            const snaps = await snapRes.json();
+            if (Array.isArray(snaps) && snaps.length > 0) {
+              const fromSnap = snaps.filter(s => s.payload && s.payload.account).map(s => s.payload.account);
+              if (fromSnap.length > 0) {
+                AuthService.mergeServerUsers(fromSnap);
+                return fromSnap;
+              }
+            }
+          }
+        } catch (_) {}
+        return null;
+      }
 
       const matched = rows.map(r => ({
         id: r.id,

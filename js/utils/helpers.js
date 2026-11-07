@@ -3318,23 +3318,56 @@ export function getSimilarWordDistinctionHTML(item, targetWord, options = {}) {
 
   const targetMeaning = (item && item.japanese) || (data && data.targetMeaning) || '';
 
-  // ユーザーの誤答と正解の直接比較カード
+  // ユーザーの誤答と正解の直接比較カード（意味の似た単語・使い分けを最優先表示）
   let userComparisonHTML = '';
   if (userAns && userAns !== cleanRaw && userAns !== cleanWord) {
     // ユーザー回答が meaningSimilar または phoneticSimilar に含まれているかチェック
-    const matchedMeaning = meaningList.find(m => m.word && m.word.toLowerCase().trim() === userAns);
-    const matchedPhonetic = phoneticList.find(p => p.word && p.word.toLowerCase().trim() === userAns);
+    let matchedMeaning = meaningList.find(m => m.word && m.word.toLowerCase().trim() === userAns);
+    let matchedPhonetic = phoneticList.find(p => p.word && p.word.toLowerCase().trim() === userAns);
 
-    if (matchedMeaning) {
+    // 単語帳からの動的フォールバック（ユーザーの誤答と正解の意味比較）
+    let userAnsMeaning = (matchedMeaning && matchedMeaning.meaning) || (matchedPhonetic && matchedPhonetic.meaning) || '';
+    if (!userAnsMeaning) {
+      try {
+        let vocab = [];
+        if (typeof StorageService !== 'undefined' && StorageService.getVocabulary) {
+          vocab = StorageService.getVocabulary();
+        }
+        const vMatch = vocab.find(v => {
+          const mn = (v.dictForm || v.mongolian || '').toLowerCase().trim();
+          return mn === userAns;
+        });
+        if (vMatch) {
+          userAnsMeaning = vMatch.japanese || vMatch.meaning || '';
+        }
+      } catch (_) {}
+    }
+
+    if (matchedMeaning || (userAnsMeaning && targetMeaning)) {
       userComparisonHTML = `
-        <div class="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border-2 border-amber-300 dark:border-amber-700 text-amber-950 dark:text-amber-100 text-xs space-y-1">
-          <div class="font-black flex items-center gap-1.5 text-amber-900 dark:text-amber-200">
-            <span>🎯</span>
-            <span>あなたの回答「<strong class="cyrillic-text underline font-extrabold text-amber-800 dark:text-amber-300">${userAns}</strong>」と正解「<strong class="cyrillic-text font-extrabold text-emerald-700 dark:text-emerald-400">${rawWord}</strong>」の使い分け</span>
+        <div class="p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/60 dark:to-orange-950/50 border-2 border-amber-300 dark:border-amber-700 text-amber-950 dark:text-amber-100 text-xs space-y-2 shadow-xs">
+          <div class="font-black flex items-center justify-between text-amber-900 dark:text-amber-200">
+            <span class="flex items-center gap-1.5 text-xs sm:text-sm">
+              <span>🎯</span>
+              <span>あなたの回答「<span class="cyrillic-text font-black text-rose-600 dark:text-rose-400 underline">${userAns}</span>」と正解「<span class="cyrillic-text font-black text-emerald-700 dark:text-emerald-400">${rawWord}</span>」の使い分け</span>
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 font-bold">意味の違い</span>
           </div>
-          <p class="text-[11px] leading-relaxed opacity-95">
-            あなたが選んだ「<strong>${userAns}</strong>」は【${matchedMeaning.meaning || '類義語'}】を表しますが、この問題の正解は【${targetMeaning || '正解語'}】を表す「<strong>${rawWord}</strong>」です。
-          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] pt-1">
+            <div class="bg-white/90 dark:bg-slate-900/80 p-2 rounded-lg border border-amber-200 dark:border-amber-800/60">
+              <span class="text-rose-600 dark:text-rose-400 font-bold">❌ あなたの回答「${userAns}」:</span>
+              <div class="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">${userAnsMeaning || '期間・年齢など別のニュアンス'}</div>
+            </div>
+            <div class="bg-white/90 dark:bg-slate-900/80 p-2 rounded-lg border border-emerald-300 dark:border-emerald-800/60">
+              <span class="text-emerald-700 dark:text-emerald-400 font-bold">⭕ 正解「${rawWord}」:</span>
+              <div class="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">${targetMeaning || '西暦・年号'}</div>
+            </div>
+          </div>
+          ${meaningDistinction ? `
+            <div class="text-[11px] text-slate-800 dark:text-slate-200 leading-relaxed bg-white/60 dark:bg-slate-900/40 p-2 rounded-lg border-l-3 border-amber-500 whitespace-pre-line font-medium">
+              ${meaningDistinction}
+            </div>
+          ` : ''}
         </div>
       `;
     } else if (matchedPhonetic) {

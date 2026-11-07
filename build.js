@@ -13,7 +13,23 @@ if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
-// コピー対象ファイル・フォルダ
+// 再帰的ディレクトリーコピー
+function copyDirRecursive(src, dest) {
+  if (!fs.existsSync(src)) return;
+  if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDirRecursive(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+// ルート直下のコピー対象ファイル
 const filesToCopy = [
   'index.html',
   'bundled.js',
@@ -23,7 +39,9 @@ const filesToCopy = [
   'icon-512.svg',
   'apple-touch-icon.png',
   'favicon.ico',
-  'robots.txt'
+  'robots.txt',
+  'audio_map.json',
+  'audio_phrases.json'
 ];
 
 for (const file of filesToCopy) {
@@ -35,16 +53,11 @@ for (const file of filesToCopy) {
   }
 }
 
-// css/ ディレクトリがあればコピー
-const cssDir = path.join(__dirname, 'css');
-if (fs.existsSync(cssDir)) {
-  const destCssDir = path.join(distDir, 'css');
-  if (!fs.existsSync(destCssDir)) fs.mkdirSync(destCssDir, { recursive: true });
-  for (const f of fs.readdirSync(cssDir)) {
-    fs.copyFileSync(path.join(cssDir, f), path.join(destCssDir, f));
-  }
-  console.log('[Build] Copied css/ -> dist/css/');
-}
+// フォルダのコピー (css, js, data)
+copyDirRecursive(path.join(__dirname, 'css'), path.join(distDir, 'css'));
+copyDirRecursive(path.join(__dirname, 'js'), path.join(distDir, 'js'));
+copyDirRecursive(path.join(__dirname, 'data'), path.join(distDir, 'data'));
+console.log('[Build] Copied folders (css, js, data) -> dist/');
 
 console.log('[Build] Static site production build completed successfully with exit code 0!');
 process.exit(0);

@@ -432,6 +432,16 @@ export class Navbar {
         base = `${protocol}//${targetIp}:${port}${cleanPath}`;
       }
 
+      // Supabase クラウド設定がある場合：超軽量＆高精度QRコード（スマホのカメラで一瞬で読めるURL）を最優先生成！
+      const sbConfig = (typeof SyncService !== 'undefined' && SyncService.getConfig) ? SyncService.getConfig() : null;
+      if (sbConfig && sbConfig.supabaseUrl && sbConfig.supabaseAnonKey) {
+        const cleanSbUrl = encodeURIComponent(sbConfig.supabaseUrl.trim());
+        const cleanSbKey = encodeURIComponent(sbConfig.supabaseAnonKey.trim());
+        const u = encodeURIComponent((currentUser && currentUser.username) || 'pen');
+        const sep = base.includes('?') ? '&' : '?';
+        return `${base}${sep}u=${u}&sb_url=${cleanSbUrl}&sb_key=${cleanSbKey}&auto_sync=1&session_id=${encodeURIComponent(sessionId)}`;
+      }
+
       if (mode === 'quick' && isLocalhost && syncTargetMode === 'local') {
         const sep = base.includes('?') ? '&' : '?';
         return `${base}${sep}pair=${encodeURIComponent(sessionId)}&device_sync=1`;

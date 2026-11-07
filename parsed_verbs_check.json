@@ -1,6 +1,15 @@
 {
-  "verb_count": 176,
+  "verb_count": 426,
   "samples": [
+    {
+      "id": "v_2_1",
+      "raw_mongolian": "юу",
+      "is_verb": true,
+      "dict_form": "юу",
+      "root": "юу",
+      "japanese": "何",
+      "pos": "疑問代名詞"
+    },
     {
       "id": "v_2_20",
       "raw_mongolian": "байна",
@@ -17,7 +26,7 @@
       "dict_form": "байхгүй",
       "root": "байхгүй",
       "japanese": "ない、いない",
-      "pos": "動詞"
+      "pos": "否定述語"
     },
     {
       "id": "v_3_1",
@@ -61,7 +70,7 @@
       "is_verb": true,
       "dict_form": "хийх",
       "root": "хий",
-      "japanese": "する、作る、入れる",
+      "japanese": "する・行う・作る",
       "pos": "動詞"
     },
     {
@@ -70,7 +79,7 @@
       "is_verb": true,
       "dict_form": "үзэх",
       "root": "үз",
-      "japanese": "見る、試す",
+      "japanese": "試す・見る",
       "pos": "動詞"
     },
     {
@@ -223,7 +232,7 @@
       "is_verb": true,
       "dict_form": "мэдэх",
       "root": "мэд",
-      "japanese": "知る、分かる",
+      "japanese": "知る",
       "pos": "動詞"
     },
     {
@@ -251,7 +260,7 @@
       "dict_form": "болохгүй",
       "root": "болохгүй",
       "japanese": "〜してはいけない（禁止）",
-      "pos": "動詞"
+      "pos": "禁止・表現"
     },
     {
       "id": "v_14_1",
@@ -260,15 +269,6 @@
       "dict_form": "давтах",
       "root": "давт",
       "japanese": "復習する、繰り返す",
-      "pos": "動詞"
-    },
-    {
-      "id": "v_18_1",
-      "raw_mongolian": "өлсөх",
-      "is_verb": true,
-      "dict_form": "өлсөх",
-      "root": "өлс",
-      "japanese": "お腹が空く",
       "pos": "動詞"
     }
   ]
