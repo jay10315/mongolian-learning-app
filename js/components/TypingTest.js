@@ -110,6 +110,7 @@ export class TypingTestComponent {
     // カテゴリー集計（ランダムモード時）
     const categories = [
       { id: 'all', label: 'すべて', icon: '🌟', count: allSentences.length },
+      { id: 'textbook', label: '教科書例文（全18課）', icon: '📖', count: allSentences.filter(s => s.category === 'textbook').length },
       { id: 'beginner', label: '基本挨拶・自己紹介', icon: '👋', count: allSentences.filter(s => s.category === 'beginner').length },
       { id: 'daily', label: '日常会話・食事', icon: '☕', count: allSentences.filter(s => s.category === 'daily').length },
       { id: 'culture', label: '伝統文化・遊牧・ゲル', icon: '🐎', count: allSentences.filter(s => s.category === 'culture').length },

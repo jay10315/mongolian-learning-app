@@ -580,12 +580,16 @@ export class ReviewNotebookComponent {
     let placeholder = "";
 
     if (isExplicitNonWord) {
-      if (item.type === 'grammar') {
-        categoryLabel = "空欄に入る適切な文法・語尾をキリル文字で入力してください";
+      if (item.type === 'grammar' || item.type === 'declension') {
+        const hasBlank = /\[____\]|___|＿＿|（\s*）|\(\s*\)/.test(promptText);
+        if (hasBlank) {
+          categoryLabel = "空欄に入る適切な文法・語尾をキリル文字で入力してください";
+        } else {
+          categoryLabel = "指示に従い、指定の単語に適切な語尾・格変化を付けた形をキリル文字で入力してください";
+        }
         subHint = item.category ? `【文法項目: ${item.category}】` : '';
         placeholder = "キリル文字で入力...";
-      } else if (item.type === 'declension') {
-        categoryLabel = "指定の格変化・活用形をキリル文字で入力してください";
+      } else if (item.type === 'declension_alt') {
         subHint = item.category ? `【対象: ${item.category}】` : '';
         placeholder = "キリル文字で入力...";
       } else if (item.type === 'reading') {

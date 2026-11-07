@@ -1353,66 +1353,285 @@ function isListeningAnswerMatch(userAnswer, quizItem, mode = 'blank') {
 /**
  * 単語の成り立ち・語の構成（2語以上の複合語、派生語、接尾辞結合）を解析してHTMLカードを生成
  */
+const RICH_ETYMOLOGY_MAP = {
+  "зөөлөн тоглоом": {
+    totalMeaning: "ぬいぐるみ",
+    components: [
+      {
+        word: "зөөлөн",
+        pos: "形容詞",
+        meaning: "柔らかい、ソフトな、穏やかな",
+        standalone: "単独使用可能",
+        details: "硬くない状態を表す基本形容詞（例: зөөлөн талх = 柔らかいパン、зөөлөн сэтгэл = 優しい心）。"
+      },
+      {
+        word: "тоглоом",
+        pos: "名詞",
+        meaning: "おもちゃ、玩具、ゲーム",
+        standalone: "単独使用可能",
+        details: "動詞「тоглох（遊ぶ）」に具象名詞・道具化接尾辞「-оом」が結合してできた名詞（例: хүүхдийн тоглоом = 子供のおもちゃ）。"
+      }
+    ],
+    synthesis: "「柔らかい（布や綿でできた）」＋「おもちゃ」が合わさって【ぬいぐるみ】を指す名詞句となります。"
+  },
+  "зоогийн газар": {
+    totalMeaning: "レストラン・食堂",
+    components: [
+      {
+        word: "зоог",
+        pos: "名詞",
+        meaning: "ごちそう、食事（丁寧・敬称的表現）",
+        standalone: "単独使用可能（属格: зоогийн）",
+        details: "「зооглох（召し上がる）」の語幹に由来する上品な食事の言葉。"
+      },
+      {
+        word: "газар",
+        pos: "名詞",
+        meaning: "場所、土地、地点",
+        standalone: "単独使用可能",
+        details: "様々な施設・場所を表す複合語の後項として広く使われます（例: ажлын газар = 職場）。"
+      }
+    ],
+    synthesis: "「ごちそう・食事（属格）」＋「場所」＝「食事をいただく場所」から【レストラン・飲食店】となります。"
+  },
+  "толь бичиг": {
+    totalMeaning: "辞書・辞典",
+    components: [
+      {
+        word: "толь",
+        pos: "名詞",
+        meaning: "鏡（かがみ）、照らし合わせるもの",
+        standalone: "単独使用可能",
+        details: "本来は「姿を映す鏡」を意味し、正誤や言葉の真実を映し出す比喩として用いられます。"
+      },
+      {
+        word: "бичиг",
+        pos: "名詞",
+        meaning: "書物、文書、文字",
+        standalone: "単独使用可能",
+        details: "動詞「бичих（書く）」に名詞化接尾辞「-г」が結合した単語。"
+      }
+    ],
+    synthesis: "「言葉の真実を映す鏡」＋「書物」＝言葉の鏡となる本、すなわち【辞書・辞典】です。"
+  },
+  "галт тэрэг": {
+    totalMeaning: "列車・汽車",
+    components: [
+      {
+        word: "гал",
+        pos: "名詞",
+        meaning: "火（ひ）",
+        standalone: "単独使用可能（有属形: галт = 火を持つ、火の）",
+        details: "所有形容詞化接尾辞「-т」が付いて「галт（火の、蒸気の）」となります。"
+      },
+      {
+        word: "тэрэг",
+        pos: "名詞",
+        meaning: "車、荷車、車両",
+        standalone: "単独使用可能",
+        details: "移動・運搬用の車輪を持つ乗り物を広く指します。"
+      }
+    ],
+    synthesis: "「火を噴く（蒸気・エンジンの）」＋「車両」＝【列車・汽車】となります。"
+  },
+  "гар утас": {
+    totalMeaning: "携帯電話・スマートフォン",
+    components: [
+      {
+        word: "гар",
+        pos: "名詞",
+        meaning: "手（て）",
+        standalone: "単独使用可能",
+        details: "身体部位の「手」。「手の中に入る、片手で扱える」ことを表します。"
+      },
+      {
+        word: "утас",
+        pos: "名詞",
+        meaning: "電話、電線、糸",
+        standalone: "単独使用可能",
+        details: "本来は「糸・電線」を意味し、電信・電話の普及に伴い「電話」全般を指すようになりました。"
+      }
+    ],
+    synthesis: "「手に持てる」＋「電話」＝【携帯電話・スマホ】となります。"
+  },
+  "цахилгаан шат": {
+    totalMeaning: "エレベーター・エスカレーター",
+    components: [
+      {
+        word: "цахилгаан",
+        pos: "名詞・形容詞",
+        meaning: "電気、稲妻",
+        standalone: "単独使用可能",
+        details: "「цахих（稲妻が光る）」から派生した言葉で、近代以降「電気」の意味で広く用いられます。"
+      },
+      {
+        word: "шат",
+        pos: "名詞",
+        meaning: "階段、梯子（はしご）",
+        standalone: "単独使用可能",
+        details: "高低差を上下するための段・階段を指します。"
+      }
+    ],
+    synthesis: "「電気で動く」＋「階段」＝【エレベーター／エスカレーター】を意味します。"
+  },
+  "угаалгын машин": {
+    totalMeaning: "洗濯機",
+    components: [
+      {
+        word: "угаалга",
+        pos: "名詞",
+        meaning: "洗濯、洗浄",
+        standalone: "単独使用可能（属格: угаалгын）",
+        details: "動詞「угаах（洗う）」に動作名詞化接尾辞「-лга」が結合した語。"
+      },
+      {
+        word: "машин",
+        pos: "名詞",
+        meaning: "機械、自動車、マシン",
+        standalone: "単独使用可能",
+        details: "ロシア語経由の借用語で、動力駆動の機械全般を指します。"
+      }
+    ],
+    synthesis: "「洗濯のための」＋「機械」＝【洗濯機】となります。"
+  },
+  "ус буцалгагч": {
+    totalMeaning: "電気ケトル・湯沸かし器",
+    components: [
+      {
+        word: "ус",
+        pos: "名詞",
+        meaning: "水（みず）",
+        standalone: "単独使用可能",
+        details: "生命の源である「水」を表すモンゴル固有語。"
+      },
+      {
+        word: "буцалгагч",
+        pos: "名詞",
+        meaning: "沸騰させる器具・装置",
+        standalone: "派生語として単独使用可能",
+        details: "動詞「буцлах（沸く）」の使役形「буцалгах（沸かす）」に器具・行為者接尾辞「-гч」が付いた形。"
+      }
+    ],
+    synthesis: "「水」＋「沸かす器具」＝【湯沸かし器・ケトル】となります。"
+  }
+};
+
+/**
+ * 単語の成り立ち・語の構成（2語以上の複合語、派生語、接尾辞結合）を解析してリッチHTMLカードを生成
+ */
 function getWordEtymologyHTML(item, targetWord) {
   if (!item && !targetWord) return '';
 
-  const mn = ((item && (item.mongolian || item.dictForm)) || targetWord || '').trim();
-  const ja = ((item && item.japanese) || '').trim();
+  const mn = (((item && (item.mongolian || item.dictForm)) || targetWord || '') + '').trim();
+  const ja = (((item && item.japanese) || '') + '').trim();
   const deriv = (item && (item.etymologyBreakdown || item.derivation)) || '';
   const note = (item && item.note) || '';
+  const cleanKey = mn.toLowerCase().replace(/[\(\)\,\.\/\?]/g, '').trim();
 
-  let breakdown = '';
+  // 1. 詳細構成要素マスターからの完全一致
+  if (RICH_ETYMOLOGY_MAP[cleanKey]) {
+    const data = RICH_ETYMOLOGY_MAP[cleanKey];
+    const compRows = data.components.map(c => `
+      <div class="p-2 rounded-lg bg-white/90 border border-amber-200 shadow-2xs space-y-1">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-black text-amber-900 cyrillic-text font-mono text-sm">「${c.word}」</span>
+          <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-950 font-bold text-[10px]">${c.pos}</span>
+        </div>
+        <div class="text-xs text-slate-800 font-bold">意味: <span class="text-amber-950">${c.meaning}</span></div>
+        <div class="text-[11px] text-slate-600 leading-tight">
+          <span class="font-bold text-slate-700">単独使用:</span> ${c.standalone} ｜ ${c.details}
+        </div>
+      </div>
+    `).join('');
 
-  // 1. 明示的な分解式（「＋」または「+」を含む場合）
-  if (deriv && (deriv.includes('＋') || deriv.includes('+') || deriv.includes('＝') || deriv.includes('='))) {
-    breakdown = deriv;
-  } else if (note && (note.includes('＋') || note.includes('+') || note.includes('構成:'))) {
-    breakdown = note;
-  } else if (deriv && (deriv.includes('語幹') || deriv.includes('接尾辞') || deriv.includes('派生'))) {
-    breakdown = deriv;
+    return `
+      <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/80 border border-amber-300 text-xs space-y-2 shadow-2xs etymology-breakdown-card">
+        <div class="font-black text-amber-950 flex items-center justify-between">
+          <span class="flex items-center gap-1.5"><span>🧩</span> 単語の成り立ち・詳細構成:</span>
+          <span class="text-[11px] text-amber-800 font-bold">【${data.totalMeaning || ja}】</span>
+        </div>
+        <div class="space-y-1.5">
+          ${compRows}
+        </div>
+        <div class="p-2 rounded-lg bg-amber-100/70 border border-amber-200/80 text-[11px] text-amber-950 font-bold leading-relaxed">
+          💡 ${data.synthesis}
+        </div>
+      </div>
+    `;
   }
 
-  // 2. スペースを含む複合語（一語以上で成り立っている単語）の動的補完
-  if (!breakdown && mn.includes(' ')) {
-    const tokens = mn.replace(/[\(\)\,\.\/\?]/g, ' ').split(/\s+/).filter(Boolean);
+  // 2. スペースを含む2語以上の複合語の動的解析
+  if (cleanKey.includes(' ')) {
+    const tokens = cleanKey.split(/\s+/).filter(Boolean);
     if (tokens.length >= 2) {
-      // initialVocabulary または内部辞書からトークンを検索
       let vocabList = [];
       try {
         if (typeof initialVocabulary !== 'undefined') vocabList = initialVocabulary;
-        else if (typeof StorageService !== 'undefined') vocabList = StorageService.getVocabulary();
+        else if (typeof StorageService !== 'undefined' && StorageService.getVocabulary) vocabList = StorageService.getVocabulary();
       } catch (_) {}
 
-      const parts = tokens.map(t => {
-        const cleanT = t.toLowerCase();
-        let meaning = '';
-        if (vocabList && vocabList.length > 0) {
-          const match = vocabList.find(w => (w.mongolian || '').toLowerCase() === cleanT || (w.dictForm || '').toLowerCase() === cleanT);
-          if (match && match.japanese) {
-            meaning = match.japanese.split(/[、,（(]/)[0].trim();
-          }
-        }
-        return meaning ? `「${t}（${meaning}）」` : `「${t}」`;
-      });
+      const compRows = tokens.map(t => {
+        const match = vocabList.find(w => 
+          (w.mongolian && w.mongolian.toLowerCase() === t) ||
+          (w.dictForm && w.dictForm.toLowerCase() === t)
+        );
+        const pos = match ? (match.pos || '名詞句構成要素') : '語句';
+        const meaning = match ? (match.japanese || match.baseMeaning || '固有構成語') : '複合語構成要素';
+        return `
+          <div class="p-2 rounded-lg bg-white/90 border border-amber-200 shadow-2xs space-y-0.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-black text-amber-900 cyrillic-text text-sm">「${t}」</span>
+              <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-950 font-bold text-[10px]">${pos}</span>
+            </div>
+            <div class="text-xs text-slate-800 font-bold">意味: <span class="text-amber-950">${meaning}</span></div>
+            <div class="text-[11px] text-slate-600">単独使用: ${match ? '辞書見出し語として単独使用可能' : '文脈で活用・結合'}</div>
+          </div>
+        `;
+      }).join('');
 
-      breakdown = parts.join(' ＋ ') + (ja ? ` ＝ 【${ja}】` : '');
+      return `
+        <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/80 border border-amber-300 text-xs space-y-2 shadow-2xs etymology-breakdown-card">
+          <div class="font-black text-amber-950 flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><span>🧩</span> 単語の成り立ち・構成要素:</span>
+            <span class="text-[11px] text-amber-800 font-bold">【${ja}】</span>
+          </div>
+          <div class="space-y-1.5">
+            ${compRows}
+          </div>
+          <div class="p-2 rounded-lg bg-amber-100/70 border border-amber-200/80 text-[11px] text-amber-950 font-bold leading-relaxed">
+            💡 各構成語が組み合わさって全体の意味【${ja}】を成しています。
+          </div>
+        </div>
+      `;
     }
   }
 
-  if (!breakdown) return '';
-
-  return `
-    <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/70 border border-amber-300/80 text-xs space-y-1.5 shadow-2xs etymology-breakdown-card">
-      <div class="font-black text-amber-950 flex items-center gap-1.5">
-        <span>🧩</span> 単語の成り立ち・構成:
+  // 3. 単一語で明示的な語源・接尾辞説明がある場合
+  if (deriv && (deriv.includes('語幹') || deriv.includes('接尾辞') || deriv.includes('派生') || deriv.includes('＋'))) {
+    return `
+      <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/80 border border-amber-300 text-xs space-y-1.5 shadow-2xs etymology-breakdown-card">
+        <div class="font-black text-amber-950 flex items-center gap-1.5">
+          <span>🧩</span> 単語の成り立ち・形態素解析:
+        </div>
+        <div class="font-bold text-slate-900 leading-relaxed cyrillic-text text-xs sm:text-sm pl-2 border-l-2 border-amber-400">
+          ${deriv}
+        </div>
       </div>
-      <div class="font-bold text-slate-900 leading-relaxed cyrillic-text text-xs sm:text-sm pl-2 border-l-2 border-amber-400">
-        ${breakdown}
+    `;
+  }
+
+  // 4. これ以上分解できない基本語
+  return `
+    <div class="mt-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1 text-slate-600 shadow-2xs">
+      <div class="font-bold text-slate-700 flex items-center gap-1">
+        <span>🌱</span> 語根・形態素情報:
+      </div>
+      <div class="text-[11px] text-slate-600 pl-2 border-l-2 border-slate-300">
+        見出し語「${mn}」は単一の基本語（これ以上分解できない語根）です。
       </div>
     </div>
   `;
 }
-
 if (typeof window !== 'undefined') {
   window.getWordEtymologyHTML = getWordEtymologyHTML;
 }
@@ -3809,7 +4028,36 @@ function findWordInDictionary(rawWord, passageGlossary = null) {
     }
   }
 
-  // 2. 単語マスターからの完全一致探索
+  // 1.5. 単独小辞・助詞・呼格・感嘆詞の直接判定テーブル
+  const particles = {
+    'ээ': { dictForm: 'ээ', meaning: '【感嘆詞】おお、まあ、ええっ／【呼格】〜よ、〜さん／【愛称】お母さん（ээж）', pos: '感嘆詞・呼格語尾', derivation: '親愛を込めた呼格（例: ээж ээ, багш аа）または驚きや感動を表す間投詞' },
+    'аа': { dictForm: 'аа', meaning: '【呼格】〜よ、〜さん／【感嘆詞】ああ', pos: '呼格語尾・感嘆詞', derivation: '男性語につく親愛の呼格（例: Зориг оо, Баяр аа）または感嘆詞' },
+    'оо': { dictForm: 'оо', meaning: '【呼格】〜よ、〜さん（男性円唇語用）', pos: '呼格語尾', derivation: 'о母音の単語につく呼格語尾（例: Золбоо оо）' },
+    'өө': { dictForm: 'өө', meaning: '【呼格】〜よ、〜さん（女性円唇語用）', pos: '呼格語尾', derivation: 'ө母音の単語につく呼格語尾（例: Зөөгч өө）' },
+    'уу': { dictForm: 'уу', meaning: '【疑問助詞】〜ですか？（男性語Yes/No疑問）', pos: '疑問助詞', derivation: '男性語（а, о, у）の平叙文末尾に付き疑問文を作る' },
+    'үү': { dictForm: 'үү', meaning: '【疑問助詞】〜ですか？（女性語Yes/No疑問）', pos: '疑問助詞', derivation: '女性語（э, ө, ү）の平叙文末尾に付き疑問文を作る' },
+    'юу': { dictForm: 'юу', meaning: '【疑問詞】何／【疑問助詞】〜ですか？（長母音・二重母音男性語用）', pos: '疑問代名詞・助詞', derivation: '「何」を尋ねる疑問詞、または長母音末尾男性語の疑問助詞' },
+    'юү': { dictForm: 'юү', meaning: '【疑問助詞】〜ですか？（長母音・二重母音女性語用）', pos: '疑問助詞', derivation: '長母音末尾女性語の疑問助詞' },
+    'бэ': { dictForm: 'бэ', meaning: '【疑問助詞】〜ですか？（疑問詞文末・鼻音末尾用）', pos: '疑問助詞', derivation: '疑問詞があり、直前がн, м, вで終わる文の末尾に付く' },
+    'вэ': { dictForm: 'вэ', meaning: '【疑問助詞】〜ですか？（疑問詞文末用）', pos: '疑問助詞', derivation: '疑問詞（юу, хаана等）のある文末に付く' },
+    'биш': { dictForm: 'биш', meaning: '【否定助詞】〜ではない（コピュラ否定）', pos: '否定助詞', derivation: '名詞・代名詞・形容詞の直後に置いて「AはBではない」と否定する' },
+    'юм': { dictForm: 'юм', meaning: '【終助詞】〜なのだ、〜である（詠嘆・確認）', pos: '終助詞', derivation: '文末に添えて詠嘆・語気緩和・事実の強調を表す' },
+    'ч': { dictForm: 'ч', meaning: '【強調・添加小辞】〜も、〜さえ', pos: '不変化小辞', derivation: '「Би ч бас（私もまた）」のように添加・強調を表す' },
+    'бас': { dictForm: 'бас', meaning: '【副詞】また、さらに、やはり', pos: '副詞', derivation: '事物の付加・並列を表す' },
+    'шүү': { dictForm: 'шүү', meaning: '【終助詞】〜だよ、〜ね（念押し・助言）', pos: '終助詞', derivation: '聞き手に注意を促したり念を押す親しい終助詞' },
+    'за': { dictForm: 'за', meaning: '【感動詞】はい、了解、じゃあ、さて', pos: '感動詞', derivation: '承諾や会話の切り出しに用いる' }
+  };
+
+  if (particles[lower]) {
+    return {
+      rawWord: cleanWord,
+      dictForm: particles[lower].dictForm,
+      meaning: particles[lower].meaning,
+      pos: particles[lower].pos,
+      pron: '',
+      derivation: particles[lower].derivation
+    };
+  }
   let vocab = [];
   try {
     if (typeof StorageService !== 'undefined' && StorageService.getVocabulary) {
@@ -3931,14 +4179,43 @@ function findWordInDictionary(rawWord, passageGlossary = null) {
     }
   }
 
-  // 見つからなかった場合のフォールバック（音訳のみ生成）
+  // 語幹マッチが見つからなかった場合でも、末尾の文法語尾を解析
+  for (const s of nounSuffixes) {
+    if (lower.endsWith(s.suffix) && lower.length > s.suffix.length) {
+      const stem = cleanWord.slice(0, -s.suffix.length);
+      return {
+        rawWord: cleanWord,
+        dictForm: stem,
+        meaning: `語幹「${stem}」＋ 名詞格語尾【${s.name}】`,
+        pos: '名詞（格変化形）',
+        pron: '',
+        derivation: `語幹「${stem}」に格助詞「-${s.suffix}」（${s.name}）が接続した文法形です。`
+      };
+    }
+  }
+
+  for (const v of verbSuffixes) {
+    if (lower.endsWith(v.suffix) && lower.length > v.suffix.length) {
+      const stem = cleanWord.slice(0, -v.suffix.length);
+      return {
+        rawWord: cleanWord,
+        dictForm: stem + 'х',
+        meaning: `動詞語幹「${stem}」＋ 活用語尾【${v.name}】`,
+        pos: '動詞（活用形）',
+        pron: '',
+        derivation: `動詞語幹「${stem}」に活用語尾「-${v.suffix}」（${v.name}）が接続した文法形です。`
+      };
+    }
+  }
+
+  // 接尾辞も未検出の場合の具体的解説フォールバック
   return {
     rawWord: cleanWord,
     dictForm: cleanWord,
-    meaning: '文脈から意味を推測してみましょう',
-    pos: '語句',
+    meaning: `キリル文字表記「${cleanWord}」（基本語・固有名詞または語句）`,
+    pos: '語句・基本形',
     pron: '',
-    derivation: ''
+    derivation: `単語「${cleanWord}」です。文脈中の主語・補語・目的語などの格語尾や述語動詞の活用形態と合わせて確認してください。`
   };
 }
 
@@ -38586,6 +38863,996 @@ const initialTypingSentences = [
     }
   }
 }
+,
+  // --- 教科書例文（全18課）---
+  {
+    "id": "tb_type_l1_tb_1_1",
+    "level": "第1課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第1課）",
+    "lesson": 1,
+    "lessonTitle": "第１課 挨拶（Мэндчилгээ）",
+    "textMn": "Сайн байна уу?",
+    "textJa": "こんにちは。（お元気ですか。）",
+    "romaji": "",
+    "source": "教科書 第１課 挨拶（Мэндчилгээ）",
+    "explanation": "モンゴル語で最も一般的な挨拶表現。文字通りには「良いですか？（お元気ですか）」の意味です。初対面でも親しい間柄でも幅広く使われます。"
+  },
+  {
+    "id": "tb_type_l1_tb_1_2",
+    "level": "第1課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第1課）",
+    "lesson": 1,
+    "lessonTitle": "第１課 挨拶（Мэндчилгээ）",
+    "textMn": "Сайн, сайн байна уу?",
+    "textJa": "元気です、こんにちは。（お元気ですか。）",
+    "romaji": "",
+    "source": "教科書 第１課 挨拶（Мэндчилгээ）",
+    "explanation": "「Сайн байна уу?」に対する標準的な返答。「Сайн（良い、元気）」と答えた上で、相手に対しても「お元気ですか」と問い返します。"
+  },
+  {
+    "id": "tb_type_l1_tb_1_3",
+    "level": "第1課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第1課）",
+    "lesson": 1,
+    "lessonTitle": "第１課 挨拶（Мэндчилгээ）",
+    "textMn": "Танилцсандаа баяртай байна.",
+    "textJa": "お会い出来て嬉しいです。（お知り合いになれて光栄です。）",
+    "romaji": "",
+    "source": "教科書 第１課 挨拶（Мэндчилгээ）",
+    "explanation": "初対面の挨拶。「танилцах（知り合う）」＋既定過去・形動詞語尾「-сан」＋与位格「-д」＋再帰所有語尾「-аа」＋「баяртай байна（嬉しいです）」という文構造です。"
+  },
+  {
+    "id": "tb_type_l1_tb_1_4",
+    "level": "第1課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第1課）",
+    "lesson": 1,
+    "lessonTitle": "第１課 挨拶（Мэндчилгээ）",
+    "textMn": "Сайхан танилцлаа.",
+    "textJa": "お会い出来て良かったです。（初めまして。）",
+    "romaji": "",
+    "source": "教科書 第１課 挨拶（Мэндчилгээ）",
+    "explanation": "「сайхан（美しく、素晴らしく）」＋動詞「танилцах（知り合う）」の終止形過去「-лаа」。「良い出会いができました」という丁寧な初対面の挨拶です。"
+  },
+  {
+    "id": "tb_type_l1_tb_1_5",
+    "level": "第1課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第1課）",
+    "lesson": 1,
+    "lessonTitle": "第１課 挨拶（Мэндчилгээ）",
+    "textMn": "Би япон хүн. Таны нэр хэн бэ?",
+    "textJa": "私は日本人です。あなたのお名前は何ですか。",
+    "romaji": "",
+    "source": "教科書 第１課 挨拶（Мэндчилгээ）",
+    "explanation": "コピュラ文（AはBである）は「Би япон хүн（主語＋述語名詞）」を並べるだけです。疑問詞「хэн（誰）」を伴う疑問文には疑問助詞「бэ」を用います。"
+  },
+  {
+    "id": "tb_type_l1_tb_1_6",
+    "level": "第1課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第1課）",
+    "lesson": 1,
+    "lessonTitle": "第１課 挨拶（Мэндчилгээ）",
+    "textMn": "Золбоо: Сайн байна уу? Такэши: Сайн, сайн байна уу? Золбоо: Миний нэр Золбоо. Би багш биш, оюутан. Таны нэр хэн бэ? Такэши: Миний нэр Такэши. Би япон хүн.",
+    "textJa": "ゾルボー: こんにちは。 たけし: 元気です、こんにちは。 ゾルボー: 私の名前はゾルボーです。私は先生ではなく学生です。あなたのお名前は何ですか？ たけし: 私の名前はたけしです。私は日本人です。",
+    "romaji": "",
+    "source": "教科書 第１課 挨拶（Мэндчилгээ）",
+    "explanation": "第1課の基本会話。自己紹介、コピュラ文の肯定文・否定文（〜 биш）、疑問詞疑問文（〜 хэн бэ?）を網羅した実践的な対話です。"
+  },
+  {
+    "id": "tb_type_l1_tb_1_7",
+    "level": "第1課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第1課）",
+    "lesson": 1,
+    "lessonTitle": "第１課 挨拶（Мэндчилгээ）",
+    "textMn": "Сайн байцгаана уу? Миний нэр Такэши. Би 26 настай. Би Японоос ирсэн. Би багш биш, оюутан. Монголд ирсэндээ маш их баяртай байна. Сайхан танилцлаа.",
+    "textJa": "皆さんこんにちは。私の名前はたけしです。26歳です。日本から来ました。先生ではなく学生です。モンゴルに来られて大変嬉しいです。お会い出来て光栄です。",
+    "romaji": "",
+    "source": "教科書 第１課 挨拶（Мэндчилгээ）",
+    "explanation": "第1課の表現を組み合わせた自己紹介スピーチ。複数人への挨拶「Сайн байцгаана уу?」、年齢表現、奪格「Японоос（日本から）」を含みます。"
+  },
+  {
+    "id": "tb_type_l2_tb_2_1",
+    "level": "第2課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第2課）",
+    "lesson": 2,
+    "lessonTitle": "第２課 これは何ですか（Энэ юу вэ?）",
+    "textMn": "Энэ юу вэ?",
+    "textJa": "これは何ですか。",
+    "romaji": "",
+    "source": "教科書 第２課 これは何ですか（Энэ юу вэ?）",
+    "explanation": "指示代名詞「энэ（これ）」＋疑問代名詞「юу（何）」＋疑問助詞「вэ」。「юу」は鼻音（н, м, в）で終わらないため、疑問助詞「вэ」が付きます。"
+  },
+  {
+    "id": "tb_type_l2_tb_2_2",
+    "level": "第2課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第2課）",
+    "lesson": 2,
+    "lessonTitle": "第２課 これは何ですか（Энэ юу вэ?）",
+    "textMn": "Энэ сонин, тэр ном.",
+    "textJa": "これは新聞で、それは本です。",
+    "romaji": "",
+    "source": "教科書 第２課 これは何ですか（Энэ юу вэ?）",
+    "explanation": "近称指示代名詞「энэ（これ）」と中称指示代名詞「тэр（それ・あれ）」の対比。コピュラ動詞を使わずに名詞を並べるだけで文が成立します。"
+  },
+  {
+    "id": "tb_type_l2_tb_2_3",
+    "level": "第2課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第2課）",
+    "lesson": 2,
+    "lessonTitle": "第２課 これは何ですか（Энэ юу вэ?）",
+    "textMn": "Энд самбар байна уу? Тийм ээ, байна.",
+    "textJa": "ここに黒板はありますか。はい、あります。",
+    "romaji": "",
+    "source": "教科書 第２課 これは何ですか（Энэ юу вэ?）",
+    "explanation": "存在文の疑問形。「энд（ここに）」＋主語＋存在動詞「байна（ある・いる）」＋疑問助詞「уу」。Yes/No疑問文には「уу/үү」が付きます（байнаの末尾は短母音語幹のためуу）。"
+  },
+  {
+    "id": "tb_type_l2_tb_2_4",
+    "level": "第2課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第2課）",
+    "lesson": 2,
+    "lessonTitle": "第２課 これは何ですか（Энэ юу вэ?）",
+    "textMn": "Золбоо: Энэ юу вэ? Такэши: Энэ толь бичиг. Золбоо: Тэр дэвтэр үү? Такэши: Үгүй ээ, энэ дэвтэр биш, ном.",
+    "textJa": "ゾルボー: これは辞書ですか？ たけし: これは辞書です。 ゾルボー: それはノートですか？ たけし: いいえ、これはノートではなく本です。",
+    "romaji": "",
+    "source": "教科書 第２課 これは何ですか（Энэ юу вэ?）",
+    "explanation": "「толь бичиг（辞書）」や「дэвтэр（ノート）」を用いた会話。女性語「дэвтэр」に対するYes/No疑問助詞「үү」の接続と、否定「〜 биш」の応答です。"
+  },
+  {
+    "id": "tb_type_l2_tb_2_5",
+    "level": "第2課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第2課）",
+    "lesson": 2,
+    "lessonTitle": "第２課 これは何ですか（Энэ юу вэ?）",
+    "textMn": "Манай ангид хоёр том самбар, олон ширээ, сандал байна. Энд толь бичиг, дэвтэр, харандаа байгаа. Тэнд зурагт, компьютер байна уу? Тийм ээ, бүгд байна.",
+    "textJa": "私たちの教室には2つの大きな黒板、たくさんの机、椅子があります。ここに辞書、ノート、鉛筆があります。あそこにテレビやパソコンはありますか？はい、すべてあります。",
+    "romaji": "",
+    "source": "教科書 第２課 これは何ですか（Энэ юу вэ?）",
+    "explanation": "教室内の物と設備を説明する長文。「манай（私たちの）」、「хоёр（2つの）」、「олон（たくさんの）」、「бүгд（すべて）」という数量・状態語を含みます。"
+  },
+  {
+    "id": "tb_type_l3_tb_3_1",
+    "level": "第3課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第3課）",
+    "lesson": 3,
+    "lessonTitle": "第３課 私はボランティアです（Би сайн дурын ажилтан）",
+    "textMn": "Би Японы Токио хотоос ирсэн.",
+    "textJa": "私は日本の東京市から来ました。",
+    "romaji": "",
+    "source": "教科書 第３課 私はボランティアです（Би сайн дурын ажилтан）",
+    "explanation": "出身を表す起点奪格「-оос4」。男性長母音・二重母音の語幹「хот（都市）」に奪格助詞「-оос」が接続して「хотоос（〜から）」となります。「ирсэн」は動詞「ирэх（来る）」の既定過去形。"
+  },
+  {
+    "id": "tb_type_l3_tb_3_2",
+    "level": "第3課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第3課）",
+    "lesson": 3,
+    "lessonTitle": "第３課 私はボランティアです（Би сайн дурын ажилтан）",
+    "textMn": "Би хорин зургаан настай. Та хэдэн настай вэ?",
+    "textJa": "私は26歳です。あなたは何歳ですか。",
+    "romaji": "",
+    "source": "教科書 第３課 私はボランティアです（Би сайн дурын ажилтан）",
+    "explanation": "年齢の表現。「хорин зургаа（26）」＋「-н（隠れン）」＋「настай（歳である）」。疑問詞「хэдэн（いくつかの・何人の）」を用いた年齢の質問には「вэ」が付きます。"
+  },
+  {
+    "id": "tb_type_l3_tb_3_3",
+    "level": "第3課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第3課）",
+    "lesson": 3,
+    "lessonTitle": "第３課 私はボランティアです（Би сайн дурын ажилтан）",
+    "textMn": "Болд: Та хаанаас ирсэн бэ? Такэши: Би Японоос ирсэн. Болд: Та хэзээ Монголд ирсэн бэ? Такэши: Би өнгөрсөн долоо хоногт ирсэн.",
+    "textJa": "ボルド: あなたはどこから来ましたか？ たけし: 私は日本から来ました。 ボルド: いつモンゴルに来ましたか？ たけし: 先週来ました。",
+    "romaji": "",
+    "source": "教科書 第３課 私はボランティアです（Би сайн дурын ажилтан）",
+    "explanation": "疑問詞「хаанаас（どこから）」、「хэзээ（いつ）」を用いた過去の来訪に関する対話。「өнгөрсөн долоо хоногт（先週に）」という時を表す与位格副詞句がポイントです。"
+  },
+  {
+    "id": "tb_type_l3_tb_3_4",
+    "level": "第3課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第3課）",
+    "lesson": 3,
+    "lessonTitle": "第３課 私はボランティアです（Би сайн дурын ажилтан）",
+    "textMn": "Сайн байна уу? Намайг Такэши гэдэг. Би Японоос ирсэн сайн дурын гишүүн. Би 26 настай. Монголын уламжлалт соёл, түүхийг судлахаар ирсэн. Монгол хэл их сонирхолтой байна.",
+    "textJa": "こんにちは。私の名前はたけしと言います。日本から来たボランティア隊員です。26歳です。モンゴルの伝統文化と歴史を研究するために来ました。モンゴル語は大変面白いです。",
+    "romaji": "",
+    "source": "教科書 第３課 私はボランティアです（Би сайн дурын ажилтан）",
+    "explanation": "派遣隊員の自己紹介文。「Намайг ... гэдэг（私を〜という）」、「судлахаар（研究するために：目的の造格）」、「сонирхолтой（興味深い）」などの重要語彙を含みます。"
+  },
+  {
+    "id": "tb_type_l4_tb_4_1",
+    "level": "第4課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第4課）",
+    "lesson": 4,
+    "lessonTitle": "第４課 私は日本語の先生です（Би япон хэлний багш）",
+    "textMn": "Би сургуулийн япон хэлний багш.",
+    "textJa": "私は学校の日本語の先生です。",
+    "romaji": "",
+    "source": "教科書 第４課 私は日本語の先生です（Би япон хэлний багш）",
+    "explanation": "名詞属格（所有格）の重なり。「сургууль（学校）」の属格「сургуулийн（学校の）」＋「япон хэл（日本語）」の属格「япон хэлний（日本語の）」＋「багш（先生）」。"
+  },
+  {
+    "id": "tb_type_l4_tb_4_2",
+    "level": "第4課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第4課）",
+    "lesson": 4,
+    "lessonTitle": "第４課 私は日本語の先生です（Би япон хэлний багш）",
+    "textMn": "Ном ширээн дээр байна. Цүнх сандал доор байна.",
+    "textJa": "本は机の上にあります。鞄は椅子の下にあります。",
+    "romaji": "",
+    "source": "教科書 第４課 私は日本語の先生です（Би япон хэлний багш）",
+    "explanation": "位置を表す後置詞句。「дээр（上に）」、「доор（下に）」。「ширээ（机）」に与位格・奪格が接続する形（ширээн дээр）で位置を示します。"
+  },
+  {
+    "id": "tb_type_l4_tb_4_3",
+    "level": "第4課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第4課）",
+    "lesson": 4,
+    "lessonTitle": "第４課 私は日本語の先生です（Би япон хэлний багш）",
+    "textMn": "Сувдаа: Та япон хүн үү? Такэши: Тийм ээ, би япон хүн. Таны ном хаана байна вэ? Сувдаа: Миний ном ширээн дээр байна.",
+    "textJa": "スヴダー: あなたは日本人ですか？ たけし: はい、日本人です。あなたの本はどこにありますか？ スヴダー: 私の本は机の上にあります。",
+    "romaji": "",
+    "source": "教科書 第４課 私は日本語の先生です（Би япон хэлний багш）",
+    "explanation": "相手の身元確認と、物の位置を尋ねる会話。名詞「хүн」への疑問助詞「үү」、疑問詞「хаана（どこ）」＋「вэ」の使い分けが身につきます。"
+  },
+  {
+    "id": "tb_type_l4_tb_4_4",
+    "level": "第4課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第4課）",
+    "lesson": 4,
+    "lessonTitle": "第４課 私は日本語の先生です（Би япон хэлний багш）",
+    "textMn": "Манай багшийн өрөө хоёрдугаар давхарт байдаг. Өрөөний цонхны дэргэд том ширээ байгаа. Ширээн дээр толь бичиг, сурах бичиг, олон дэвтэр байна. Компьютер ширээний баруун талд байрладаг.",
+    "textJa": "私たちの職員室は2階にあります。部屋の窓のそばに大きな机があります。机の上には辞書、教科書、たくさんのノートがあります。パソコンは机の右側に置かれています。",
+    "romaji": "",
+    "source": "教科書 第４課 私は日本語の先生です（Би япон хэлний багш）",
+    "explanation": "部屋の配置や位置関係を詳細に描写する文章。「давхарт（階に）」、「дэргэд（そばに）」、「баруун талд（右側に）」などの空間方位表現を学びます。"
+  },
+  {
+    "id": "tb_type_l5_tb_5_1",
+    "level": "第5課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第5課）",
+    "lesson": 5,
+    "lessonTitle": "第５課 今日は何をしますか（Өнөөдөр юу хийх вэ?）",
+    "textMn": "Би өнөөдөр найзтайгаа хамт кино үзнэ.",
+    "textJa": "私は今日友達と一緒に映画を見ます。",
+    "romaji": "",
+    "source": "教科書 第５課 今日は何をしますか（Өнөөдөр юу хийх вэ?）",
+    "explanation": "動詞未来形「-на4」と共同格「-той4」＋再帰所有「-гаа」。「үзэх（見る）」の男性語幹「үз-」に女性母音未来語尾「-нэ」が付き「үзнэ」となります。"
+  },
+  {
+    "id": "tb_type_l5_tb_5_2",
+    "level": "第5課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第5課）",
+    "lesson": 5,
+    "lessonTitle": "第５課 今日は何をしますか（Өнөөдөр юу хийх вэ?）",
+    "textMn": "Чи маргааш номын санд очно уу? Үгүй, очихгүй.",
+    "textJa": "君は明日図書館に行きますか？いいえ、行きません。",
+    "romaji": "",
+    "source": "教科書 第５課 今日は何をしますか（Өнөөдөр юу хийх вэ?）",
+    "explanation": "動詞未来疑問文と否定文。「очих（行く）」＋「-но уу」（男性母音語）で「行きますか？」、否定は形動詞形「очих」＋「-гүй」で「行かない」となります。"
+  },
+  {
+    "id": "tb_type_l5_tb_5_3",
+    "level": "第5課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第5課）",
+    "lesson": 5,
+    "lessonTitle": "第５課 今日は何をしますか（Өнөөдөр юу хийх вэ?）",
+    "textMn": "Юми: Баяр аа, чи өнөөдөр юу хийх вэ? Баяр: Ажлын хамтрагчтайгаа хамт өдрийн хоол иднэ. Юми: Хаана идэх вэ? Баяр: Монгол зоогийн газарт иднэ.",
+    "textJa": "ユミ: バヤル、今日何をするの？ バヤル: 同僚と一緒に昼ご飯を食べるよ。 ユミ: どこで食べるの？ バヤル: モンゴル料理レストランで食べるよ。",
+    "romaji": "",
+    "source": "教科書 第５課 今日は何をしますか（Өнөөдөр юу хийх вэ?）",
+    "explanation": "親しい間柄での予定を尋ねる日常対話。呼格「Баяр аа」、目的格・与位格の場所「зоогийн газарт（レストランで）」の使い方が明確です。"
+  },
+  {
+    "id": "tb_type_l5_tb_5_4",
+    "level": "第5課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第5課）",
+    "lesson": 5,
+    "lessonTitle": "第５課 今日は何をしますか（Өнөөдөр юу хийх вэ?）",
+    "textMn": "Өнөөдөр хагас сайн өдөр тул би өглөө эрт босно. Дараа нь зах руу явж шинэ ногоо, мах авна. Өдөр гэртээ амттай хоол хийнэ. Орой найзуудтайгаа уулзаж ярилцана.",
+    "textJa": "今日は土曜日なので、私は朝早く起きます。その後、市場へ行って新鮮な野菜とお肉を買います。昼は家で美味しい料理を作ります。夜は友達と会っておしゃべりをします。",
+    "romaji": "",
+    "source": "教科書 第５課 今日は何をしますか（Өнөөдөр юу хийх вэ?）",
+    "explanation": "休日のスケジュールを描いた一連の行動文。「хагас сайн өдөр（土曜日）」、「эрт босох（早起きする）」、「зах руу（市場へ）」など生活必須表現が満載です。"
+  },
+  {
+    "id": "tb_type_l6_tb_6_1",
+    "level": "第6課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第6課）",
+    "lesson": 6,
+    "lessonTitle": "第６課 教室に大きい黒板があります（Ангид том самбар байна）",
+    "textMn": "Багш аа, самбар дээр бичсэн үгийг сайн хараарай.",
+    "textJa": "先生、黒板に書かれた言葉をよく見てください。",
+    "romaji": "",
+    "source": "教科書 第６課 教室に大きい黒板があります（Ангид том самбар байна）",
+    "explanation": "丁寧な助言・依頼・命令の語尾「-аарай4」。「харах（見る）」の語幹「хар-」に男性母音語尾「-аарай」が接続し「хараарай（見てくださいね）」となります。"
+  },
+  {
+    "id": "tb_type_l6_tb_6_2",
+    "level": "第6課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第6課）",
+    "lesson": 6,
+    "lessonTitle": "第６課 教室に大きい黒板があります（Ангид том самбар байна）",
+    "textMn": "Оюутнууд өдөр бүр шинэ үг цээжилдэг.",
+    "textJa": "学生たちは毎日新しい単語を暗記します。",
+    "romaji": "",
+    "source": "教科書 第６課 教室に大きい黒板があります（Ангид том самбар байна）",
+    "explanation": "習慣・反復を表す動詞形動詞語尾「-даг4」。「цээжлэх（暗記する）」の語幹「цээжил-」に女性母音語尾「-дэг」が付き「цээжилдэг（暗記する習慣がある）」となります。"
+  },
+  {
+    "id": "tb_type_l6_tb_6_3",
+    "level": "第6課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第6課）",
+    "lesson": 6,
+    "lessonTitle": "第６課 教室に大きい黒板があります（Ангид том самбар байна）",
+    "textMn": "Багш: Энэ манай анги. Энд том самбар, олон ширээ сандал байгаа. Зориг: Тэр юу вэ, багш аа? Багш: Тэр бол номын шүүгээ. Та нар номоо энд тавиарай.",
+    "textJa": "先生: これが私たちの教室です。ここに大きな黒板、たくさんの机と椅子があります。 ゾリグ: あれは何ですか、先生？ 先生: あれは本棚です。皆さんは本をここに置いてくださいね。",
+    "romaji": "",
+    "source": "教科書 第６課 教室に大きい黒板があります（Ангид том самбар байна）",
+    "explanation": "教室内のルールと設備の説明。強意の繋ぎ言葉「бол（〜は）」や依頼語尾「тавиарай（置いてください）」を学習します。"
+  },
+  {
+    "id": "tb_type_l6_tb_6_4",
+    "level": "第6課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第6課）",
+    "lesson": 6,
+    "lessonTitle": "第６課 教室に大きい黒板があります（Ангид том самбар байна）",
+    "textMn": "Манай сургуулийн хичээлийн анги танхим маш саруулхан, цэвэрхэн байдаг. Самбарын урд багшийн ширээ, хойно нь оюутнуудын суудал байрлана. Оюутан бүр хичээлдээ анхааралтай суудаг.",
+    "textJa": "私たちの学校の教室はとても明るく清潔です。黒板の前には先生の机、後ろには学生の席が配置されています。どの学生も授業に熱心に出席します。",
+    "romaji": "",
+    "source": "教科書 第６課 教室に大きい黒板があります（Ангид том самбар байна）",
+    "explanation": "学習環境を表現する描写文。「саруулхан（明るく広々とした）」、「анхааралтай（注意深く、熱心に）」などの形容詞・副詞表現が豊富です。"
+  },
+  {
+    "id": "tb_type_l7_tb_7_1",
+    "level": "第7課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第7課）",
+    "lesson": 7,
+    "lessonTitle": "第７課 私の家族（Манай гэр бүл）",
+    "textMn": "Манай гэр бүл тавуулаа.",
+    "textJa": "私たちの家族は5人家族です。",
+    "romaji": "",
+    "source": "教科書 第７課 私の家族（Манай гэр бүл）",
+    "explanation": "集合数詞語尾「-уул2/-үүл2」。「тав（5）」に集合数詞語尾「-уул」と再帰所有「-аа」が付き、「тавуулаа（5人揃って、5人で）」という意味を表します。"
+  },
+  {
+    "id": "tb_type_l7_tb_7_2",
+    "level": "第7課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第7課）",
+    "lesson": 7,
+    "lessonTitle": "第７課 私の家族（Манай гэр бүл）",
+    "textMn": "Би дүүгээ дагуулаад цэцэрлэгт хүрээлэн явсан.",
+    "textJa": "私は弟（妹）を連れて公園に行きました。",
+    "romaji": "",
+    "source": "教科書 第７課 私の家族（Манай гэр бүл）",
+    "explanation": "目的格（対格）＋再帰所有語尾「-гээ」。「дүү（年下の兄弟姉妹）」に対格再帰所有が付き「自分の弟/妹を」となります。「дагуулаад」は動詞接続語尾「-аад」で「連れて」の意。"
+  },
+  {
+    "id": "tb_type_l7_tb_7_3",
+    "level": "第7課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第7課）",
+    "lesson": 7,
+    "lessonTitle": "第７課 私の家族（Манай гэр бүл）",
+    "textMn": "Такэши: Зориг оо, энэ зургийг хар даа. Энэ манай аав, ээж хоёр. Зориг: Аав чинь ямар ажил хийдэг вэ? Такэши: Манай аав инженер, ээж минь багш.",
+    "textJa": "たけし: ゾリグ、この写真を見てよ。これが僕の父と母の二人だよ。 ゾリグ: お父さんはどんな仕事をしているの？ たけし: 僕の父はエンジニアで、母は教師だよ。",
+    "romaji": "",
+    "source": "教科書 第７課 私の家族（Манай гэр бүл）",
+    "explanation": "写真を見せながら家族の職業を紹介する対話。「аав чинь（君のお父さん）」という相手所有語尾「-чинь」と「ээж минь（私の母）」の対比がポイントです。"
+  },
+  {
+    "id": "tb_type_l7_tb_7_4",
+    "level": "第7課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第7課）",
+    "lesson": 7,
+    "lessonTitle": "第７課 私の家族（Манай гэр бүл）",
+    "textMn": "Манай ам бүл дөрвүүлээ. Аав, ээж, ах бид дөрөв хамтдаа амьдардаг. Аав компанид ажилладаг бөгөөд ээж эмнэлэгт эмч хийдэг. Амралтын өдрүүдэд бид бүгдээрээ хөдөө явж агаарт гардаг.",
+    "textJa": "我が家は4人家族です。父、母、兄、私の4人で一緒に暮らしています。父は会社に勤めており、母は病院で医師をしています。週末には私たちはみんなで田舎へ出かけて外の空気を吸います。",
+    "romaji": "",
+    "source": "教科書 第７課 私の家族（Манай гэр бүл）",
+    "explanation": "家族構成と週末の過ごし方を語る文章。「ам бүл（家族人員）」、「бөгөөд（〜であり、かつ）」、「агаарт гарах（ピクニックに行く、戸外に出る）」という自然なモンゴル語表現です。"
+  },
+  {
+    "id": "tb_type_l8_tb_8_1",
+    "level": "第8課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第8課）",
+    "lesson": 8,
+    "lessonTitle": "第８課 ウランバートルから遠いなあ（Улаанбаатараас хол юм аа）",
+    "textMn": "Улаанбаатараас Дархан хот хүртэл хэр зэрэг хол вэ?",
+    "textJa": "ウランバートルからダルハン市まではどれくらい遠いですか。",
+    "romaji": "",
+    "source": "教科書 第８課 ウランバートルから遠いなあ（Улаанбаатараас хол юм аа）",
+    "explanation": "起点「-аас4（〜から）」と到達点「хүртэл（〜まで）」の呼応。「хэр зэрэг（どれほど）」は程度・距離を尋ねる疑問連語です。"
+  },
+  {
+    "id": "tb_type_l8_tb_8_2",
+    "level": "第8課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第8課）",
+    "lesson": 8,
+    "lessonTitle": "第８課 ウランバートルから遠いなあ（Улаанбаатараас хол юм аа）",
+    "textMn": "Галт тэргээр явах нь автобуснаас илүү тав тухтай.",
+    "textJa": "列車で行くのはバスより快適です。",
+    "romaji": "",
+    "source": "教科書 第８課 ウランバートルから遠いなあ（Улаанбаатараас хол юм аа）",
+    "explanation": "比較構文。比較対象の名詞に奪格「-наас4」を付け、「илүү（より〜、もっと）」を伴って優劣を比較します。「галт тэргээр（列車で：手段の造格）」。"
+  },
+  {
+    "id": "tb_type_l8_tb_8_3",
+    "level": "第8課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第8課）",
+    "lesson": 8,
+    "lessonTitle": "第８課 ウランバートルから遠いなあ（Улаанбаатараас хол юм аа）",
+    "textMn": "Такэши: Юми, чи Эрдэнэт хот руу явна гэсэн үү? Юми: Тийм ээ. Эрдэнэт хот эндээс хэр хол вэ? Такэши: Машинаар зургаан цаг орчим явдаг юм билээ.",
+    "textJa": "たけし: ユミ、エルデネト市に行くって言ってたよね？ ユミ: そうなの。エルデネト市はここからどれくらい遠いの？ たけし: 車で6時間くらいかかるそうだよ。",
+    "romaji": "",
+    "source": "教科書 第８課 ウランバートルから遠いなあ（Улаанбаатараас хол юм аа）",
+    "explanation": "間接話法「〜 гэсэн үү（〜と言ったのか）」と伝聞・間接確認「〜 юм билээ（〜だそうだ、〜だったよ）」を含んだ実用的な移動の会話です。"
+  },
+  {
+    "id": "tb_type_l8_tb_8_4",
+    "level": "第8課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第8課）",
+    "lesson": 8,
+    "lessonTitle": "第８課 ウランバートルから遠いなあ（Улаанбаатараас хол юм аа）",
+    "textMn": "Монгол орон уудам уужим нутаг дэвсгэртэй тул хотуудын хоорондох зай их хол байдаг. Улаанбаатараас хөдөө орон нутаг руу онгоц, галт тэрэг, эсвэл хот хоорондын автобусаар зорчдог. Зам зуурын байгаль үнэхээр үзэсгэлэнтэй.",
+    "textJa": "モンゴル国は広大な国土を持つため、都市間の距離が非常に遠いです。ウランバートルから地方へは飛行機、列車、または長距離バスで移動します。道中の自然は実に美しいです。",
+    "romaji": "",
+    "source": "教科書 第８課 ウランバートルから遠いなあ（Улаанбаатараас хол юм аа）",
+    "explanation": "モンゴルの地理的特徴と交通事情を述べる長文。「уудам уужим（広々とした）」、「хоорондох зай（間の距離）」、「зам зуурын（道中の）」などの語彙力を高めます。"
+  },
+  {
+    "id": "tb_type_l9_tb_9_1",
+    "level": "第9課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第9課）",
+    "lesson": 9,
+    "lessonTitle": "第９課 あなたは毎日何をしていますか（Та өдөр бүр юу хийдэг вэ?）",
+    "textMn": "Би өглөө бүр долоон цагт босдог.",
+    "textJa": "私は毎朝7時に起きます。",
+    "romaji": "",
+    "source": "教科書 第９課 あなたは毎日何をしていますか（Та өдөр бүр юу хийдэг вэ?）",
+    "explanation": "時間・時刻を表す与位格「-т/-д」と習慣形動詞語尾「-даг4」。「долоон цаг（7時）」に「-т」が接続して「7時に」となり、日常習慣を表します。"
+  },
+  {
+    "id": "tb_type_l9_tb_9_2",
+    "level": "第9課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第9課）",
+    "lesson": 9,
+    "lessonTitle": "第９課 あなたは毎日何をしていますか（Та өдөр бүр юу хийдэг вэ?）",
+    "textMn": "Би ихэвчлэн автобусаар явдаг, харин заримдаа алхдаг.",
+    "textJa": "私はたいていバスで行きますが、時には歩きます。",
+    "romaji": "",
+    "source": "教科書 第９課 あなたは毎日何をしていますか（Та өдөр бүр юу хийдэг вэ?）",
+    "explanation": "頻度副詞「ихэвчлэн（たいてい、普通は）」と「заримдаа（時々）」。対比の接続詞「харин（一方で、しかし）」で対比させています。"
+  },
+  {
+    "id": "tb_type_l9_tb_9_3",
+    "level": "第9課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第9課）",
+    "lesson": 9,
+    "lessonTitle": "第９課 あなたは毎日何をしていますか（Та өдөр бүр юу хийдэг вэ?）",
+    "textMn": "Зориг: Такэши, чи өдөр бүр юу хийдэг вэ? Такэши: Би өглөө монгол хэлээ давтаад, өдөр нь хичээлдээ суудаг. Зориг: Орой нь чөлөөт цагаараа яадаг вэ? Такэши: Заал авч сагс тоглодог.",
+    "textJa": "ゾリグ: たけし、毎日何をしているの？ たけし: 朝はモンゴル語を復習して、昼は授業に出席しているよ。 ゾリグ: 夜の自由時間はどうしてる？ たけし: 体育館を取ってバスケをしているよ。",
+    "romaji": "",
+    "source": "教科書 第９課 あなたは毎日何をしていますか（Та өдөр бүр юу хийдэг вэ?）",
+    "explanation": "1日の過ごし方を質問・回答する対話。前行動接続「давтаад（復習してから）」や「заал авах（体育館を借りる）」といった現地生活ならではの慣用表現です。"
+  },
+  {
+    "id": "tb_type_l9_tb_9_4",
+    "level": "第9課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第9課）",
+    "lesson": 9,
+    "lessonTitle": "第９課 あなたは毎日何をしていますか（Та өдөр бүр юу хийдэг вэ?）",
+    "textMn": "Миний ажлын өдөр маш завгүй өнгөрдөг. Өглөөний цайгаа уугаад найман цаг хагаст гэрээсээ гарна. Ажил дээрээ очиж оройн зургаан цаг хүртэл ажилладаг. Орой гэртээ ирээд ном уншиж амардаг.",
+    "textJa": "私の平日はとても忙しく過ぎていきます。朝食を食べてから8時半に家を出ます。職場に行って夕方6時まで働きます。夜は家に帰って本を読んで休みます。",
+    "romaji": "",
+    "source": "教科書 第９課 あなたは毎日何をしていますか（Та өдөр бүр юу хийдэг вэ?）",
+    "explanation": "典型的な社会人の1日のルーティン。「өглөөний цай（朝食）」、「завгүй（忙しい）」、「гэрээсээ гарах（家を出る）」など頻出語句が詰まっています。"
+  },
+  {
+    "id": "tb_type_l10_tb_10_1",
+    "level": "第10課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第10課）",
+    "lesson": 10,
+    "lessonTitle": "第１０課 私はモンゴル語ができます（Би монгол хэлээр ярьж чадна）",
+    "textMn": "Би монгол хэлээр бага зэрэг ярьж чадна.",
+    "textJa": "私はモンゴル語で少し話すことができます。",
+    "romaji": "",
+    "source": "教科書 第１０課 私はモンゴル語ができます（Би монгол хэлээр ярьж чадна）",
+    "explanation": "言語の手段を表す造格「-аар4」＋動詞可能表現「-ж/ч чадах」。「ярих（話す）」の接続形「ярьж」に助動詞「чадна（できる）」が接続します。「бага зэрэг（少し）」。"
+  },
+  {
+    "id": "tb_type_l10_tb_10_2",
+    "level": "第10課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第10課）",
+    "lesson": 10,
+    "lessonTitle": "第１０課 私はモンゴル語ができます（Би монгол хэлээр ярьж чадна）",
+    "textMn": "Та морь унаж чадах уу? Үгүй ээ, би морь унаж чадахгүй.",
+    "textJa": "あなたは馬に乗ることができますか？いいえ、私は馬に乗れません。",
+    "romaji": "",
+    "source": "教科書 第１０課 私はモンゴル語ができます（Би монгол хэлээр ярьж чадна）",
+    "explanation": "可能表現の疑問形と否定形。「чадах уу（できますか）」と「чадахгүй（できません）」。動詞「унах（乗る）」の接続形「унаж」に続きます。"
+  },
+  {
+    "id": "tb_type_l10_tb_10_3",
+    "level": "第10課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第10課）",
+    "lesson": 10,
+    "lessonTitle": "第１０課 私はモンゴル語ができます（Би монгол хэлээр ярьж чадна）",
+    "textMn": "Зорчигч: Сайн байна уу? Та монголоор ярьдаг уу? Такэши: Тийм ээ, би монголоор бага зэрэг ярьж чадна. Гэхдээ хурдан яривал сайн ойлгохгүй. Зорчигч: Та их сайн ярьж байна шүү.",
+    "textJa": "乗客: こんにちは。モンゴル語を話されますか？ たけし: はい、少し話せます。でも早く話されるとよく理解できません。 乗客: とても上手に話されていますよ！",
+    "romaji": "",
+    "source": "教科書 第１０課 私はモンゴル語ができます（Би монгол хэлээр ярьж чадна）",
+    "explanation": "旅行中や街中で話しかけられた時の対話。「хурдан яривал（早く話したら：仮定語尾-вал）」、「ойлгохгүй（理解できない）」、「шүү（〜だよ：念押し）」を習得します。"
+  },
+  {
+    "id": "tb_type_l10_tb_10_4",
+    "level": "第10課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第10課）",
+    "lesson": 10,
+    "lessonTitle": "第１０課 私はモンゴル語ができます（Би монгол хэлээр ярьж чадна）",
+    "textMn": "Би багаасаа гадаад хэл сурах дуртай байсан. Одоо би англи хэлээр чөлөөтэй ярьдаг бөгөөд монгол хэлийг хичээнгүйлэн сурч байна. Ирээдүйд монголчуудтай төрөлх хэлээр нь ойлголцохыг хүсдэг.",
+    "textJa": "私は子供の頃から外国語を学ぶのが好きでした。今私は英語を流暢に話すことができ、モンゴル語を一生懸命学んでいます。将来的にはモンゴルの人々と母国語で理解し合いたいと望んでいます。",
+    "romaji": "",
+    "source": "教科書 第１０課 私はモンゴル語ができます（Би монгол хэлээр ярьж чадна）",
+    "explanation": "語学学習の動機と目標を語るスピーチ文。「багаасаа（幼い頃から）」、「чөлөөтэй（自由に、流暢に）」、「төрөлх хэл（母国語）」、「ойлголцох（分かり合う）」を含みます。"
+  },
+  {
+    "id": "tb_type_l11_tb_11_1",
+    "level": "第11課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第11課）",
+    "lesson": 11,
+    "lessonTitle": "第１１課 今日は天気がいいです（Өнөөдөр цаг агаар сайхан байна）",
+    "textMn": "Өнөөдөр тэнгэр цэлмэг, нартай байна.",
+    "textJa": "今日は空が澄み渡り、晴れています。",
+    "romaji": "",
+    "source": "教科書 第１１課 今日は天気がいいです（Өнөөдөр цаг агаар сайхан байна）",
+    "explanation": "天候の描写。「тэнгэр（空）」、「цэлмэг（雲ひとつない快晴）」、「нартай（太陽が出ている・日差しがある：нар + -тай）」。"
+  },
+  {
+    "id": "tb_type_l11_tb_11_2",
+    "level": "第11課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第11課）",
+    "lesson": 11,
+    "lessonTitle": "第１１課 今日は天気がいいです（Өнөөдөр цаг агаар сайхан байна）",
+    "textMn": "Маргааш цас орж, хүйтрэх төлөвтэй байна.",
+    "textJa": "明日は雪が降り、冷え込む見込みです。",
+    "romaji": "",
+    "source": "教科書 第１１課 今日は天気がいいです（Өнөөдөр цаг агаар сайхан байна）",
+    "explanation": "気象予報の推量表現。「цас орох（雪が降る）」の接続形「орж」＋「хүйтрэх（寒くなる）」＋「төлөвтэй байна（〜の傾向・見込みである）」。「цаг агаарын мэдээ（天気予報）」で頻出。"
+  },
+  {
+    "id": "tb_type_l11_tb_11_3",
+    "level": "第11課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第11課）",
+    "lesson": 11,
+    "lessonTitle": "第１１課 今日は天気がいいです（Өнөөдөр цаг агаар сайхан байна）",
+    "textMn": "Зориг: Өнөөдөр цаг агаар сайхан байна шүү. Такэши: Тийм байна. Маргааш хэдэн градус байх бол? Зориг: Цаг агаарын мэдээгээр хасах таван градус гэнэ.",
+    "textJa": "ゾリグ: 今日はいい天気だね。 たけし: 本当ですね。明日は何度くらいになるでしょうか？ ゾリグ: 天気予報によるとマイナス5度だそうだよ。",
+    "romaji": "",
+    "source": "教科書 第１１課 今日は天気がいいです（Өнөөдөр цаг агаар сайхан байна）",
+    "explanation": "気温と天気を話題にする日常会話。「хэдэн градус（何度）」、「хасах（マイナス）」、「гэнэ（〜だそうだ：伝聞助動詞）」の自然な使われ方を学びます。"
+  },
+  {
+    "id": "tb_type_l11_tb_11_4",
+    "level": "第11課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第11課）",
+    "lesson": 11,
+    "lessonTitle": "第１１課 今日は天気がいいです（Өнөөдөр цаг агаар сайхан байна）",
+    "textMn": "Монголын өвөл маш хүйтэн боловч тэнгэр нь үргэлж цэлмэг, хөх өнгөтэй байдаг. Өвлийн улиралд температур хасах гуч, дөчин градус хүрдэг тул зузаан дулаан хувцас, үслэг малгай, бээлий зайлшгүй шаардлагатай.",
+    "textJa": "モンゴルの冬は極めて寒いですが、空は常に晴れ渡り、青く澄んでいます。冬の季節には気温がマイナス30度、40度に達するため、分厚い防寒着、毛皮の帽子、手袋が不可欠です。",
+    "romaji": "",
+    "source": "教科書 第１１課 今日は天気がいいです（Өнөөдөр цаг агаар сайхан байна）",
+    "explanation": "モンゴルの気候の特徴と冬の備えを説明する文章。「боловч（〜であるけれども）」、「зузаан дулаан（分厚く暖かい）」、「зайлшгүй（必須の）」などの高度な語彙を習得します。"
+  },
+  {
+    "id": "tb_type_l12_tb_12_1",
+    "level": "第12課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第12課）",
+    "lesson": 12,
+    "lessonTitle": "第１２課 来週セレンゲ県に行きます（Ирэх долоо хоногт Сэлэнгэ аймаг явна）",
+    "textMn": "Бид ирэх долоо хоногийн мягмар гарагт хөдөө явна.",
+    "textJa": "私たちは来週の火曜日に地方へ出発します。",
+    "romaji": "",
+    "source": "教科書 第１２課 来週セレンゲ県に行きます（Ирэх долоо хоногт Сэлэнгэ аймаг явна）",
+    "explanation": "曜日と移動の表現。「ирэх долоо хоног（来週）」＋属格「-ийн」＋「мягмар гарагт（火曜日に：与位格）」＋「хөдөө явах（地方へ行く）」。"
+  },
+  {
+    "id": "tb_type_l12_tb_12_2",
+    "level": "第12課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第12課）",
+    "lesson": 12,
+    "lessonTitle": "第１２課 来週セレンゲ県に行きます（Ирэх долоо хоногт Сэлэнгэ аймаг явна）",
+    "textMn": "Та хэдэн хоногоор томилолтоор явах вэ?",
+    "textJa": "あなたは何日間の予定で出張に行きますか。",
+    "romaji": "",
+    "source": "教科書 第１２課 来週セレンゲ県に行きます（Ирэх долоо хоногт Сэлэнгэ аймаг явна）",
+    "explanation": "期間を表す造格「-оор4」。「хэдэн хоногоор（何日間の予定で）」＋「томилолтоор（出張で：名詞томилолт + 造格）」。"
+  },
+  {
+    "id": "tb_type_l12_tb_12_3",
+    "level": "第12課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第12課）",
+    "lesson": 12,
+    "lessonTitle": "第１２課 来週セレンゲ県に行きます（Ирэх долоо хоногт Сэлэнгэ аймаг явна）",
+    "textMn": "Зориг: Такэши, чи Сэлэнгэ аймагт очих бил үү? Хэзээ явах вэ? Такэши: Тийм ээ, ирэх сарын аравдаар явна. Зориг: Юугаар явах вэ? Такэши: Галт тэргээр явна.",
+    "textJa": "ゾリグ: たけし、セレンゲ県に行くんだったよね？いつ行くの？ たけし: そう、来月の10日頃に行くよ。 ゾリグ: 何で行くの？ たけし: 列車で行くよ。",
+    "romaji": "",
+    "source": "教科書 第１２課 来週セレンゲ県に行きます（Ирэх долоо хоногт Сэлэнгэ аймаг явна）",
+    "explanation": "過去の予定の確認「〜 бил үү（〜だったっけ）」とおおよその日付「аравдаар（10日頃に）」、移動手段「юугаар（何で）」を用いた会話です。"
+  },
+  {
+    "id": "tb_type_l12_tb_12_4",
+    "level": "第12課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第12課）",
+    "lesson": 12,
+    "lessonTitle": "第１２課 来週セレンゲ県に行きます（Ирэх долоо хоногт Сэлэнгэ аймаг явна）",
+    "textMn": "Би ирэх сард Дархан болон Сэлэнгэ аймаг руу ажлын томилолтоор явна. Тэнд очоод орон нутгийн сургуулиудтай танилцаж, япон хэл заах арга зүйн сургалт явуулахаар төлөвлөж байна. Энэ бол миний анхны хөдөөгийн томилолт юм.",
+    "textJa": "私は来月ダルハンおよびセレンゲ県へ仕事の出張に行きます。現地に到着したら地方の学校を視察し、日本語教授法の研修を実施するよう計画しています。これは私の初めての地方出張です。",
+    "romaji": "",
+    "source": "教科書 第１２課 来週セレンゲ県に行きます（Ирэх долоо хоногт Сэлэнгэ аймаг явна）",
+    "explanation": "業務出張の目的と計画を記述した文章。「болон（および）」、「очоод（到着してから）」、「төлөвлөж байна（計画している）」などの公的ビジネス語彙を含みます。"
+  },
+  {
+    "id": "tb_type_l13_tb_13_1",
+    "level": "第13課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第13課）",
+    "lesson": 13,
+    "lessonTitle": "第１３課 ここでタクシーを予約してもいいですか（Энд такси захиалж болох уу?）",
+    "textMn": "Энд түр хүлээж болох уу?",
+    "textJa": "ここで少し待ってもいいですか。",
+    "romaji": "",
+    "source": "教科書 第１３課 ここでタクシーを予約してもいいですか（Энд такси захиалж болох уу?）",
+    "explanation": "許可を求める構文「動詞接続形 -ж/ч + болох уу」。「хүлээх（待つ）」の語幹「хүлээ-」に「-ж」が接続し「хүлээж болох уу（待ってもよろしいですか）」となります。「түр（少しの間）」。"
+  },
+  {
+    "id": "tb_type_l13_tb_13_2",
+    "level": "第13課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第13課）",
+    "lesson": 13,
+    "lessonTitle": "第１３課 ここでタクシーを予約してもいいですか（Энд такси захиалж болох уу?）",
+    "textMn": "Би хотын төв рүү явмаар байна. Зам зааж өгөөч.",
+    "textJa": "私は市内中心部へ行きたいです。道を教えてください。",
+    "romaji": "",
+    "source": "教科書 第１３課 ここでタクシーを予約してもいいですか（Энд такси захиалж болох уу?）",
+    "explanation": "願望語尾「-маар4 байна（〜したい）」と親愛な依頼語尾「-аач4」。「зааж өгөх（教えてあげる・案内する）」に「-өөч」が付き「зааж өгөөч（教えてください）」となります。"
+  },
+  {
+    "id": "tb_type_l13_tb_13_3",
+    "level": "第13課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第13課）",
+    "lesson": 13,
+    "lessonTitle": "第１３課 ここでタクシーを予約してもいいですか（Энд такси захиалж болох уу?）",
+    "textMn": "Юми: Төв аймаг руу явмаар байна. Эндээс яаж явах вэ? Ажилтан: Та хот хоорондын такси барьж болно. Би танд такси дуудаж өгөх үү? Юми: Тэгвэл их сайн байна. Баярлалаа.",
+    "textJa": "ユミ: トゥブ県に行きたいのですが。ここからどうやって行けばいいですか？ 係員: 都市間タクシーを捕まえることができますよ。私がタクシーをお呼びしましょうか？ ユミ: そうしていただけると大変助かります。ありがとうございます。",
+    "romaji": "",
+    "source": "教科書 第１３課 ここでタクシーを予約してもいいですか（Энд такси захиалж болох уу?）",
+    "explanation": "交通手段の相談と親切な申し出に対する応答。「дуchangeж өгөх үү（〜してあげましょうか）」、「Тэгвэл их сайн байна（そうなら大変良いです）」など実践的な表現です。"
+  },
+  {
+    "id": "tb_type_l13_tb_13_4",
+    "level": "第13課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第13課）",
+    "lesson": 13,
+    "lessonTitle": "第１３課 ここでタクシーを予約してもいいですか（Энд такси захиалж болох уу?）",
+    "textMn": "Монголд такси барихын тулд замын хажууд зогсоод гараа өргөдөг. Хувийн машинтай хүмүүс ч зогсож үйлчилдэг бөгөөд нэг километрийн үнэ нь тодорхой тогтсон байдаг. Суухаасаа өмнө очих газраа тодорхой хэлэх хэрэгтэй.",
+    "textJa": "モンゴルでタクシーを拾うためには、道端に立って手を挙げます。自家用車の一般人も停まって乗せてくれ、1キロあたりの料金は明確に決まっています。乗り込む前に行き先をはっきりと伝える必要があります。",
+    "romaji": "",
+    "source": "教科書 第１３課 ここでタクシーを予約してもいいですか（Энд такси захиалж болох уу?）",
+    "explanation": "モンゴル特有の「流しの白タク文化」を説明した長文。「гараа өргөх（手を挙げる）」、「тодорхой（明確に）」、「суухаасаа өмнө（乗る前に）」など役立つ文化・習慣表現です。"
+  },
+  {
+    "id": "tb_type_l14_tb_14_1",
+    "level": "第14課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第14課）",
+    "lesson": 14,
+    "lessonTitle": "第１４課 ホテルに泊まります（Зочид буудалд бууна）",
+    "textMn": "Нэг хоногийн үнэ нь ямар үнэтэй вэ?",
+    "textJa": "1泊の料金はいくらですか。",
+    "romaji": "",
+    "source": "教科書 第１４課 ホテルに泊まります（Зочид буудалд бууна）",
+    "explanation": "宿泊料金の質問。「нэг хоног（丸1日、一泊）」＋属格「-ийн」＋「үнэ（値段）」＋代名詞所有「нь」＋「ямар үнэтэй вэ（どんな値段ですか）」。"
+  },
+  {
+    "id": "tb_type_l14_tb_14_2",
+    "level": "第14課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第14課）",
+    "lesson": 14,
+    "lessonTitle": "第１４課 ホテルに泊まります（Зочид буудалд бууна）",
+    "textMn": "Өрөөнд интернет, халуун ус байгаа юу? Тийм, байгаа.",
+    "textJa": "部屋にインターネットとお湯はありますか？はい、あります。",
+    "romaji": "",
+    "source": "教科書 第１４課 ホテルに泊まります（Зочид буудалд бууна）",
+    "explanation": "ホテルの設備を確認する表現。存在文「байгаа юу（あるのか）」。「халуун ус（お湯）」はモンゴルの冬期・地方宿泊で最重要の確認項目です。"
+  },
+  {
+    "id": "tb_type_l14_tb_14_3",
+    "level": "第14課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第14課）",
+    "lesson": 14,
+    "lessonTitle": "第１４課 ホテルに泊まります（Зочид буудалд бууна）",
+    "textMn": "Юми: Сайн байна уу? Сул өрөө байгаа юу? Рецепшн: Сайн байна уу? Тийм ээ, нэг ортой өрөө сул байна. Юми: Өглөөний цай багтсан уу? Рецепшн: Тийм ээ, өглөөний цай үнэдээ орсон.",
+    "textJa": "ユミ: こんにちは。空き部屋はありますか？ フロント: こんにちは。はい、シングルルームに空きがございます。 ユミ: 朝食は含まれていますか？ フロント: はい、朝食は料金に含まれております。",
+    "romaji": "",
+    "source": "教科書 第１４課 ホテルに泊まります（Зочид буудалд бууна）",
+    "explanation": "ホテルのフロントでのチェックイン手続き。「нэг ортой өрөө（シングルルーム）」、「багтсан（含まれた）」、「үнэдээ орсон（料金に入っている）」の実践対話です。"
+  },
+  {
+    "id": "tb_type_l14_tb_14_4",
+    "level": "第14課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第14課）",
+    "lesson": 14,
+    "lessonTitle": "第１４課 ホテルに泊まります（Зочид буудалд бууна）",
+    "textMn": "Бид хөдөө аялахдаа жуулчны баазад хоёр хоносон. Уламжлалт гэр сууцанд амарч, өглөө нь нар мандахыг харсан. Гэр дотор зуух галладаг тул маш дулаахан, тохилог байсан. Байгалийн үзэсгэлэн үнэхээр гайхалтай байлаа.",
+    "textJa": "私たちは地方を旅行した際、ツーリストキャンプに2泊しました。伝統的なゲル住居に滞在し、朝は日の出を眺めました。ゲルの中では薪ストーブを焚くため、とても暖かく快適でした。大自然の美しさは本当に素晴らしかったです。",
+    "romaji": "",
+    "source": "教科書 第１４課 ホテルに泊まります（Зочид буудалд бууна）",
+    "explanation": "ツーリストキャンプ（ゲルの宿）体験記。「жуулчны бааз（ツーリストキャンプ）」、「зуух галлах（ストーブを焚く）」、「тохилог（居心地が良い）」などの旅行表現です。"
+  },
+  {
+    "id": "tb_type_l15_tb_15_1",
+    "level": "第15課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第15課）",
+    "lesson": 15,
+    "lessonTitle": "第１５課 病院に行きました（Эмнэлэгт очсон）",
+    "textMn": "Миний толгой өвдөж, халуурч байна.",
+    "textJa": "私は頭が痛くて、熱があります。",
+    "romaji": "",
+    "source": "教科書 第１５課 病院に行きました（Эмнэлэгт очсон）",
+    "explanation": "体の不調の訴え。「өвдөх（痛む）」の接続形「өвдөж」＋「халуурах（熱が出る）」＋進行形「-ж байна」。「толгой өвдөх（頭痛がする）」は最重要医療表現。"
+  },
+  {
+    "id": "tb_type_l15_tb_15_2",
+    "level": "第15課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第15課）",
+    "lesson": 15,
+    "lessonTitle": "第１５課 病院に行きました（Эмнэлэгт очсон）",
+    "textMn": "Энэ эмийг өдөрт гурван удаа хоолны дараа уугаарай.",
+    "textJa": "この薬を1日3回、食後に飲んでください。",
+    "romaji": "",
+    "source": "教科書 第１５課 病院に行きました（Эмнэлэгт очсон）",
+    "explanation": "服薬指導の表現。「өдөрт гурван удаа（1日に3回）」＋「хоолны дараа（食後に）」＋「уугаарай（飲んでくださいね：уух + -гаарай）」。（モンゴル語では薬を「飲む」のも動詞「уух」を用います）。"
+  },
+  {
+    "id": "tb_type_l15_tb_15_3",
+    "level": "第15課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第15課）",
+    "lesson": 15,
+    "lessonTitle": "第１５課 病院に行きました（Эмнэлэгт очсон）",
+    "textMn": "Эмч: Сайн байна уу? Бие тань яасан бэ? Такэши: Өчигдөр оройноос эхлээд хоолой өвдөж, ханиалгаад байна. Эмч: Амаа ангайгаад хэлээ гарга даа. Ханиад хүрсэн байна.",
+    "textJa": "医師: こんにちは。お体の具合はどうされましたか？ たけし: 昨晩から喉が痛くて、咳が出続けています。 医師: 口を開けて舌を出してください。風邪を引いていますね。",
+    "romaji": "",
+    "source": "教科書 第１５課 病院に行きました（Эмнэлэгт очсон）",
+    "explanation": "診察室での医師と患者のリアルな問診。「бие тань яасан бэ（どうされましたか）」、「хоолой өвдөх（喉が痛い）」、「ханиад хүрэх（風邪を引く）」を学びます。"
+  },
+  {
+    "id": "tb_type_l15_tb_15_4",
+    "level": "第15課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第15課）",
+    "lesson": 15,
+    "lessonTitle": "第１５課 病院に行きました（Эмнэлэгт очсон）",
+    "textMn": "Монголын хуурай, хүйтэн цаг агаараас болоод өвлийн улиралд хүмүүс амархан ханиад хүрдэг. Ханиад хүрсэн үед чацарганы халуун шүүс ууж, адууны чанасан махны шөл уух нь биед маш сайн эмчилгээ болдог гэж монголчууд ярьдаг.",
+    "textJa": "モンゴルの乾燥した寒い気候のせいで、冬の時期には人々は簡単に風邪を引いてしまいます。風邪を引いた時には、熱いサジー（シーバックソーン）ジュースを飲み、煮込んだ馬肉のスープを飲むことが体に大変良い民間療法になるとモンゴルの人々は語ります。",
+    "romaji": "",
+    "source": "教科書 第１５課 病院に行きました（Эмнэлэгт очсон）",
+    "explanation": "モンゴルの伝統的な風邪の民間療法を語る文化長文。「чацаргана（サジー）」、「шөл（スープ）」、「эмчилгээ（治療）」などの重要語彙を含みます。"
+  },
+  {
+    "id": "tb_type_l16_tb_16_1",
+    "level": "第16課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第16課）",
+    "lesson": 16,
+    "lessonTitle": "第１６課 昨日何をしましたか（Өчигдөр юу хийсэн бэ?）",
+    "textMn": "Өчигдөр би номын санд сууж даалгавраа хийсэн.",
+    "textJa": "昨日私は図書館に座って（こもって）宿題をしました。",
+    "romaji": "",
+    "source": "教科書 第１６課 昨日何をしましたか（Өчигдөр юу хийсэн бэ?）",
+    "explanation": "過去の行動順序。並列接続語尾「-ж」で「сууж（座って・滞在して）」＋「даалгавраа хийсэн（自分の宿題をした：既定過去形-сан）」と繋げます。"
+  },
+  {
+    "id": "tb_type_l16_tb_16_2",
+    "level": "第16課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第16課）",
+    "lesson": 16,
+    "lessonTitle": "第１６課 昨日何をしましたか（Өчигдөр юу хийсэн бэ?）",
+    "textMn": "Хичээл тараад шууд гэртээ харьсан уу?",
+    "textJa": "学校が終わってから、まっすぐ家に帰りましたか。",
+    "romaji": "",
+    "source": "教科書 第１６課 昨日何をしましたか（Өчигдөр юу хийсэн бэ?）",
+    "explanation": "前行動接続語尾「-аад4」。「хичээл тарах（授業・学校が終わる）」に「-аад」が付き「終わったあとで」という順序関係を明確にします。「шууд（直接、まっすぐ）」。"
+  },
+  {
+    "id": "tb_type_l16_tb_16_3",
+    "level": "第16課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第16課）",
+    "lesson": 16,
+    "lessonTitle": "第１６課 昨日何をしましたか（Өчигдөр юу хийсэн бэ?）",
+    "textMn": "Багш: Такэши, өчигдөр чи яагаад хичээлдээ ирээгүй вэ? Такэши: Уучлаарай, багш аа. Гэнэт халуураад эмнэлэг явсан юм. Багш: Одоо бие чинь дээрдэв үү? Такэши: Тийм ээ, эм уугаад зүгээр болсон.",
+    "textJa": "先生: たけし、昨日はどうして授業に来なかったのですか？ たけし: すみません先生。急に熱が出て病院に行ったのです。 先生: 今は体調は良くなりましたか？ たけし: はい、薬を飲んで大丈夫になりました。",
+    "romaji": "",
+    "source": "教科書 第１６課 昨日何をしましたか（Өчигдөр юу хийсэн бэ?）",
+    "explanation": "欠席の理由を説明する対話。「яагаад ... вэ（なぜ〜なのか）」、「гэнэт（急に）」、「дээрдэх（良くなる、快方に向かう）」を身につけます。"
+  },
+  {
+    "id": "tb_type_l16_tb_16_4",
+    "level": "第16課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第16課）",
+    "lesson": 16,
+    "lessonTitle": "第１６課 昨日何をしましたか（Өчигдөр юу хийсэн бэ?）",
+    "textMn": "Өнгөрсөн ням гарагт би монгол найзынхаа гэрт зочилсон. Найзын маань ээж амттай бууз, сүүтэй цайгаар дайлсан. Бид олон сайхан сэдвээр ярилцаж, хамтдаа дуу дуулж, үдшийг маш зугаатай өнгөрүүлсэн.",
+    "textJa": "先週の日曜日、私はモンゴルの友人の家を訪ねました。友人の母が美味しいボーズとスーテイチャイ（ミルクティー）でごちそうしてくれました。私たちはたくさんの素敵な話題で語り合い、一緒に歌を歌い、夜を大変楽しく過ごしました。",
+    "romaji": "",
+    "source": "教科書 第１６課 昨日何をしましたか（Өчигдөр юу хийсэн бэ?）",
+    "explanation": "モンゴルの家庭訪問体験記。「зочлох（客として訪問する）」、「дайлах（もてなす）」、「өнгөрүүлэх（時間を過ごす）」という温かい交流の文です。"
+  },
+  {
+    "id": "tb_type_l17_tb_17_1",
+    "level": "第17課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第17課）",
+    "lesson": 17,
+    "lessonTitle": "第１７課 野菜を買いましょう（Ногоо авцгаая）",
+    "textMn": "Зах орж төмс, лууван авцгаая.",
+    "textJa": "市場へ行ってジャガイモとニンジンを買いましょう。",
+    "romaji": "",
+    "source": "教科書 第１７課 野菜を買いましょう（Ногоо авцгаая）",
+    "explanation": "複数人への勧誘語尾「-цгаая4」。「авах（取る・買う）」の語幹「ав-」に男性母音語尾「-цгаая」が接続し「みんなで買いましょう」となります。「төмс（ジャガイモ）」、「лууван（ニンジン）」。"
+  },
+  {
+    "id": "tb_type_l17_tb_17_2",
+    "level": "第17課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第17課）",
+    "lesson": 17,
+    "lessonTitle": "第１７課 野菜を買いましょう（Ногоо авцгаая）",
+    "textMn": "Энэ алим нэг килограмм нь хэдэн төгрөг вэ?",
+    "textJa": "このリンゴは1キログラムでいくら（何トゥグルグ）ですか。",
+    "romaji": "",
+    "source": "教科書 第１７課 野菜を買いましょう（Ногоо авцгаая）",
+    "explanation": "市場での値段の尋ね方。「нэг килограмм нь（1キロあたりは）」＋「хэдэн төгрөг вэ（何トゥグルグですか）」。モンゴルの通貨単位はトゥグルグ（төгрөг）です。"
+  },
+  {
+    "id": "tb_type_l17_tb_17_3",
+    "level": "第17課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第17課）",
+    "lesson": 17,
+    "lessonTitle": "第１７課 野菜を買いましょう（Ногоо авцгаая）",
+    "textMn": "Юми: Худалдагч аа, энэ мах шинэ үү? Худалдагч: Дөнгөж сая ирсэн, маш шинэ үхрийн мах байна. Хоёр килограммыг авбал хямдруулж өгнө шүү. Юми: Тэгвэл хоёр килограммыг авъя.",
+    "textJa": "ユミ: 店員さん、このお肉は新鮮ですか？ 店員: たった今届いたばかりの、とても新鮮な牛肉ですよ。2キロ買ってくれたら安くまけてあげますよ！ ユミ: じゃあ2キロ買います。",
+    "romaji": "",
+    "source": "教科書 第１７課 野菜を買いましょう（Ногоо авцгаая）",
+    "explanation": "市場（ザハ）での活気ある値段交渉対話。「дөнгөж сая（たった今）」、「хямдруулж өгөх（安く割り引いてあげる）」、「авъя（買います・いただきます：意志語尾-я）」を学びます。"
+  },
+  {
+    "id": "tb_type_l17_tb_17_4",
+    "level": "第17課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第17課）",
+    "lesson": 17,
+    "lessonTitle": "第１７課 野菜を買いましょう（Ногоо авцгаая）",
+    "textMn": "Бид амралтын өдрөөр Нарантуул зах дээр очсон. Тэнд хоол хүнс, өвлийн дулаан дээл, гутал, гэр ахуйн бараа зэрэг бүх төрлийн зүйлсийг зарж байв. Захын уур амьсгал маш амьд, олон хүний хөлд дарагдсан байлаа.",
+    "textJa": "私たちは休日にナラントール市場へ行きました。そこでは食料品、冬の暖かいデール（民族衣装）、ブーツ、家庭用品などあらゆる種類の品物が売られていました。市場の活気は大変生き生きとしており、大勢の人で賑わっていました。",
+    "romaji": "",
+    "source": "教科書 第１７課 野菜を買いましょう（Ногоо авцгаая）",
+    "explanation": "ウランバートル最大の市場ナラントールザハのルポ文。「бүх төрлийн（全種類の）」、「уур амьсгал（雰囲気）」、「хөлд дарагдах（人波で賑わう）」を習得します。"
+  },
+  {
+    "id": "tb_type_l18_tb_18_1",
+    "level": "第18課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第18課）",
+    "lesson": 18,
+    "lessonTitle": "第１８課 お腹がすいています（Өлсөж байна）",
+    "textMn": "Би их өлсөж байна. Амттай монгол хоол идье.",
+    "textJa": "私はとてもお腹が空いています。美味しいモンゴル料理を食べましょう。",
+    "romaji": "",
+    "source": "教科書 第１８課 お腹がすいています（Өлсөж байна）",
+    "explanation": "生理状態の進行形「өлсөх（お腹が空く）」＋「-ж байна」＝「空いている」。意志・勧誘「идье（食べよう：идэх + -е）」。"
+  },
+  {
+    "id": "tb_type_l18_tb_18_2",
+    "level": "第18課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第18課）",
+    "lesson": 18,
+    "lessonTitle": "第１８課 お腹がすいています（Өлсөж байна）",
+    "textMn": "Зөөгч өө, цэсээ өгөөч. Бас халуун цай авъя.",
+    "textJa": "ウェイターさん、メニューをください。それと温かいお茶をお願いします。",
+    "romaji": "",
+    "source": "教科書 第１８課 お腹がすいています（Өлсөж байна）",
+    "explanation": "レストランでの注文。「цэс（メニュー）」＋再帰所有「-ээ」＋丁寧な依頼「өгөөч（ください）」。「авъя（〜をいただきます・お願いします）」。"
+  },
+  {
+    "id": "tb_type_l18_tb_18_3",
+    "level": "第18課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第18課）",
+    "lesson": 18,
+    "lessonTitle": "第１８課 お腹がすいています（Өлсөж байна）",
+    "textMn": "Хироки: Та юу захиалах вэ? Такэши: Би хуушуур, бас ногоотой шөл захиалмаар байна. Хироки: Уух юм юу авах вэ? Такэши: Сүүтэй цай захиалъя. Зөөгч өө, захиалга авъя!",
+    "textJa": "ヒロキ: 何を注文しますか？ たけし: 僕はホーショールと野菜スープを注文したいです。 ヒロキ: 飲み物は何にしますか？ たけし: スーテイチャイにしましょう。すみません、注文をお願いします！",
+    "romaji": "",
+    "source": "教科書 第１８課 お腹がすいています（Өлсөж байна）",
+    "explanation": "飲食店での注文の流れ。「захиалах（注文する）」、「захиалга авах（注文を取る）」、「хуушуур（ホーショール：羊肉の揚げパイ）」という必修定番表現です。"
+  },
+  {
+    "id": "tb_type_l18_tb_18_4",
+    "level": "第18課",
+    "category": "textbook",
+    "categoryLabel": "教科書例文（第18課）",
+    "lesson": 18,
+    "lessonTitle": "第１８課 お腹がすいています（Өлсөж байна）",
+    "textMn": "Монгол хоолны газар ороод цуйван, хуушуур, бууз зэрэг уламжлалт хоолыг захиалж идлээ. Махны амт маш баялаг, порц нь их тул бид бүгдээрээ цадталаа идсэн. Монголчуудын зочломтгой зан чанар, амттай хоол сэтгэлд их хоногшин үлдсэн.",
+    "textJa": "モンゴル料理店に入り、ツォイワン（焼きうどん風料理）、ホーショール、ボーズなどの伝統料理を注文して食べました。肉の旨味が大変濃厚で、ボリュームも多いため、私たちは全員お腹いっぱいになるまで食べました。モンゴルの人々の温かいもてなしと美味しい料理が深く心に残りました。",
+    "romaji": "",
+    "source": "教科書 第１８課 お腹がすいています（Өлсөж байна）",
+    "explanation": "モンゴル伝統料理の食レポ文。「цадталаа（満腹になるまで）」、「зочломтгой（もてなし好きな）」、「хоногшин үлдэх（心に深く残る）」などの豊かな情緒表現です。"
+  }
 ];
 
 const typingSentences = initialTypingSentences;
@@ -38594,6 +39861,1353 @@ if (typeof window !== 'undefined') {
   window.initialTypingSentences = initialTypingSentences;
 }
 
+
+
+// === js/data/textbookSentences.js ===
+// 教科書例文データ（全18課：短文・対話文・長文・文法例文）
+// 出典: モンゴル語教科書テキスト構造化データ
+const textbookLessonsData = [
+  {
+    "lesson": 1,
+    "title": "第１課 挨拶（Мэндчилгээ）",
+    "sentences": [
+      {
+        "id": "tb_1_1",
+        "type": "short",
+        "textMn": "Сайн байна уу?",
+        "textJa": "こんにちは。（お元気ですか。）",
+        "explanation": "モンゴル語で最も一般的な挨拶表現。文字通りには「良いですか？（お元気ですか）」の意味です。初対面でも親しい間柄でも幅広く使われます。"
+      },
+      {
+        "id": "tb_1_2",
+        "type": "short",
+        "textMn": "Сайн, сайн байна уу?",
+        "textJa": "元気です、こんにちは。（お元気ですか。）",
+        "explanation": "「Сайн байна уу?」に対する標準的な返答。「Сайн（良い、元気）」と答えた上で、相手に対しても「お元気ですか」と問い返します。"
+      },
+      {
+        "id": "tb_1_3",
+        "type": "short",
+        "textMn": "Танилцсандаа баяртай байна.",
+        "textJa": "お会い出来て嬉しいです。（お知り合いになれて光栄です。）",
+        "explanation": "初対面の挨拶。「танилцах（知り合う）」＋既定過去・形動詞語尾「-сан」＋与位格「-д」＋再帰所有語尾「-аа」＋「баяртай байна（嬉しいです）」という文構造です。"
+      },
+      {
+        "id": "tb_1_4",
+        "type": "short",
+        "textMn": "Сайхан танилцлаа.",
+        "textJa": "お会い出来て良かったです。（初めまして。）",
+        "explanation": "「сайхан（美しく、素晴らしく）」＋動詞「танилцах（知り合う）」の終止形過去「-лаа」。「良い出会いができました」という丁寧な初対面の挨拶です。"
+      },
+      {
+        "id": "tb_1_5",
+        "type": "grammar",
+        "textMn": "Би япон хүн. Таны нэр хэн бэ?",
+        "textJa": "私は日本人です。あなたのお名前は何ですか。",
+        "explanation": "コピュラ文（AはBである）は「Би япон хүн（主語＋述語名詞）」を並べるだけです。疑問詞「хэн（誰）」を伴う疑問文には疑問助詞「бэ」を用います。"
+      },
+      {
+        "id": "tb_1_6",
+        "type": "dialogue",
+        "textMn": "Золбоо: Сайн байна уу? Такэши: Сайн, сайн байна уу? Золбоо: Миний нэр Золбоо. Би багш биш, оюутан. Таны нэр хэн бэ? Такэши: Миний нэр Такэши. Би япон хүн.",
+        "textJa": "ゾルボー: こんにちは。 たけし: 元気です、こんにちは。 ゾルボー: 私の名前はゾルボーです。私は先生ではなく学生です。あなたのお名前は何ですか？ たけし: 私の名前はたけしです。私は日本人です。",
+        "explanation": "第1課の基本会話。自己紹介、コピュラ文の肯定文・否定文（〜 биш）、疑問詞疑問文（〜 хэн бэ?）を網羅した実践的な対話です。"
+      },
+      {
+        "id": "tb_1_7",
+        "type": "long",
+        "textMn": "Сайн байцгаана уу? Миний нэр Такэши. Би 26 настай. Би Японоос ирсэн. Би багш биш, оюутан. Монголд ирсэндээ маш их баяртай байна. Сайхан танилцлаа.",
+        "textJa": "皆さんこんにちは。私の名前はたけしです。26歳です。日本から来ました。先生ではなく学生です。モンゴルに来られて大変嬉しいです。お会い出来て光栄です。",
+        "explanation": "第1課の表現を組み合わせた自己紹介スピーチ。複数人への挨拶「Сайн байцгаана уу?」、年齢表現、奪格「Японоос（日本から）」を含みます。"
+      }
+    ]
+  },
+  {
+    "lesson": 2,
+    "title": "第２課 これは何ですか（Энэ юу вэ?）",
+    "sentences": [
+      {
+        "id": "tb_2_1",
+        "type": "short",
+        "textMn": "Энэ юу вэ?",
+        "textJa": "これは何ですか。",
+        "explanation": "指示代名詞「энэ（これ）」＋疑問代名詞「юу（何）」＋疑問助詞「вэ」。「юу」は鼻音（н, м, в）で終わらないため、疑問助詞「вэ」が付きます。"
+      },
+      {
+        "id": "tb_2_2",
+        "type": "short",
+        "textMn": "Энэ сонин, тэр ном.",
+        "textJa": "これは新聞で、それは本です。",
+        "explanation": "近称指示代名詞「энэ（これ）」と中称指示代名詞「тэр（それ・あれ）」の対比。コピュラ動詞を使わずに名詞を並べるだけで文が成立します。"
+      },
+      {
+        "id": "tb_2_3",
+        "type": "grammar",
+        "textMn": "Энд самбар байна уу? Тийм ээ, байна.",
+        "textJa": "ここに黒板はありますか。はい、あります。",
+        "explanation": "存在文の疑問形。「энд（ここに）」＋主語＋存在動詞「байна（ある・いる）」＋疑問助詞「уу」。Yes/No疑問文には「уу/үү」が付きます（байнаの末尾は短母音語幹のためуу）。"
+      },
+      {
+        "id": "tb_2_4",
+        "type": "dialogue",
+        "textMn": "Золбоо: Энэ юу вэ? Такэши: Энэ толь бичиг. Золбоо: Тэр дэвтэр үү? Такэши: Үгүй ээ, энэ дэвтэр биш, ном.",
+        "textJa": "ゾルボー: これは辞書ですか？ たけし: これは辞書です。 ゾルボー: それはノートですか？ たけし: いいえ、これはノートではなく本です。",
+        "explanation": "「толь бичиг（辞書）」や「дэвтэр（ノート）」を用いた会話。女性語「дэвтэр」に対するYes/No疑問助詞「үү」の接続と、否定「〜 биш」の応答です。"
+      },
+      {
+        "id": "tb_2_5",
+        "type": "long",
+        "textMn": "Манай ангид хоёр том самбар, олон ширээ, сандал байна. Энд толь бичиг, дэвтэр, харандаа байгаа. Тэнд зурагт, компьютер байна уу? Тийм ээ, бүгд байна.",
+        "textJa": "私たちの教室には2つの大きな黒板、たくさんの机、椅子があります。ここに辞書、ノート、鉛筆があります。あそこにテレビやパソコンはありますか？はい、すべてあります。",
+        "explanation": "教室内の物と設備を説明する長文。「манай（私たちの）」、「хоёр（2つの）」、「олон（たくさんの）」、「бүгд（すべて）」という数量・状態語を含みます。"
+      }
+    ]
+  },
+  {
+    "lesson": 3,
+    "title": "第３課 私はボランティアです（Би сайн дурын ажилтан）",
+    "sentences": [
+      {
+        "id": "tb_3_1",
+        "type": "short",
+        "textMn": "Би Японы Токио хотоос ирсэн.",
+        "textJa": "私は日本の東京市から来ました。",
+        "explanation": "出身を表す起点奪格「-оос4」。男性長母音・二重母音の語幹「хот（都市）」に奪格助詞「-оос」が接続して「хотоос（〜から）」となります。「ирсэн」は動詞「ирэх（来る）」の既定過去形。"
+      },
+      {
+        "id": "tb_3_2",
+        "type": "grammar",
+        "textMn": "Би хорин зургаан настай. Та хэдэн настай вэ?",
+        "textJa": "私は26歳です。あなたは何歳ですか。",
+        "explanation": "年齢の表現。「хорин зургаа（26）」＋「-н（隠れン）」＋「настай（歳である）」。疑問詞「хэдэн（いくつかの・何人の）」を用いた年齢の質問には「вэ」が付きます。"
+      },
+      {
+        "id": "tb_3_3",
+        "type": "dialogue",
+        "textMn": "Болд: Та хаанаас ирсэн бэ? Такэши: Би Японоос ирсэн. Болд: Та хэзээ Монголд ирсэн бэ? Такэши: Би өнгөрсөн долоо хоногт ирсэн.",
+        "textJa": "ボルド: あなたはどこから来ましたか？ たけし: 私は日本から来ました。 ボルド: いつモンゴルに来ましたか？ たけし: 先週来ました。",
+        "explanation": "疑問詞「хаанаас（どこから）」、「хэзээ（いつ）」を用いた過去の来訪に関する対話。「өнгөрсөн долоо хоногт（先週に）」という時を表す与位格副詞句がポイントです。"
+      },
+      {
+        "id": "tb_3_4",
+        "type": "long",
+        "textMn": "Сайн байна уу? Намайг Такэши гэдэг. Би Японоос ирсэн сайн дурын гишүүн. Би 26 настай. Монголын уламжлалт соёл, түүхийг судлахаар ирсэн. Монгол хэл их сонирхолтой байна.",
+        "textJa": "こんにちは。私の名前はたけしと言います。日本から来たボランティア隊員です。26歳です。モンゴルの伝統文化と歴史を研究するために来ました。モンゴル語は大変面白いです。",
+        "explanation": "派遣隊員の自己紹介文。「Намайг ... гэдэг（私を〜という）」、「судлахаар（研究するために：目的の造格）」、「сонирхолтой（興味深い）」などの重要語彙を含みます。"
+      }
+    ]
+  },
+  {
+    "lesson": 4,
+    "title": "第４課 私は日本語の先生です（Би япон хэлний багш）",
+    "sentences": [
+      {
+        "id": "tb_4_1",
+        "type": "short",
+        "textMn": "Би сургуулийн япон хэлний багш.",
+        "textJa": "私は学校の日本語の先生です。",
+        "explanation": "名詞属格（所有格）の重なり。「сургууль（学校）」の属格「сургуулийн（学校の）」＋「япон хэл（日本語）」の属格「япон хэлний（日本語の）」＋「багш（先生）」。"
+      },
+      {
+        "id": "tb_4_2",
+        "type": "grammar",
+        "textMn": "Ном ширээн дээр байна. Цүнх сандал доор байна.",
+        "textJa": "本は机の上にあります。鞄は椅子の下にあります。",
+        "explanation": "位置を表す後置詞句。「дээр（上に）」、「доор（下に）」。「ширээ（机）」に与位格・奪格が接続する形（ширээн дээр）で位置を示します。"
+      },
+      {
+        "id": "tb_4_3",
+        "type": "dialogue",
+        "textMn": "Сувдаа: Та япон хүн үү? Такэши: Тийм ээ, би япон хүн. Таны ном хаана байна вэ? Сувдаа: Миний ном ширээн дээр байна.",
+        "textJa": "スヴダー: あなたは日本人ですか？ たけし: はい、日本人です。あなたの本はどこにありますか？ スヴダー: 私の本は机の上にあります。",
+        "explanation": "相手の身元確認と、物の位置を尋ねる会話。名詞「хүн」への疑問助詞「үү」、疑問詞「хаана（どこ）」＋「вэ」の使い分けが身につきます。"
+      },
+      {
+        "id": "tb_4_4",
+        "type": "long",
+        "textMn": "Манай багшийн өрөө хоёрдугаар давхарт байдаг. Өрөөний цонхны дэргэд том ширээ байгаа. Ширээн дээр толь бичиг, сурах бичиг, олон дэвтэр байна. Компьютер ширээний баруун талд байрладаг.",
+        "textJa": "私たちの職員室は2階にあります。部屋の窓のそばに大きな机があります。机の上には辞書、教科書、たくさんのノートがあります。パソコンは机の右側に置かれています。",
+        "explanation": "部屋の配置や位置関係を詳細に描写する文章。「давхарт（階に）」、「дэргэд（そばに）」、「баруун талд（右側に）」などの空間方位表現を学びます。"
+      }
+    ]
+  },
+  {
+    "lesson": 5,
+    "title": "第５課 今日は何をしますか（Өнөөдөр юу хийх вэ?）",
+    "sentences": [
+      {
+        "id": "tb_5_1",
+        "type": "short",
+        "textMn": "Би өнөөдөр найзтайгаа хамт кино үзнэ.",
+        "textJa": "私は今日友達と一緒に映画を見ます。",
+        "explanation": "動詞未来形「-на4」と共同格「-той4」＋再帰所有「-гаа」。「үзэх（見る）」の男性語幹「үз-」に女性母音未来語尾「-нэ」が付き「үзнэ」となります。"
+      },
+      {
+        "id": "tb_5_2",
+        "type": "grammar",
+        "textMn": "Чи маргааш номын санд очно уу? Үгүй, очихгүй.",
+        "textJa": "君は明日図書館に行きますか？いいえ、行きません。",
+        "explanation": "動詞未来疑問文と否定文。「очих（行く）」＋「-но уу」（男性母音語）で「行きますか？」、否定は形動詞形「очих」＋「-гүй」で「行かない」となります。"
+      },
+      {
+        "id": "tb_5_3",
+        "type": "dialogue",
+        "textMn": "Юми: Баяр аа, чи өнөөдөр юу хийх вэ? Баяр: Ажлын хамтрагчтайгаа хамт өдрийн хоол иднэ. Юми: Хаана идэх вэ? Баяр: Монгол зоогийн газарт иднэ.",
+        "textJa": "ユミ: バヤル、今日何をするの？ バヤル: 同僚と一緒に昼ご飯を食べるよ。 ユミ: どこで食べるの？ バヤル: モンゴル料理レストランで食べるよ。",
+        "explanation": "親しい間柄での予定を尋ねる日常対話。呼格「Баяр аа」、目的格・与位格の場所「зоогийн газарт（レストランで）」の使い方が明確です。"
+      },
+      {
+        "id": "tb_5_4",
+        "type": "long",
+        "textMn": "Өнөөдөр хагас сайн өдөр тул би өглөө эрт босно. Дараа нь зах руу явж шинэ ногоо, мах авна. Өдөр гэртээ амттай хоол хийнэ. Орой найзуудтайгаа уулзаж ярилцана.",
+        "textJa": "今日は土曜日なので、私は朝早く起きます。その後、市場へ行って新鮮な野菜とお肉を買います。昼は家で美味しい料理を作ります。夜は友達と会っておしゃべりをします。",
+        "explanation": "休日のスケジュールを描いた一連の行動文。「хагас сайн өдөр（土曜日）」、「эрт босох（早起きする）」、「зах руу（市場へ）」など生活必須表現が満載です。"
+      }
+    ]
+  },
+  {
+    "lesson": 6,
+    "title": "第６課 教室に大きい黒板があります（Ангид том самбар байна）",
+    "sentences": [
+      {
+        "id": "tb_6_1",
+        "type": "short",
+        "textMn": "Багш аа, самбар дээр бичсэн үгийг сайн хараарай.",
+        "textJa": "先生、黒板に書かれた言葉をよく見てください。",
+        "explanation": "丁寧な助言・依頼・命令の語尾「-аарай4」。「харах（見る）」の語幹「хар-」に男性母音語尾「-аарай」が接続し「хараарай（見てくださいね）」となります。"
+      },
+      {
+        "id": "tb_6_2",
+        "type": "grammar",
+        "textMn": "Оюутнууд өдөр бүр шинэ үг цээжилдэг.",
+        "textJa": "学生たちは毎日新しい単語を暗記します。",
+        "explanation": "習慣・反復を表す動詞形動詞語尾「-даг4」。「цээжлэх（暗記する）」の語幹「цээжил-」に女性母音語尾「-дэг」が付き「цээжилдэг（暗記する習慣がある）」となります。"
+      },
+      {
+        "id": "tb_6_3",
+        "type": "dialogue",
+        "textMn": "Багш: Энэ манай анги. Энд том самбар, олон ширээ сандал байгаа. Зориг: Тэр юу вэ, багш аа? Багш: Тэр бол номын шүүгээ. Та нар номоо энд тавиарай.",
+        "textJa": "先生: これが私たちの教室です。ここに大きな黒板、たくさんの机と椅子があります。 ゾリグ: あれは何ですか、先生？ 先生: あれは本棚です。皆さんは本をここに置いてくださいね。",
+        "explanation": "教室内のルールと設備の説明。強意の繋ぎ言葉「бол（〜は）」や依頼語尾「тавиарай（置いてください）」を学習します。"
+      },
+      {
+        "id": "tb_6_4",
+        "type": "long",
+        "textMn": "Манай сургуулийн хичээлийн анги танхим маш саруулхан, цэвэрхэн байдаг. Самбарын урд багшийн ширээ, хойно нь оюутнуудын суудал байрлана. Оюутан бүр хичээлдээ анхааралтай суудаг.",
+        "textJa": "私たちの学校の教室はとても明るく清潔です。黒板の前には先生の机、後ろには学生の席が配置されています。どの学生も授業に熱心に出席します。",
+        "explanation": "学習環境を表現する描写文。「саруулхан（明るく広々とした）」、「анхааралтай（注意深く、熱心に）」などの形容詞・副詞表現が豊富です。"
+      }
+    ]
+  },
+  {
+    "lesson": 7,
+    "title": "第７課 私の家族（Манай гэр бүл）",
+    "sentences": [
+      {
+        "id": "tb_7_1",
+        "type": "short",
+        "textMn": "Манай гэр бүл тавуулаа.",
+        "textJa": "私たちの家族は5人家族です。",
+        "explanation": "集合数詞語尾「-уул2/-үүл2」。「тав（5）」に集合数詞語尾「-уул」と再帰所有「-аа」が付き、「тавуулаа（5人揃って、5人で）」という意味を表します。"
+      },
+      {
+        "id": "tb_7_2",
+        "type": "grammar",
+        "textMn": "Би дүүгээ дагуулаад цэцэрлэгт хүрээлэн явсан.",
+        "textJa": "私は弟（妹）を連れて公園に行きました。",
+        "explanation": "目的格（対格）＋再帰所有語尾「-гээ」。「дүү（年下の兄弟姉妹）」に対格再帰所有が付き「自分の弟/妹を」となります。「дагуулаад」は動詞接続語尾「-аад」で「連れて」の意。"
+      },
+      {
+        "id": "tb_7_3",
+        "type": "dialogue",
+        "textMn": "Такэши: Зориг оо, энэ зургийг хар даа. Энэ манай аав, ээж хоёр. Зориг: Аав чинь ямар ажил хийдэг вэ? Такэши: Манай аав инженер, ээж минь багш.",
+        "textJa": "たけし: ゾリグ、この写真を見てよ。これが僕の父と母の二人だよ。 ゾリグ: お父さんはどんな仕事をしているの？ たけし: 僕の父はエンジニアで、母は教師だよ。",
+        "explanation": "写真を見せながら家族の職業を紹介する対話。「аав чинь（君のお父さん）」という相手所有語尾「-чинь」と「ээж минь（私の母）」の対比がポイントです。"
+      },
+      {
+        "id": "tb_7_4",
+        "type": "long",
+        "textMn": "Манай ам бүл дөрвүүлээ. Аав, ээж, ах бид дөрөв хамтдаа амьдардаг. Аав компанид ажилладаг бөгөөд ээж эмнэлэгт эмч хийдэг. Амралтын өдрүүдэд бид бүгдээрээ хөдөө явж агаарт гардаг.",
+        "textJa": "我が家は4人家族です。父、母、兄、私の4人で一緒に暮らしています。父は会社に勤めており、母は病院で医師をしています。週末には私たちはみんなで田舎へ出かけて外の空気を吸います。",
+        "explanation": "家族構成と週末の過ごし方を語る文章。「ам бүл（家族人員）」、「бөгөөд（〜であり、かつ）」、「агаарт гарах（ピクニックに行く、戸外に出る）」という自然なモンゴル語表現です。"
+      }
+    ]
+  },
+  {
+    "lesson": 8,
+    "title": "第８課 ウランバートルから遠いなあ（Улаанбаатараас хол юм аа）",
+    "sentences": [
+      {
+        "id": "tb_8_1",
+        "type": "short",
+        "textMn": "Улаанбаатараас Дархан хот хүртэл хэр зэрэг хол вэ?",
+        "textJa": "ウランバートルからダルハン市まではどれくらい遠いですか。",
+        "explanation": "起点「-аас4（〜から）」と到達点「хүртэл（〜まで）」の呼応。「хэр зэрэг（どれほど）」は程度・距離を尋ねる疑問連語です。"
+      },
+      {
+        "id": "tb_8_2",
+        "type": "grammar",
+        "textMn": "Галт тэргээр явах нь автобуснаас илүү тав тухтай.",
+        "textJa": "列車で行くのはバスより快適です。",
+        "explanation": "比較構文。比較対象の名詞に奪格「-наас4」を付け、「илүү（より〜、もっと）」を伴って優劣を比較します。「галт тэргээр（列車で：手段の造格）」。"
+      },
+      {
+        "id": "tb_8_3",
+        "type": "dialogue",
+        "textMn": "Такэши: Юми, чи Эрдэнэт хот руу явна гэсэн үү? Юми: Тийм ээ. Эрдэнэт хот эндээс хэр хол вэ? Такэши: Машинаар зургаан цаг орчим явдаг юм билээ.",
+        "textJa": "たけし: ユミ、エルデネト市に行くって言ってたよね？ ユミ: そうなの。エルデネト市はここからどれくらい遠いの？ たけし: 車で6時間くらいかかるそうだよ。",
+        "explanation": "間接話法「〜 гэсэн үү（〜と言ったのか）」と伝聞・間接確認「〜 юм билээ（〜だそうだ、〜だったよ）」を含んだ実用的な移動の会話です。"
+      },
+      {
+        "id": "tb_8_4",
+        "type": "long",
+        "textMn": "Монгол орон уудам уужим нутаг дэвсгэртэй тул хотуудын хоорондох зай их хол байдаг. Улаанбаатараас хөдөө орон нутаг руу онгоц, галт тэрэг, эсвэл хот хоорондын автобусаар зорчдог. Зам зуурын байгаль үнэхээр үзэсгэлэнтэй.",
+        "textJa": "モンゴル国は広大な国土を持つため、都市間の距離が非常に遠いです。ウランバートルから地方へは飛行機、列車、または長距離バスで移動します。道中の自然は実に美しいです。",
+        "explanation": "モンゴルの地理的特徴と交通事情を述べる長文。「уудам уужим（広々とした）」、「хоорондох зай（間の距離）」、「зам зуурын（道中の）」などの語彙力を高めます。"
+      }
+    ]
+  },
+  {
+    "lesson": 9,
+    "title": "第９課 あなたは毎日何をしていますか（Та өдөр бүр юу хийдэг вэ?）",
+    "sentences": [
+      {
+        "id": "tb_9_1",
+        "type": "short",
+        "textMn": "Би өглөө бүр долоон цагт босдог.",
+        "textJa": "私は毎朝7時に起きます。",
+        "explanation": "時間・時刻を表す与位格「-т/-д」と習慣形動詞語尾「-даг4」。「долоон цаг（7時）」に「-т」が接続して「7時に」となり、日常習慣を表します。"
+      },
+      {
+        "id": "tb_9_2",
+        "type": "grammar",
+        "textMn": "Би ихэвчлэн автобусаар явдаг, харин заримдаа алхдаг.",
+        "textJa": "私はたいていバスで行きますが、時には歩きます。",
+        "explanation": "頻度副詞「ихэвчлэн（たいてい、普通は）」と「заримдаа（時々）」。対比の接続詞「харин（一方で、しかし）」で対比させています。"
+      },
+      {
+        "id": "tb_9_3",
+        "type": "dialogue",
+        "textMn": "Зориг: Такэши, чи өдөр бүр юу хийдэг вэ? Такэши: Би өглөө монгол хэлээ давтаад, өдөр нь хичээлдээ суудаг. Зориг: Орой нь чөлөөт цагаараа яадаг вэ? Такэши: Заал авч сагс тоглодог.",
+        "textJa": "ゾリグ: たけし、毎日何をしているの？ たけし: 朝はモンゴル語を復習して、昼は授業に出席しているよ。 ゾリグ: 夜の自由時間はどうしてる？ たけし: 体育館を取ってバスケをしているよ。",
+        "explanation": "1日の過ごし方を質問・回答する対話。前行動接続「давтаад（復習してから）」や「заал авах（体育館を借りる）」といった現地生活ならではの慣用表現です。"
+      },
+      {
+        "id": "tb_9_4",
+        "type": "long",
+        "textMn": "Миний ажлын өдөр маш завгүй өнгөрдөг. Өглөөний цайгаа уугаад найман цаг хагаст гэрээсээ гарна. Ажил дээрээ очиж оройн зургаан цаг хүртэл ажилладаг. Орой гэртээ ирээд ном уншиж амардаг.",
+        "textJa": "私の平日はとても忙しく過ぎていきます。朝食を食べてから8時半に家を出ます。職場に行って夕方6時まで働きます。夜は家に帰って本を読んで休みます。",
+        "explanation": "典型的な社会人の1日のルーティン。「өглөөний цай（朝食）」、「завгүй（忙しい）」、「гэрээсээ гарах（家を出る）」など頻出語句が詰まっています。"
+      }
+    ]
+  },
+  {
+    "lesson": 10,
+    "title": "第１０課 私はモンゴル語ができます（Би монгол хэлээр ярьж чадна）",
+    "sentences": [
+      {
+        "id": "tb_10_1",
+        "type": "short",
+        "textMn": "Би монгол хэлээр бага зэрэг ярьж чадна.",
+        "textJa": "私はモンゴル語で少し話すことができます。",
+        "explanation": "言語の手段を表す造格「-аар4」＋動詞可能表現「-ж/ч чадах」。「ярих（話す）」の接続形「ярьж」に助動詞「чадна（できる）」が接続します。「бага зэрэг（少し）」。"
+      },
+      {
+        "id": "tb_10_2",
+        "type": "grammar",
+        "textMn": "Та морь унаж чадах уу? Үгүй ээ, би морь унаж чадахгүй.",
+        "textJa": "あなたは馬に乗ることができますか？いいえ、私は馬に乗れません。",
+        "explanation": "可能表現の疑問形と否定形。「чадах уу（できますか）」と「чадахгүй（できません）」。動詞「унах（乗る）」の接続形「унаж」に続きます。"
+      },
+      {
+        "id": "tb_10_3",
+        "type": "dialogue",
+        "textMn": "Зорчигч: Сайн байна уу? Та монголоор ярьдаг уу? Такэши: Тийм ээ, би монголоор бага зэрэг ярьж чадна. Гэхдээ хурдан яривал сайн ойлгохгүй. Зорчигч: Та их сайн ярьж байна шүү.",
+        "textJa": "乗客: こんにちは。モンゴル語を話されますか？ たけし: はい、少し話せます。でも早く話されるとよく理解できません。 乗客: とても上手に話されていますよ！",
+        "explanation": "旅行中や街中で話しかけられた時の対話。「хурдан яривал（早く話したら：仮定語尾-вал）」、「ойлгохгүй（理解できない）」、「шүү（〜だよ：念押し）」を習得します。"
+      },
+      {
+        "id": "tb_10_4",
+        "type": "long",
+        "textMn": "Би багаасаа гадаад хэл сурах дуртай байсан. Одоо би англи хэлээр чөлөөтэй ярьдаг бөгөөд монгол хэлийг хичээнгүйлэн сурч байна. Ирээдүйд монголчуудтай төрөлх хэлээр нь ойлголцохыг хүсдэг.",
+        "textJa": "私は子供の頃から外国語を学ぶのが好きでした。今私は英語を流暢に話すことができ、モンゴル語を一生懸命学んでいます。将来的にはモンゴルの人々と母国語で理解し合いたいと望んでいます。",
+        "explanation": "語学学習の動機と目標を語るスピーチ文。「багаасаа（幼い頃から）」、「чөлөөтэй（自由に、流暢に）」、「төрөлх хэл（母国語）」、「ойлголцох（分かり合う）」を含みます。"
+      }
+    ]
+  },
+  {
+    "lesson": 11,
+    "title": "第１１課 今日は天気がいいです（Өнөөдөр цаг агаар сайхан байна）",
+    "sentences": [
+      {
+        "id": "tb_11_1",
+        "type": "short",
+        "textMn": "Өнөөдөр тэнгэр цэлмэг, нартай байна.",
+        "textJa": "今日は空が澄み渡り、晴れています。",
+        "explanation": "天候の描写。「тэнгэр（空）」、「цэлмэг（雲ひとつない快晴）」、「нартай（太陽が出ている・日差しがある：нар + -тай）」。"
+      },
+      {
+        "id": "tb_11_2",
+        "type": "grammar",
+        "textMn": "Маргааш цас орж, хүйтрэх төлөвтэй байна.",
+        "textJa": "明日は雪が降り、冷え込む見込みです。",
+        "explanation": "気象予報の推量表現。「цас орох（雪が降る）」の接続形「орж」＋「хүйтрэх（寒くなる）」＋「төлөвтэй байна（〜の傾向・見込みである）」。「цаг агаарын мэдээ（天気予報）」で頻出。"
+      },
+      {
+        "id": "tb_11_3",
+        "type": "dialogue",
+        "textMn": "Зориг: Өнөөдөр цаг агаар сайхан байна шүү. Такэши: Тийм байна. Маргааш хэдэн градус байх бол? Зориг: Цаг агаарын мэдээгээр хасах таван градус гэнэ.",
+        "textJa": "ゾリグ: 今日はいい天気だね。 たけし: 本当ですね。明日は何度くらいになるでしょうか？ ゾリグ: 天気予報によるとマイナス5度だそうだよ。",
+        "explanation": "気温と天気を話題にする日常会話。「хэдэн градус（何度）」、「хасах（マイナス）」、「гэнэ（〜だそうだ：伝聞助動詞）」の自然な使われ方を学びます。"
+      },
+      {
+        "id": "tb_11_4",
+        "type": "long",
+        "textMn": "Монголын өвөл маш хүйтэн боловч тэнгэр нь үргэлж цэлмэг, хөх өнгөтэй байдаг. Өвлийн улиралд температур хасах гуч, дөчин градус хүрдэг тул зузаан дулаан хувцас, үслэг малгай, бээлий зайлшгүй шаардлагатай.",
+        "textJa": "モンゴルの冬は極めて寒いですが、空は常に晴れ渡り、青く澄んでいます。冬の季節には気温がマイナス30度、40度に達するため、分厚い防寒着、毛皮の帽子、手袋が不可欠です。",
+        "explanation": "モンゴルの気候の特徴と冬の備えを説明する文章。「боловч（〜であるけれども）」、「зузаан дулаан（分厚く暖かい）」、「зайлшгүй（必須の）」などの高度な語彙を習得します。"
+      }
+    ]
+  },
+  {
+    "lesson": 12,
+    "title": "第１２課 来週セレンゲ県に行きます（Ирэх долоо хоногт Сэлэнгэ аймаг явна）",
+    "sentences": [
+      {
+        "id": "tb_12_1",
+        "type": "short",
+        "textMn": "Бид ирэх долоо хоногийн мягмар гарагт хөдөө явна.",
+        "textJa": "私たちは来週の火曜日に地方へ出発します。",
+        "explanation": "曜日と移動の表現。「ирэх долоо хоног（来週）」＋属格「-ийн」＋「мягмар гарагт（火曜日に：与位格）」＋「хөдөө явах（地方へ行く）」。"
+      },
+      {
+        "id": "tb_12_2",
+        "type": "grammar",
+        "textMn": "Та хэдэн хоногоор томилолтоор явах вэ?",
+        "textJa": "あなたは何日間の予定で出張に行きますか。",
+        "explanation": "期間を表す造格「-оор4」。「хэдэн хоногоор（何日間の予定で）」＋「томилолтоор（出張で：名詞томилолт + 造格）」。"
+      },
+      {
+        "id": "tb_12_3",
+        "type": "dialogue",
+        "textMn": "Зориг: Такэши, чи Сэлэнгэ аймагт очих бил үү? Хэзээ явах вэ? Такэши: Тийм ээ, ирэх сарын аравдаар явна. Зориг: Юугаар явах вэ? Такэши: Галт тэргээр явна.",
+        "textJa": "ゾリグ: たけし、セレンゲ県に行くんだったよね？いつ行くの？ たけし: そう、来月の10日頃に行くよ。 ゾリグ: 何で行くの？ たけし: 列車で行くよ。",
+        "explanation": "過去の予定の確認「〜 бил үү（〜だったっけ）」とおおよその日付「аравдаар（10日頃に）」、移動手段「юугаар（何で）」を用いた会話です。"
+      },
+      {
+        "id": "tb_12_4",
+        "type": "long",
+        "textMn": "Би ирэх сард Дархан болон Сэлэнгэ аймаг руу ажлын томилолтоор явна. Тэнд очоод орон нутгийн сургуулиудтай танилцаж, япон хэл заах арга зүйн сургалт явуулахаар төлөвлөж байна. Энэ бол миний анхны хөдөөгийн томилолт юм.",
+        "textJa": "私は来月ダルハンおよびセレンゲ県へ仕事の出張に行きます。現地に到着したら地方の学校を視察し、日本語教授法の研修を実施するよう計画しています。これは私の初めての地方出張です。",
+        "explanation": "業務出張の目的と計画を記述した文章。「болон（および）」、「очоод（到着してから）」、「төлөвлөж байна（計画している）」などの公的ビジネス語彙を含みます。"
+      }
+    ]
+  },
+  {
+    "lesson": 13,
+    "title": "第１３課 ここでタクシーを予約してもいいですか（Энд такси захиалж болох уу?）",
+    "sentences": [
+      {
+        "id": "tb_13_1",
+        "type": "short",
+        "textMn": "Энд түр хүлээж болох уу?",
+        "textJa": "ここで少し待ってもいいですか。",
+        "explanation": "許可を求める構文「動詞接続形 -ж/ч + болох уу」。「хүлээх（待つ）」の語幹「хүлээ-」に「-ж」が接続し「хүлээж болох уу（待ってもよろしいですか）」となります。「түр（少しの間）」。"
+      },
+      {
+        "id": "tb_13_2",
+        "type": "grammar",
+        "textMn": "Би хотын төв рүү явмаар байна. Зам зааж өгөөч.",
+        "textJa": "私は市内中心部へ行きたいです。道を教えてください。",
+        "explanation": "願望語尾「-маар4 байна（〜したい）」と親愛な依頼語尾「-аач4」。「зааж өгөх（教えてあげる・案内する）」に「-өөч」が付き「зааж өгөөч（教えてください）」となります。"
+      },
+      {
+        "id": "tb_13_3",
+        "type": "dialogue",
+        "textMn": "Юми: Төв аймаг руу явмаар байна. Эндээс яаж явах вэ? Ажилтан: Та хот хоорондын такси барьж болно. Би танд такси дуудаж өгөх үү? Юми: Тэгвэл их сайн байна. Баярлалаа.",
+        "textJa": "ユミ: トゥブ県に行きたいのですが。ここからどうやって行けばいいですか？ 係員: 都市間タクシーを捕まえることができますよ。私がタクシーをお呼びしましょうか？ ユミ: そうしていただけると大変助かります。ありがとうございます。",
+        "explanation": "交通手段の相談と親切な申し出に対する応答。「дуchangeж өгөх үү（〜してあげましょうか）」、「Тэгвэл их сайн байна（そうなら大変良いです）」など実践的な表現です。"
+      },
+      {
+        "id": "tb_13_4",
+        "type": "long",
+        "textMn": "Монголд такси барихын тулд замын хажууд зогсоод гараа өргөдөг. Хувийн машинтай хүмүүс ч зогсож үйлчилдэг бөгөөд нэг километрийн үнэ нь тодорхой тогтсон байдаг. Суухаасаа өмнө очих газраа тодорхой хэлэх хэрэгтэй.",
+        "textJa": "モンゴルでタクシーを拾うためには、道端に立って手を挙げます。自家用車の一般人も停まって乗せてくれ、1キロあたりの料金は明確に決まっています。乗り込む前に行き先をはっきりと伝える必要があります。",
+        "explanation": "モンゴル特有の「流しの白タク文化」を説明した長文。「гараа өргөх（手を挙げる）」、「тодорхой（明確に）」、「суухаасаа өмнө（乗る前に）」など役立つ文化・習慣表現です。"
+      }
+    ]
+  },
+  {
+    "lesson": 14,
+    "title": "第１４課 ホテルに泊まります（Зочид буудалд бууна）",
+    "sentences": [
+      {
+        "id": "tb_14_1",
+        "type": "short",
+        "textMn": "Нэг хоногийн үнэ нь ямар үнэтэй вэ?",
+        "textJa": "1泊の料金はいくらですか。",
+        "explanation": "宿泊料金の質問。「нэг хоног（丸1日、一泊）」＋属格「-ийн」＋「үнэ（値段）」＋代名詞所有「нь」＋「ямар үнэтэй вэ（どんな値段ですか）」。"
+      },
+      {
+        "id": "tb_14_2",
+        "type": "grammar",
+        "textMn": "Өрөөнд интернет, халуун ус байгаа юу? Тийм, байгаа.",
+        "textJa": "部屋にインターネットとお湯はありますか？はい、あります。",
+        "explanation": "ホテルの設備を確認する表現。存在文「байгаа юу（あるのか）」。「халуун ус（お湯）」はモンゴルの冬期・地方宿泊で最重要の確認項目です。"
+      },
+      {
+        "id": "tb_14_3",
+        "type": "dialogue",
+        "textMn": "Юми: Сайн байна уу? Сул өрөө байгаа юу? Рецепшн: Сайн байна уу? Тийм ээ, нэг ортой өрөө сул байна. Юми: Өглөөний цай багтсан уу? Рецепшн: Тийм ээ, өглөөний цай үнэдээ орсон.",
+        "textJa": "ユミ: こんにちは。空き部屋はありますか？ フロント: こんにちは。はい、シングルルームに空きがございます。 ユミ: 朝食は含まれていますか？ フロント: はい、朝食は料金に含まれております。",
+        "explanation": "ホテルのフロントでのチェックイン手続き。「нэг ортой өрөө（シングルルーム）」、「багтсан（含まれた）」、「үнэдээ орсон（料金に入っている）」の実践対話です。"
+      },
+      {
+        "id": "tb_14_4",
+        "type": "long",
+        "textMn": "Бид хөдөө аялахдаа жуулчны баазад хоёр хоносон. Уламжлалт гэр сууцанд амарч, өглөө нь нар мандахыг харсан. Гэр дотор зуух галладаг тул маш дулаахан, тохилог байсан. Байгалийн үзэсгэлэн үнэхээр гайхалтай байлаа.",
+        "textJa": "私たちは地方を旅行した際、ツーリストキャンプに2泊しました。伝統的なゲル住居に滞在し、朝は日の出を眺めました。ゲルの中では薪ストーブを焚くため、とても暖かく快適でした。大自然の美しさは本当に素晴らしかったです。",
+        "explanation": "ツーリストキャンプ（ゲルの宿）体験記。「жуулчны бааз（ツーリストキャンプ）」、「зуух галлах（ストーブを焚く）」、「тохилог（居心地が良い）」などの旅行表現です。"
+      }
+    ]
+  },
+  {
+    "lesson": 15,
+    "title": "第１５課 病院に行きました（Эмнэлэгт очсон）",
+    "sentences": [
+      {
+        "id": "tb_15_1",
+        "type": "short",
+        "textMn": "Миний толгой өвдөж, халуурч байна.",
+        "textJa": "私は頭が痛くて、熱があります。",
+        "explanation": "体の不調の訴え。「өвдөх（痛む）」の接続形「өвдөж」＋「халуурах（熱が出る）」＋進行形「-ж байна」。「толгой өвдөх（頭痛がする）」は最重要医療表現。"
+      },
+      {
+        "id": "tb_15_2",
+        "type": "grammar",
+        "textMn": "Энэ эмийг өдөрт гурван удаа хоолны дараа уугаарай.",
+        "textJa": "この薬を1日3回、食後に飲んでください。",
+        "explanation": "服薬指導の表現。「өдөрт гурван удаа（1日に3回）」＋「хоолны дараа（食後に）」＋「уугаарай（飲んでくださいね：уух + -гаарай）」。（モンゴル語では薬を「飲む」のも動詞「уух」を用います）。"
+      },
+      {
+        "id": "tb_15_3",
+        "type": "dialogue",
+        "textMn": "Эмч: Сайн байна уу? Бие тань яасан бэ? Такэши: Өчигдөр оройноос эхлээд хоолой өвдөж, ханиалгаад байна. Эмч: Амаа ангайгаад хэлээ гарга даа. Ханиад хүрсэн байна.",
+        "textJa": "医師: こんにちは。お体の具合はどうされましたか？ たけし: 昨晩から喉が痛くて、咳が出続けています。 医師: 口を開けて舌を出してください。風邪を引いていますね。",
+        "explanation": "診察室での医師と患者のリアルな問診。「бие тань яасан бэ（どうされましたか）」、「хоолой өвдөх（喉が痛い）」、「ханиад хүрэх（風邪を引く）」を学びます。"
+      },
+      {
+        "id": "tb_15_4",
+        "type": "long",
+        "textMn": "Монголын хуурай, хүйтэн цаг агаараас болоод өвлийн улиралд хүмүүс амархан ханиад хүрдэг. Ханиад хүрсэн үед чацарганы халуун шүүс ууж, адууны чанасан махны шөл уух нь биед маш сайн эмчилгээ болдог гэж монголчууд ярьдаг.",
+        "textJa": "モンゴルの乾燥した寒い気候のせいで、冬の時期には人々は簡単に風邪を引いてしまいます。風邪を引いた時には、熱いサジー（シーバックソーン）ジュースを飲み、煮込んだ馬肉のスープを飲むことが体に大変良い民間療法になるとモンゴルの人々は語ります。",
+        "explanation": "モンゴルの伝統的な風邪の民間療法を語る文化長文。「чацаргана（サジー）」、「шөл（スープ）」、「эмчилгээ（治療）」などの重要語彙を含みます。"
+      }
+    ]
+  },
+  {
+    "lesson": 16,
+    "title": "第１６課 昨日何をしましたか（Өчигдөр юу хийсэн бэ?）",
+    "sentences": [
+      {
+        "id": "tb_16_1",
+        "type": "short",
+        "textMn": "Өчигдөр би номын санд сууж даалгавраа хийсэн.",
+        "textJa": "昨日私は図書館に座って（こもって）宿題をしました。",
+        "explanation": "過去の行動順序。並列接続語尾「-ж」で「сууж（座って・滞在して）」＋「даалгавраа хийсэн（自分の宿題をした：既定過去形-сан）」と繋げます。"
+      },
+      {
+        "id": "tb_16_2",
+        "type": "grammar",
+        "textMn": "Хичээл тараад шууд гэртээ харьсан уу?",
+        "textJa": "学校が終わってから、まっすぐ家に帰りましたか。",
+        "explanation": "前行動接続語尾「-аад4」。「хичээл тарах（授業・学校が終わる）」に「-аад」が付き「終わったあとで」という順序関係を明確にします。「шууд（直接、まっすぐ）」。"
+      },
+      {
+        "id": "tb_16_3",
+        "type": "dialogue",
+        "textMn": "Багш: Такэши, өчигдөр чи яагаад хичээлдээ ирээгүй вэ? Такэши: Уучлаарай, багш аа. Гэнэт халуураад эмнэлэг явсан юм. Багш: Одоо бие чинь дээрдэв үү? Такэши: Тийм ээ, эм уугаад зүгээр болсон.",
+        "textJa": "先生: たけし、昨日はどうして授業に来なかったのですか？ たけし: すみません先生。急に熱が出て病院に行ったのです。 先生: 今は体調は良くなりましたか？ たけし: はい、薬を飲んで大丈夫になりました。",
+        "explanation": "欠席の理由を説明する対話。「яагаад ... вэ（なぜ〜なのか）」、「гэнэт（急に）」、「дээрдэх（良くなる、快方に向かう）」を身につけます。"
+      },
+      {
+        "id": "tb_16_4",
+        "type": "long",
+        "textMn": "Өнгөрсөн ням гарагт би монгол найзынхаа гэрт зочилсон. Найзын маань ээж амттай бууз, сүүтэй цайгаар дайлсан. Бид олон сайхан сэдвээр ярилцаж, хамтдаа дуу дуулж, үдшийг маш зугаатай өнгөрүүлсэн.",
+        "textJa": "先週の日曜日、私はモンゴルの友人の家を訪ねました。友人の母が美味しいボーズとスーテイチャイ（ミルクティー）でごちそうしてくれました。私たちはたくさんの素敵な話題で語り合い、一緒に歌を歌い、夜を大変楽しく過ごしました。",
+        "explanation": "モンゴルの家庭訪問体験記。「зочлох（客として訪問する）」、「дайлах（もてなす）」、「өнгөрүүлэх（時間を過ごす）」という温かい交流の文です。"
+      }
+    ]
+  },
+  {
+    "lesson": 17,
+    "title": "第１７課 野菜を買いましょう（Ногоо авцгаая）",
+    "sentences": [
+      {
+        "id": "tb_17_1",
+        "type": "short",
+        "textMn": "Зах орж төмс, лууван авцгаая.",
+        "textJa": "市場へ行ってジャガイモとニンジンを買いましょう。",
+        "explanation": "複数人への勧誘語尾「-цгаая4」。「авах（取る・買う）」の語幹「ав-」に男性母音語尾「-цгаая」が接続し「みんなで買いましょう」となります。「төмс（ジャガイモ）」、「лууван（ニンジン）」。"
+      },
+      {
+        "id": "tb_17_2",
+        "type": "grammar",
+        "textMn": "Энэ алим нэг килограмм нь хэдэн төгрөг вэ?",
+        "textJa": "このリンゴは1キログラムでいくら（何トゥグルグ）ですか。",
+        "explanation": "市場での値段の尋ね方。「нэг килограмм нь（1キロあたりは）」＋「хэдэн төгрөг вэ（何トゥグルグですか）」。モンゴルの通貨単位はトゥグルグ（төгрөг）です。"
+      },
+      {
+        "id": "tb_17_3",
+        "type": "dialogue",
+        "textMn": "Юми: Худалдагч аа, энэ мах шинэ үү? Худалдагч: Дөнгөж сая ирсэн, маш шинэ үхрийн мах байна. Хоёр килограммыг авбал хямдруулж өгнө шүү. Юми: Тэгвэл хоёр килограммыг авъя.",
+        "textJa": "ユミ: 店員さん、このお肉は新鮮ですか？ 店員: たった今届いたばかりの、とても新鮮な牛肉ですよ。2キロ買ってくれたら安くまけてあげますよ！ ユミ: じゃあ2キロ買います。",
+        "explanation": "市場（ザハ）での活気ある値段交渉対話。「дөнгөж сая（たった今）」、「хямдруулж өгөх（安く割り引いてあげる）」、「авъя（買います・いただきます：意志語尾-я）」を学びます。"
+      },
+      {
+        "id": "tb_17_4",
+        "type": "long",
+        "textMn": "Бид амралтын өдрөөр Нарантуул зах дээр очсон. Тэнд хоол хүнс, өвлийн дулаан дээл, гутал, гэр ахуйн бараа зэрэг бүх төрлийн зүйлсийг зарж байв. Захын уур амьсгал маш амьд, олон хүний хөлд дарагдсан байлаа.",
+        "textJa": "私たちは休日にナラントール市場へ行きました。そこでは食料品、冬の暖かいデール（民族衣装）、ブーツ、家庭用品などあらゆる種類の品物が売られていました。市場の活気は大変生き生きとしており、大勢の人で賑わっていました。",
+        "explanation": "ウランバートル最大の市場ナラントールザハのルポ文。「бүх төрлийн（全種類の）」、「уур амьсгал（雰囲気）」、「хөлд дарагдах（人波で賑わう）」を習得します。"
+      }
+    ]
+  },
+  {
+    "lesson": 18,
+    "title": "第１８課 お腹がすいています（Өлсөж байна）",
+    "sentences": [
+      {
+        "id": "tb_18_1",
+        "type": "short",
+        "textMn": "Би их өлсөж байна. Амттай монгол хоол идье.",
+        "textJa": "私はとてもお腹が空いています。美味しいモンゴル料理を食べましょう。",
+        "explanation": "生理状態の進行形「өлсөх（お腹が空く）」＋「-ж байна」＝「空いている」。意志・勧誘「идье（食べよう：идэх + -е）」。"
+      },
+      {
+        "id": "tb_18_2",
+        "type": "grammar",
+        "textMn": "Зөөгч өө, цэсээ өгөөч. Бас халуун цай авъя.",
+        "textJa": "ウェイターさん、メニューをください。それと温かいお茶をお願いします。",
+        "explanation": "レストランでの注文。「цэс（メニュー）」＋再帰所有「-ээ」＋丁寧な依頼「өгөөч（ください）」。「авъя（〜をいただきます・お願いします）」。"
+      },
+      {
+        "id": "tb_18_3",
+        "type": "dialogue",
+        "textMn": "Хироки: Та юу захиалах вэ? Такэши: Би хуушуур, бас ногоотой шөл захиалмаар байна. Хироки: Уух юм юу авах вэ? Такэши: Сүүтэй цай захиалъя. Зөөгч өө, захиалга авъя!",
+        "textJa": "ヒロキ: 何を注文しますか？ たけし: 僕はホーショールと野菜スープを注文したいです。 ヒロキ: 飲み物は何にしますか？ たけし: スーテイチャイにしましょう。すみません、注文をお願いします！",
+        "explanation": "飲食店での注文の流れ。「захиалах（注文する）」、「захиалга авах（注文を取る）」、「хуушуур（ホーショール：羊肉の揚げパイ）」という必修定番表現です。"
+      },
+      {
+        "id": "tb_18_4",
+        "type": "long",
+        "textMn": "Монгол хоолны газар ороод цуйван, хуушуур, бууз зэрэг уламжлалт хоолыг захиалж идлээ. Махны амт маш баялаг, порц нь их тул бид бүгдээрээ цадталаа идсэн. Монголчуудын зочломтгой зан чанар, амттай хоол сэтгэлд их хоногшин үлдсэн.",
+        "textJa": "モンゴル料理店に入り、ツォイワン（焼きうどん風料理）、ホーショール、ボーズなどの伝統料理を注文して食べました。肉の旨味が大変濃厚で、ボリュームも多いため、私たちは全員お腹いっぱいになるまで食べました。モンゴルの人々の温かいもてなしと美味しい料理が深く心に残りました。",
+        "explanation": "モンゴル伝統料理の食レポ文。「цадталаа（満腹になるまで）」、「зочломтгой（もてなし好きな）」、「хоногшин үлдэх（心に深く残る）」などの豊かな情緒表現です。"
+      }
+    ]
+  }
+];
+
+if (typeof window !== "undefined") {
+  window.textbookLessonsData = textbookLessonsData;
+}
+
+
+// === js/data/exerciseNotebookQuizzes.js ===
+// 練習ノート問題データ（全18課：筆記練習・空欄補充・疑問助詞・翻訳・文書き換え問題）
+// 出典: モンゴル語練習問題集（МОНГОЛ ХЭЛНИЙ ДАСГАЛЫН ДЭВТЭР）完全網羅データ
+const exerciseNotebookQuizzes = [
+  {
+    "lesson": 1,
+    "lessonTitle": "第1課 挨拶とコピュラ文（Мэндчилгээ ба Энгийн өгүүлбэр）",
+    "quizzes": [
+      {
+        "id": "ex_1_1",
+        "exerciseType": "choice",
+        "prompt": "「私は学生ではありません」という意味にするための空欄に入る適切な単語を選んでください。",
+        "question": "Би оюутан [____].",
+        "options": [
+          "биш",
+          "үгүй",
+          "байхгүй",
+          "юм"
+        ],
+        "correctAnswer": "биш",
+        "explanation": "【正解理由】\nモンゴル語で「AはBではない」という名詞述語（コピュラ文）の否定には否定助詞「биш」を用います。\n\n【文法解説】\n・肯定: Би оюутан.（私は学生です）\n・否定: Би оюутан биш.（私は学生ではありません）\n\n【他の選択肢との違い】\n・үгүй: 「いいえ」という返答の感動詞です。名詞の直後に置いて否定述語を作ることはできません。\n・байхгүй: 「ない・いない」という存在の否定に用います（例: Ном байхгүй = 本がない）。属性の否定には用いません。\n・юм: 「〜なのだ」という詠嘆・確認の終助詞です。"
+      },
+      {
+        "id": "ex_1_2",
+        "exerciseType": "choice",
+        "prompt": "「あなたの名前は何ですか」と尋ねる文の末尾に入る適切な疑問助詞を選んでください。",
+        "question": "Таны нэр хэн [____]?",
+        "options": [
+          "бэ",
+          "вэ",
+          "уу",
+          "үү"
+        ],
+        "correctAnswer": "бэ",
+        "explanation": "【正解理由】\n疑問詞「хэн（誰）」の末尾文字は「н（鼻音）」であるため、疑問助詞「бэ」が接続します。\n\n【文法規則：疑問詞疑問文の助詞選択】\n・直前の単語が【н, м, в】で終わる場合 →「бэ」（例: хэн бэ?, ямар ном бэ?）\n・それ以外の文字（母音、他の子音）で終わる場合 →「вэ」（例: юу вэ?, хаана вэ?）\n\n【間違いやすいポイント】\n「уу/үү」はYes/No疑問文（疑問詞のない文）に使う助詞です。疑問詞（хэн, юу, хаана等）がある文には「бэ/вэ」を用います。"
+      },
+      {
+        "id": "ex_1_3",
+        "exerciseType": "input",
+        "prompt": "日本語の意味に合うように、空欄に適切なモンゴル語（キリル文字）を一語入力してください。\n「私も日本人です。」",
+        "question": "Би [____] бас япон хүн.",
+        "correctAnswer": "ч",
+        "acceptableAnswers": [
+          "ч"
+        ],
+        "explanation": "【正解理由】\n「〜もまた」を表す小辞は「ч бас」です。主語「Би」の直後に「ч」を置いて「Би ч бас（私もまた）」となります。\n\n【文法解説】\n・Би ч бас багш.（私も先生です）\n・Энэ ч бас миний ном.（これも私の本です）\n「ч」は前置する名詞や代名詞に「〜も」という同調・添加の意味を付与します。"
+      },
+      {
+        "id": "ex_1_4",
+        "exerciseType": "choice",
+        "prompt": "初対面で「お会いできて嬉しいです」と挨拶する表現として正しいものを選んでください。",
+        "question": "初対面の挨拶: [____]",
+        "options": [
+          "Танилцсандаа баяртай байна.",
+          "Баяртай.",
+          "Зүгээр зүгээр.",
+          "Сайн уу."
+        ],
+        "correctAnswer": "Танилцсандаа баяртайバйна.",
+        "explanation": "【正解理由】\n「Танилцсандаа баяртай байна」は「お知り合いになれて光栄です・嬉しいです」を意味する代表的な挨拶です。\n\n【語構成】\n・танилцах（知り合う）＋ 形動詞過去「-сан」＋ 与位格「-д」＋ 再帰所有「-аа」＝ танилцсандаа（知り合えたことに）\n・баяртай байна ＝ 喜びを感じています。"
+      }
+    ]
+  },
+  {
+    "lesson": 2,
+    "lessonTitle": "第2課 指示代名詞と疑問助詞（Заах төлөөний үг ба Асуух сул үг）",
+    "quizzes": [
+      {
+        "id": "ex_2_1",
+        "exerciseType": "choice",
+        "prompt": "「номын сан（図書館）」に対する疑問文として、正しいYes/No疑問助詞を選んでください。",
+        "question": "Тэр номын сан [____]?",
+        "options": [
+          "уу",
+          "үү",
+          "юу",
+          "юү"
+        ],
+        "correctAnswer": "уу",
+        "explanation": "【正解理由】\n「номын сан」の最後の語「сан（庫・館）」は男性母音「а」を含む語尾閉音節名詞です。男性語には「уу」が付きます。\n\n【文法規則：Yes/No疑問助詞の母音調和】\n・男性語（а, о, у）→「уу」（例: багш уу?, ном уу?, сан уу?）\n・女性語（э, ө, ү）→「үү」（例: дэвтэр үү?, цонх үү?）\n・長母音・二重母音で終わる男性語 →「юу」\n・長母音・二重母音で終わる女性語 →「юү」"
+      },
+      {
+        "id": "ex_2_2",
+        "exerciseType": "choice",
+        "prompt": "「дэвтэр（ノート）」に対するYes/No疑問助詞として正しいものを選んでください。",
+        "question": "Энэ чиний дэвтэр [____]?",
+        "options": [
+          "үү",
+          "уу",
+          "бэ",
+          "вэ"
+        ],
+        "correctAnswer": "үү",
+        "explanation": "【正解理由】\n「дэвтэр」は母音「э」を持つ女性語（短母音または子音末尾）であるため、女性語用の疑問助詞「үү」が接続します。\n\n【構造】\nЭнэ（これ）＋ чиний（君の）＋ дэвтэр（ノート）＋ үү?（〜ですか？）"
+      },
+      {
+        "id": "ex_2_3",
+        "exerciseType": "input",
+        "prompt": "「これは何ですか？」という疑問文を完成させるため、空欄に入るモンゴル語（キリル文字）を入力してください。",
+        "question": "Энэ юу [____]?",
+        "correctAnswer": "вэ",
+        "acceptableAnswers": [
+          "вэ"
+        ],
+        "explanation": "【正解理由】\n疑問代名詞「юу（何）」は長母音「уу」で終わっており、鼻音（н, м, в）ではないため、「вэ」が付きます。「Энэ юу вэ?（これは何ですか？）」は最重要日常表現です。"
+      },
+      {
+        "id": "ex_2_4",
+        "exerciseType": "choice",
+        "prompt": "「教室に机と椅子があります」という意味になるよう、空欄に入る存在動詞を選んでください。",
+        "question": "Ангид ширээ, сандал [____].",
+        "options": [
+          "байна",
+          "биш",
+          "юм",
+          "байх"
+        ],
+        "correctAnswer": "байна",
+        "explanation": "【正解理由】\n事物の存在「〜がある・いる」を表す現在形述語動詞は「байна」です。\n\n【文法解説】\n・Ангид（教室に：与位格）＋ ширээ（机）＋ сандал（椅子）＋ байна（あります）。\n否定の場合は「байхгүй（ありません）」となります。"
+      }
+    ]
+  },
+  {
+    "lesson": 3,
+    "lessonTitle": "第3課 動詞の過去時制と奪格（Үйл үгийн өнгөрсөн цаг ба Гарахын тийн ялгал）",
+    "quizzes": [
+      {
+        "id": "ex_3_1",
+        "exerciseType": "choice",
+        "prompt": "「私は日本から来ました」という文の空欄に入る適切な奪格助詞を選んでください。",
+        "question": "Би Япон[____] ирсэн.",
+        "options": [
+          "оос",
+          "аас",
+          "ээс",
+          "өөс"
+        ],
+        "correctAnswer": "оос",
+        "explanation": "【正解理由】\n「Япон」の第2音節（末尾音節）の母音は「о」です。母音調和の規則により、「о」母音の単語には「-оос」が接続します。\n\n【文法規則：奪格（〜から）の4重母音調和】\n・а母音語 →「-аас」（例: Улаанбаатараас）\n・э母音語 →「-ээс」（例: гэрээс, дэлгүүрээс）\n・о母音語 →「-оос」（例: Японоос, хотоос）\n・ө母音語 →「-өөс」（例: хөдөөнөөс）"
+      },
+      {
+        "id": "ex_3_2",
+        "exerciseType": "choice",
+        "prompt": "動詞「унших（読む）」の既定過去形として正しい形を選んでください。",
+        "question": "Би өчигдөр сонин [____].",
+        "options": [
+          "уншсан",
+          "уншсэн",
+          "уншсон",
+          "уншсөн"
+        ],
+        "correctAnswer": "уншсан",
+        "explanation": "【正解理由】\n動詞「унших」の語幹は「унш-」（男性母音「у」）です。男性母音「а, у」の語幹には男性過去語尾「-сан」が接続します。\n\n【母音調和規則】\n・語幹母音が а, у →「-сан」（уншсан, гарсан, уусан）\n・語幹母音が э, ү, и →「-сэн」（ирсэн, үзсэн, мэдсэн）\n・語幹母音が о →「-сон」（орсон, очсон）\n・語幹母音が ө →「-сөн」（өгсөн, төрсөн）"
+      },
+      {
+        "id": "ex_3_3",
+        "exerciseType": "input",
+        "prompt": "「私は25歳です」をモンゴル語で書く際、空欄に入る数詞＋語尾を入力してください。\n（25: хорин тав）",
+        "question": "Би хорин [____] настай.",
+        "correctAnswer": "таван",
+        "acceptableAnswers": [
+          "таван"
+        ],
+        "explanation": "【正解理由】\n数詞「тав（5）」の直後に名詞「нас（歳）」が続く時、隠れン（нууц н）が現れて「таван настай（25歳である）」となります。"
+      }
+    ]
+  },
+  {
+    "lesson": 4,
+    "lessonTitle": "第4課 名詞の属格助詞と位置表現（Харьяалахын тийн ялгал ба Байрлал）",
+    "quizzes": [
+      {
+        "id": "ex_4_1",
+        "exerciseType": "choice",
+        "prompt": "「сургууль（学校）」に属格助詞（〜の）を接続した正しい形を選んでください。",
+        "question": "Энэ бол манай [____] багш.",
+        "options": [
+          "сургуулийн",
+          "сургуулын",
+          "сургуульын",
+          "сургуульний"
+        ],
+        "correctAnswer": "сургуулийн",
+        "explanation": "【正解理由】\n軟音記号「ь」で終わる単語に属格助詞を接続する場合、「ь」が「и」に交代し、「-ийн」が付いて「сургуулийн（学校の）」となります。"
+      },
+      {
+        "id": "ex_4_2",
+        "exerciseType": "choice",
+        "prompt": "「机の上に本があります」という文の位置を表す後置詞を選んでください。",
+        "question": "Ширээн [____] ном байна.",
+        "options": [
+          "дээр",
+          "доор",
+          "дотор",
+          "гадна"
+        ],
+        "correctAnswer": "дээр",
+        "explanation": "【正解理由】\n「〜の上に」を表す後置詞は「дээр」です。\n・дээр: 上に\n・доор: 下に\n・дотор: 中に\n・гадна: 外に"
+      },
+      {
+        "id": "ex_4_3",
+        "exerciseType": "input",
+        "prompt": "母音で終わる名詞「аав（父）」に属格語尾「-ын/-ийн」を接続した形を入力してください。",
+        "question": "Энэ бол миний [____] машин.",
+        "correctAnswer": "аавын",
+        "acceptableAnswers": [
+          "аавын"
+        ],
+        "explanation": "【正解理由】\n「аав」は男性母音「а」を含む子音末尾名詞であるため、「-ын」が接続して「аавын（父の）」となります。"
+      }
+    ]
+  },
+  {
+    "lesson": 5,
+    "lessonTitle": "第5課 動詞の未来形と与位格（Ирээдүй цаг ба Өгөх оршихын тийн ялгал）",
+    "quizzes": [
+      {
+        "id": "ex_5_1",
+        "exerciseType": "choice",
+        "prompt": "「私は明日友達と映画を見ます」という文の動詞「үзэх（見る）」の未来形として正しいものを選んでください。",
+        "question": "Би маргааш кино [____].",
+        "options": [
+          "үзнэ",
+          "үзнэ үү",
+          "үзна",
+          "үзно"
+        ],
+        "correctAnswer": "үзнэ",
+        "explanation": "【正解理由】\n動詞「үзэх」の語幹「үз-」は女性母音「ү」を持つため、女性未来語尾「-нэ」が接続し「үзнэ（見ます・見る予定です）」となります。"
+      },
+      {
+        "id": "ex_5_2",
+        "exerciseType": "choice",
+        "prompt": "「私は学校に行きます」という文の空欄に入る与位格助詞（〜に/〜へ）を選んでください。",
+        "question": "Би сургууль[____] явна.",
+        "options": [
+          "д",
+          "т",
+          "аас",
+          "тай"
+        ],
+        "correctAnswer": "д",
+        "explanation": "【正解理由】\n「сургууль」の末尾は軟音記号「ь」（母音扱い）であるため、有声子音・母音末尾に付く「-д」が接続して「сургуульд（学校に）」となります。「-т」は無声子音（г, р, с, д, т）の末尾に接続します。"
+      },
+      {
+        "id": "ex_5_3",
+        "exerciseType": "input",
+        "prompt": "「友達と一緒に」という意味になるよう、名詞「найз（友達）」に共同格語尾「-той4」を接続した形を入力してください。",
+        "question": "Би [____] хамт хоол иднэ.",
+        "correctAnswer": "найзтай",
+        "acceptableAnswers": [
+          "найзтай"
+        ],
+        "explanation": "【正解理由】\n「найз」は男性母音「а」を持つ語幹であるため、男性共同格語尾「-тай」が付き「найзтай（友達と）」となります。呼応する副詞「хамт（一緒に）」と共に「〜と一緒に」を表します。"
+      }
+    ]
+  },
+  {
+    "lesson": 6,
+    "lessonTitle": "第6課 習慣形と丁寧な命令（Давтагдах цаг ба Зөвлөн захирах）",
+    "quizzes": [
+      {
+        "id": "ex_6_1",
+        "exerciseType": "choice",
+        "prompt": "「黒板をよく見てください」という丁寧な助言・依頼を表す動詞「харах（見る）」の形を選んでください。",
+        "question": "Самбар дээрх үгийг сайн [____].",
+        "options": [
+          "хараарай",
+          "хар",
+          "харна",
+          "харсан"
+        ],
+        "correctAnswer": "хараарай",
+        "explanation": "【正解理由】\n丁寧な助言・親愛な命令・依頼を表す語尾は「-аарай4」です。男性語幹「хар-」に「-аарай」が接続して「хараарай（見てくださいね）」となります。"
+      },
+      {
+        "id": "ex_6_2",
+        "exerciseType": "choice",
+        "prompt": "「彼は毎日走る習慣があります」という習慣・反復を表す動詞「гүйх（走る）」の形を選んでください。",
+        "question": "Тэр өдөр бүр цэцэрлэгт хүрээлэнд [____].",
+        "options": [
+          "гүйдэг",
+          "гүйнэ",
+          "гүйсэн",
+          "гүйвэл"
+        ],
+        "correctAnswer": "гүйдэг",
+        "explanation": "【正解理由】\n日常の習慣・反復動作には形動詞語尾「-даг4」を用います。「гүйх」は女性母音「ү」を持つため、「-дэг」が接続して「гүйдэг（走る習慣がある）」となります。"
+      }
+    ]
+  },
+  {
+    "lesson": 7,
+    "lessonTitle": "第7課 名詞対格と集合数詞（Заахын тийн ялгал ба Хам тоо）",
+    "quizzes": [
+      {
+        "id": "ex_7_1",
+        "exerciseType": "choice",
+        "prompt": "「私たちは4人家族（4人きょうだい）です」を表す集合数詞を選んでください。",
+        "question": "Манай гэр бүл [____].",
+        "options": [
+          "дөрвүүлээ",
+          "дөрөв",
+          "дөрөвтэй",
+          "дөрвөн"
+        ],
+        "correctAnswer": "дөрвүүлээ",
+        "explanation": "【正解理由】\n集合数詞語尾「-уул2/-үүл2」＋再帰所有「-аа/-ээ」。「дөрөв（4）」の母音脱落語幹「дөрв-」に「-үүлээ」が付き「дөрвүүлээ（4人揃って、4人で）」となります。"
+      },
+      {
+        "id": "ex_7_2",
+        "exerciseType": "choice",
+        "prompt": "特定の名詞「зураг（写真）」を直接目的語にする対格語尾（〜を）を選んでください。",
+        "question": "Энэ [____] хар даа.",
+        "options": [
+          "зургийг",
+          "зурагыг",
+          "зурганд",
+          "зургаар"
+        ],
+        "correctAnswer": "зургийг",
+        "explanation": "【正解理由】\n子音「г」で終わる男性語名詞「зураг」に対格語尾が付く際、弱母音交代が起きて「зургийг（その写真を）」となります。"
+      }
+    ]
+  },
+  {
+    "lesson": 8,
+    "lessonTitle": "第8課 方向格と形容詞比較（Чиглэхийн тийн ялгал ба Харьцуулалт）",
+    "quizzes": [
+      {
+        "id": "ex_8_1",
+        "exerciseType": "choice",
+        "prompt": "「学校の方向へ向かう」を表す方向格助詞（-руу/-рүү/-луу/-лүү）として正しいものを選んでください。",
+        "question": "Би сургууль [____] алхаж байна.",
+        "options": [
+          "руу",
+          "рүү",
+          "луу",
+          "лүү"
+        ],
+        "correctAnswer": "руу",
+        "explanation": "【正解理由】\n「сургууль」は軟音記号「ь」で終わる男性語（語幹母音у）です。末尾が母音・母音的要素で終わる男性語には「руу」が接続します。（「-луу/-лүү」は子音末尾の単語に接続します）。"
+      },
+      {
+        "id": "ex_8_2",
+        "exerciseType": "choice",
+        "prompt": "「ウランバートルから遠いなあ！」という感嘆文の末尾に入る表現を選んでください。",
+        "question": "Улаанбаатараас хол [____]!",
+        "options": [
+          "юм аа",
+          "байна уу",
+          "биш",
+          "хэрэгтэй"
+        ],
+        "correctAnswer": "юм аа",
+        "explanation": "【正解理由】\n感情や驚き・実感を込めた感嘆表現には終助詞「юм аа（〜だなあ！）」を用います。「хол юм аа（遠いなあ！）」。"
+      }
+    ]
+  },
+  {
+    "lesson": 9,
+    "lessonTitle": "第9課 頻度副詞と時間表現（Цаг хугацааны илэрхийлэл）",
+    "quizzes": [
+      {
+        "id": "ex_9_1",
+        "exerciseType": "choice",
+        "prompt": "「私はたいてい（普段は）バスで行きます」という文の空欄に入る頻度副詞を選んでください。",
+        "question": "Би [____] автобусаар явдаг.",
+        "options": [
+          "ихэвчлэн",
+          "хэзээ ч",
+          "хааяа",
+          "дөнгөж"
+        ],
+        "correctAnswer": "ихэвчлэн",
+        "explanation": "【正解理由】\n「ихэвчлэн」は「たいてい、普段は、主に」を意味する高頻度副詞です。\n・ихэвчлэн: たいてい（80〜90%）\n・хааяа: たまに、時々（20〜30%）\n・хэзээ ч: 決して〜ない（否定文呼応）"
+      },
+      {
+        "id": "ex_9_2",
+        "exerciseType": "input",
+        "prompt": "「毎朝8時に」を表すため、空欄に与位格助詞（-д/-т）を接続した形を入力してください。\n（8時: найман цаг）",
+        "question": "Би өглөө найман [____] босдог.",
+        "correctAnswer": "цагт",
+        "acceptableAnswers": [
+          "цагт"
+        ],
+        "explanation": "【正解理由】\n「цаг（時・時間）」の末尾は無声子音「г」であるため、「-т」が接続して「цагт（〜時に）」となります。"
+      }
+    ]
+  },
+  {
+    "lesson": 10,
+    "lessonTitle": "第10課 可能表現（Чадах үйл үг）",
+    "quizzes": [
+      {
+        "id": "ex_10_1",
+        "exerciseType": "choice",
+        "prompt": "「モンゴル語で話すことができます」を表す動詞「ярих（話す）」の可能形を選んでください。",
+        "question": "Би монголоор [____] чадна.",
+        "options": [
+          "ярьж",
+          "ярьч",
+          "яриад",
+          "яривал"
+        ],
+        "correctAnswer": "ярьж",
+        "explanation": "【正解理由】\n助動詞「чадах（できる）」の前に置く動詞は接続形「-ж/ч」にします。「ярих」の語幹「яри-」に有声接続詞「-ж」が付き「ярьж чадна（話すことができる）」となります。"
+      },
+      {
+        "id": "ex_10_2",
+        "exerciseType": "choice",
+        "prompt": "「泳ぐことができません」という否定可能形として正しいものを選んでください。",
+        "question": "Би усанд сэлж [____].",
+        "options": [
+          "чадахгүй",
+          "чадна",
+          "чадах биш",
+          "чаддаг"
+        ],
+        "correctAnswer": "чадахгүй",
+        "explanation": "【正解理由】\n「чадах」の否定形は形動詞形「чадах」に否定小辞「-гүй」を付した「чадахгүй（〜できない）」です。"
+      }
+    ]
+  },
+  {
+    "lesson": 11,
+    "lessonTitle": "第11課 天候と状態描写（Цаг агаар ба Байдал）",
+    "quizzes": [
+      {
+        "id": "ex_11_1",
+        "exerciseType": "choice",
+        "prompt": "「明日は雨が降る見込みです」という推量表現として正しいものを選んでください。",
+        "question": "Маргааш бороо орох [____].",
+        "options": [
+          "төлөвтэй байна",
+          "хэрэгтэй",
+          "ёстой",
+          "боломжтой"
+        ],
+        "correctAnswer": "төлөвтэй байна",
+        "explanation": "【正解理由】\n気象予報などで「〜の傾向・見込み・模様である」と表す公的な推量表現は「形動詞未来形 + төлөвтэй байна」です。"
+      },
+      {
+        "id": "ex_11_2",
+        "exerciseType": "input",
+        "prompt": "「今日はマイナス10度です」を表すため、「マイナス」を意味するキリル文字単語を入力してください。",
+        "question": "Өнөөдөр [____] арван градус байна.",
+        "correctAnswer": "хасах",
+        "acceptableAnswers": [
+          "хасах"
+        ],
+        "explanation": "【正解理由】\nモンゴル語で気温のマイナス（氷点下）は「хасах（引く・マイナス）」を用います（例: хасах арван градус = マイナス10度）。プラスは「нэмэх」です。"
+      }
+    ]
+  },
+  {
+    "lesson": 12,
+    "lessonTitle": "第12課 予定と移動表現（Төлөвлөгөө ба Хөдөлгөөн）",
+    "quizzes": [
+      {
+        "id": "ex_12_1",
+        "exerciseType": "choice",
+        "prompt": "「車で行く」という交通手段を表す造格助詞（-аар4）として正しいものを選んでください。",
+        "question": "Бид хөдөө машин[____] явна.",
+        "options": [
+          "аар",
+          "ээр",
+          "оор",
+          "өөр"
+        ],
+        "correctAnswer": "аар",
+        "explanation": "【正解理由】\n「машин（車）」は男性母音「а」を含む語であるため、男性造格助詞「-аар」が付き「машинаар（車で）」となります。"
+      },
+      {
+        "id": "ex_12_2",
+        "exerciseType": "choice",
+        "prompt": "「来月の10日頃」という概略の日付を表す表現を選んでください。",
+        "question": "Ирэх сарын [____] томилолтоор явна.",
+        "options": [
+          "аравдаар",
+          "аравт",
+          "арваас",
+          "арван"
+        ],
+        "correctAnswer": "аравдаар",
+        "explanation": "【正解理由】\n数詞に「-даар/-дээр4」を付けるとおおよその時期・概数（〜日頃に、〜年代に）を表します。「аравдаар（10日頃に）」。"
+      }
+    ]
+  },
+  {
+    "lesson": 13,
+    "lessonTitle": "第13課 許可と依頼の表現（Зөвшөөрөл ба Хүсэлт）",
+    "quizzes": [
+      {
+        "id": "ex_13_1",
+        "exerciseType": "choice",
+        "prompt": "「ここで写真を撮ってもいいですか？」という許可を求める文の空欄を選んでください。",
+        "question": "Энд зураг авч [____]?",
+        "options": [
+          "болох уу",
+          "болохгүй",
+          "чадах уу",
+          "байна уу"
+        ],
+        "correctAnswer": "болох уу",
+        "explanation": "【正解理由】\n「動詞接続形 -ж/ч + болох уу」は「〜してもよろしいですか（許可）」を求める重要構文です。「зураг авч болох уу?（写真を撮ってもいいですか？）」。"
+      },
+      {
+        "id": "ex_13_2",
+        "exerciseType": "choice",
+        "prompt": "「窓を開けてください」という親切・丁寧な依頼語尾（-аач4）を選んでください。",
+        "question": "Цонхоо нээж [____].",
+        "options": [
+          "өгөөч",
+          "өгөх",
+          "өгсөн",
+          "өгнө"
+        ],
+        "correctAnswer": "өгөөч",
+        "explanation": "【正解理由】\n他者のために何かをしてもらう依頼には補助動詞「өгөх（与える）」の依頼形「өгөөч（〜してください）」を用います。「нээж өгөөч（開けてください）」。"
+      }
+    ]
+  },
+  {
+    "lesson": 14,
+    "lessonTitle": "第14課 宿泊と条件・仮定（Буудал ба Болзох утга）",
+    "quizzes": [
+      {
+        "id": "ex_14_1",
+        "exerciseType": "choice",
+        "prompt": "「安ければ買います」という仮定条件語尾（-вал4）として正しいものを選んでください。",
+        "question": "Хямдхан бай[____] авна.",
+        "options": [
+          "вал",
+          "вэл",
+          "вол",
+          "вөл"
+        ],
+        "correctAnswer": "вал",
+        "explanation": "【正解理由】\n「байх（ある・いる）」の語幹「бай-」は男性母音「а」を含むため、男性仮定語尾「-вал」が付き「байвал（あれば・〜ならば）」となります。"
+      },
+      {
+        "id": "ex_14_2",
+        "exerciseType": "choice",
+        "prompt": "「1泊いくらですか？」と尋ねる際の「1泊」を表す名詞を選んでください。",
+        "question": "Нэг [____] ямар үнэтэй вэ?",
+        "options": [
+          "хоног нь",
+          "өдөр нь",
+          "цаг нь",
+          "сар нь"
+        ],
+        "correctAnswer": "хоног нь",
+        "explanation": "【正解理由】\n昼夜を通した丸一日（24時間）およびホテルの宿泊日数には「хоног（泊、日）」を用います。「нэг хоног нь（1泊あたりは）」。"
+      }
+    ]
+  },
+  {
+    "lesson": 15,
+    "lessonTitle": "第15課 既定過去と接続語尾（Өнгөрсөн цаг ба Нийлмэл өгүүлбэр）",
+    "quizzes": [
+      {
+        "id": "ex_15_1",
+        "exerciseType": "choice",
+        "prompt": "「ご飯を食べてから薬を飲みました」という時間的先行接続語尾（-аад4）を選んでください。",
+        "question": "Хоолоо ид[____] эм уусан.",
+        "options": [
+          "ээд",
+          "аад",
+          "оод",
+          "өөд"
+        ],
+        "correctAnswer": "ээд",
+        "explanation": "【正解理由】\n動詞「идэх（食べる）」の語幹「ид-」は女性母音「и」を含むため、女性接続語尾「-ээд」が付き「идээд（食べてから）」となります。"
+      },
+      {
+        "id": "ex_15_2",
+        "exerciseType": "input",
+        "prompt": "「頭が痛い」を表す動詞「өвдөх（痛む）」の現在進行形を入力してください。",
+        "question": "Миний толгой [____].",
+        "correctAnswer": "өвдөж байна",
+        "acceptableAnswers": [
+          "өвдөж байна",
+          "өвдөжбайна"
+        ],
+        "explanation": "【正解理由】\n「өвдөх（痛む）」の接続形「өвдөж」＋「байна」で「өвдөж байна（痛んでいます）」となります。"
+      }
+    ]
+  },
+  {
+    "lesson": 16,
+    "lessonTitle": "第16課 並列接続と過去の回想（Холбох нөхцөл ба Өнгөрсөн үйл явдал）",
+    "quizzes": [
+      {
+        "id": "ex_16_1",
+        "exerciseType": "choice",
+        "prompt": "「本を読んで音楽を聴いた」という並列動作を表す接続形を選んでください。",
+        "question": "Ном унш[____] хөгжим сонссон.",
+        "options": [
+          "их",
+          "иж",
+          "аад",
+          "сан"
+        ],
+        "correctAnswer": "иж",
+        "explanation": "【正解理由】\n「унших」の子音衝突を避ける結合母音「и」＋並列接続語尾「-ж」で「уншиж（読んで）」となります。"
+      },
+      {
+        "id": "ex_16_2",
+        "exerciseType": "choice",
+        "prompt": "「どうして来なかったのですか？」と理由を尋ねる疑問詞を選んでください。",
+        "question": "Чи [____] ирээгүй вэ?",
+        "options": [
+          "яагаад",
+          "хэзээ",
+          "хаана",
+          "хэн"
+        ],
+        "correctAnswer": "яагаад",
+        "explanation": "【正解理由】\n理由や原因を問う疑問詞は「яагаад（なぜ、どうして）」です。"
+      }
+    ]
+  },
+  {
+    "lesson": 17,
+    "lessonTitle": "第17課 勧誘・意志と助言（Уриалан дуудах ба Зөвлөмж）",
+    "quizzes": [
+      {
+        "id": "ex_17_1",
+        "exerciseType": "choice",
+        "prompt": "「一緒に買い物に行きましょう！」という複数人勧誘語尾（-цгаая4）を選んでください。",
+        "question": "Хамтдаа дэлгүүр яв[____]!",
+        "options": [
+          "цгаая",
+          "цгээе",
+          "цгооё",
+          "цгөөе"
+        ],
+        "correctAnswer": "цгаая",
+        "explanation": "【正解理由】\n動詞「явах（行く）」の語幹「яв-」は男性母音「а」を含むため、男性複数勧誘語尾「-цгаая」が付き「явцгаая（みんなで行きましょう！）」となります。"
+      },
+      {
+        "id": "ex_17_2",
+        "exerciseType": "choice",
+        "prompt": "「早く寝た方がいいですよ」という助言表現（-сан нь дээр）を選んでください。",
+        "question": "Эрт унт[____] дээр.",
+        "options": [
+          "сан нь",
+          "сэн нь",
+          "на нь",
+          "даг нь"
+        ],
+        "correctAnswer": "сан нь",
+        "explanation": "【正解理由】\n「動詞過去形動詞 -сан4 + нь дээр」は「〜した方が良い（助言・忠告）」を表す必須文型です。「унтах」に男性語尾が付き「унтсан нь дээр（寝た方がよい）」となります。"
+      }
+    ]
+  },
+  {
+    "lesson": 18,
+    "lessonTitle": "第18課 欲求・継続とレストランでの注文（Хүсэл эрмэлзэл ба Захиалга）",
+    "quizzes": [
+      {
+        "id": "ex_18_1",
+        "exerciseType": "choice",
+        "prompt": "「温かいお茶をください（いただきます）」という注文の表現を選んでください。",
+        "question": "Халуун цай [____].",
+        "options": [
+          "авъя",
+          "авах",
+          "авсан",
+          "аваарай"
+        ],
+        "correctAnswer": "авъя",
+        "explanation": "【正解理由】\n店で品物を注文したり要求する際の「〜をください・いただきます」には、動詞「авах（取る）」の1人称意志語尾「-я」を付けた「авъя（硬音記号ъを挟んで表記）」を用います。"
+      },
+      {
+        "id": "ex_18_2",
+        "exerciseType": "input",
+        "prompt": "「私はとてもお腹が空いています」を表す空欄を入力してください。\n（空腹である: өлсөх）",
+        "question": "Би маш их [____].",
+        "correctAnswer": "өлсөж байна",
+        "acceptableAnswers": [
+          "өлсөж байна",
+          "өлсөжбайна"
+        ],
+        "explanation": "【正解理由】\n動詞「өлсөх（空腹になる）」の継続・進行形「өлсөж байна」で「お腹が空いている状態」を表します。"
+      }
+    ]
+  }
+];
+
+if (typeof window !== "undefined") {
+  window.exerciseNotebookQuizzes = exerciseNotebookQuizzes;
+}
 
 
 // === js/data/pronunciationData.js ===
@@ -54196,7 +56810,7 @@ class Navbar {
     const tabs = [
       { id: 'home', label: 'ホーム', icon: '🏠' },
       { id: 'genre_master', label: 'ジャンル別単語', icon: '🏷️' },
-      { id: 'spelling_game', label: 'スペルゲーム', icon: '🌕' },
+      { id: 'exercise_notebook', label: '練習ノート', icon: '📓' },
       { id: 'word_game', label: '単語ゲーム', icon: '🎮' },
       { id: 'word_test', label: '単語テスト', icon: '📝' },
       { id: 'japanese_test', label: '日本語訳テスト', icon: '🇯🇵' },
@@ -63326,6 +65940,7 @@ class TypingTestComponent {
     // カテゴリー集計（ランダムモード時）
     const categories = [
       { id: 'all', label: 'すべて', icon: '🌟', count: allSentences.length },
+      { id: 'textbook', label: '教科書例文（全18課）', icon: '📖', count: allSentences.filter(s => s.category === 'textbook').length },
       { id: 'beginner', label: '基本挨拶・自己紹介', icon: '👋', count: allSentences.filter(s => s.category === 'beginner').length },
       { id: 'daily', label: '日常会話・食事', icon: '☕', count: allSentences.filter(s => s.category === 'daily').length },
       { id: 'culture', label: '伝統文化・遊牧・ゲル', icon: '🐎', count: allSentences.filter(s => s.category === 'culture').length },
@@ -72872,9 +75487,11 @@ class SuffixRuleDojoComponent {
       this.state.xpEarned += 1;
       try { if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') GamificationService.addXp(1); } catch (_) {}
 
-      // 間違いノートに記録
+      // 間違いノートに記録（単語だけでなく意味と指示を明確に記録）
+      const meaningSuffix = q.targetWordMeaning ? `（${q.targetWordMeaning}）` : '';
+      const qText = q.sentencePattern ? `【${q.categoryTitle}】${q.sentencePattern}` : `【${q.categoryTitle}】「${q.targetWord}${meaningSuffix}」に適切な語尾を接続した形`;
       StorageService.recordMistake({
-        question: `【${q.categoryTitle}】${q.sentencePattern || q.targetWord}`,
+        question: qText,
         userAnswer: val,
         correctAnswer: q.answer,
         type: 'grammar',
@@ -74991,6 +77608,602 @@ class GenreWordMasterComponent {
 
 if (typeof window !== 'undefined') {
   window.GenreWordMasterComponent = GenreWordMasterComponent;
+}
+
+
+// === js/components/ExerciseNotebookTest.js ===
+// モンゴル語練習ノート（МОНГОЛ ХЭЛНИЙ ДАСГАЛЫН ДЭВТЭР）学習コンポーネント
+// 教科書全18課の練習問題を課ごとに学習可能
+// 正解・不正解問わず超詳細な解説（文法、語尾、母音調和、語順、他表現との違い）を常時表示
+
+
+
+
+
+
+class ExerciseNotebookTestComponent {
+  static container = null;
+  static onNavigate = null;
+  static activeInput = null;
+
+  static state = {
+    view: 'lesson_select', // 'lesson_select' | 'quiz' | 'result'
+    selectedLesson: 'all', // 'all' | 1 .. 18
+    quizzes: [],
+    currentIndex: 0,
+    currentQuiz: null,
+    score: 0,
+    xpEarned: 0,
+    combo: 0,
+    maxCombo: 0,
+    userAnswer: '',
+    isAnswered: false,
+    isCorrect: false,
+    results: []
+  };
+
+  static render(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+
+    if (this.state.view === 'quiz' && this.state.currentQuiz) {
+      this.renderQuiz();
+    } else if (this.state.view === 'result') {
+      this.renderResult();
+    } else {
+      this.state.view = 'lesson_select';
+      this.renderLessonSelect();
+    }
+  }
+
+  // ==========================================
+  // 1. 課選択画面
+  // ==========================================
+  static renderLessonSelect() {
+    const lessons = exerciseNotebookQuizzes || [];
+    const totalQuizCount = lessons.reduce((acc, l) => acc + (l.quizzes ? l.quizzes.length : 0), 0);
+
+    const lessonCards = lessons.map(l => {
+      const qCount = l.quizzes ? l.quizzes.length : 0;
+      return `
+        <div class="lesson-card bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-lesson="${l.lesson}">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-black text-xs">
+                第${l.lesson}課
+              </span>
+              <span class="text-xs font-bold text-slate-500 dark:text-slate-400">
+                ${qCount}問収録
+              </span>
+            </div>
+            <h3 class="font-black text-slate-900 dark:text-white text-sm sm:text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+              ${l.lessonTitle}
+            </h3>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
+            <span class="text-slate-500 font-bold">筆記・空欄補充・文法</span>
+            <span class="font-black text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+              スタート <span>→</span>
+            </span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-4xl mx-auto px-4 py-4 space-y-6">
+        
+        <!-- ヘッダーバナー -->
+        <div class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+          <div class="relative z-10 space-y-3">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold text-indigo-100">
+              <span>📓</span> МОНГОЛ ХЭЛНИЙ ДАСГАЛЫН ДЭВТЭР
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight">
+              練習ノート問題集（全18課）
+            </h1>
+            <p class="text-xs sm:text-sm text-indigo-100/90 leading-relaxed max-w-2xl font-bold">
+              教科書と直結した練習ノートの全問題を解く専用モードです。筆記練習、空欄補充、疑問助詞、格変化、文の書き換えを網羅。<br>
+              正解・不正解問わず、<strong class="text-amber-300">文法・語尾・母音調和・構文の超詳細な解説</strong>をすべて確認できます！
+            </p>
+            <div class="pt-2 flex flex-wrap gap-2.5">
+              <button type="button" class="btn-start-all-lessons px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
+                <span>⚡</span> 全18課からランダム出題（10問）
+              </button>
+            </div>
+          </div>
+          <div class="absolute -right-10 -bottom-10 text-9xl opacity-10 select-none pointer-events-none">📓</div>
+        </div>
+
+        <!-- 課一覧グリッド -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="font-black text-slate-900 dark:text-white text-base sm:text-lg flex items-center gap-2">
+              <span>📚</span> 学習する課を選択
+            </h2>
+            <span class="text-xs font-bold text-slate-500">全${lessons.length}課・計${totalQuizCount}問</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            ${lessonCards}
+          </div>
+        </div>
+      </div>
+    `;
+
+    // イベントバインド
+    const btnAll = this.container.querySelector('.btn-start-all-lessons');
+    if (btnAll) {
+      btnAll.addEventListener('click', () => {
+        this.startSession('all');
+      });
+    }
+
+    this.container.querySelectorAll('.lesson-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const lessonNum = parseInt(card.getAttribute('data-lesson'), 10);
+        this.startSession(lessonNum);
+      });
+    });
+  }
+
+  // ==========================================
+  // 2. セッション開始
+  // ==========================================
+  static startSession(lessonChoice) {
+    this.state.selectedLesson = lessonChoice;
+    let pool = [];
+
+    if (lessonChoice === 'all') {
+      (exerciseNotebookQuizzes || []).forEach(l => {
+        if (l.quizzes) pool.push(...l.quizzes.map(q => ({ ...q, lessonNumber: l.lesson, lessonTitle: l.lessonTitle })));
+      });
+      pool = shuffleArray(pool).slice(0, 10);
+    } else {
+      const found = (exerciseNotebookQuizzes || []).find(l => l.lesson === lessonChoice);
+      if (found && found.quizzes) {
+        pool = found.quizzes.map(q => ({ ...q, lessonNumber: found.lesson, lessonTitle: found.lessonTitle }));
+      }
+    }
+
+    if (pool.length === 0) {
+      alert('問題が準備されていません。');
+      return;
+    }
+
+    this.state.quizzes = pool;
+    this.state.currentIndex = 0;
+    this.state.score = 0;
+    this.state.xpEarned = 0;
+    this.state.combo = 0;
+    this.state.maxCombo = 0;
+    this.state.results = [];
+    this.initQuiz(0);
+    this.state.view = 'quiz';
+    this.renderQuiz();
+  }
+
+  static initQuiz(index) {
+    this.state.currentIndex = index;
+    this.state.currentQuiz = this.state.quizzes[index] || null;
+    this.state.userAnswer = '';
+    this.state.isAnswered = false;
+    this.state.isCorrect = false;
+  }
+
+  // ==========================================
+  // 3. クイズ画面のレンダリング
+  // ==========================================
+  static renderQuiz() {
+    const q = this.state.currentQuiz;
+    if (!q) {
+      this.finishSession();
+      return;
+    }
+
+    const total = this.state.quizzes.length;
+    const currentNum = this.state.currentIndex + 1;
+    const progressPercent = Math.round((currentNum / total) * 100);
+
+    const isInput = q.exerciseType === 'input';
+    const hasOptions = Array.isArray(q.options) && q.options.length > 0;
+
+    let inputAreaHTML = '';
+    if (this.state.isAnswered) {
+      // 解答済みの結果＆超詳細解説表示
+      const badgeClass = this.state.isCorrect 
+        ? 'bg-emerald-500 text-white' 
+        : 'bg-rose-500 text-white';
+      const badgeIcon = this.state.isCorrect ? '⭕ 正解！' : '❌ 不正解';
+
+      inputAreaHTML = `
+        <div class="space-y-4 animate-fade-in">
+          <!-- 正否バナー -->
+          <div class="p-4 rounded-2xl ${this.state.isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-500' : 'bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-500'} flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="px-3 py-1 rounded-xl ${badgeClass} font-black text-sm">
+                ${badgeIcon}
+              </span>
+              <span class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+                あなたの回答: <strong class="font-black">${this.state.userAnswer || '（未入力）'}</strong>
+              </span>
+            </div>
+            ${this.state.isCorrect ? `<span class="text-xs font-black text-emerald-600 dark:text-emerald-400">+10 PTS / +5 XP</span>` : ''}
+          </div>
+
+          <!-- 正解の提示 -->
+          <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 space-y-1">
+            <div class="text-xs font-bold text-slate-500 dark:text-slate-400">正しい解答:</div>
+            <div class="font-black text-indigo-600 dark:text-indigo-400 text-xl cyrillic-text">
+              ${q.correctAnswer}
+            </div>
+          </div>
+
+          <!-- ★ 超詳細解説エリア（正解・不正解問わず必ず表示） -->
+          <div class="p-5 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50/70 dark:from-slate-800 dark:to-slate-800/90 border-2 border-amber-300 dark:border-amber-500/50 space-y-3 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-black text-amber-950 dark:text-amber-300 text-sm sm:text-base flex items-center gap-1.5">
+                <span>📖</span> 文法・語尾・正解の徹底解説:
+              </span>
+              <button type="button" class="btn-play-answer-audio px-2.5 py-1 rounded-lg bg-amber-200 dark:bg-amber-900/60 hover:bg-amber-300 text-amber-950 dark:text-amber-200 font-bold text-xs flex items-center gap-1">
+                <span>🔊</span> 発音を聞く
+              </button>
+            </div>
+            <div class="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line font-medium border-t border-amber-200 dark:border-slate-700 pt-2.5">
+              ${q.explanation}
+            </div>
+          </div>
+
+          <!-- 次へボタン -->
+          <div class="pt-2 flex justify-end">
+            <button type="button" class="btn-next-quiz px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-sm sm:text-base shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2">
+              <span>${currentNum >= total ? '結果発表を見る' : '次の問題へ'}</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      `;
+    } else if (hasOptions && !isInput) {
+      // 選択肢形式
+      const optionButtons = q.options.map((opt, idx) => `
+        <button type="button" class="btn-option w-full p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/40 text-left font-black text-sm sm:text-base text-slate-900 dark:text-white transition-all active:scale-98 shadow-2xs flex items-center gap-3 cursor-pointer group" data-answer="${opt}">
+          <span class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 group-hover:bg-indigo-500 group-hover:text-white transition-colors flex items-center justify-center text-xs font-black">
+            ${idx + 1}
+          </span>
+          <span class="cyrillic-text flex-1">${opt}</span>
+        </button>
+      `).join('');
+
+      inputAreaHTML = `
+        <div class="space-y-3 pt-2">
+          ${optionButtons}
+        </div>
+      `;
+    } else {
+      // キリル文字入力形式
+      inputAreaHTML = `
+        <div class="space-y-4 pt-2">
+          <div class="relative">
+            <input type="text" class="quiz-input-field w-full p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 focus:border-indigo-500 dark:focus:border-indigo-400 text-slate-900 dark:text-white font-black text-base sm:text-lg cyrillic-text outline-hidden shadow-inner" placeholder="キリル文字で解答を入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          </div>
+
+          <!-- キリル文字バー -->
+          <div class="pt-1">
+            ${SPECIAL_CYRILLIC_BAR}
+          </div>
+
+          <div class="pt-2 flex justify-end">
+            <button type="button" class="btn-submit-input px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm sm:text-base shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2">
+              <span>回答する（Enter）</span>
+              <span>✓</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-4 space-y-5">
+        
+        <!-- ナビゲーションバー -->
+        <div class="flex items-center justify-between text-xs font-bold text-slate-500">
+          <button type="button" class="btn-back-to-lessons hover:text-slate-800 dark:hover:text-slate-200 transition-colors flex items-center gap-1 cursor-pointer">
+            <span>←</span> 課一覧に戻る
+          </button>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-black">
+              第${q.lessonNumber}課
+            </span>
+            <span>問題 ${currentNum} / ${total}</span>
+          </div>
+        </div>
+
+        <!-- プログレスバー -->
+        <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+          <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full transition-all duration-300" style="width: ${progressPercent}%;"></div>
+        </div>
+
+        <!-- スコア・コンボ -->
+        <div class="flex items-center justify-between text-xs font-bold px-1">
+          <span class="text-amber-600 dark:text-amber-400 font-black">
+            スコア: ${this.state.score} PTS ｜ +${this.state.xpEarned} XP
+          </span>
+          ${this.state.combo > 1 ? `
+            <span class="text-orange-500 font-black animate-bounce inline-flex items-center gap-1">
+              🔥 ${this.state.combo} 連続正解！
+            </span>
+          ` : ''}
+        </div>
+
+        <!-- 問題カード -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-7 border-2 border-slate-200 dark:border-slate-700 shadow-md space-y-4">
+          <div class="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400">
+            ${q.prompt}
+          </div>
+
+          <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-relaxed cyrillic-text py-2">
+            ${q.question}
+          </div>
+        </div>
+
+        <!-- 回答入力または解説エリア -->
+        ${inputAreaHTML}
+
+      </div>
+    `;
+
+    // イベントバインド
+    const btnBack = this.container.querySelector('.btn-back-to-lessons');
+    if (btnBack) {
+      btnBack.addEventListener('click', () => {
+        if (confirm('学習を中断して課一覧に戻りますか？')) {
+          this.state.view = 'lesson_select';
+          this.renderLessonSelect();
+        }
+      });
+    }
+
+    if (this.state.isAnswered) {
+      const btnNext = this.container.querySelector('.btn-next-quiz');
+      if (btnNext) {
+        btnNext.addEventListener('click', () => {
+          if (this.state.currentIndex + 1 < this.state.quizzes.length) {
+            this.initQuiz(this.state.currentIndex + 1);
+            this.renderQuiz();
+          } else {
+            this.finishSession();
+          }
+        });
+      }
+
+      const btnAudio = this.container.querySelector('.btn-play-answer-audio');
+      if (btnAudio) {
+        btnAudio.addEventListener('click', () => {
+          const speakText = q.correctAnswer || q.question.replace(/\[____\]/g, q.correctAnswer);
+          SpeechService.speak(speakText);
+        });
+      }
+    } else if (hasOptions && !isInput) {
+      this.container.querySelectorAll('.btn-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const ans = btn.getAttribute('data-answer');
+          this.handleAnswer(ans);
+        });
+      });
+    } else {
+      const inputField = this.container.querySelector('.quiz-input-field');
+      const btnSubmit = this.container.querySelector('.btn-submit-input');
+      this.activeInput = inputField;
+
+      if (inputField) {
+        inputField.focus();
+        inputField.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            this.handleAnswer(inputField.value);
+          }
+        });
+      }
+
+      if (btnSubmit && inputField) {
+        btnSubmit.addEventListener('click', () => {
+          this.handleAnswer(inputField.value);
+        });
+      }
+
+      // キリル文字パレット
+      this.container.querySelectorAll('.btn-insert-char').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const char = btn.getAttribute('data-char');
+          if (inputField && char) {
+            const start = inputField.selectionStart || inputField.value.length;
+            const end = inputField.selectionEnd || inputField.value.length;
+            const val = inputField.value;
+            inputField.value = val.substring(0, start) + char + val.substring(end);
+            inputField.selectionStart = inputField.selectionEnd = start + char.length;
+            inputField.focus();
+          }
+        });
+      });
+    }
+  }
+
+  // ==========================================
+  // 4. 解答判定
+  // ==========================================
+  static handleAnswer(answer) {
+    const q = this.state.currentQuiz;
+    if (!q || this.state.isAnswered) return;
+
+    const trimmedUser = (answer || '').trim();
+    const cleanUser = trimmedUser.toLowerCase().replace(/[.,!?\s]/g, '');
+    const cleanCorrect = (q.correctAnswer || '').toLowerCase().replace(/[.,!?\s]/g, '');
+
+    let isCorrect = (cleanUser === cleanCorrect);
+    if (!isCorrect && Array.isArray(q.acceptableAnswers)) {
+      isCorrect = q.acceptableAnswers.some(ans => cleanUser === ans.toLowerCase().replace(/[.,!?\s]/g, ''));
+    }
+
+    this.state.userAnswer = trimmedUser;
+    this.state.isAnswered = true;
+    this.state.isCorrect = isCorrect;
+
+    if (isCorrect) {
+      SoundEffects.playCorrect();
+      this.state.score += 10;
+      this.state.xpEarned += 5;
+      this.state.combo += 1;
+      if (this.state.combo > this.state.maxCombo) {
+        this.state.maxCombo = this.state.combo;
+      }
+      try {
+        if (typeof GamificationService !== 'undefined' && GamificationService.addXp) {
+          GamificationService.addXp(5);
+        }
+      } catch (_) {}
+    } else {
+      SoundEffects.playWrong();
+      this.state.combo = 0;
+      this.state.xpEarned += 1;
+      try {
+        if (typeof GamificationService !== 'undefined' && GamificationService.addXp) {
+          GamificationService.addXp(1);
+        }
+      } catch (_) {}
+
+      // 間違いノートに自動記録
+      try {
+        StorageService.recordMistake({
+          question: `【第${q.lessonNumber}課 練習ノート】${q.question}`,
+          userAnswer: trimmedUser || '（未入力）',
+          correctAnswer: q.correctAnswer,
+          type: 'grammar',
+          category: `練習ノート 第${q.lessonNumber}課`,
+          explanation: q.explanation
+        });
+      } catch (_) {}
+    }
+
+    this.state.results.push({
+      quiz: q,
+      userAnswer: trimmedUser,
+      isCorrect: isCorrect
+    });
+
+    this.renderQuiz();
+  }
+
+  // ==========================================
+  // 5. 結果発表画面
+  // ==========================================
+  static finishSession() {
+    this.state.view = 'result';
+    this.renderResult();
+  }
+
+  static renderResult() {
+    const total = this.state.results.length;
+    const correctCount = this.state.results.filter(r => r.isCorrect).length;
+    const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+
+    const listHTML = this.state.results.map((r, idx) => `
+      <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 ${r.isCorrect ? 'border-emerald-200 dark:border-emerald-900/60' : 'border-rose-200 dark:border-rose-900/60'} space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-500">
+            問題 ${idx + 1} ｜ 第${r.quiz.lessonNumber}課
+          </span>
+          <span class="px-2.5 py-0.5 rounded-full ${r.isCorrect ? 'bg-emerald-100 text-emerald-800 font-black' : 'bg-rose-100 text-rose-800 font-black'} text-xs">
+            ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
+          </span>
+        </div>
+        <div class="font-black text-slate-900 dark:text-white text-sm cyrillic-text">
+          ${r.quiz.question}
+        </div>
+        <div class="text-xs space-y-1">
+          <div class="text-slate-600 dark:text-slate-300">
+            あなたの回答: <strong class="${r.isCorrect ? 'text-emerald-600' : 'text-rose-600'}">${r.userAnswer || '（未入力）'}</strong>
+          </div>
+          ${!r.isCorrect ? `
+            <div class="text-indigo-600 dark:text-indigo-400 font-bold">
+              模範解答: ${r.quiz.correctAnswer}
+            </div>
+          ` : ''}
+        </div>
+        <div class="p-2.5 rounded-xl bg-amber-50 dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 whitespace-pre-line font-medium leading-relaxed">
+          ${r.quiz.explanation}
+        </div>
+      </div>
+    `).join('');
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-6 space-y-6">
+        
+        <!-- サマリーカード -->
+        <div class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl text-center space-y-4">
+          <div class="text-4xl">🎉</div>
+          <h2 class="text-2xl sm:text-3xl font-black">
+            練習ノート完了！
+          </h2>
+          <div class="grid grid-cols-3 gap-3 pt-2 max-w-md mx-auto text-center">
+            <div class="p-3 rounded-2xl bg-white/20 backdrop-blur-md">
+              <div class="text-2xl font-black">${correctCount}/${total}</div>
+              <div class="text-[11px] text-indigo-100 font-bold">正解数</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-white/20 backdrop-blur-md">
+              <div class="text-2xl font-black">${accuracy}%</div>
+              <div class="text-[11px] text-indigo-100 font-bold">正解率</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-white/20 backdrop-blur-md">
+              <div class="text-2xl font-black">+${this.state.xpEarned}</div>
+              <div class="text-[11px] text-indigo-100 font-bold">獲得XP</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- アクションボタン -->
+        <div class="flex flex-wrap gap-3 justify-center">
+          <button type="button" class="btn-retry-session px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-sm shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-2">
+            <span>🔄</span> もう一度挑戦
+          </button>
+          <button type="button" class="btn-back-to-menu px-6 py-3 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 hover:bg-slate-100 text-slate-800 dark:text-slate-200 font-black text-sm shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-2">
+            <span>📚</span> 課の選択に戻る
+          </button>
+        </div>
+
+        <!-- 振り返りリスト -->
+        <div class="space-y-3 pt-2">
+          <h3 class="font-black text-slate-900 dark:text-white text-base flex items-center gap-2">
+            <span>📝</span> 解答と全問解説
+          </h3>
+          <div class="space-y-3">
+            ${listHTML}
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    // イベントバインド
+    const btnRetry = this.container.querySelector('.btn-retry-session');
+    if (btnRetry) {
+      btnRetry.addEventListener('click', () => {
+        this.startSession(this.state.selectedLesson);
+      });
+    }
+
+    const btnMenu = this.container.querySelector('.btn-back-to-menu');
+    if (btnMenu) {
+      btnMenu.addEventListener('click', () => {
+        this.state.view = 'lesson_select';
+        this.renderLessonSelect();
+      });
+    }
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.ExerciseNotebookTestComponent = ExerciseNotebookTestComponent;
 }
 
 
@@ -77224,12 +80437,16 @@ class ReviewNotebookComponent {
     let placeholder = "";
 
     if (isExplicitNonWord) {
-      if (item.type === 'grammar') {
-        categoryLabel = "空欄に入る適切な文法・語尾をキリル文字で入力してください";
+      if (item.type === 'grammar' || item.type === 'declension') {
+        const hasBlank = /\[____\]|___|＿＿|（\s*）|\(\s*\)/.test(promptText);
+        if (hasBlank) {
+          categoryLabel = "空欄に入る適切な文法・語尾をキリル文字で入力してください";
+        } else {
+          categoryLabel = "指示に従い、指定の単語に適切な語尾・格変化を付けた形をキリル文字で入力してください";
+        }
         subHint = item.category ? `【文法項目: ${item.category}】` : '';
         placeholder = "キリル文字で入力...";
-      } else if (item.type === 'declension') {
-        categoryLabel = "指定の格変化・活用形をキリル文字で入力してください";
+      } else if (item.type === 'declension_alt') {
         subHint = item.category ? `【対象: ${item.category}】` : '';
         placeholder = "キリル文字で入力...";
       } else if (item.type === 'reading') {
@@ -79941,6 +83158,7 @@ class ReferenceGuideComponent {
 
 
 
+
 class App {
   static currentTab = 'home';
 
@@ -80081,6 +83299,9 @@ class App {
         break;
       case 'expedition':
         PenguinExpeditionComponent.render(mainContainer, onNavigate);
+        break;
+      case 'exercise_notebook':
+        ExerciseNotebookTestComponent.render(mainContainer, onNavigate);
         break;
       case 'spelling_game':
         SpellingGameComponent.render(mainContainer, onNavigate);

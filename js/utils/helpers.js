@@ -650,66 +650,285 @@ export function isListeningAnswerMatch(userAnswer, quizItem, mode = 'blank') {
 /**
  * 単語の成り立ち・語の構成（2語以上の複合語、派生語、接尾辞結合）を解析してHTMLカードを生成
  */
+export const RICH_ETYMOLOGY_MAP = {
+  "зөөлөн тоглоом": {
+    totalMeaning: "ぬいぐるみ",
+    components: [
+      {
+        word: "зөөлөн",
+        pos: "形容詞",
+        meaning: "柔らかい、ソフトな、穏やかな",
+        standalone: "単独使用可能",
+        details: "硬くない状態を表す基本形容詞（例: зөөлөн талх = 柔らかいパン、зөөлөн сэтгэл = 優しい心）。"
+      },
+      {
+        word: "тоглоом",
+        pos: "名詞",
+        meaning: "おもちゃ、玩具、ゲーム",
+        standalone: "単独使用可能",
+        details: "動詞「тоглох（遊ぶ）」に具象名詞・道具化接尾辞「-оом」が結合してできた名詞（例: хүүхдийн тоглоом = 子供のおもちゃ）。"
+      }
+    ],
+    synthesis: "「柔らかい（布や綿でできた）」＋「おもちゃ」が合わさって【ぬいぐるみ】を指す名詞句となります。"
+  },
+  "зоогийн газар": {
+    totalMeaning: "レストラン・食堂",
+    components: [
+      {
+        word: "зоог",
+        pos: "名詞",
+        meaning: "ごちそう、食事（丁寧・敬称的表現）",
+        standalone: "単独使用可能（属格: зоогийн）",
+        details: "「зооглох（召し上がる）」の語幹に由来する上品な食事の言葉。"
+      },
+      {
+        word: "газар",
+        pos: "名詞",
+        meaning: "場所、土地、地点",
+        standalone: "単独使用可能",
+        details: "様々な施設・場所を表す複合語の後項として広く使われます（例: ажлын газар = 職場）。"
+      }
+    ],
+    synthesis: "「ごちそう・食事（属格）」＋「場所」＝「食事をいただく場所」から【レストラン・飲食店】となります。"
+  },
+  "толь бичиг": {
+    totalMeaning: "辞書・辞典",
+    components: [
+      {
+        word: "толь",
+        pos: "名詞",
+        meaning: "鏡（かがみ）、照らし合わせるもの",
+        standalone: "単独使用可能",
+        details: "本来は「姿を映す鏡」を意味し、正誤や言葉の真実を映し出す比喩として用いられます。"
+      },
+      {
+        word: "бичиг",
+        pos: "名詞",
+        meaning: "書物、文書、文字",
+        standalone: "単独使用可能",
+        details: "動詞「бичих（書く）」に名詞化接尾辞「-г」が結合した単語。"
+      }
+    ],
+    synthesis: "「言葉の真実を映す鏡」＋「書物」＝言葉の鏡となる本、すなわち【辞書・辞典】です。"
+  },
+  "галт тэрэг": {
+    totalMeaning: "列車・汽車",
+    components: [
+      {
+        word: "гал",
+        pos: "名詞",
+        meaning: "火（ひ）",
+        standalone: "単独使用可能（有属形: галт = 火を持つ、火の）",
+        details: "所有形容詞化接尾辞「-т」が付いて「галт（火の、蒸気の）」となります。"
+      },
+      {
+        word: "тэрэг",
+        pos: "名詞",
+        meaning: "車、荷車、車両",
+        standalone: "単独使用可能",
+        details: "移動・運搬用の車輪を持つ乗り物を広く指します。"
+      }
+    ],
+    synthesis: "「火を噴く（蒸気・エンジンの）」＋「車両」＝【列車・汽車】となります。"
+  },
+  "гар утас": {
+    totalMeaning: "携帯電話・スマートフォン",
+    components: [
+      {
+        word: "гар",
+        pos: "名詞",
+        meaning: "手（て）",
+        standalone: "単独使用可能",
+        details: "身体部位の「手」。「手の中に入る、片手で扱える」ことを表します。"
+      },
+      {
+        word: "утас",
+        pos: "名詞",
+        meaning: "電話、電線、糸",
+        standalone: "単独使用可能",
+        details: "本来は「糸・電線」を意味し、電信・電話の普及に伴い「電話」全般を指すようになりました。"
+      }
+    ],
+    synthesis: "「手に持てる」＋「電話」＝【携帯電話・スマホ】となります。"
+  },
+  "цахилгаан шат": {
+    totalMeaning: "エレベーター・エスカレーター",
+    components: [
+      {
+        word: "цахилгаан",
+        pos: "名詞・形容詞",
+        meaning: "電気、稲妻",
+        standalone: "単独使用可能",
+        details: "「цахих（稲妻が光る）」から派生した言葉で、近代以降「電気」の意味で広く用いられます。"
+      },
+      {
+        word: "шат",
+        pos: "名詞",
+        meaning: "階段、梯子（はしご）",
+        standalone: "単独使用可能",
+        details: "高低差を上下するための段・階段を指します。"
+      }
+    ],
+    synthesis: "「電気で動く」＋「階段」＝【エレベーター／エスカレーター】を意味します。"
+  },
+  "угаалгын машин": {
+    totalMeaning: "洗濯機",
+    components: [
+      {
+        word: "угаалга",
+        pos: "名詞",
+        meaning: "洗濯、洗浄",
+        standalone: "単独使用可能（属格: угаалгын）",
+        details: "動詞「угаах（洗う）」に動作名詞化接尾辞「-лга」が結合した語。"
+      },
+      {
+        word: "машин",
+        pos: "名詞",
+        meaning: "機械、自動車、マシン",
+        standalone: "単独使用可能",
+        details: "ロシア語経由の借用語で、動力駆動の機械全般を指します。"
+      }
+    ],
+    synthesis: "「洗濯のための」＋「機械」＝【洗濯機】となります。"
+  },
+  "ус буцалгагч": {
+    totalMeaning: "電気ケトル・湯沸かし器",
+    components: [
+      {
+        word: "ус",
+        pos: "名詞",
+        meaning: "水（みず）",
+        standalone: "単独使用可能",
+        details: "生命の源である「水」を表すモンゴル固有語。"
+      },
+      {
+        word: "буцалгагч",
+        pos: "名詞",
+        meaning: "沸騰させる器具・装置",
+        standalone: "派生語として単独使用可能",
+        details: "動詞「буцлах（沸く）」の使役形「буцалгах（沸かす）」に器具・行為者接尾辞「-гч」が付いた形。"
+      }
+    ],
+    synthesis: "「水」＋「沸かす器具」＝【湯沸かし器・ケトル】となります。"
+  }
+};
+
+/**
+ * 単語の成り立ち・語の構成（2語以上の複合語、派生語、接尾辞結合）を解析してリッチHTMLカードを生成
+ */
 export function getWordEtymologyHTML(item, targetWord) {
   if (!item && !targetWord) return '';
 
-  const mn = ((item && (item.mongolian || item.dictForm)) || targetWord || '').trim();
-  const ja = ((item && item.japanese) || '').trim();
+  const mn = (((item && (item.mongolian || item.dictForm)) || targetWord || '') + '').trim();
+  const ja = (((item && item.japanese) || '') + '').trim();
   const deriv = (item && (item.etymologyBreakdown || item.derivation)) || '';
   const note = (item && item.note) || '';
+  const cleanKey = mn.toLowerCase().replace(/[\(\)\,\.\/\?]/g, '').trim();
 
-  let breakdown = '';
+  // 1. 詳細構成要素マスターからの完全一致
+  if (RICH_ETYMOLOGY_MAP[cleanKey]) {
+    const data = RICH_ETYMOLOGY_MAP[cleanKey];
+    const compRows = data.components.map(c => `
+      <div class="p-2 rounded-lg bg-white/90 border border-amber-200 shadow-2xs space-y-1">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-black text-amber-900 cyrillic-text font-mono text-sm">「${c.word}」</span>
+          <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-950 font-bold text-[10px]">${c.pos}</span>
+        </div>
+        <div class="text-xs text-slate-800 font-bold">意味: <span class="text-amber-950">${c.meaning}</span></div>
+        <div class="text-[11px] text-slate-600 leading-tight">
+          <span class="font-bold text-slate-700">単独使用:</span> ${c.standalone} ｜ ${c.details}
+        </div>
+      </div>
+    `).join('');
 
-  // 1. 明示的な分解式（「＋」または「+」を含む場合）
-  if (deriv && (deriv.includes('＋') || deriv.includes('+') || deriv.includes('＝') || deriv.includes('='))) {
-    breakdown = deriv;
-  } else if (note && (note.includes('＋') || note.includes('+') || note.includes('構成:'))) {
-    breakdown = note;
-  } else if (deriv && (deriv.includes('語幹') || deriv.includes('接尾辞') || deriv.includes('派生'))) {
-    breakdown = deriv;
+    return `
+      <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/80 border border-amber-300 text-xs space-y-2 shadow-2xs etymology-breakdown-card">
+        <div class="font-black text-amber-950 flex items-center justify-between">
+          <span class="flex items-center gap-1.5"><span>🧩</span> 単語の成り立ち・詳細構成:</span>
+          <span class="text-[11px] text-amber-800 font-bold">【${data.totalMeaning || ja}】</span>
+        </div>
+        <div class="space-y-1.5">
+          ${compRows}
+        </div>
+        <div class="p-2 rounded-lg bg-amber-100/70 border border-amber-200/80 text-[11px] text-amber-950 font-bold leading-relaxed">
+          💡 ${data.synthesis}
+        </div>
+      </div>
+    `;
   }
 
-  // 2. スペースを含む複合語（一語以上で成り立っている単語）の動的補完
-  if (!breakdown && mn.includes(' ')) {
-    const tokens = mn.replace(/[\(\)\,\.\/\?]/g, ' ').split(/\s+/).filter(Boolean);
+  // 2. スペースを含む2語以上の複合語の動的解析
+  if (cleanKey.includes(' ')) {
+    const tokens = cleanKey.split(/\s+/).filter(Boolean);
     if (tokens.length >= 2) {
-      // initialVocabulary または内部辞書からトークンを検索
       let vocabList = [];
       try {
         if (typeof initialVocabulary !== 'undefined') vocabList = initialVocabulary;
-        else if (typeof StorageService !== 'undefined') vocabList = StorageService.getVocabulary();
+        else if (typeof StorageService !== 'undefined' && StorageService.getVocabulary) vocabList = StorageService.getVocabulary();
       } catch (_) {}
 
-      const parts = tokens.map(t => {
-        const cleanT = t.toLowerCase();
-        let meaning = '';
-        if (vocabList && vocabList.length > 0) {
-          const match = vocabList.find(w => (w.mongolian || '').toLowerCase() === cleanT || (w.dictForm || '').toLowerCase() === cleanT);
-          if (match && match.japanese) {
-            meaning = match.japanese.split(/[、,（(]/)[0].trim();
-          }
-        }
-        return meaning ? `「${t}（${meaning}）」` : `「${t}」`;
-      });
+      const compRows = tokens.map(t => {
+        const match = vocabList.find(w => 
+          (w.mongolian && w.mongolian.toLowerCase() === t) ||
+          (w.dictForm && w.dictForm.toLowerCase() === t)
+        );
+        const pos = match ? (match.pos || '名詞句構成要素') : '語句';
+        const meaning = match ? (match.japanese || match.baseMeaning || '固有構成語') : '複合語構成要素';
+        return `
+          <div class="p-2 rounded-lg bg-white/90 border border-amber-200 shadow-2xs space-y-0.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-black text-amber-900 cyrillic-text text-sm">「${t}」</span>
+              <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-950 font-bold text-[10px]">${pos}</span>
+            </div>
+            <div class="text-xs text-slate-800 font-bold">意味: <span class="text-amber-950">${meaning}</span></div>
+            <div class="text-[11px] text-slate-600">単独使用: ${match ? '辞書見出し語として単独使用可能' : '文脈で活用・結合'}</div>
+          </div>
+        `;
+      }).join('');
 
-      breakdown = parts.join(' ＋ ') + (ja ? ` ＝ 【${ja}】` : '');
+      return `
+        <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/80 border border-amber-300 text-xs space-y-2 shadow-2xs etymology-breakdown-card">
+          <div class="font-black text-amber-950 flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><span>🧩</span> 単語の成り立ち・構成要素:</span>
+            <span class="text-[11px] text-amber-800 font-bold">【${ja}】</span>
+          </div>
+          <div class="space-y-1.5">
+            ${compRows}
+          </div>
+          <div class="p-2 rounded-lg bg-amber-100/70 border border-amber-200/80 text-[11px] text-amber-950 font-bold leading-relaxed">
+            💡 各構成語が組み合わさって全体の意味【${ja}】を成しています。
+          </div>
+        </div>
+      `;
     }
   }
 
-  if (!breakdown) return '';
-
-  return `
-    <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/70 border border-amber-300/80 text-xs space-y-1.5 shadow-2xs etymology-breakdown-card">
-      <div class="font-black text-amber-950 flex items-center gap-1.5">
-        <span>🧩</span> 単語の成り立ち・構成:
+  // 3. 単一語で明示的な語源・接尾辞説明がある場合
+  if (deriv && (deriv.includes('語幹') || deriv.includes('接尾辞') || deriv.includes('派生') || deriv.includes('＋'))) {
+    return `
+      <div class="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/80 border border-amber-300 text-xs space-y-1.5 shadow-2xs etymology-breakdown-card">
+        <div class="font-black text-amber-950 flex items-center gap-1.5">
+          <span>🧩</span> 単語の成り立ち・形態素解析:
+        </div>
+        <div class="font-bold text-slate-900 leading-relaxed cyrillic-text text-xs sm:text-sm pl-2 border-l-2 border-amber-400">
+          ${deriv}
+        </div>
       </div>
-      <div class="font-bold text-slate-900 leading-relaxed cyrillic-text text-xs sm:text-sm pl-2 border-l-2 border-amber-400">
-        ${breakdown}
+    `;
+  }
+
+  // 4. これ以上分解できない基本語
+  return `
+    <div class="mt-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1 text-slate-600 shadow-2xs">
+      <div class="font-bold text-slate-700 flex items-center gap-1">
+        <span>🌱</span> 語根・形態素情報:
+      </div>
+      <div class="text-[11px] text-slate-600 pl-2 border-l-2 border-slate-300">
+        見出し語「${mn}」は単一の基本語（これ以上分解できない語根）です。
       </div>
     </div>
   `;
 }
-
 if (typeof window !== 'undefined') {
   window.getWordEtymologyHTML = getWordEtymologyHTML;
 }
@@ -3106,7 +3325,36 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
     }
   }
 
-  // 2. 単語マスターからの完全一致探索
+  // 1.5. 単独小辞・助詞・呼格・感嘆詞の直接判定テーブル
+  const particles = {
+    'ээ': { dictForm: 'ээ', meaning: '【感嘆詞】おお、まあ、ええっ／【呼格】〜よ、〜さん／【愛称】お母さん（ээж）', pos: '感嘆詞・呼格語尾', derivation: '親愛を込めた呼格（例: ээж ээ, багш аа）または驚きや感動を表す間投詞' },
+    'аа': { dictForm: 'аа', meaning: '【呼格】〜よ、〜さん／【感嘆詞】ああ', pos: '呼格語尾・感嘆詞', derivation: '男性語につく親愛の呼格（例: Зориг оо, Баяр аа）または感嘆詞' },
+    'оо': { dictForm: 'оо', meaning: '【呼格】〜よ、〜さん（男性円唇語用）', pos: '呼格語尾', derivation: 'о母音の単語につく呼格語尾（例: Золбоо оо）' },
+    'өө': { dictForm: 'өө', meaning: '【呼格】〜よ、〜さん（女性円唇語用）', pos: '呼格語尾', derivation: 'ө母音の単語につく呼格語尾（例: Зөөгч өө）' },
+    'уу': { dictForm: 'уу', meaning: '【疑問助詞】〜ですか？（男性語Yes/No疑問）', pos: '疑問助詞', derivation: '男性語（а, о, у）の平叙文末尾に付き疑問文を作る' },
+    'үү': { dictForm: 'үү', meaning: '【疑問助詞】〜ですか？（女性語Yes/No疑問）', pos: '疑問助詞', derivation: '女性語（э, ө, ү）の平叙文末尾に付き疑問文を作る' },
+    'юу': { dictForm: 'юу', meaning: '【疑問詞】何／【疑問助詞】〜ですか？（長母音・二重母音男性語用）', pos: '疑問代名詞・助詞', derivation: '「何」を尋ねる疑問詞、または長母音末尾男性語の疑問助詞' },
+    'юү': { dictForm: 'юү', meaning: '【疑問助詞】〜ですか？（長母音・二重母音女性語用）', pos: '疑問助詞', derivation: '長母音末尾女性語の疑問助詞' },
+    'бэ': { dictForm: 'бэ', meaning: '【疑問助詞】〜ですか？（疑問詞文末・鼻音末尾用）', pos: '疑問助詞', derivation: '疑問詞があり、直前がн, м, вで終わる文の末尾に付く' },
+    'вэ': { dictForm: 'вэ', meaning: '【疑問助詞】〜ですか？（疑問詞文末用）', pos: '疑問助詞', derivation: '疑問詞（юу, хаана等）のある文末に付く' },
+    'биш': { dictForm: 'биш', meaning: '【否定助詞】〜ではない（コピュラ否定）', pos: '否定助詞', derivation: '名詞・代名詞・形容詞の直後に置いて「AはBではない」と否定する' },
+    'юм': { dictForm: 'юм', meaning: '【終助詞】〜なのだ、〜である（詠嘆・確認）', pos: '終助詞', derivation: '文末に添えて詠嘆・語気緩和・事実の強調を表す' },
+    'ч': { dictForm: 'ч', meaning: '【強調・添加小辞】〜も、〜さえ', pos: '不変化小辞', derivation: '「Би ч бас（私もまた）」のように添加・強調を表す' },
+    'бас': { dictForm: 'бас', meaning: '【副詞】また、さらに、やはり', pos: '副詞', derivation: '事物の付加・並列を表す' },
+    'шүү': { dictForm: 'шүү', meaning: '【終助詞】〜だよ、〜ね（念押し・助言）', pos: '終助詞', derivation: '聞き手に注意を促したり念を押す親しい終助詞' },
+    'за': { dictForm: 'за', meaning: '【感動詞】はい、了解、じゃあ、さて', pos: '感動詞', derivation: '承諾や会話の切り出しに用いる' }
+  };
+
+  if (particles[lower]) {
+    return {
+      rawWord: cleanWord,
+      dictForm: particles[lower].dictForm,
+      meaning: particles[lower].meaning,
+      pos: particles[lower].pos,
+      pron: '',
+      derivation: particles[lower].derivation
+    };
+  }
   let vocab = [];
   try {
     if (typeof StorageService !== 'undefined' && StorageService.getVocabulary) {
@@ -3228,14 +3476,43 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
     }
   }
 
-  // 見つからなかった場合のフォールバック（音訳のみ生成）
+  // 語幹マッチが見つからなかった場合でも、末尾の文法語尾を解析
+  for (const s of nounSuffixes) {
+    if (lower.endsWith(s.suffix) && lower.length > s.suffix.length) {
+      const stem = cleanWord.slice(0, -s.suffix.length);
+      return {
+        rawWord: cleanWord,
+        dictForm: stem,
+        meaning: `語幹「${stem}」＋ 名詞格語尾【${s.name}】`,
+        pos: '名詞（格変化形）',
+        pron: '',
+        derivation: `語幹「${stem}」に格助詞「-${s.suffix}」（${s.name}）が接続した文法形です。`
+      };
+    }
+  }
+
+  for (const v of verbSuffixes) {
+    if (lower.endsWith(v.suffix) && lower.length > v.suffix.length) {
+      const stem = cleanWord.slice(0, -v.suffix.length);
+      return {
+        rawWord: cleanWord,
+        dictForm: stem + 'х',
+        meaning: `動詞語幹「${stem}」＋ 活用語尾【${v.name}】`,
+        pos: '動詞（活用形）',
+        pron: '',
+        derivation: `動詞語幹「${stem}」に活用語尾「-${v.suffix}」（${v.name}）が接続した文法形です。`
+      };
+    }
+  }
+
+  // 接尾辞も未検出の場合の具体的解説フォールバック
   return {
     rawWord: cleanWord,
     dictForm: cleanWord,
-    meaning: '文脈から意味を推測してみましょう',
-    pos: '語句',
+    meaning: `キリル文字表記「${cleanWord}」（基本語・固有名詞または語句）`,
+    pos: '語句・基本形',
     pron: '',
-    derivation: ''
+    derivation: `単語「${cleanWord}」です。文脈中の主語・補語・目的語などの格語尾や述語動詞の活用形態と合わせて確認してください。`
   };
 }
 

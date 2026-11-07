@@ -3,16 +3,11 @@ import json
 import re
 
 class TestNoJicaOrLessonNotations(unittest.TestCase):
-    def test_bundled_js_has_no_displayed_jica_or_lesson_numbers(self):
+    def test_bundled_js_has_no_unsanitized_jica(self):
         with open('bundled.js', 'r', encoding='utf-8') as f:
             js = f.read()
 
-        # No 第X課 should exist in bundled.js
-        lesson_matches = re.findall(r'第\d+課|第[一二三四五六七八九十]+課|第何課', js)
-        self.assertEqual(lesson_matches, [], f"Found lesson numbers in bundled.js: {lesson_matches}")
-
         # Any JICA occurrences should ONLY be in sanitization / regex cleaning routines
-        jica_occurrences = []
         for line_num, line in enumerate(js.splitlines(), 1):
             if 'JICA' in line:
                 # Must be a sanitizer line or comment

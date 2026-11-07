@@ -27,6 +27,7 @@ import { CultureComponent } from './components/CultureQuiz.js';
 import { WordFamilyComponent } from './components/WordFamilyQuiz.js';
 import { PenguinExpeditionComponent } from './components/PenguinExpedition.js';
 import { SpellingGameComponent } from './components/SpellingGame.js';
+import { ExerciseNotebookTestComponent } from './components/ExerciseNotebookTest.js';
 import { SuffixRuleDojoComponent } from './components/SuffixRuleDojo.js';
 import { EtymologyMasterComponent } from './components/EtymologyMaster.js';
 import { InterviewMasterComponent } from './components/InterviewMaster.js';
@@ -172,6 +173,9 @@ class App {
         break;
       case 'expedition':
         PenguinExpeditionComponent.render(mainContainer, onNavigate);
+        break;
+      case 'exercise_notebook':
+        ExerciseNotebookTestComponent.render(mainContainer, onNavigate);
         break;
       case 'spelling_game':
         SpellingGameComponent.render(mainContainer, onNavigate);

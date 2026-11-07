@@ -375,9 +375,11 @@ export class SuffixRuleDojoComponent {
       this.state.xpEarned += 1;
       try { if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') GamificationService.addXp(1); } catch (_) {}
 
-      // 間違いノートに記録
+      // 間違いノートに記録（単語だけでなく意味と指示を明確に記録）
+      const meaningSuffix = q.targetWordMeaning ? `（${q.targetWordMeaning}）` : '';
+      const qText = q.sentencePattern ? `【${q.categoryTitle}】${q.sentencePattern}` : `【${q.categoryTitle}】「${q.targetWord}${meaningSuffix}」に適切な語尾を接続した形`;
       StorageService.recordMistake({
-        question: `【${q.categoryTitle}】${q.sentencePattern || q.targetWord}`,
+        question: qText,
         userAnswer: val,
         correctAnswer: q.answer,
         type: 'grammar',
