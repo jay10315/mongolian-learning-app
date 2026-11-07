@@ -37,28 +37,48 @@ class App {
   static currentTab = 'home';
 
   static init() {
-    // 0. ワンクリックURLログイン（Magic Login Token）および端末同期の自動処理
+    // 0. ワンクリックURLログイン（Magic Login Token）およびSupabaseクラウド自動設定
     if (typeof window !== 'undefined' && window.location) {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('login_token') || urlParams.get('auth_token');
         const sessionId = urlParams.get('session_id') || urlParams.get('pair');
+        const sbUrl = urlParams.get('sb_url') || urlParams.get('supabase_url');
+        const sbKey = urlParams.get('sb_key') || urlParams.get('supabase_key');
 
+        let hasCustomParams = false;
+
+        // A. Supabase 設定の自動注入
+        if (sbUrl && sbKey) {
+          hasCustomParams = true;
+          try {
+            const decodedUrl = decodeURIComponent(sbUrl).trim();
+            const decodedKey = decodeURIComponent(sbKey).trim();
+            SyncService.saveConfig({ supabaseUrl: decodedUrl, supabaseAnonKey: decodedKey });
+            console.log('[App] Auto-configured Supabase credentials from URL parameters');
+          } catch (e) {
+            console.warn('[App] Failed to auto-configure Supabase:', e);
+          }
+        }
+
+        // B. Magic Login Token による自動ログイン
         if (token) {
+          hasCustomParams = true;
           const res = AuthService.processMagicLoginToken(token);
           if (res.success) {
             if (sessionId) {
               AuthService.notifyPairSuccess(sessionId, res.user);
             }
-            // アドレスバーからトークンパラメータを消去してURLをクリーンに保つ
-            const cleanUrl = window.location.pathname;
-            window.history.replaceState({}, document.title, cleanUrl);
+            // Supabase設定があれば即座に最新データをPull
+            const activeConfig = SyncService.getConfig();
+            if (activeConfig && activeConfig.supabaseUrl) {
+              SyncService.pullFromCloud(activeConfig, res.user).catch(() => {});
+            }
             setTimeout(() => {
               AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
             }, 300);
           }
         } else if (sessionId) {
-          // 軽量ペアリングURLの場合：サーバーからセッション情報を取得して自動ログイン
           fetch(`/api/sync/pair/data?sessionId=${encodeURIComponent(sessionId)}`)
             .then(r => r.ok ? r.json() : null)
             .then(data => {
@@ -66,14 +86,29 @@ class App {
                 const res = AuthService.processMagicLoginToken(data.token);
                 if (res.success) {
                   AuthService.notifyPairSuccess(sessionId, res.user);
-                  const cleanUrl = window.location.pathname;
-                  window.history.replaceState({}, document.title, cleanUrl);
+                  const activeConfig = SyncService.getConfig();
+                  if (activeConfig && activeConfig.supabaseUrl) {
+                    SyncService.pullFromCloud(activeConfig, res.user).catch(() => {});
+                  }
                   setTimeout(() => {
                     AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
                   }, 300);
                 }
               }
             }).catch(() => {});
+        } else if (sbUrl && sbKey) {
+          // トークンなしでもログイン中なら即座にPull
+          const currentUser = AuthService.getCurrentUser();
+          if (currentUser) {
+            const activeConfig = SyncService.getConfig();
+            SyncService.pullFromCloud(activeConfig, currentUser).catch(() => {});
+          }
+        }
+
+        // URLをクリーンに保つ
+        if (hasCustomParams) {
+          const cleanUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
         }
       } catch (err) {
         console.warn('[App] Magic login token check error:', err);

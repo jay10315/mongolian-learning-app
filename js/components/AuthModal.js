@@ -1,3 +1,4 @@
+import { CloudSettingsModal } from './CloudSettingsModal.js';
 // ユーザー認証モーダル（ログイン・新規登録・復旧コード再設定）
 import { AuthService } from '../services/auth.js';
 import { SyncService } from '../services/sync.js';
@@ -131,6 +132,20 @@ export class AuthModal {
             <span>📁 ファイルを選択して復元 (.json)</span>
             <input type="file" id="input-import-backup-file" accept=".json,application/json" class="hidden">
           </label>
+        </div>
+
+        <!-- 方法3: Supabaseクラウド設定 -->
+        <div class="p-3.5 bg-sky-50 border border-sky-200 rounded-2xl space-y-2">
+          <div class="text-xs font-bold text-sky-900 flex items-center justify-between">
+            <span>☁️ Supabase クラウド同期（推奨）:</span>
+            <span class="text-[10px] bg-sky-200 text-sky-800 px-2 py-0.5 rounded-full font-bold">自動同期</span>
+          </div>
+          <p class="text-[11px] text-sky-800">
+            無料のSupabaseを使えば、間違えた問題や進捗が全端末で自動同期されます。
+          </p>
+          <button type="button" id="btn-open-cloud-settings-from-auth" class="w-full py-2 px-3 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <span>☁️ クラウド同期・自動診断設定を開く</span>
+          </button>
         </div>
 
         ${user ? `
@@ -530,6 +545,16 @@ export class AuthModal {
         a.download = `mongol_learning_backup_${uname}_${new Date().toISOString().slice(0, 10)}.json`;
         a.click();
         URL.revokeObjectURL(url);
+      });
+    }
+
+    const openCloudBtn = this.modalContainer.querySelector('#btn-open-cloud-settings-from-auth');
+    if (openCloudBtn) {
+      openCloudBtn.addEventListener('click', () => {
+        this.close();
+        CloudSettingsModal.show(() => {
+          if (this.onAuthChanged) this.onAuthChanged(AuthService.getCurrentUser());
+        });
       });
     }
 

@@ -70,6 +70,7 @@ export const MONGOLIAN_PC_KEYBOARD_LAYOUT = {
     { lower: 'з', upper: 'З', key: 'p' },
     { lower: 'к', upper: 'К', key: '[' },
     { lower: 'ъ', upper: 'Ъ', key: ']' },
+    { lower: 'е', upper: 'Е', key: '`', special: true },
     { lower: 'щ', upper: 'Щ', key: '\\', special: true }
   ],
   row3: [
@@ -89,7 +90,6 @@ export const MONGOLIAN_PC_KEYBOARD_LAYOUT = {
     { lower: 'я', upper: 'Я', key: 'z' },
     { lower: 'ч', upper: 'Ч', key: 'x' },
     { lower: 'ё', upper: 'Ё', key: 'c' },
-    { lower: 'е', upper: 'Е', key: '`', special: true },
     { lower: 'с', upper: 'С', key: 'v' },
     { lower: 'м', upper: 'М', key: 'b' },
     { lower: 'и', upper: 'И', key: 'n' },
@@ -156,8 +156,8 @@ export function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showK
           `).join('')}
         </div>
 
-        <!-- Row 2 (ф ц у ж э н г ш ү з к ъ щ) -->
-        <div class="grid gap-1 text-center" style="grid-template-columns: repeat(13, minmax(0, 1fr));">
+        <!-- Row 2 (ф ц у ж э н г ш ү з к ъ е щ) -->
+        <div class="grid gap-1 text-center" style="grid-template-columns: repeat(14, minmax(0, 1fr));">
           ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row2.map(k => `
             <button type="button" class="btn-kb-key py-2 px-1 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer ${k.special ? 'border-amber-400 bg-amber-50/70 text-amber-950 dark:bg-amber-950/40 dark:text-amber-200' : 'border-slate-200 dark:border-slate-600'}" data-lower="${k.lower}" data-upper="${k.upper}">
               ${k.lower}
@@ -174,8 +174,8 @@ export function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showK
           `).join('')}
         </div>
 
-        <!-- Row 4 (я ч ё е с м и т ь в ю) -->
-        <div class="grid grid-cols-11 gap-1 text-center">
+        <!-- Row 4 (я ч ё с м и т ь в ю) -->
+        <div class="grid grid-cols-10 gap-1 text-center">
           ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row4.map(k => `
             <button type="button" class="btn-kb-key py-2 px-1 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer border-slate-200 dark:border-slate-600" data-lower="${k.lower}" data-upper="${k.upper}">
               ${k.lower}

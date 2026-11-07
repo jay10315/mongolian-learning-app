@@ -697,16 +697,38 @@ export class AuthService {
     // 1. URL形式の場合（http:// または https://）
     if (/^https?:\/\//i.test(trimmed)) {
       let token = null;
+      let sbUrl = null;
+      let sbKey = null;
+
       try {
         const u = new URL(trimmed);
         token = u.searchParams.get('login_token') || u.searchParams.get('auth_token') || u.searchParams.get('token') || u.searchParams.get('data');
+        sbUrl = u.searchParams.get('sb_url') || u.searchParams.get('supabase_url');
+        sbKey = u.searchParams.get('sb_key') || u.searchParams.get('supabase_key');
       } catch (_) {
         const m = trimmed.match(/[?&#](?:login_token|auth_token|token|data)=([^&\s#]+)/i);
         if (m) token = decodeURIComponent(m[1]);
+        const mU = trimmed.match(/[?&#](?:sb_url|supabase_url)=([^&\s#]+)/i);
+        if (mU) sbUrl = decodeURIComponent(mU[1]);
+        const mK = trimmed.match(/[?&#](?:sb_key|supabase_key)=([^&\s#]+)/i);
+        if (mK) sbKey = decodeURIComponent(mK[1]);
+      }
+
+      // Supabase設定が含まれていれば保存
+      if (sbUrl && sbKey && typeof window !== 'undefined' && window.SyncService) {
+        try {
+          window.SyncService.saveConfig({ supabaseUrl: sbUrl, supabaseAnonKey: sbKey });
+        } catch (_) {}
       }
 
       if (token) {
         return this.processMagicLoginToken(token);
+      } else if (sbUrl && sbKey) {
+        return {
+          success: true,
+          user: this.getCurrentUser() || { username: 'クラウド連携完了', displayName: 'クラウド連携完了' },
+          message: 'Supabase設定を反映しました。'
+        };
       } else {
         return {
           success: false,
@@ -767,7 +789,15 @@ export class AuthService {
         bytes[i] = binary.charCodeAt(i);
       }
       const jsonStr = new TextDecoder().decode(bytes);
-      const payload = JSON.parse(jsonStr);
+      let payload;
+      try {
+        payload = JSON.parse(jsonStr);
+      } catch (err) {
+        return {
+          success: false,
+          error: '同期コードの解析に失敗しました。PC画面の【同期コードのみコピー】を押して、取得したコードを再度貼り付けてください。'
+        };
+      }
 
       if (!payload || !payload.u || !payload.u.username) {
         return { success: false, error: '無効なログイントークンです。' };

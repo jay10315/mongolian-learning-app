@@ -109,10 +109,11 @@ export class Navbar {
                 <span class="hidden sm:inline text-[11px] text-sky-700 font-bold">${profile.currentTitle}</span>
               </button>
 
-              <!-- クラウド同期インジケーター -->
-              <button type="button" id="btn-cloud-sync-status" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1.5 font-medium transition-all border cursor-pointer hover:shadow-2xs">
+              <!-- クラウド同期インジケーター（スマホでも常時クラウドアイコン表示） -->
+              <button type="button" id="btn-cloud-sync-status" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold transition-all border cursor-pointer hover:shadow-2xs" title="クラウド同期設定・状態確認">
+                <span>☁️</span>
                 <span class="w-2 h-2 rounded-full" id="sync-dot"></span>
-                <span id="sync-text" class="hidden xs:inline">同期確認中</span>
+                <span id="sync-text" class="hidden xs:inline">クラウド</span>
               </button>
 
               <!-- ユーザーアカウントボタン -->

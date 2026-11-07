@@ -371,6 +371,43 @@ export class SyncService {
     } catch (e) {
       console.warn('[SyncService] Pull mistakes failed:', e);
     }
+
+    // 3. 万能スナップショットからのフォールバック取得
+    try {
+      const res = await fetch(`${url}/rest/v1/user_sync_snapshot?user_id=eq.${user.id}`, { headers });
+      if (res.ok) {
+        const rows = await res.json();
+        if (Array.isArray(rows) && rows.length > 0 && rows[0].payload) {
+          const snap = rows[0].payload;
+          if (Array.isArray(snap.mistakes) && snap.mistakes.length > 0) {
+            const currentMistakes = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
+            snap.mistakes.forEach(m => {
+              const exists = currentMistakes.some(x => x.id === m.id || (x.question === m.question && x.correctAnswer === m.correctAnswer));
+              if (!exists) currentMistakes.push(m);
+            });
+            localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(currentMistakes));
+          }
+          if (snap.wordProgress && typeof snap.wordProgress === 'object') {
+            const curProg = JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}');
+            Object.assign(curProg, snap.wordProgress);
+            localStorage.setItem('mongol_app_word_progress_v1', JSON.stringify(curProg));
+          }
+          if (snap.gameStats && typeof snap.gameStats === 'object') {
+            localStorage.setItem('mongol_app_game_stats_v1', JSON.stringify(snap.gameStats));
+          }
+          if (snap.mascot && typeof snap.mascot === 'object') {
+            localStorage.setItem('mongol_app_penguin_mascot_v1', JSON.stringify(snap.mascot));
+          }
+          try {
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+            }
+          } catch (_) {}
+        }
+      }
+    } catch (e) {
+      console.warn('[SyncService] Pull user_sync_snapshot failed:', e);
+    }
   }
 
   /**
@@ -490,6 +527,31 @@ export class SyncService {
       }
     } catch (e) {
       console.warn('[SyncService] Push user_history failed:', e);
+    }
+
+    // 5. 万能スナップショットのUPSERT（全学習データまるごと即時同期フォールバック）
+    try {
+      const fullSnapshot = {
+        user_id: user.id,
+        username: user.username,
+        updated_at: new Date().toISOString(),
+        payload: {
+          mistakes: JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]'),
+          wordProgress: JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}'),
+          gameStats: JSON.parse(localStorage.getItem('mongol_app_game_stats_v1') || '{}'),
+          mascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
+          history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]'),
+          account: user
+        }
+      };
+      await fetch(`${url}/rest/v1/user_sync_snapshot`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(fullSnapshot)
+      });
+      console.log('[SyncService] Successfully pushed full snapshot to Supabase.');
+    } catch (e) {
+      console.warn('[SyncService] Push user_sync_snapshot failed:', e);
     }
   }
 

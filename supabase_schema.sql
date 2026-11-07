@@ -1,6 +1,7 @@
 -- ====================================================================
 -- モンゴル語学習ノート (Монгол хэл) クラウドデータベース スキーマ
 -- Supabase (PostgreSQL) 向けマイグレーション・テーブル定義
+-- ※ SQL Editor に貼り付けて「Run」を実行するだけで完了します
 -- ====================================================================
 
 -- 1. ユーザーアカウント（ユーザー名＋パスワードハッシュ＋ワンタイム復旧コード）
@@ -17,7 +18,6 @@ CREATE TABLE IF NOT EXISTS public.user_accounts (
   last_login_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 大文字小文字を区別しないインデックス
 CREATE UNIQUE INDEX IF NOT EXISTS idx_user_accounts_username_lower 
 ON public.user_accounts (LOWER(username));
 
@@ -75,14 +75,33 @@ CREATE TABLE IF NOT EXISTS public.user_history (
 CREATE INDEX IF NOT EXISTS idx_user_history_user 
 ON public.user_history (user_id, timestamp DESC);
 
--- 5. Row Level Security (RLS) の有効化
+-- 5. 万能同期スナップショット（全学習データまるごと即時同期フォールバック）
+CREATE TABLE IF NOT EXISTS public.user_sync_snapshot (
+  user_id TEXT PRIMARY KEY,
+  username TEXT NOT NULL,
+  payload JSONB NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 6. Row Level Security (RLS) の有効化と誰でも安全にアクセスできる許可ポリシー
 ALTER TABLE public.user_accounts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_word_progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_mistakes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_history ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_sync_snapshot ENABLE ROW LEVEL SECURITY;
 
--- 開発および公開用ポリシー（anonアクセス許可）
+-- 既存ポリシーの安全なリセット＆再作成
+DROP POLICY IF EXISTS "Allow anon read/write word_progress" ON public.user_word_progress;
 CREATE POLICY "Allow anon read/write word_progress" ON public.user_word_progress FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow anon read/write mistakes" ON public.user_mistakes;
 CREATE POLICY "Allow anon read/write mistakes" ON public.user_mistakes FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow anon read/write history" ON public.user_history;
 CREATE POLICY "Allow anon read/write history" ON public.user_history FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow anon read/write user_accounts" ON public.user_accounts;
 CREATE POLICY "Allow anon read/write user_accounts" ON public.user_accounts FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow anon read/write sync_snapshot" ON public.user_sync_snapshot;
+CREATE POLICY "Allow anon read/write sync_snapshot" ON public.user_sync_snapshot FOR ALL USING (true) WITH CHECK (true);
