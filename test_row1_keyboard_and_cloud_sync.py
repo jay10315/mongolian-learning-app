@@ -35,7 +35,7 @@ class TestRow1KeyboardAndCloudSync(unittest.TestCase):
         with open(navbar_path, "r", encoding="utf-8") as f:
             nav_content = f.read()
 
-        self.assertIn("DEFAULT_VERCEL_APP_URL = 'https://mongolian-learning-app.vercel.app'", nav_content)
+        self.assertIn("DEFAULT_VERCEL_APP_URL = 'https://mongolian-learning-app-1tns.vercel.app'", nav_content)
         self.assertIn("syncTargetMode = 'vercel'", nav_content)
         self.assertNotIn('value="https://file:', nav_content)
 

@@ -558,7 +558,18 @@ export class AuthModal {
         submitBtn.disabled = true;
         submitBtn.textContent = '認証中...';
 
-        const res = await AuthService.login(u, p);
+        let res = await AuthService.login(u, p);
+        // ローカルにアカウントがない場合、Supabase(クラウド)からの自動検索を試行
+        if (!res.success && (res.code === 'USER_NOT_FOUND' || res.code === 'NO_USERS_ON_DEVICE')) {
+          if (SyncService.isCloudConfigured()) {
+            submitBtn.textContent = 'クラウド検索中...';
+            const cloudUsers = await SyncService.fetchAccountFromCloud(u);
+            if (cloudUsers && cloudUsers.length > 0) {
+              res = await AuthService.login(u, p);
+            }
+          }
+        }
+
         if (res.success) {
           SyncService.triggerSync();
           this.close();
@@ -585,7 +596,7 @@ export class AuthModal {
                   </button>
                   <button type="button" id="btn-retry-server-fetch" class="w-full py-2 px-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
                     <span>🔄</span>
-                    <span>サーバー（PC）からアカウントを再検索</span>
+                    <span>クラウド/サーバーからアカウントを再検索</span>
                   </button>
                   <button type="button" id="btn-quick-create-from-login" class="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
                     <span>👉</span>
@@ -607,34 +618,53 @@ export class AuthModal {
               if (retryBtn) {
                 retryBtn.addEventListener('click', async () => {
                   retryBtn.disabled = true;
-                  retryBtn.innerHTML = '<span>⏳</span><span>サーバー検索中...</span>';
+                  retryBtn.innerHTML = '<span>⏳</span><span>クラウド/サーバー検索中...</span>';
                   try {
-                    const serverUsers = await AuthService.fetchServerAccounts();
+                    let foundAccount = null;
                     const cleanU = AuthService.normalizeUsername(u);
-                    const foundInAccounts = serverUsers.find(x => AuthService.normalizeUsername(x.username) === cleanU);
-                    const syncData = await AuthService.fetchServerUserData(cleanU);
-                    if (foundInAccounts || (syncData && syncData.account)) {
-                      if (foundInAccounts) AuthService.mergeServerUsers([foundInAccounts]);
-                      if (syncData && syncData.account) AuthService.mergeServerUsers([syncData.account]);
+
+                    // 1. Supabase (クラウドDB) から検索
+                    if (SyncService.isCloudConfigured()) {
+                      const cloudUsers = await SyncService.fetchAccountFromCloud(cleanU);
+                      if (cloudUsers && cloudUsers.length > 0) {
+                        foundAccount = cloudUsers[0];
+                      }
+                    }
+
+                    // 2. ローカルWebサーバー (LAN内) から検索
+                    if (!foundAccount) {
+                      const serverUsers = await AuthService.fetchServerAccounts();
+                      foundAccount = serverUsers.find(x => AuthService.normalizeUsername(x.username) === cleanU);
+                      const syncData = await AuthService.fetchServerUserData(cleanU);
+                      if (syncData && syncData.account) {
+                        foundAccount = syncData.account;
+                      }
+                    }
+
+                    if (foundAccount) {
+                      AuthService.mergeServerUsers([foundAccount]);
+                      if (SyncService.isCloudConfigured()) {
+                        await SyncService.pullFromCloud(SyncService.getConfig(), foundAccount);
+                      }
                       alertEl.className = 'mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 space-y-1';
                       alertEl.innerHTML = `
                         <div class="font-bold flex items-center gap-1">
                           <span>✅</span>
-                          <span>PCサーバー上にアカウント「${u}」が見つかりました！</span>
+                          <span>クラウド/PC上にアカウント「${foundAccount.displayName || foundAccount.username}」が見つかりました！</span>
                         </div>
                         <p class="text-[11px] text-emerald-800">
-                          パスワードを入力してそのまま「ログインする」を押してください。学習進捗も自動同期されます。
+                          パスワードを入力してそのまま「ログインする」を押してください。間違えた問題や学習進捗も自動同期されます。
                         </p>
                       `;
                     } else {
-                      alert('PCのWebサーバー（http://<PCのIP>:5173）に接続できませんでした。PC側で「📲 端末同期」を開き、QRコードをカメラで読み取るか、同期URLをコピーして貼り付けてください。');
+                      alert('アカウントが見つかりませんでした。Supabaseクラウド設定を確認するか、PC側で「📲 端末同期」を開いて【同期コードのみコピー】を押してコードを貼り付けてください。');
                       retryBtn.disabled = false;
-                      retryBtn.innerHTML = '<span>🔄</span><span>サーバー（PC）からアカウントを再検索</span>';
+                      retryBtn.innerHTML = '<span>🔄</span><span>クラウド/サーバーからアカウントを再検索</span>';
                     }
                   } catch (err) {
                     alert('検索エラー: ' + err.message);
                     retryBtn.disabled = false;
-                    retryBtn.innerHTML = '<span>🔄</span><span>サーバー（PC）からアカウントを再検索</span>';
+                    retryBtn.innerHTML = '<span>🔄</span><span>クラウド/サーバーからアカウントを再検索</span>';
                   }
                 });
               }

@@ -371,7 +371,7 @@ export class Navbar {
     const pathname = typeof window !== 'undefined' && window.location ? (window.location.pathname || '/') : '/';
     const cleanPath = pathname.endsWith('.html') ? pathname : (pathname.endsWith('/') ? pathname : pathname + '/');
 
-    const DEFAULT_VERCEL_APP_URL = 'https://mongolian-learning-app.vercel.app';
+    const DEFAULT_VERCEL_APP_URL = 'https://mongolian-learning-app-1tns.vercel.app';
 
     // 保存されているカスタムVercel URLを取得
     let savedVercelUrl = '';

@@ -156,19 +156,35 @@ export class CloudSettingsModal {
 
     const form = this.modalContainer.querySelector('#form-cloud-config');
     if (form) {
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const url = this.modalContainer.querySelector('#input-supabase-url').value.trim();
         const key = this.modalContainer.querySelector('#input-supabase-anon-key').value.trim();
+        const submitBtn = this.modalContainer.querySelector('#btn-save-cloud-config');
 
         if (!url || !key) {
           alert('URLとキーを入力してください。');
           return;
         }
 
-        SyncService.saveConfig({ supabaseUrl: url, supabaseAnonKey: key });
-        SyncService.triggerSync();
-        alert('クラウド同期設定を保存しました！バックグラウンド同期を開始します。');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = '全データをクラウド同期中...';
+        }
+
+        const newConfig = { supabaseUrl: url, supabaseAnonKey: key };
+        SyncService.saveConfig(newConfig);
+
+        const user = AuthService.getCurrentUser();
+        if (user) {
+          await SyncService.pushAllLocalDataToCloud(newConfig, user);
+          await SyncService.pullFromCloud(newConfig, user);
+        } else {
+          // 未ログイン時はアカウント一覧の検索を試みる
+          await SyncService.fetchAccountFromCloud();
+        }
+
+        alert('✅ クラウド設定を保存し、間違えた問題・学習進捗・アカウント情報をSupabaseと同期しました！');
         this.close();
         if (this.onConfigSaved) this.onConfigSaved();
       });

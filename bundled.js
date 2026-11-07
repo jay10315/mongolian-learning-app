@@ -80677,37 +80677,65 @@ class AuthService {
       return { success: false, error: 'データが空です。' };
     }
     const trimmed = rawText.trim();
-    // 1. URL または login_token 形式の場合
-    if (trimmed.includes('login_token=') || (!trimmed.startsWith('{') && trimmed.length > 50)) {
-      let token = trimmed;
-      if (token.includes('login_token=')) {
-        try {
-          const u = new URL(token);
-          token = u.searchParams.get('login_token') || token;
-        } catch (_) {
-          const m = token.match(/login_token=([^&\s]+)/);
-          if (m) token = m[1];
-        }
+
+    // 1. URL形式の場合（http:// または https://）
+    if (/^https?:\/\//i.test(trimmed)) {
+      let token = null;
+      try {
+        const u = new URL(trimmed);
+        token = u.searchParams.get('login_token') || u.searchParams.get('auth_token') || u.searchParams.get('token') || u.searchParams.get('data');
+      } catch (_) {
+        const m = trimmed.match(/[?&#](?:login_token|auth_token|token|data)=([^&\s#]+)/i);
+        if (m) token = decodeURIComponent(m[1]);
       }
+
+      if (token) {
+        return this.processMagicLoginToken(token);
+      } else {
+        return {
+          success: false,
+          error: '貼り付けられたURLに同期用データ（login_token）が含まれていません。PCの「端末同期」画面で【同期コードのみコピー】を押してコードを貼り付けるか、【URLコピー】で発行された連携URLを貼り付けてください。'
+        };
+      }
+    }
+
+    // 2. Base64トークン形式の場合（login_token= プレフィックス、または eyJ 等のBase64文字列）
+    if (trimmed.includes('login_token=') || trimmed.includes('auth_token=')) {
+      const m = trimmed.match(/(?:login_token|auth_token)=([^&\s]+)/);
+      const token = m ? decodeURIComponent(m[1]) : trimmed;
       return this.processMagicLoginToken(token);
     }
 
-    // 2. JSON バックアップ形式の場合
-    try {
-      const data = JSON.parse(trimmed);
-      if (!data || !data.account || !data.account.username) {
-        return { success: false, error: 'バックアップデータに有効なアカウント情報が含まれていません。' };
-      }
-      const u = data.account;
-      this.mergeServerUsers([u]);
-      const session = this.setSession(u);
-      if (data.storage) {
-        this.restoreStorageSnapshot(data.storage);
-      }
-      return { success: true, user: session };
-    } catch (e) {
-      return { success: false, error: 'バックアップデータの解析に失敗しました: ' + e.message };
+    if (!trimmed.startsWith('{') && (trimmed.startsWith('eyJ') || (trimmed.length > 30 && /^[A-Za-z0-9_-]+={0,2}$/.test(trimmed)))) {
+      return this.processMagicLoginToken(trimmed);
     }
+
+    // 3. JSON バックアップ形式の場合
+    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+      try {
+        const data = JSON.parse(trimmed);
+        if (!data || !data.account || !data.account.username) {
+          return { success: false, error: 'バックアップデータに有効なアカウント情報が含まれていません。' };
+        }
+        const u = data.account;
+        this.mergeServerUsers([u]);
+        const session = this.setSession(u);
+        if (data.storage) {
+          this.restoreStorageSnapshot(data.storage);
+        }
+        return { success: true, user: session };
+      } catch (e) {
+        return { success: false, error: 'バックアップJSONの解析に失敗しました: ' + e.message };
+      }
+    }
+
+    // それ以外の場合は一度MagicLoginTokenを試みる
+    if (trimmed.length > 20) {
+      const res = this.processMagicLoginToken(trimmed);
+      if (res.success) return res;
+    }
+
+    return { success: false, error: '無効な同期コードまたはURL形式です。PC画面の「同期コードのみコピー」を押してコードを貼り付けてください。' };
   }
 
   static processMagicLoginToken(token) {
@@ -81115,7 +81143,10 @@ class SyncService {
       // 1. 保留中キューの送信
       await this.flushQueue(config, user);
 
-      // 2. クラウドからの最新データ取得・マージ
+      // 2. ローカル既存データ（間違えた問題・進捗・アカウント）のクラウド一括プッシュ
+      await this.pushAllLocalDataToCloud(config, user);
+
+      // 3. クラウドからの最新データ取得・マージ
       await this.pullFromCloud(config, user);
 
       const now = new Date().toISOString();
@@ -81303,10 +81334,181 @@ class SyncService {
             }
           });
           localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(localMistakes));
+          // 画面へ更新通知を発火
+          try {
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+            }
+          } catch (_) {}
         }
       }
     } catch (e) {
       console.warn('[SyncService] Pull mistakes failed:', e);
+    }
+  }
+
+  /**
+   * ローカルに蓄積されている全学習データ（アカウント、間違えた問題、単語進捗、履歴）をSupabaseへ一括プッシュ
+   */
+  static async pushAllLocalDataToCloud(config, user) {
+    if (!config || !user || !config.supabaseUrl || !config.supabaseAnonKey) return;
+    const url = config.supabaseUrl.replace(/\/+$/, '');
+    const headers = {
+      'apikey': config.supabaseAnonKey,
+      'Authorization': `Bearer ${config.supabaseAnonKey}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates'
+    };
+
+    // 1. アカウント情報のUPSERT
+    try {
+      const accountBody = {
+        id: user.id,
+        username: user.username,
+        display_name: user.displayName || user.username,
+        salt: user.salt || '',
+        password_hash: user.passwordHash || '',
+        recovery_salt: user.recoverySalt || '',
+        recovery_code_hash: user.recoveryCodeHash || '',
+        last_login_at: new Date().toISOString()
+      };
+      await fetch(`${url}/rest/v1/user_accounts`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(accountBody)
+      });
+    } catch (e) {
+      console.warn('[SyncService] Push user_accounts failed:', e);
+    }
+
+    // 2. 間違えた問題（全件）のUPSERT
+    try {
+      const mistakes = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
+      if (Array.isArray(mistakes) && mistakes.length > 0) {
+        for (let i = 0; i < mistakes.length; i += 50) {
+          const chunk = mistakes.slice(i, i + 50).map(m => ({
+            id: m.id || `m_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+            user_id: user.id,
+            question: m.question || '',
+            correct_answer: m.correctAnswer || '',
+            user_answer: m.userAnswer || '',
+            type: m.type || 'word',
+            category: m.category || '単語',
+            explanation: m.explanation || '',
+            wrong_count: m.wrongCount || 1,
+            last_wrong_date: m.lastWrongDate || new Date().toISOString(),
+            resolved: Boolean(m.resolved),
+            updated_at: new Date().toISOString()
+          }));
+          await fetch(`${url}/rest/v1/user_mistakes`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(chunk)
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('[SyncService] Push user_mistakes failed:', e);
+    }
+
+    // 3. 単語進捗（全件）のUPSERT
+    try {
+      const progMap = JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}');
+      const progList = Object.values(progMap);
+      if (progList.length > 0) {
+        for (let i = 0; i < progList.length; i += 50) {
+          const chunk = progList.slice(i, i + 50).map(p => ({
+            user_id: user.id,
+            word_id: p.wordId || p.id,
+            srs_level: p.srsLevel || 0,
+            interval_days: p.intervalDays || 0,
+            next_review_date: p.nextReviewDate || null,
+            last_learned_at: p.lastLearnedAt || new Date().toISOString(),
+            study_count: p.studyCount || 1,
+            correct_count: p.correctCount || 0,
+            wrong_count: p.wrongCount || 0,
+            accuracy: p.accuracy || 0,
+            updated_at: p.updatedAt || new Date().toISOString()
+          }));
+          await fetch(`${url}/rest/v1/user_word_progress`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(chunk)
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('[SyncService] Push user_word_progress failed:', e);
+    }
+
+    // 4. 学習履歴のUPSERT
+    try {
+      const history = JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]');
+      if (Array.isArray(history) && history.length > 0) {
+        const recentHistory = history.slice(-50);
+        const chunk = recentHistory.map(h => ({
+          id: h.id || `h_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          user_id: user.id,
+          type: h.type || 'word',
+          total: h.total || 0,
+          correct: h.correct || 0,
+          category: h.category || '',
+          mode: h.mode || '',
+          timestamp: h.timestamp || new Date().toISOString()
+        }));
+        await fetch(`${url}/rest/v1/user_history`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(chunk)
+        });
+      }
+    } catch (e) {
+      console.warn('[SyncService] Push user_history failed:', e);
+    }
+  }
+
+  /**
+   * Supabaseから指定アカウントまたは全アカウント情報を検索・取得してローカルにマージ
+   */
+  static async fetchAccountFromCloud(targetUsername = null) {
+    const config = this.getConfig();
+    if (!config || !config.supabaseUrl || !config.supabaseAnonKey) return null;
+    const url = config.supabaseUrl.replace(/\/+$/, '');
+    const headers = {
+      'apikey': config.supabaseAnonKey,
+      'Authorization': `Bearer ${config.supabaseAnonKey}`,
+      'Accept': 'application/json'
+    };
+
+    try {
+      let endpoint = `${url}/rest/v1/user_accounts?select=*`;
+      if (targetUsername) {
+        endpoint += `&username=ilike.${encodeURIComponent(targetUsername.trim())}`;
+      }
+      const res = await fetch(endpoint, { headers });
+      if (!res.ok) return null;
+      const rows = await res.json();
+      if (!Array.isArray(rows) || rows.length === 0) return null;
+
+      const matched = rows.map(r => ({
+        id: r.id,
+        username: r.username,
+        displayName: r.display_name || r.username,
+        salt: r.salt,
+        passwordHash: r.password_hash,
+        recoverySalt: r.recovery_salt,
+        recoveryCodeHash: r.recovery_code_hash,
+        recoveryUsed: r.recovery_used,
+        createdAt: r.created_at,
+        lastLoginAt: r.last_login_at
+      }));
+
+      // ローカルユーザーにマージ
+      AuthService.mergeServerUsers(matched);
+      return matched;
+    } catch (e) {
+      console.warn('[SyncService] fetchAccountFromCloud failed:', e);
+      return null;
     }
   }
 }
@@ -85767,7 +85969,18 @@ class AuthModal {
         submitBtn.disabled = true;
         submitBtn.textContent = '認証中...';
 
-        const res = await AuthService.login(u, p);
+        let res = await AuthService.login(u, p);
+        // ローカルにアカウントがない場合、Supabase(クラウド)からの自動検索を試行
+        if (!res.success && (res.code === 'USER_NOT_FOUND' || res.code === 'NO_USERS_ON_DEVICE')) {
+          if (SyncService.isCloudConfigured()) {
+            submitBtn.textContent = 'クラウド検索中...';
+            const cloudUsers = await SyncService.fetchAccountFromCloud(u);
+            if (cloudUsers && cloudUsers.length > 0) {
+              res = await AuthService.login(u, p);
+            }
+          }
+        }
+
         if (res.success) {
           SyncService.triggerSync();
           this.close();
@@ -85794,7 +86007,7 @@ class AuthModal {
                   </button>
                   <button type="button" id="btn-retry-server-fetch" class="w-full py-2 px-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
                     <span>🔄</span>
-                    <span>サーバー（PC）からアカウントを再検索</span>
+                    <span>クラウド/サーバーからアカウントを再検索</span>
                   </button>
                   <button type="button" id="btn-quick-create-from-login" class="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
                     <span>👉</span>
@@ -85816,34 +86029,53 @@ class AuthModal {
               if (retryBtn) {
                 retryBtn.addEventListener('click', async () => {
                   retryBtn.disabled = true;
-                  retryBtn.innerHTML = '<span>⏳</span><span>サーバー検索中...</span>';
+                  retryBtn.innerHTML = '<span>⏳</span><span>クラウド/サーバー検索中...</span>';
                   try {
-                    const serverUsers = await AuthService.fetchServerAccounts();
+                    let foundAccount = null;
                     const cleanU = AuthService.normalizeUsername(u);
-                    const foundInAccounts = serverUsers.find(x => AuthService.normalizeUsername(x.username) === cleanU);
-                    const syncData = await AuthService.fetchServerUserData(cleanU);
-                    if (foundInAccounts || (syncData && syncData.account)) {
-                      if (foundInAccounts) AuthService.mergeServerUsers([foundInAccounts]);
-                      if (syncData && syncData.account) AuthService.mergeServerUsers([syncData.account]);
+
+                    // 1. Supabase (クラウドDB) から検索
+                    if (SyncService.isCloudConfigured()) {
+                      const cloudUsers = await SyncService.fetchAccountFromCloud(cleanU);
+                      if (cloudUsers && cloudUsers.length > 0) {
+                        foundAccount = cloudUsers[0];
+                      }
+                    }
+
+                    // 2. ローカルWebサーバー (LAN内) から検索
+                    if (!foundAccount) {
+                      const serverUsers = await AuthService.fetchServerAccounts();
+                      foundAccount = serverUsers.find(x => AuthService.normalizeUsername(x.username) === cleanU);
+                      const syncData = await AuthService.fetchServerUserData(cleanU);
+                      if (syncData && syncData.account) {
+                        foundAccount = syncData.account;
+                      }
+                    }
+
+                    if (foundAccount) {
+                      AuthService.mergeServerUsers([foundAccount]);
+                      if (SyncService.isCloudConfigured()) {
+                        await SyncService.pullFromCloud(SyncService.getConfig(), foundAccount);
+                      }
                       alertEl.className = 'mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 space-y-1';
                       alertEl.innerHTML = `
                         <div class="font-bold flex items-center gap-1">
                           <span>✅</span>
-                          <span>PCサーバー上にアカウント「${u}」が見つかりました！</span>
+                          <span>クラウド/PC上にアカウント「${foundAccount.displayName || foundAccount.username}」が見つかりました！</span>
                         </div>
                         <p class="text-[11px] text-emerald-800">
-                          パスワードを入力してそのまま「ログインする」を押してください。学習進捗も自動同期されます。
+                          パスワードを入力してそのまま「ログインする」を押してください。間違えた問題や学習進捗も自動同期されます。
                         </p>
                       `;
                     } else {
-                      alert('PCのWebサーバー（http://<PCのIP>:5173）に接続できませんでした。PC側で「📲 端末同期」を開き、QRコードをカメラで読み取るか、同期URLをコピーして貼り付けてください。');
+                      alert('アカウントが見つかりませんでした。Supabaseクラウド設定を確認するか、PC側で「📲 端末同期」を開いて【同期コードのみコピー】を押してコードを貼り付けてください。');
                       retryBtn.disabled = false;
-                      retryBtn.innerHTML = '<span>🔄</span><span>サーバー（PC）からアカウントを再検索</span>';
+                      retryBtn.innerHTML = '<span>🔄</span><span>クラウド/サーバーからアカウントを再検索</span>';
                     }
                   } catch (err) {
                     alert('検索エラー: ' + err.message);
                     retryBtn.disabled = false;
-                    retryBtn.innerHTML = '<span>🔄</span><span>サーバー（PC）からアカウントを再検索</span>';
+                    retryBtn.innerHTML = '<span>🔄</span><span>クラウド/サーバーからアカウントを再検索</span>';
                   }
                 });
               }
@@ -86166,19 +86398,35 @@ class CloudSettingsModal {
 
     const form = this.modalContainer.querySelector('#form-cloud-config');
     if (form) {
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const url = this.modalContainer.querySelector('#input-supabase-url').value.trim();
         const key = this.modalContainer.querySelector('#input-supabase-anon-key').value.trim();
+        const submitBtn = this.modalContainer.querySelector('#btn-save-cloud-config');
 
         if (!url || !key) {
           alert('URLとキーを入力してください。');
           return;
         }
 
-        SyncService.saveConfig({ supabaseUrl: url, supabaseAnonKey: key });
-        SyncService.triggerSync();
-        alert('クラウド同期設定を保存しました！バックグラウンド同期を開始します。');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = '全データをクラウド同期中...';
+        }
+
+        const newConfig = { supabaseUrl: url, supabaseAnonKey: key };
+        SyncService.saveConfig(newConfig);
+
+        const user = AuthService.getCurrentUser();
+        if (user) {
+          await SyncService.pushAllLocalDataToCloud(newConfig, user);
+          await SyncService.pullFromCloud(newConfig, user);
+        } else {
+          // 未ログイン時はアカウント一覧の検索を試みる
+          await SyncService.fetchAccountFromCloud();
+        }
+
+        alert('✅ クラウド設定を保存し、間違えた問題・学習進捗・アカウント情報をSupabaseと同期しました！');
         this.close();
         if (this.onConfigSaved) this.onConfigSaved();
       });
@@ -87033,7 +87281,7 @@ class Navbar {
     const pathname = typeof window !== 'undefined' && window.location ? (window.location.pathname || '/') : '/';
     const cleanPath = pathname.endsWith('.html') ? pathname : (pathname.endsWith('/') ? pathname : pathname + '/');
 
-    const DEFAULT_VERCEL_APP_URL = 'https://mongolian-learning-app.vercel.app';
+    const DEFAULT_VERCEL_APP_URL = 'https://mongolian-learning-app-1tns.vercel.app';
 
     // 保存されているカスタムVercel URLを取得
     let savedVercelUrl = '';

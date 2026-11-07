@@ -169,7 +169,10 @@ export class SyncService {
       // 1. 保留中キューの送信
       await this.flushQueue(config, user);
 
-      // 2. クラウドからの最新データ取得・マージ
+      // 2. ローカル既存データ（間違えた問題・進捗・アカウント）のクラウド一括プッシュ
+      await this.pushAllLocalDataToCloud(config, user);
+
+      // 3. クラウドからの最新データ取得・マージ
       await this.pullFromCloud(config, user);
 
       const now = new Date().toISOString();
@@ -357,10 +360,181 @@ export class SyncService {
             }
           });
           localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(localMistakes));
+          // 画面へ更新通知を発火
+          try {
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+            }
+          } catch (_) {}
         }
       }
     } catch (e) {
       console.warn('[SyncService] Pull mistakes failed:', e);
+    }
+  }
+
+  /**
+   * ローカルに蓄積されている全学習データ（アカウント、間違えた問題、単語進捗、履歴）をSupabaseへ一括プッシュ
+   */
+  static async pushAllLocalDataToCloud(config, user) {
+    if (!config || !user || !config.supabaseUrl || !config.supabaseAnonKey) return;
+    const url = config.supabaseUrl.replace(/\/+$/, '');
+    const headers = {
+      'apikey': config.supabaseAnonKey,
+      'Authorization': `Bearer ${config.supabaseAnonKey}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates'
+    };
+
+    // 1. アカウント情報のUPSERT
+    try {
+      const accountBody = {
+        id: user.id,
+        username: user.username,
+        display_name: user.displayName || user.username,
+        salt: user.salt || '',
+        password_hash: user.passwordHash || '',
+        recovery_salt: user.recoverySalt || '',
+        recovery_code_hash: user.recoveryCodeHash || '',
+        last_login_at: new Date().toISOString()
+      };
+      await fetch(`${url}/rest/v1/user_accounts`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(accountBody)
+      });
+    } catch (e) {
+      console.warn('[SyncService] Push user_accounts failed:', e);
+    }
+
+    // 2. 間違えた問題（全件）のUPSERT
+    try {
+      const mistakes = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
+      if (Array.isArray(mistakes) && mistakes.length > 0) {
+        for (let i = 0; i < mistakes.length; i += 50) {
+          const chunk = mistakes.slice(i, i + 50).map(m => ({
+            id: m.id || `m_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+            user_id: user.id,
+            question: m.question || '',
+            correct_answer: m.correctAnswer || '',
+            user_answer: m.userAnswer || '',
+            type: m.type || 'word',
+            category: m.category || '単語',
+            explanation: m.explanation || '',
+            wrong_count: m.wrongCount || 1,
+            last_wrong_date: m.lastWrongDate || new Date().toISOString(),
+            resolved: Boolean(m.resolved),
+            updated_at: new Date().toISOString()
+          }));
+          await fetch(`${url}/rest/v1/user_mistakes`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(chunk)
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('[SyncService] Push user_mistakes failed:', e);
+    }
+
+    // 3. 単語進捗（全件）のUPSERT
+    try {
+      const progMap = JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}');
+      const progList = Object.values(progMap);
+      if (progList.length > 0) {
+        for (let i = 0; i < progList.length; i += 50) {
+          const chunk = progList.slice(i, i + 50).map(p => ({
+            user_id: user.id,
+            word_id: p.wordId || p.id,
+            srs_level: p.srsLevel || 0,
+            interval_days: p.intervalDays || 0,
+            next_review_date: p.nextReviewDate || null,
+            last_learned_at: p.lastLearnedAt || new Date().toISOString(),
+            study_count: p.studyCount || 1,
+            correct_count: p.correctCount || 0,
+            wrong_count: p.wrongCount || 0,
+            accuracy: p.accuracy || 0,
+            updated_at: p.updatedAt || new Date().toISOString()
+          }));
+          await fetch(`${url}/rest/v1/user_word_progress`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(chunk)
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('[SyncService] Push user_word_progress failed:', e);
+    }
+
+    // 4. 学習履歴のUPSERT
+    try {
+      const history = JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]');
+      if (Array.isArray(history) && history.length > 0) {
+        const recentHistory = history.slice(-50);
+        const chunk = recentHistory.map(h => ({
+          id: h.id || `h_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          user_id: user.id,
+          type: h.type || 'word',
+          total: h.total || 0,
+          correct: h.correct || 0,
+          category: h.category || '',
+          mode: h.mode || '',
+          timestamp: h.timestamp || new Date().toISOString()
+        }));
+        await fetch(`${url}/rest/v1/user_history`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(chunk)
+        });
+      }
+    } catch (e) {
+      console.warn('[SyncService] Push user_history failed:', e);
+    }
+  }
+
+  /**
+   * Supabaseから指定アカウントまたは全アカウント情報を検索・取得してローカルにマージ
+   */
+  static async fetchAccountFromCloud(targetUsername = null) {
+    const config = this.getConfig();
+    if (!config || !config.supabaseUrl || !config.supabaseAnonKey) return null;
+    const url = config.supabaseUrl.replace(/\/+$/, '');
+    const headers = {
+      'apikey': config.supabaseAnonKey,
+      'Authorization': `Bearer ${config.supabaseAnonKey}`,
+      'Accept': 'application/json'
+    };
+
+    try {
+      let endpoint = `${url}/rest/v1/user_accounts?select=*`;
+      if (targetUsername) {
+        endpoint += `&username=ilike.${encodeURIComponent(targetUsername.trim())}`;
+      }
+      const res = await fetch(endpoint, { headers });
+      if (!res.ok) return null;
+      const rows = await res.json();
+      if (!Array.isArray(rows) || rows.length === 0) return null;
+
+      const matched = rows.map(r => ({
+        id: r.id,
+        username: r.username,
+        displayName: r.display_name || r.username,
+        salt: r.salt,
+        passwordHash: r.password_hash,
+        recoverySalt: r.recovery_salt,
+        recoveryCodeHash: r.recovery_code_hash,
+        recoveryUsed: r.recovery_used,
+        createdAt: r.created_at,
+        lastLoginAt: r.last_login_at
+      }));
+
+      // ローカルユーザーにマージ
+      AuthService.mergeServerUsers(matched);
+      return matched;
+    } catch (e) {
+      console.warn('[SyncService] fetchAccountFromCloud failed:', e);
+      return null;
     }
   }
 }

@@ -693,37 +693,65 @@ export class AuthService {
       return { success: false, error: 'データが空です。' };
     }
     const trimmed = rawText.trim();
-    // 1. URL または login_token 形式の場合
-    if (trimmed.includes('login_token=') || (!trimmed.startsWith('{') && trimmed.length > 50)) {
-      let token = trimmed;
-      if (token.includes('login_token=')) {
-        try {
-          const u = new URL(token);
-          token = u.searchParams.get('login_token') || token;
-        } catch (_) {
-          const m = token.match(/login_token=([^&\s]+)/);
-          if (m) token = m[1];
-        }
+
+    // 1. URL形式の場合（http:// または https://）
+    if (/^https?:\/\//i.test(trimmed)) {
+      let token = null;
+      try {
+        const u = new URL(trimmed);
+        token = u.searchParams.get('login_token') || u.searchParams.get('auth_token') || u.searchParams.get('token') || u.searchParams.get('data');
+      } catch (_) {
+        const m = trimmed.match(/[?&#](?:login_token|auth_token|token|data)=([^&\s#]+)/i);
+        if (m) token = decodeURIComponent(m[1]);
       }
+
+      if (token) {
+        return this.processMagicLoginToken(token);
+      } else {
+        return {
+          success: false,
+          error: '貼り付けられたURLに同期用データ（login_token）が含まれていません。PCの「端末同期」画面で【同期コードのみコピー】を押してコードを貼り付けるか、【URLコピー】で発行された連携URLを貼り付けてください。'
+        };
+      }
+    }
+
+    // 2. Base64トークン形式の場合（login_token= プレフィックス、または eyJ 等のBase64文字列）
+    if (trimmed.includes('login_token=') || trimmed.includes('auth_token=')) {
+      const m = trimmed.match(/(?:login_token|auth_token)=([^&\s]+)/);
+      const token = m ? decodeURIComponent(m[1]) : trimmed;
       return this.processMagicLoginToken(token);
     }
 
-    // 2. JSON バックアップ形式の場合
-    try {
-      const data = JSON.parse(trimmed);
-      if (!data || !data.account || !data.account.username) {
-        return { success: false, error: 'バックアップデータに有効なアカウント情報が含まれていません。' };
-      }
-      const u = data.account;
-      this.mergeServerUsers([u]);
-      const session = this.setSession(u);
-      if (data.storage) {
-        this.restoreStorageSnapshot(data.storage);
-      }
-      return { success: true, user: session };
-    } catch (e) {
-      return { success: false, error: 'バックアップデータの解析に失敗しました: ' + e.message };
+    if (!trimmed.startsWith('{') && (trimmed.startsWith('eyJ') || (trimmed.length > 30 && /^[A-Za-z0-9_-]+={0,2}$/.test(trimmed)))) {
+      return this.processMagicLoginToken(trimmed);
     }
+
+    // 3. JSON バックアップ形式の場合
+    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+      try {
+        const data = JSON.parse(trimmed);
+        if (!data || !data.account || !data.account.username) {
+          return { success: false, error: 'バックアップデータに有効なアカウント情報が含まれていません。' };
+        }
+        const u = data.account;
+        this.mergeServerUsers([u]);
+        const session = this.setSession(u);
+        if (data.storage) {
+          this.restoreStorageSnapshot(data.storage);
+        }
+        return { success: true, user: session };
+      } catch (e) {
+        return { success: false, error: 'バックアップJSONの解析に失敗しました: ' + e.message };
+      }
+    }
+
+    // それ以外の場合は一度MagicLoginTokenを試みる
+    if (trimmed.length > 20) {
+      const res = this.processMagicLoginToken(trimmed);
+      if (res.success) return res;
+    }
+
+    return { success: false, error: '無効な同期コードまたはURL形式です。PC画面の「同期コードのみコピー」を押してコードを貼り付けてください。' };
   }
 
   static processMagicLoginToken(token) {
