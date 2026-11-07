@@ -2805,6 +2805,309 @@ if (typeof window !== 'undefined') {
  * ユーザー要件: 「似ている単語がある場合は、解説するときにそれと何が違うのか、も書いて」
  */
 const SIMILAR_WORDS_DISTINCTIONS = {
+
+  // === 暦・時間・期間の重要類義語＆音類似 ===
+  "он": {
+    target: "он",
+    targetMeaning: "年（西暦・特定の暦年）",
+    meaningSimilar: [
+      { word: "жил", meaning: "年（期間・歳月・年齢・干支）", note: "期間・年齢" }
+    ],
+    meaningDistinction: "【он と жил の使い分け】\n・он（西暦・暦年・日付の年）: 特定のカレンダー上の年号を表します。西暦何年か尋ねる時や年号の後に付きます（例: 2026 он / 2026年、хэдэн он бэ? / 西暦何年ですか？、он сар өдөр / 年月日、шинэ он / 新年）。\n・жил（期間・歳月・年齢・十二支）: 「1年間、2年間」といった時間の長さ（期間）や、年齢、十二支を表します（例: нэг жил / 1年間、энэ жил / 今年、өнгөрсөн жил / 去年、хэдэн жил болсон бэ? / 何年経ちましたか？、морин жил / 午年）。",
+    phoneticSimilar: [
+      { word: "энэ", meaning: "これ、この", note: "指示代名詞" },
+      { word: "од", meaning: "星", note: "母音/語尾違い" }
+    ],
+    phoneticDistinction: "⚠️ 綴り・発音が似ている「энэ（これ）」は指示代名詞、「он（年）」は暦を表す名詞です。1文字の違いで文法も意味も全く異なります。"
+  },
+  "жил": {
+    target: "жил",
+    targetMeaning: "年（期間・歳月・年齢・干支）",
+    meaningSimilar: [
+      { word: "он", meaning: "年（西暦・特定の暦年）", note: "西暦・暦年" }
+    ],
+    meaningDistinction: "【жил と он の使い分け】\n・жил（期間・歳月・年齢・干支）: 「1年間、2年間」といった期間の長さや、身近な年（今年・去年）、十二支、年齢を表します（例: нэг жил / 1年間、энэ жил / 今年、хэдэн жил сурсан бэ? / 何年勉強しましたか？）。\n・он（西暦・暦年）: 「2026年」などカレンダーの日付や西暦年号を表します（例: 2026 он、хэдэн он бэ? / 西暦何年ですか？）。",
+    phoneticSimilar: [
+      { word: "жижиг", meaning: "小さい", note: "形容詞" },
+      { word: "жимс", meaning: "果物", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 綴りや語頭「жи-」が似ている単語に「жижиг（小さい）」「жимс（果物）」があります。語尾の文字をしっかり確認しましょう。"
+  },
+  "өдөр": {
+    target: "өдөр",
+    targetMeaning: "日・昼間・日付",
+    meaningSimilar: [
+      { word: "хоног", meaning: "日（24時間・丸一日・宿泊滞在日数）", note: "丸一日・滞在" }
+    ],
+    meaningDistinction: "【өдөр と хоног の使い分け】\n・өдөр（昼間・特定の日付）: 日中の時間帯や、カレンダーの特定の日を表します（例: өнөөдөр / 今日、өдөр бүр / 毎日、сайхан өдөр / 良い一日）。\n・хоног（24時間・丸一日・滞在日数）: 昼と夜を合わせた「丸1日（24時間）」や、ホテルの宿泊数・旅行日数を数える時に使います（例: хоёр хоног / 2日間・丸2日、хэдэн хоног амрах вэ? / 何日間休みますか？）。",
+    phoneticSimilar: [
+      { word: "өвөл", meaning: "冬", note: "季節" },
+      { word: "өглөө", meaning: "朝", note: "時間帯" }
+    ],
+    phoneticDistinction: "⚠️ 「өдөр（日・昼）」と「өвөл（冬）」は母音 ө で始まり子音（д vs в）が異なるだけの紛らわしい単語です。"
+  },
+  "хоног": {
+    target: "хоног",
+    targetMeaning: "日（丸一日・24時間・宿泊日数）",
+    meaningSimilar: [
+      { word: "өдөр", meaning: "日・昼間・日付", note: "日付・昼間" }
+    ],
+    meaningDistinction: "【хоног と өдөр の使い分け】\n・хоног（丸一日・24時間単位）: 昼夜を含めた24時間単位の期間や、宿泊数・滞在日数に用います（例: нэг хоног / 丸一日・1泊、3 хоног / 3日間）。\n・өдөр（昼間・日付）: カレンダーの日付や昼間の時間帯に使います（例: өнөөдөр / 今日）。",
+    phoneticSimilar: [
+      { word: "хонох", meaning: "泊まる・夜を過ごす", note: "動詞（同語源）" }
+    ],
+    phoneticDistinction: "💡 名詞「хоног（24時間・1日）」は動詞「хонох（泊まる）」から派生した言葉です。"
+  },
+  "цаг": {
+    target: "цаг",
+    targetMeaning: "時・時刻・時計・時間",
+    meaningSimilar: [
+      { word: "хугацаа", meaning: "期間・期限", note: "期間・締め切り" },
+      { word: "үе", meaning: "時期・時代・頃", note: "時代・時期" }
+    ],
+    meaningDistinction: "【цаг / хугацаа / үе の使い分け】\n・цаг: 時計が指す時刻（○時）、授業時間、一般的な時間（例: хэдэн цаг болж байна? / 何時ですか？、цаг агаар / 天気）。\n・хугацаа: 期限、有効期間、一定の時間幅（例: хугацаа дуусах / 期限が切れる）。\n・үе: 〜の頃、時代、世代、タイミング（例: хүүхэд насны үе / 子どもの頃）。",
+    phoneticSimilar: [
+      { word: "цаас", meaning: "紙", note: "名詞" },
+      { word: "цас", meaning: "雪", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「цаг（時）」「цас（雪）」「цаас（紙）」はすべて「ца-」で始まるため発音と綴りの混同に要注意です。"
+  },
+  "хугацаа": {
+    target: "хугацаа",
+    targetMeaning: "期間・期限・締め切り",
+    meaningSimilar: [
+      { word: "цаг", meaning: "時・時刻・時間", note: "時刻" },
+      { word: "үе", meaning: "時期・時代", note: "時期" }
+    ],
+    meaningDistinction: "期限やあらかじめ決められた「時間枠・期間」には「хугацаа」を使います（例: богино хугацаанд / 短期間で）。",
+    phoneticSimilar: [
+      { word: "хувцас", meaning: "服・衣服", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「хугацаа（期間）」と「хувцас（衣服）」は綴りの形が似ているため読み間違いに注意しましょう。"
+  },
+  "үе": {
+    target: "үе",
+    targetMeaning: "時期・時代・〜の頃・関節",
+    meaningSimilar: [
+      { word: "цаг", meaning: "時・時間", note: "時刻" },
+      { word: "хугацаа", meaning: "期間", note: "期限" }
+    ],
+    meaningDistinction: "人生の段階（子どもの頃など）や歴史の時代、何かが起きる特定のタイミングには「үе」を使います（例: энэ үед / この時、залуу үе / 若い世代）。",
+    phoneticSimilar: [
+      { word: "үг", meaning: "言葉・単語", note: "名詞" },
+      { word: "үүл", meaning: "雲", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 1音節の短い単語「үе（時期・節）」「үг（言葉）」「үүл（雲）」は母音 ү の発音と語尾を正確に区別しましょう。"
+  },
+  "том": {
+    target: "том",
+    targetMeaning: "大きい（サイズ・体積・規模）",
+    meaningSimilar: [
+      { word: "их", meaning: "多い・甚だしい（数量・程度）", note: "数量・程度" }
+    ],
+    meaningDistinction: "【том と их の使い分け】\n・том（サイズ・形が大きい）: 物理的な大きさ・寸法・規模が大きいこと（例: том байшин / 大きな家、том цүнх / 大きな鞄）。\n・их（数量・程度が多い）: 数えられないものの量が多い、または程度が甚だしいこと（例: их цас / たくさんの雪、их баярлалаа / どうもありがとうございます）。",
+    phoneticSimilar: [
+      { word: "тос", meaning: "油・バター", note: "名詞" },
+      { word: "тоо", meaning: "数・数字", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「том（大きい）」と「тос（油）」「тоо（数字）」の音・綴りの混同に注意してください。"
+  },
+  "их": {
+    target: "их",
+    targetMeaning: "多い・たくさん・非常に（数量・程度）",
+    meaningSimilar: [
+      { word: "том", meaning: "大きい（サイズ・体積）", note: "サイズ" },
+      { word: "олон", meaning: "たくさんの（数えられる個数・人数）", note: "可算数" }
+    ],
+    meaningDistinction: "【их と олон と том の使い分け】\n・их: 数量・程度が大きい（例: их ажил / たくさんの仕事、их хүйтэн / とても寒い）。\n・олон: 数えられる人や物がたくさんある（例: олон хүн / たくさんの人、олон ном / たくさんの本）。\n・том: 物理的なサイズが大きい（例: том алим / 大きなリンゴ）。",
+    phoneticSimilar: [
+      { word: "эх", meaning: "母・始まり・原点", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 母音が「и」の「их（多い）」と、母音が「э」の「эх（母・始まり）」は発音の違いで意味が大きく変わります。"
+  },
+  "жижиг": {
+    target: "жижиг",
+    targetMeaning: "小さい（サイズ・寸法）",
+    meaningSimilar: [
+      { word: "бага", meaning: "少ない（量）・幼い（年齢）", note: "量・年齢" },
+      { word: "цөөн", meaning: "少ない（数・人数）", note: "可算数" }
+    ],
+    meaningDistinction: "【жижиг と бага の使い分け】\n・жижиг: 物理的なサイズが小さい（例: жижиг өрөө / 小さい部屋、жижиг үсэг / 小文字）。\n・бага: 数量や程度が少ない、または年齢が若い（例: бага нас / 幼少期、бага зэрэг / 少しだけ）。",
+    phoneticSimilar: [
+      { word: "жил", meaning: "年・歳月", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「жижиг（小さい）」と「жил（年）」は同じ「жи-」から始まります。"
+  },
+  "бага": {
+    target: "бага",
+    targetMeaning: "少ない・小さい・幼い（量・程度・年齢）",
+    meaningSimilar: [
+      { word: "жижиг", meaning: "小さい（サイズ）", note: "サイズ" },
+      { word: "цөөн", meaning: "少ない（数・人数）", note: "可算数" }
+    ],
+    meaningDistinction: "【бага と цөөн の使い分け】\n・бага: 量・程度が少ない、年齢が幼い（例: бага мөнгө / わずかなお金、бага дүү / 幼い弟・妹）。\n・цөөн: 数えられる人・物の数が少ない（例: цөөн хүн / 少人数）。",
+    phoneticSimilar: [
+      { word: "баг", meaning: "チーム・集団・仮面", note: "名詞" },
+      { word: "багш", meaning: "先生・教師", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「бага（少ない・幼い）」と「баг（チーム・マスク）」「багш（先生）」の語尾に注意しましょう。"
+  },
+  "хурдан": {
+    target: "хурдан",
+    targetMeaning: "速い・素早い（スピード）",
+    meaningSimilar: [
+      { word: "эрт", meaning: "早い（時間・時期）", note: "時刻・時期" },
+      { word: "түргэн", meaning: "急な・素早い", note: "敏速" }
+    ],
+    meaningDistinction: "【хурдан と эрт の使い分け】\n・хурдан: 動きや乗り物の速度が速い（例: хурдан явах / 速く歩く・走る、хурдан галт тэрэг / 高速列車）。\n・эрт: 時計の時刻や朝・季節の訪れが早い（例: өглөө эрт / 朝早く、эрт ирэх / 早く来る）。",
+    phoneticSimilar: [
+      { word: "хурга", meaning: "子羊", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「хурдан（速い）」と「хурга（子羊）」の綴りに注意しましょう。"
+  },
+  "эрт": {
+    target: "эрт",
+    targetMeaning: "早い・昔（時間・時期・昔）",
+    meaningSimilar: [
+      { word: "хурдан", meaning: "速い（スピード）", note: "速度" }
+    ],
+    meaningDistinction: "時間が早い時は「эрт」、速度が速い時は「хурдан」を使い分けます（例: эрт босох / 早起きする）。",
+    phoneticSimilar: [
+      { word: "эр", meaning: "男性・雄", note: "名詞" },
+      { word: "эрдэм", meaning: "学問・徳", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 短い語「эрт（早く・昔）」と「эр（男性）」の発音の違いに注意してください。"
+  },
+  "хүйтэн": {
+    target: "хүйтэн",
+    targetMeaning: "寒い・冷たい（気温・温度）",
+    meaningSimilar: [
+      { word: "сэрүүн", meaning: "涼しい・冷涼な", note: "心地よい涼しさ" }
+    ],
+    meaningDistinction: "【хүйтэн と сэрүүн の使い分け】\n・хүйтэн: 氷点下や手足がかじかむような厳しい寒さ、冷たい水（例: хүйтэн өвөл / 寒い冬、хүйтэн ус / 冷水）。\n・сэрүүн: 爽やかで過ごしやすい涼しさ、秋口の心地よい気候（例: сэрүүн намар / 涼しい秋、сэрүүн салхи / 涼しい風）。",
+    phoneticSimilar: [
+      { word: "хүнд", meaning: "重い・困難な", note: "形容詞" },
+      { word: "хүн", meaning: "人・人間", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「хүйтэн（寒い）」と「хүнд（重い）」の母音・子音の違いに注意しましょう。"
+  },
+  "сэрүүн": {
+    target: "сэрүүн",
+    targetMeaning: "涼しい・冷涼な・目覚めている",
+    meaningSimilar: [
+      { word: "хүйтэн", meaning: "寒い・冷たい", note: "厳しい寒さ" }
+    ],
+    meaningDistinction: "心地よい涼しさは「сэрүүн」、厳しい寒さは「хүйтэн」を使います。",
+    phoneticSimilar: [
+      { word: "сүү", meaning: "牛乳・ミルク", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「сэрүүн（涼しい）」と「сүү（牛乳）」の混同に注意しましょう。"
+  },
+  "дулаан": {
+    target: "дулаан",
+    targetMeaning: "暖かい・温暖な（気温・衣服）",
+    meaningSimilar: [
+      { word: "халуун", meaning: "暑い・熱い（猛暑・高温）", note: "酷暑・熱湯" }
+    ],
+    meaningDistinction: "【дулаан と халуун の使い分け】\n・дулаан: ポカポカと心地よい適度な暖かさ、防寒性がある服（例: дулаан хавар / 暖かい春、дулаан хувцас / 暖かい服）。\n・халуун: 汗が出る猛暑、お湯・お茶の熱さ、発熱（例: халуун зун / 暑い夏、халуун цай / 熱いお茶、халуурах / 熱を出す）。",
+    phoneticSimilar: [
+      { word: "далай", meaning: "海・大洋", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「дулаан（暖かい）」と「далай（海）」の母音配置に注意しましょう。"
+  },
+  "халуун": {
+    target: "халуун",
+    targetMeaning: "暑い・熱い（猛暑・高温）",
+    meaningSimilar: [
+      { word: "дулаан", meaning: "暖かい（適温）", note: "心地よい暖かさ" }
+    ],
+    meaningDistinction: "猛暑や熱湯・高熱には「халуун」、過ごしやすい春の暖かさには「дулаан」を使います。",
+    phoneticSimilar: [
+      { word: "харах", meaning: "見る", note: "動詞" },
+      { word: "харих", meaning: "帰る", note: "動詞" }
+    ],
+    phoneticDistinction: "⚠️ 形容詞「халуун（熱い）」と動詞「харах（見る）」「харих（帰る）」の語幹の綴りに注意しましょう。"
+  },
+  "найз": {
+    target: "найз",
+    targetMeaning: "友達・友人",
+    meaningSimilar: [
+      { word: "нөхөр", meaning: "夫・同志・仲間", note: "夫・同志" },
+      { word: "анд", meaning: "無二の親友・盟友", note: "固い絆の友" }
+    ],
+    meaningDistinction: "【найз / нөхөр / анд の使い分け】\n・найз: 最も日常的で広く使われる「友達」（例: миний найз / 私の友達）。\n・нөхөр: 配偶者の「夫」、または志を共にする「同志・仲間」（例: нөхөр минь / 私の夫）。\n・анд: 固い誓いや信頼で結ばれた無二の親友（例: анд нөхөр / 盟友）。",
+    phoneticSimilar: [
+      { word: "намар", meaning: "秋", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「найз（友達）」と「намар（秋）」の語尾を確認しましょう。"
+  },
+  "нөхөр": {
+    target: "нөхөр",
+    targetMeaning: "夫・配偶者・同志・仲間",
+    meaningSimilar: [
+      { word: "найз", meaning: "友達", note: "一般的な友人" },
+      { word: "анд", meaning: "無二の親友", note: "盟友" }
+    ],
+    meaningDistinction: "日常会話で女性が「миний нөхөр」と言うと「私の夫」を指します。一般的な男友達や同級生は「найз」と言います。",
+    phoneticSimilar: [
+      { word: "нүх", meaning: "穴", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「нөхөр（夫・仲間）」と「нүх（穴）」の発音に注意してください。"
+  },
+  "гэр": {
+    target: "гэр",
+    targetMeaning: "家・自宅・家庭・ゲル",
+    meaningSimilar: [
+      { word: "байшин", meaning: "建物・一軒家・家屋", note: "物理的な建物" },
+      { word: "орон сууц", meaning: "マンション・集合住宅", note: "集合住宅" }
+    ],
+    meaningDistinction: "【гэр と байшин の使い分け】\n・гэр: 自分が帰るべき「自宅・家庭」や、伝統的移動式住居「ゲル」（例: гэртээ харих / 家に帰る、гэр бүл / 家族）。\n・байшин: 木造やレンガ・コンクリート造りの物理的な「建物・一軒家」（例: хоёр давхар байшин / 2階建ての家）。",
+    phoneticSimilar: [
+      { word: "гар", meaning: "手 / 出る（動詞語幹）", note: "名詞/動詞" }
+    ],
+    phoneticDistinction: "⚠️ 母音 э の「гэр（家）」と、母音 а の「гар（手・出る）」は男性母音/女性母音の違いで全く異なる意味になります。"
+  },
+  "байшин": {
+    target: "байшин",
+    targetMeaning: "建物・家屋・一軒家",
+    meaningSimilar: [
+      { word: "гэр", meaning: "家・自宅・ゲル", note: "我が家・ゲル" },
+      { word: "орон сууц", meaning: "マンション・アパート", note: "集合住宅" }
+    ],
+    meaningDistinction: "物理的な構造物・建物は「байшин」、心安らぐ自宅や家庭、伝統住居ゲルは「гэр」を使います。",
+    phoneticSimilar: [
+      { word: "багш", meaning: "先生", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 「байшин（建物）」と「багш（先生）」の読み分けに注意しましょう。"
+  },
+  "хэлэх": {
+    target: "хэлэх",
+    targetMeaning: "言う・告げる・伝える",
+    meaningSimilar: [
+      { word: "ярих", meaning: "話す・会話する・語る", note: "会話・対話" },
+      { word: "дуугарах", meaning: "声を出す・発言する", note: "声を出す" }
+    ],
+    meaningDistinction: "【хэлэх と ярих の使い分け】\n・хэлэх: 一言言葉を発する、相手に特定の情報を告げる（英語の say / tell）（例: нэрээ хэлэх / 名前を言う、үнэнийг хэлэх / 真実を言う）。\n・ярих: まとまった内容を会話する、おしゃべりする（英語の speak / talk）（例: монголоор ярих / モンゴル語で話す、утсаар ярих / 電話で話す）。",
+    phoneticSimilar: [
+      { word: "хийх", meaning: "する・行う", note: "動詞" },
+      { word: "хөл", meaning: "足", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 最重要動詞「хэлэх（言う）」と「хийх（する）」の活用形の混同に注意しましょう。"
+  },
+  "ярих": {
+    target: "ярих",
+    targetMeaning: "話す・会話する・語る",
+    meaningSimilar: [
+      { word: "хэлэх", meaning: "言う・告げる", note: "一言告げる" },
+      { word: "өгүүлэх", meaning: "述べる・物語る", note: "物語る" }
+    ],
+    meaningDistinction: "対話や会話、物語を語る時は「ярих」、伝言や名前を告げる時は「хэлэх」を使います。",
+    phoneticSimilar: [
+      { word: "явах", meaning: "行く・歩く", note: "動詞" }
+    ],
+    phoneticDistinction: "⚠️ 最頻出動詞「ярих（話す）」と「явах（行く）」はどちらも「я-」で始まります。"
+  },
+
   // 1. 知識・理解・推量・思考
   "мэдэх": {
     target: "мэдэх",
@@ -3629,6 +3932,7 @@ function getSimilarWordDistinctionHTML(item, targetWord, options = {}) {
 
   const cleanWord = rawWord.toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
   const cleanRaw = rawWord.toLowerCase().replace(/[.,!?]/g, '').trim();
+  const userAns = (options.userAnswer || options.user_answer || '').trim().toLowerCase().replace(/[.,!?]/g, '');
 
   // 1. 静的定義テーブルからのマッチング
   let data = SIMILAR_WORDS_DISTINCTIONS[cleanRaw] || SIMILAR_WORDS_DISTINCTIONS[cleanWord];
@@ -3639,25 +3943,43 @@ function getSimilarWordDistinctionHTML(item, targetWord, options = {}) {
     data = SIMILAR_WORDS_DISTINCTIONS[stem];
   }
 
-  // 2. wordFamilyData.synonyms からの動的フォールバック
-  if (!data && typeof wordFamilyData !== 'undefined' && wordFamilyData && Array.isArray(wordFamilyData.synonyms)) {
+  // 意味類似（類義語）データと音・綴り類似データの分離・準備
+  let meaningList = [];
+  let meaningDistinction = '';
+  let phoneticList = [];
+  let phoneticDistinction = '';
+
+  if (data) {
+    if (data.meaningSimilar && Array.isArray(data.meaningSimilar)) {
+      meaningList = data.meaningSimilar;
+      meaningDistinction = data.meaningDistinction || '';
+    } else if (data.similar && Array.isArray(data.similar)) {
+      // 従来の similar 定義の引き継ぎ
+      meaningList = data.similar;
+      meaningDistinction = data.distinction || '';
+    }
+
+    if (data.phoneticSimilar && Array.isArray(data.phoneticSimilar)) {
+      phoneticList = data.phoneticSimilar;
+      phoneticDistinction = data.phoneticDistinction || '';
+    }
+  }
+
+  // 2. wordFamilyData.synonyms からの動的フォールバック（意味類似）
+  if (meaningList.length === 0 && typeof wordFamilyData !== 'undefined' && wordFamilyData && Array.isArray(wordFamilyData.synonyms)) {
     const foundSynGroup = wordFamilyData.synonyms.find(group => 
       group.words && group.words.some(w => w.word && w.word.toLowerCase().trim() === cleanRaw)
     );
 
     if (foundSynGroup) {
       const otherWords = foundSynGroup.words.filter(w => w.word.toLowerCase().trim() !== cleanRaw);
-      data = {
-        target: rawWord,
-        targetMeaning: (item && item.japanese) || '',
-        similar: otherWords.map(w => ({ word: w.word, meaning: w.meaning })),
-        distinction: foundSynGroup.nuance || foundSynGroup.explanation || ''
-      };
+      meaningList = otherWords.map(w => ({ word: w.word, meaning: w.meaning }));
+      meaningDistinction = foundSynGroup.nuance || foundSynGroup.explanation || '';
     }
   }
 
-  // 3. 語幹・接辞による近親語または対義語の動的生成
-  if (!data && typeof wordFamilyData !== 'undefined' && wordFamilyData && Array.isArray(wordFamilyData.antonyms)) {
+  // 3. wordFamilyData.antonyms からの動的生成（対義語）
+  if (meaningList.length === 0 && typeof wordFamilyData !== 'undefined' && wordFamilyData && Array.isArray(wordFamilyData.antonyms)) {
     const foundAnt = wordFamilyData.antonyms.find(ant => 
       (ant.wordA && ant.wordA.toLowerCase().trim() === cleanRaw) ||
       (ant.wordB && ant.wordB.toLowerCase().trim() === cleanRaw)
@@ -3667,24 +3989,19 @@ function getSimilarWordDistinctionHTML(item, targetWord, options = {}) {
       const isA = (foundAnt.wordA.toLowerCase().trim() === cleanRaw);
       const oppWord = isA ? foundAnt.wordB : foundAnt.wordA;
       const oppMeaning = isA ? foundAnt.meaningB : foundAnt.meaningA;
-      data = {
-        target: rawWord,
-        targetMeaning: (item && item.japanese) || (isA ? foundAnt.meaningA : foundAnt.meaningB),
-        similar: [{ word: oppWord, meaning: oppMeaning }],
-        distinction: `【対義語（反意語ペア）】\n「${foundAnt.wordA} (${foundAnt.meaningA})」と「${foundAnt.wordB} (${foundAnt.meaningB})」は対になる表現です。セットで覚えると記憶に定着しやすくなります。`
-      };
+      meaningList = [{ word: oppWord, meaning: oppMeaning, note: '対義語' }];
+      meaningDistinction = `【対義語（反意語ペア）】\n「${foundAnt.wordA} (${foundAnt.meaningA})」と「${foundAnt.wordB} (${foundAnt.meaningB})」は対になる表現です。セットで覚えると記憶に定着しやすくなります。`;
     }
   }
 
-  // 4. キリル文字1文字違い・母音違いの自動検知（データ未定義時のフォールバック）
-  if (!data) {
+  // 4. 音・綴り類似（1文字違い・母音違い）の自動検知（phoneticList が空の場合）
+  if (phoneticList.length === 0) {
     try {
       let vocabList = [];
       if (typeof StorageService !== 'undefined' && StorageService.getVocabulary) {
         vocabList = StorageService.getVocabulary();
       }
       if (vocabList.length > 0 && cleanWord.length >= 2) {
-        // 同じ長さで1文字だけ異なる単語を検索
         for (const v of vocabList) {
           const vMn = (v.dictForm || v.mongolian || '').toLowerCase().trim();
           if (vMn && vMn !== cleanWord && Math.abs(vMn.length - cleanWord.length) <= 1) {
@@ -3694,12 +4011,8 @@ function getSimilarWordDistinctionHTML(item, targetWord, options = {}) {
               if (vMn[i] !== cleanWord[i]) diffs++;
             }
             if (diffs === 1 && minLen >= 2) {
-              data = {
-                target: rawWord,
-                targetMeaning: (item && item.japanese) || '',
-                similar: [{ word: v.dictForm || v.mongolian, meaning: v.japanese }],
-                distinction: `⚠️ 綴り・発音がそっくりな「${v.dictForm || v.mongolian}（意味: ${v.japanese}）」との混同に注意してください。1文字（母音・子音）の違いで意味が大きく変わります。`
-              };
+              phoneticList.push({ word: v.dictForm || v.mongolian, meaning: v.japanese, note: '1文字違い' });
+              phoneticDistinction = `⚠️ 綴り・発音がそっくりな「${v.dictForm || v.mongolian}（意味: ${v.japanese}）」との混同に注意してください。1文字（母音・子音）の違いで意味が大きく変わります。`;
               break;
             }
           }
@@ -3708,53 +4021,145 @@ function getSimilarWordDistinctionHTML(item, targetWord, options = {}) {
     } catch (_) {}
   }
 
-  if (!data) return '';
+  // 意味類似も音類似も存在しない場合は非表示
+  if (meaningList.length === 0 && phoneticList.length === 0) return '';
 
-  const similarBadges = (data.similar || []).map(s => {
-    return `
-      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/90 dark:bg-slate-800 border border-sky-300 dark:border-sky-700 font-bold text-slate-800 dark:text-slate-100 text-[11px] shadow-2xs">
-        <strong class="cyrillic-text text-sky-800 dark:text-sky-300">${s.word}</strong>
-        ${s.meaning ? `<span class="text-slate-500 dark:text-slate-400 font-normal">（${s.meaning}）</span>` : ''}
-        ${s.note ? `<span class="text-amber-600 dark:text-amber-400 text-[10px] font-black">${s.note}</span>` : ''}
-      </span>
-    `;
-  }).join(' ');
+  const targetMeaning = (item && item.japanese) || (data && data.targetMeaning) || '';
 
-  // 改行をbrタグに整形
-  const formattedDistinction = String(data.distinction || '')
+  // ユーザーの誤答と正解の直接比較カード
+  let userComparisonHTML = '';
+  if (userAns && userAns !== cleanRaw && userAns !== cleanWord) {
+    // ユーザー回答が meaningSimilar または phoneticSimilar に含まれているかチェック
+    const matchedMeaning = meaningList.find(m => m.word && m.word.toLowerCase().trim() === userAns);
+    const matchedPhonetic = phoneticList.find(p => p.word && p.word.toLowerCase().trim() === userAns);
+
+    if (matchedMeaning) {
+      userComparisonHTML = `
+        <div class="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border-2 border-amber-300 dark:border-amber-700 text-amber-950 dark:text-amber-100 text-xs space-y-1">
+          <div class="font-black flex items-center gap-1.5 text-amber-900 dark:text-amber-200">
+            <span>🎯</span>
+            <span>あなたの回答「<strong class="cyrillic-text underline font-extrabold text-amber-800 dark:text-amber-300">${userAns}</strong>」と正解「<strong class="cyrillic-text font-extrabold text-emerald-700 dark:text-emerald-400">${rawWord}</strong>」の使い分け</span>
+          </div>
+          <p class="text-[11px] leading-relaxed opacity-95">
+            あなたが選んだ「<strong>${userAns}</strong>」は【${matchedMeaning.meaning || '類義語'}】を表しますが、この問題の正解は【${targetMeaning || '正解語'}】を表す「<strong>${rawWord}</strong>」です。
+          </p>
+        </div>
+      `;
+    } else if (matchedPhonetic) {
+      userComparisonHTML = `
+        <div class="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 border-2 border-rose-300 dark:border-rose-800 text-rose-950 dark:text-rose-100 text-xs space-y-1">
+          <div class="font-black flex items-center gap-1.5 text-rose-900 dark:text-rose-200">
+            <span>⚠️</span>
+            <span>あなたの回答「<strong class="cyrillic-text underline font-extrabold text-rose-800 dark:text-rose-300">${userAns}</strong>」は綴り・発音が似ている別単語です</span>
+          </div>
+          <p class="text-[11px] leading-relaxed opacity-95">
+            「${userAns}」の意味は【${matchedPhonetic.meaning || '別単語'}】です。正解の「${rawWord}（${targetMeaning}）」とは音が似ていますが意味が全く異なります。
+          </p>
+        </div>
+      `;
+    }
+  }
+
+  // 意味類似のバッジ生成
+  const meaningBadges = meaningList.map(s => `
+    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/95 dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 font-bold text-slate-800 dark:text-slate-100 text-[11px] shadow-2xs">
+      <strong class="cyrillic-text text-indigo-700 dark:text-indigo-300">${s.word}</strong>
+      ${s.meaning ? `<span class="text-slate-500 dark:text-slate-400 font-normal">（${s.meaning}）</span>` : ''}
+      ${s.note ? `<span class="text-amber-600 dark:text-amber-400 text-[10px] font-black">${s.note}</span>` : ''}
+    </span>
+  `).join(' ');
+
+  const formattedMeaningDistinction = String(meaningDistinction || '')
     .replace(/\n/g, '<br>')
-    .replace(/(【[^】]+】)/g, '<strong class="text-sky-900 dark:text-sky-200 block mt-1 first:mt-0 font-black">$1</strong>')
-    .replace(/(・[^:]+:)/g, '<span class="font-bold text-sky-950 dark:text-sky-100">$1</span>');
+    .replace(/(【[^】]+】)/g, '<strong class="text-indigo-950 dark:text-indigo-200 block mt-1 first:mt-0 font-black">$1</strong>')
+    .replace(/(・[^:]+:)/g, '<span class="font-bold text-indigo-900 dark:text-indigo-100">$1</span>');
+
+  // 音類似のバッジ生成
+  const phoneticBadges = phoneticList.map(s => `
+    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/95 dark:bg-slate-800 border border-amber-300 dark:border-amber-700 font-bold text-slate-800 dark:text-slate-100 text-[11px] shadow-2xs">
+      <strong class="cyrillic-text text-amber-800 dark:text-amber-300">${s.word}</strong>
+      ${s.meaning ? `<span class="text-slate-500 dark:text-slate-400 font-normal">（${s.meaning}）</span>` : ''}
+      ${s.note ? `<span class="text-rose-600 dark:text-rose-400 text-[10px] font-black">${s.note}</span>` : ''}
+    </span>
+  `).join(' ');
+
+  const formattedPhoneticDistinction = String(phoneticDistinction || '')
+    .replace(/\n/g, '<br>')
+    .replace(/(【[^】]+】)/g, '<strong class="text-amber-950 dark:text-amber-200 block mt-1 first:mt-0 font-black">$1</strong>')
+    .replace(/(・[^:]+:)/g, '<span class="font-bold text-amber-900 dark:text-amber-100">$1</span>');
 
   return `
-    <div class="similar-word-card mt-2 p-2.5 sm:p-3 rounded-xl bg-sky-50/90 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/80 text-sky-950 dark:text-sky-100 text-xs space-y-2 shadow-2xs transition-all">
-      <div class="flex items-center justify-between gap-1 font-bold text-sky-900 dark:text-sky-200">
-        <span class="flex items-center gap-1.5">
+    <div class="similar-word-card mt-2 p-3 rounded-2xl bg-sky-50/90 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-sky-950 dark:text-sky-100 text-xs space-y-3 shadow-2xs transition-all">
+      
+      <div class="flex items-center justify-between font-bold text-sky-900 dark:text-sky-200">
+        <span class="flex items-center gap-1.5 text-xs font-black">
           <span class="text-base">⚖️</span>
-          <span class="text-xs font-black tracking-wide">似ている単語との違い・使い分け</span>
+          <span>似ている単語との違い・使い分け（意味 ＆ 音・綴り混同注意）</span>
         </span>
-        <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/80 text-sky-800 dark:text-sky-300 font-bold border border-sky-200 dark:border-sky-700 shrink-0">
-          混同注意
+        <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-200/80 dark:bg-sky-900 text-sky-900 dark:text-sky-200 font-bold">
+          類義語・音類似
         </span>
       </div>
 
-      <div class="space-y-1.5">
-        <div class="flex items-start gap-1.5 flex-wrap">
-          <span class="text-slate-500 dark:text-slate-400 font-bold shrink-0 text-[11px] pt-0.5">🔹 比較:</span>
-          <div class="flex flex-wrap gap-1.5 items-center">
-            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white dark:bg-slate-800 border-2 border-sky-400 dark:border-sky-600 font-extrabold text-sky-900 dark:text-sky-100 cyrillic-text text-xs shadow-2xs">
-              ${data.target || rawWord}
-              ${data.targetMeaning ? `<span class="text-slate-500 dark:text-slate-400 font-normal text-[10px]">（${data.targetMeaning}）</span>` : ''}
+      ${userComparisonHTML}
+
+      <!-- 1. 意味が似ている単語（類義語の使い分け） -->
+      ${meaningList.length > 0 ? `
+        <div class="space-y-1.5 p-2.5 bg-white/95 dark:bg-slate-900/80 rounded-xl border border-sky-100 dark:border-sky-900/60 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="font-black text-indigo-950 dark:text-indigo-300 text-xs flex items-center gap-1">
+              <span>💡</span>
+              <span>意味が似ている単語（類義語・使い分け）:</span>
             </span>
-            <span class="text-slate-400 dark:text-slate-500 text-[11px] font-mono font-bold">vs</span>
-            ${similarBadges}
+            <span class="text-[10px] text-slate-500 font-semibold">ニュアンスの違い</span>
+          </div>
+
+          <div class="flex items-start gap-1.5 flex-wrap pt-0.5">
+            <span class="text-slate-500 dark:text-slate-400 font-bold shrink-0 text-[11px] pt-0.5">🔹 比較:</span>
+            <div class="flex flex-wrap gap-1.5 items-center">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-400 dark:border-indigo-600 font-extrabold text-indigo-900 dark:text-indigo-100 cyrillic-text text-xs shadow-2xs">
+                ${rawWord}
+                ${targetMeaning ? `<span class="text-slate-500 dark:text-slate-400 font-normal text-[10px]">（${targetMeaning}）</span>` : ''}
+              </span>
+              <span class="text-slate-400 dark:text-slate-500 text-[11px] font-mono font-bold">vs</span>
+              ${meaningBadges}
+            </div>
+          </div>
+
+          <div class="text-[11px] sm:text-xs text-slate-800 dark:text-slate-200 leading-relaxed pt-1 border-t border-slate-100 dark:border-slate-800">
+            ${formattedMeaningDistinction}
           </div>
         </div>
+      ` : ''}
 
-        <div class="p-2.5 bg-white/95 dark:bg-slate-900/80 rounded-lg border border-sky-100 dark:border-sky-900/50 text-[11px] sm:text-xs leading-relaxed text-slate-800 dark:text-slate-200 shadow-2xs">
-          ${formattedDistinction}
+      <!-- 2. 綴り・発音が似ている単語（混同注意） -->
+      ${phoneticList.length > 0 ? `
+        <div class="space-y-1.5 p-2.5 bg-amber-50/70 dark:bg-amber-950/30 rounded-xl border border-amber-200/80 dark:border-amber-900/60 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="font-black text-amber-950 dark:text-amber-300 text-xs flex items-center gap-1">
+              <span>⚠️</span>
+              <span>綴り・発音が似ている単語（音の混同注意）:</span>
+            </span>
+            <span class="text-[10px] text-amber-800 dark:text-amber-400 font-semibold">1文字・母音違い</span>
+          </div>
+
+          <div class="flex items-start gap-1.5 flex-wrap pt-0.5">
+            <span class="text-amber-700 dark:text-amber-400 font-bold shrink-0 text-[11px] pt-0.5">🔸 比較:</span>
+            <div class="flex flex-wrap gap-1.5 items-center">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white dark:bg-slate-800 border border-amber-400 dark:border-amber-600 font-extrabold text-amber-900 dark:text-amber-100 cyrillic-text text-xs shadow-2xs">
+                ${rawWord}
+              </span>
+              <span class="text-amber-500 dark:text-amber-400 text-[11px] font-mono font-bold">vs</span>
+              ${phoneticBadges}
+            </div>
+          </div>
+
+          <div class="text-[11px] sm:text-xs text-amber-950 dark:text-amber-200 leading-relaxed pt-1 border-t border-amber-100 dark:border-amber-900/40">
+            ${formattedPhoneticDistinction}
+          </div>
         </div>
-      </div>
+      ` : ''}
+
     </div>
   `;
 }
@@ -4128,7 +4533,7 @@ function renderGrammarExplanationHTML({
       ${(typeof getSynonymExpressionsCardHTML === 'function') ? getSynonymExpressionsCardHTML(meaning || (item && item.japanese) || correctAnswer) : ''}
 
       <!-- 似ている単語との違い・使い分けカード（要件準拠） -->
-      ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(item, correctAnswer) : ''}
+      /* getSimilarWordDistinctionHTML(item, correctAnswer) */ ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(item, correctAnswer, { userAnswer }) : ''}
 
       <!-- 例文表示 -->
       ${exampleMn ? `
@@ -112554,6 +112959,8 @@ class ReviewNotebookComponent {
                         </div>
                       `;
                     })()}
+
+                    ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer, { userAnswer: this.state.userAnswer }) : ''}
                   </div>
                 `;
               })()}

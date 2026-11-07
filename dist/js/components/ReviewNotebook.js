@@ -787,6 +787,8 @@ export class ReviewNotebookComponent {
                         </div>
                       `;
                     })()}
+
+                    ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer, { userAnswer: this.state.userAnswer }) : ''}
                   </div>
                 `;
               })()}
