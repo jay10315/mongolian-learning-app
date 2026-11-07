@@ -114,7 +114,7 @@ function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showKeyboard
       </div>
 
       <!-- PC標準モンゴル語配列ソフトウェアキーボード（展開式） -->
-      <div class="pc-keyboard-panel hidden bg-slate-100 dark:bg-slate-800 p-2.5 rounded-2xl border-2 border-emerald-500/40 shadow-lg space-y-1.5 animate-fade-in">
+      <div class="pc-keyboard-panel bg-slate-100 dark:bg-slate-800 p-2.5 rounded-2xl border-2 border-emerald-500/40 shadow-lg space-y-1.5 animate-fade-in">
         <div class="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-slate-700 text-[11px]">
           <span class="font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-1">
             <span>💻</span> PC標準モンゴル語キーボード配列（JCUKEN）
@@ -176,11 +176,33 @@ function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showKeyboard
 function bindCyrillicInputAssistant(container, targetInputSelector = 'input[data-cyrillic="true"]') {
   if (!container) return;
 
+  // PC標準モンゴル語配列（JCUKEN）物理キーボード変換マップ
+  const JCUKEN_PHYSICAL_KEY_MAP = {
+    'q': 'ф', 'w': 'ц', 'e': 'у', 'r': 'ж', 't': 'э', 'y': 'н', 'u': 'г', 'i': 'ш', 'o': 'ү', 'p': 'з', '[': 'к', ']': 'ъ',
+    'a': 'й', 's': 'ы', 'd': 'б', 'f': 'ө', 'g': 'а', 'h': 'х', 'j': 'р', 'k': 'о', 'l': 'л', ';': 'д', "'": 'п',
+    'z': 'я', 'x': 'ч', 'c': 'ё', 'v': 'с', 'b': 'м', 'n': 'и', 'm': 'т', ',': 'ь', '.': 'в', '/': 'ю',
+    'Q': 'Ф', 'W': 'Ц', 'E': 'У', 'R': 'Ж', 'T': 'Э', 'Y': 'Н', 'U': 'Г', 'I': 'Ш', 'O': 'Ү', 'P': 'З', '{': 'К', '}': 'Ъ',
+    'A': 'Й', 'S': 'Ы', 'D': 'Б', 'F': 'Ө', 'G': 'А', 'H': 'Х', 'J': 'Р', 'K': 'О', 'L': 'Л', ':': 'Д', '"': 'П',
+    'Z': 'Я', 'X': 'Ч', 'C': 'Ё', 'V': 'С', 'B': 'М', 'N': 'И', 'M': 'Т', '<': 'Ь', '>': 'В', '?': 'Ю'
+  };
+  if (!container) return;
+
   const assistantContainers = container.querySelectorAll('.cyrillic-assistant-container');
   assistantContainers.forEach(box => {
     let isShift = false;
     const targetInputId = box.getAttribute('data-target-input');
     const input = targetInputId ? container.querySelector(`#${targetInputId}`) : container.querySelector(targetInputSelector);
+    if (input) {
+      input.addEventListener('keydown', (e) => {
+        // Ctrl, Alt, Metaキーは除外
+        if (e.ctrlKey || e.altKey || e.metaKey) return;
+        // 物理キーがキリル配列マップにある場合
+        if (JCUKEN_PHYSICAL_KEY_MAP[e.key]) {
+          e.preventDefault();
+          insertText(JCUKEN_PHYSICAL_KEY_MAP[e.key]);
+        }
+      });
+    }
 
     const insertText = (char) => {
       const activeInput = input || document.activeElement;
@@ -4677,7 +4699,7 @@ class QRCodeModel {
   make() {
     if (this.typeNumber < 1) {
       let typeNumber = 1;
-      for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+      for (typeNumber = 1; typeNumber <= 40; typeNumber++) {
         const rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
         const buffer = new QRBitBuffer();
         let totalDataCount = 0;
@@ -86939,22 +86961,37 @@ class Navbar {
     const pathname = typeof window !== 'undefined' && window.location ? (window.location.pathname || '/') : '/';
     const cleanPath = pathname.endsWith('.html') ? pathname : (pathname.endsWith('/') ? pathname : pathname + '/');
 
+    const DEFAULT_VERCEL_APP_URL = 'https://mongolian-learning-app.vercel.app';
+
     // 保存されているカスタムVercel URLを取得
     let savedVercelUrl = '';
     try {
       savedVercelUrl = localStorage.getItem('mongol_app_custom_vercel_url') || '';
     } catch (_) {}
 
-    // 本番Web環境（Vercel等）の場合は現在のオリジンを自動記憶
+    // 不正な文字列（file:やnull）を除去
+    if (!savedVercelUrl || savedVercelUrl.includes('file:') || savedVercelUrl === 'null' || !savedVercelUrl.startsWith('http')) {
+      savedVercelUrl = '';
+    }
+
+    // 本番Web環境（Vercel等の実際のhttp/httpsドメイン）の場合は現在のオリジンを自動記憶
     if (!isLocalhost && typeof window !== 'undefined' && window.location && window.location.origin) {
-      savedVercelUrl = window.location.origin;
-      try {
-        localStorage.setItem('mongol_app_custom_vercel_url', savedVercelUrl);
-      } catch (_) {}
+      const currentOrigin = window.location.origin || '';
+      if (currentOrigin.startsWith('http://') || currentOrigin.startsWith('https://')) {
+        savedVercelUrl = currentOrigin;
+        try {
+          localStorage.setItem('mongol_app_custom_vercel_url', savedVercelUrl);
+        } catch (_) {}
+      }
+    }
+
+    // デフォルトURLの確定（file://などで開かれていても必ず正常なVercel URLを使用）
+    if (!savedVercelUrl) {
+      savedVercelUrl = DEFAULT_VERCEL_APP_URL;
     }
 
     // 連携先モード: 'vercel' (Vercel公開URL) | 'local' (ローカルWi-Fi)
-    let syncTargetMode = (!isLocalhost || savedVercelUrl) ? 'vercel' : 'local';
+    let syncTargetMode = 'vercel';
 
     const currentUser = AuthService.getCurrentUser();
     const magicToken = currentUser ? AuthService.createMagicLoginToken(currentUser) : null;
@@ -86968,14 +87005,18 @@ class Navbar {
     let isPaired = false;
     let pollInterval = null;
     let broadcastChannel = null;
-    let qrMode = (isLocalhost && syncTargetMode === 'local') ? 'quick' : 'full';
+    let qrMode = 'full';
 
-    // 連携先URLの構築（Vercel環境では絶対にポート5173を付けず、originを使用）
+    // 連携先URLの構築（絶対にhttps://file:等の壊れたURLは作らない）
     const buildUrl = (mode = qrMode) => {
       let base = '';
       if (syncTargetMode === 'vercel') {
-        const customOrigin = savedVercelUrl || (typeof window !== 'undefined' && window.location ? window.location.origin : '');
-        base = `${customOrigin.replace(/\/+$/, '')}${cleanPath}`;
+        let origin = (savedVercelUrl || DEFAULT_VERCEL_APP_URL).trim().replace(/\/+$/, '');
+        origin = origin.replace(/^https?:\/\/file:?/i, '').replace(/^file:?/i, '');
+        if (!origin.startsWith('http://') && !origin.startsWith('https://')) {
+          origin = 'https://' + origin;
+        }
+        base = `${origin}/`;
       } else {
         base = `${protocol}//${targetIp}:${port}${cleanPath}`;
       }
@@ -86996,11 +87037,23 @@ class Navbar {
 
     const renderModal = () => {
       const currentUrl = buildUrl();
-      const qrSvg = QRCodeGenerator.generateSvg(currentUrl, {
-        errorCorrectionLevel: 'M',
-        cellSize: 3,
-        margin: 4
-      });
+      let qrSvg = null;
+      try {
+        qrSvg = QRCodeGenerator.generateSvg(currentUrl, {
+          errorCorrectionLevel: 'M',
+          cellSize: 3,
+          margin: 4
+        });
+      } catch (e) {
+        console.warn('[Navbar] QR SVG generation failed with Level M, retrying Level L:', e);
+        try {
+          qrSvg = QRCodeGenerator.generateSvg(currentUrl, {
+            errorCorrectionLevel: 'L',
+            cellSize: 3,
+            margin: 4
+          });
+        } catch (_) {}
+      }
 
       modal.className = "fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in";
       modal.innerHTML = `
@@ -87048,7 +87101,7 @@ class Navbar {
                   <span class="text-[10px] bg-sky-200 text-sky-900 px-2 py-0.5 rounded-full font-black">4G/5G・外出先OK</span>
                 </div>
                 <div class="flex items-center gap-1">
-                  <input type="text" id="input-vercel-origin" value="${savedVercelUrl || (typeof window !== 'undefined' && window.location ? window.location.origin : '')}" placeholder="https://your-app.vercel.app" class="flex-1 px-2.5 py-1 text-xs border border-sky-300 rounded-lg bg-white font-mono">
+                  <input type="text" id="input-vercel-origin" value="${savedVercelUrl}" placeholder="https://mongolian-learning-app.vercel.app" class="flex-1 px-2.5 py-1 text-xs border border-sky-300 rounded-lg bg-white font-mono">
                   <button type="button" id="btn-save-vercel-origin" class="px-2.5 py-1 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-bold shrink-0 cursor-pointer">
                     反映
                   </button>
@@ -87150,7 +87203,7 @@ class Navbar {
             </div>
           </div>
 
-          <!-- 代替アクション: 同期コードコピー＆JSON保存＆別タブテスト -->
+          <!-- 代替アクション: 同期コードコピー＆JSON保存 -->
           <div class="grid grid-cols-2 gap-2 text-xs">
             <button type="button" id="btn-copy-sync-code-only" class="py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer">
               <span>📋</span>
@@ -87223,7 +87276,10 @@ class Navbar {
       if (btnSaveVercel && inputVercel) {
         btnSaveVercel.addEventListener('click', () => {
           let val = inputVercel.value.trim().replace(/\/+$/, '');
-          if (val && !val.startsWith('http://') && !val.startsWith('https://')) {
+          val = val.replace(/^https?:\/\/file:?/i, '').replace(/^file:?/i, '');
+          if (!val) {
+            val = DEFAULT_VERCEL_APP_URL;
+          } else if (!val.startsWith('http://') && !val.startsWith('https://')) {
             val = 'https://' + val;
           }
           savedVercelUrl = val;
@@ -91472,15 +91528,10 @@ class WordTestComponent {
                   data-cyrillic="${isCyrillicInput ? 'true' : 'false'}"
                   autofocus autocomplete="off">
 
-                <!-- キリル文字クイックバー（モンゴル語入力時のみ） -->
+                <!-- PC標準モンゴル語配列キーボード＆特有文字パレット（モンゴル語入力時） -->
                 ${isCyrillicInput ? `
-                  <div class="flex items-center gap-1 overflow-x-auto py-2 scrollbar-none mt-1">
-                    <span class="text-[11px] text-slate-400 shrink-0">タップで入力:</span>
-                    ${SPECIAL_CYRILLIC_BAR.map(c => `
-                      <button type="button" class="btn-quick-char px-2 py-1 text-xs font-bold bg-slate-100 hover:bg-emerald-100 text-slate-700 rounded border border-slate-200 shrink-0" data-char="${c}">
-                        ${c}
-                      </button>
-                    `).join('')}
+                  <div class="mt-2">
+                    ${renderCyrillicInputAssistantHTML('input-word-answer', true)}
                   </div>
                 ` : ''}
               </div>
@@ -91629,6 +91680,7 @@ class WordTestComponent {
         if (input) {
           input.focus();
           CyrillicKeyboard.setActiveInput(input);
+          bindCyrillicInputAssistant(this.container, '#input-word-answer');
 
           input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
@@ -93804,14 +93856,9 @@ class DeclensionTestComponent {
                   data-cyrillic="true"
                   autofocus autocomplete="off">
 
-                <!-- キリル文字クイックバー -->
-                <div class="flex items-center gap-1 overflow-x-auto py-1.5 scrollbar-none">
-                  <span class="text-[11px] text-slate-400 shrink-0">タップで入力:</span>
-                  ${SPECIAL_CYRILLIC_BAR.map(c => `
-                    <button type="button" class="btn-quick-char px-2 py-1 text-xs font-bold bg-slate-100 hover:bg-amber-100 text-slate-700 rounded border border-slate-200 shrink-0" data-char="${c}">
-                      ${c}
-                    </button>
-                  `).join('')}
+                <!-- PC標準モンゴル語配列キーボード＆特有文字パレット -->
+                <div class="mt-2">
+                  ${renderCyrillicInputAssistantHTML('input-decl-answer', true)}
                 </div>
 
                 <button type="button" id="btn-submit-decl-text" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm mt-2">
@@ -93928,6 +93975,7 @@ class DeclensionTestComponent {
         if (input) {
           input.focus();
           CyrillicKeyboard.setActiveInput(input);
+          bindCyrillicInputAssistant(this.container, '#input-decl-answer');
           input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
               e.preventDefault();

@@ -371,22 +371,37 @@ export class Navbar {
     const pathname = typeof window !== 'undefined' && window.location ? (window.location.pathname || '/') : '/';
     const cleanPath = pathname.endsWith('.html') ? pathname : (pathname.endsWith('/') ? pathname : pathname + '/');
 
+    const DEFAULT_VERCEL_APP_URL = 'https://mongolian-learning-app.vercel.app';
+
     // 保存されているカスタムVercel URLを取得
     let savedVercelUrl = '';
     try {
       savedVercelUrl = localStorage.getItem('mongol_app_custom_vercel_url') || '';
     } catch (_) {}
 
-    // 本番Web環境（Vercel等）の場合は現在のオリジンを自動記憶
+    // 不正な文字列（file:やnull）を除去
+    if (!savedVercelUrl || savedVercelUrl.includes('file:') || savedVercelUrl === 'null' || !savedVercelUrl.startsWith('http')) {
+      savedVercelUrl = '';
+    }
+
+    // 本番Web環境（Vercel等の実際のhttp/httpsドメイン）の場合は現在のオリジンを自動記憶
     if (!isLocalhost && typeof window !== 'undefined' && window.location && window.location.origin) {
-      savedVercelUrl = window.location.origin;
-      try {
-        localStorage.setItem('mongol_app_custom_vercel_url', savedVercelUrl);
-      } catch (_) {}
+      const currentOrigin = window.location.origin || '';
+      if (currentOrigin.startsWith('http://') || currentOrigin.startsWith('https://')) {
+        savedVercelUrl = currentOrigin;
+        try {
+          localStorage.setItem('mongol_app_custom_vercel_url', savedVercelUrl);
+        } catch (_) {}
+      }
+    }
+
+    // デフォルトURLの確定（file://などで開かれていても必ず正常なVercel URLを使用）
+    if (!savedVercelUrl) {
+      savedVercelUrl = DEFAULT_VERCEL_APP_URL;
     }
 
     // 連携先モード: 'vercel' (Vercel公開URL) | 'local' (ローカルWi-Fi)
-    let syncTargetMode = (!isLocalhost || savedVercelUrl) ? 'vercel' : 'local';
+    let syncTargetMode = 'vercel';
 
     const currentUser = AuthService.getCurrentUser();
     const magicToken = currentUser ? AuthService.createMagicLoginToken(currentUser) : null;
@@ -400,14 +415,18 @@ export class Navbar {
     let isPaired = false;
     let pollInterval = null;
     let broadcastChannel = null;
-    let qrMode = (isLocalhost && syncTargetMode === 'local') ? 'quick' : 'full';
+    let qrMode = 'full';
 
-    // 連携先URLの構築（Vercel環境では絶対にポート5173を付けず、originを使用）
+    // 連携先URLの構築（絶対にhttps://file:等の壊れたURLは作らない）
     const buildUrl = (mode = qrMode) => {
       let base = '';
       if (syncTargetMode === 'vercel') {
-        const customOrigin = savedVercelUrl || (typeof window !== 'undefined' && window.location ? window.location.origin : '');
-        base = `${customOrigin.replace(/\/+$/, '')}${cleanPath}`;
+        let origin = (savedVercelUrl || DEFAULT_VERCEL_APP_URL).trim().replace(/\/+$/, '');
+        origin = origin.replace(/^https?:\/\/file:?/i, '').replace(/^file:?/i, '');
+        if (!origin.startsWith('http://') && !origin.startsWith('https://')) {
+          origin = 'https://' + origin;
+        }
+        base = `${origin}/`;
       } else {
         base = `${protocol}//${targetIp}:${port}${cleanPath}`;
       }
@@ -428,11 +447,23 @@ export class Navbar {
 
     const renderModal = () => {
       const currentUrl = buildUrl();
-      const qrSvg = QRCodeGenerator.generateSvg(currentUrl, {
-        errorCorrectionLevel: 'M',
-        cellSize: 3,
-        margin: 4
-      });
+      let qrSvg = null;
+      try {
+        qrSvg = QRCodeGenerator.generateSvg(currentUrl, {
+          errorCorrectionLevel: 'M',
+          cellSize: 3,
+          margin: 4
+        });
+      } catch (e) {
+        console.warn('[Navbar] QR SVG generation failed with Level M, retrying Level L:', e);
+        try {
+          qrSvg = QRCodeGenerator.generateSvg(currentUrl, {
+            errorCorrectionLevel: 'L',
+            cellSize: 3,
+            margin: 4
+          });
+        } catch (_) {}
+      }
 
       modal.className = "fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in";
       modal.innerHTML = `
@@ -480,7 +511,7 @@ export class Navbar {
                   <span class="text-[10px] bg-sky-200 text-sky-900 px-2 py-0.5 rounded-full font-black">4G/5G・外出先OK</span>
                 </div>
                 <div class="flex items-center gap-1">
-                  <input type="text" id="input-vercel-origin" value="${savedVercelUrl || (typeof window !== 'undefined' && window.location ? window.location.origin : '')}" placeholder="https://your-app.vercel.app" class="flex-1 px-2.5 py-1 text-xs border border-sky-300 rounded-lg bg-white font-mono">
+                  <input type="text" id="input-vercel-origin" value="${savedVercelUrl}" placeholder="https://mongolian-learning-app.vercel.app" class="flex-1 px-2.5 py-1 text-xs border border-sky-300 rounded-lg bg-white font-mono">
                   <button type="button" id="btn-save-vercel-origin" class="px-2.5 py-1 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-bold shrink-0 cursor-pointer">
                     反映
                   </button>
@@ -582,7 +613,7 @@ export class Navbar {
             </div>
           </div>
 
-          <!-- 代替アクション: 同期コードコピー＆JSON保存＆別タブテスト -->
+          <!-- 代替アクション: 同期コードコピー＆JSON保存 -->
           <div class="grid grid-cols-2 gap-2 text-xs">
             <button type="button" id="btn-copy-sync-code-only" class="py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer">
               <span>📋</span>
@@ -655,7 +686,10 @@ export class Navbar {
       if (btnSaveVercel && inputVercel) {
         btnSaveVercel.addEventListener('click', () => {
           let val = inputVercel.value.trim().replace(/\/+$/, '');
-          if (val && !val.startsWith('http://') && !val.startsWith('https://')) {
+          val = val.replace(/^https?:\/\/file:?/i, '').replace(/^file:?/i, '');
+          if (!val) {
+            val = DEFAULT_VERCEL_APP_URL;
+          } else if (!val.startsWith('http://') && !val.startsWith('https://')) {
             val = 'https://' + val;
           }
           savedVercelUrl = val;

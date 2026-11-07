@@ -491,7 +491,7 @@ export class QRCodeModel {
   make() {
     if (this.typeNumber < 1) {
       let typeNumber = 1;
-      for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+      for (typeNumber = 1; typeNumber <= 40; typeNumber++) {
         const rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
         const buffer = new QRBitBuffer();
         let totalDataCount = 0;

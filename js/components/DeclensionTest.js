@@ -319,14 +319,9 @@ export class DeclensionTestComponent {
                   data-cyrillic="true"
                   autofocus autocomplete="off">
 
-                <!-- キリル文字クイックバー -->
-                <div class="flex items-center gap-1 overflow-x-auto py-1.5 scrollbar-none">
-                  <span class="text-[11px] text-slate-400 shrink-0">タップで入力:</span>
-                  ${SPECIAL_CYRILLIC_BAR.map(c => `
-                    <button type="button" class="btn-quick-char px-2 py-1 text-xs font-bold bg-slate-100 hover:bg-amber-100 text-slate-700 rounded border border-slate-200 shrink-0" data-char="${c}">
-                      ${c}
-                    </button>
-                  `).join('')}
+                <!-- PC標準モンゴル語配列キーボード＆特有文字パレット -->
+                <div class="mt-2">
+                  ${renderCyrillicInputAssistantHTML('input-decl-answer', true)}
                 </div>
 
                 <button type="button" id="btn-submit-decl-text" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm mt-2">
@@ -443,6 +438,7 @@ export class DeclensionTestComponent {
         if (input) {
           input.focus();
           CyrillicKeyboard.setActiveInput(input);
+          bindCyrillicInputAssistant(this.container, '#input-decl-answer');
           input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
               e.preventDefault();

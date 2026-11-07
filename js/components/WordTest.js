@@ -422,15 +422,10 @@ export class WordTestComponent {
                   data-cyrillic="${isCyrillicInput ? 'true' : 'false'}"
                   autofocus autocomplete="off">
 
-                <!-- キリル文字クイックバー（モンゴル語入力時のみ） -->
+                <!-- PC標準モンゴル語配列キーボード＆特有文字パレット（モンゴル語入力時） -->
                 ${isCyrillicInput ? `
-                  <div class="flex items-center gap-1 overflow-x-auto py-2 scrollbar-none mt-1">
-                    <span class="text-[11px] text-slate-400 shrink-0">タップで入力:</span>
-                    ${SPECIAL_CYRILLIC_BAR.map(c => `
-                      <button type="button" class="btn-quick-char px-2 py-1 text-xs font-bold bg-slate-100 hover:bg-emerald-100 text-slate-700 rounded border border-slate-200 shrink-0" data-char="${c}">
-                        ${c}
-                      </button>
-                    `).join('')}
+                  <div class="mt-2">
+                    ${renderCyrillicInputAssistantHTML('input-word-answer', true)}
                   </div>
                 ` : ''}
               </div>
@@ -579,6 +574,7 @@ export class WordTestComponent {
         if (input) {
           input.focus();
           CyrillicKeyboard.setActiveInput(input);
+          bindCyrillicInputAssistant(this.container, '#input-word-answer');
 
           input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {

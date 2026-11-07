@@ -113,7 +113,7 @@ export function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showK
       </div>
 
       <!-- PC標準モンゴル語配列ソフトウェアキーボード（展開式） -->
-      <div class="pc-keyboard-panel hidden bg-slate-100 dark:bg-slate-800 p-2.5 rounded-2xl border-2 border-emerald-500/40 shadow-lg space-y-1.5 animate-fade-in">
+      <div class="pc-keyboard-panel bg-slate-100 dark:bg-slate-800 p-2.5 rounded-2xl border-2 border-emerald-500/40 shadow-lg space-y-1.5 animate-fade-in">
         <div class="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-slate-700 text-[11px]">
           <span class="font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-1">
             <span>💻</span> PC標準モンゴル語キーボード配列（JCUKEN）
@@ -175,11 +175,33 @@ export function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showK
 export function bindCyrillicInputAssistant(container, targetInputSelector = 'input[data-cyrillic="true"]') {
   if (!container) return;
 
+  // PC標準モンゴル語配列（JCUKEN）物理キーボード変換マップ
+  const JCUKEN_PHYSICAL_KEY_MAP = {
+    'q': 'ф', 'w': 'ц', 'e': 'у', 'r': 'ж', 't': 'э', 'y': 'н', 'u': 'г', 'i': 'ш', 'o': 'ү', 'p': 'з', '[': 'к', ']': 'ъ',
+    'a': 'й', 's': 'ы', 'd': 'б', 'f': 'ө', 'g': 'а', 'h': 'х', 'j': 'р', 'k': 'о', 'l': 'л', ';': 'д', "'": 'п',
+    'z': 'я', 'x': 'ч', 'c': 'ё', 'v': 'с', 'b': 'м', 'n': 'и', 'm': 'т', ',': 'ь', '.': 'в', '/': 'ю',
+    'Q': 'Ф', 'W': 'Ц', 'E': 'У', 'R': 'Ж', 'T': 'Э', 'Y': 'Н', 'U': 'Г', 'I': 'Ш', 'O': 'Ү', 'P': 'З', '{': 'К', '}': 'Ъ',
+    'A': 'Й', 'S': 'Ы', 'D': 'Б', 'F': 'Ө', 'G': 'А', 'H': 'Х', 'J': 'Р', 'K': 'О', 'L': 'Л', ':': 'Д', '"': 'П',
+    'Z': 'Я', 'X': 'Ч', 'C': 'Ё', 'V': 'С', 'B': 'М', 'N': 'И', 'M': 'Т', '<': 'Ь', '>': 'В', '?': 'Ю'
+  };
+  if (!container) return;
+
   const assistantContainers = container.querySelectorAll('.cyrillic-assistant-container');
   assistantContainers.forEach(box => {
     let isShift = false;
     const targetInputId = box.getAttribute('data-target-input');
     const input = targetInputId ? container.querySelector(`#${targetInputId}`) : container.querySelector(targetInputSelector);
+    if (input) {
+      input.addEventListener('keydown', (e) => {
+        // Ctrl, Alt, Metaキーは除外
+        if (e.ctrlKey || e.altKey || e.metaKey) return;
+        // 物理キーがキリル配列マップにある場合
+        if (JCUKEN_PHYSICAL_KEY_MAP[e.key]) {
+          e.preventDefault();
+          insertText(JCUKEN_PHYSICAL_KEY_MAP[e.key]);
+        }
+      });
+    }
 
     const insertText = (char) => {
       const activeInput = input || document.activeElement;
