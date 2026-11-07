@@ -41,8 +41,243 @@ export const MONGOLIAN_CYRILLIC_LETTERS = [
   { char: 'ь', upper: 'Ь', name: 'soft_sign', type: 'sign' }
 ];
 
+// Windows PC 標準モンゴル語キリル文字キーボード配列（JCUKEN / Standard Mongolian Layout）
+export const MONGOLIAN_PC_KEYBOARD_LAYOUT = {
+  row2: [
+    { lower: 'ф', upper: 'Ф', key: 'q' },
+    { lower: 'ц', upper: 'Ц', key: 'w' },
+    { lower: 'у', upper: 'У', key: 'e' },
+    { lower: 'ж', upper: 'Ж', key: 'r' },
+    { lower: 'э', upper: 'Э', key: 't' },
+    { lower: 'н', upper: 'Н', key: 'y' },
+    { lower: 'г', upper: 'Г', key: 'u' },
+    { lower: 'ш', upper: 'Ш', key: 'i' },
+    { lower: 'ү', upper: 'Ү', key: 'o', special: true }, // モンゴル語特有母音
+    { lower: 'з', upper: 'З', key: 'p' },
+    { lower: 'к', upper: 'К', key: '[' },
+    { lower: 'ъ', upper: 'Ъ', key: ']' }
+  ],
+  row3: [
+    { lower: 'й', upper: 'Й', key: 'a' },
+    { lower: 'ы', upper: 'Ы', key: 's' },
+    { lower: 'б', upper: 'Б', key: 'd' },
+    { lower: 'ө', upper: 'Ө', key: 'f', special: true }, // モンゴル語特有母音
+    { lower: 'а', upper: 'А', key: 'g' },
+    { lower: 'х', upper: 'Х', key: 'h' },
+    { lower: 'р', upper: 'Р', key: 'j' },
+    { lower: 'о', upper: 'О', key: 'k' },
+    { lower: 'л', upper: 'Л', key: 'l' },
+    { lower: 'д', upper: 'Д', key: ';' },
+    { lower: 'п', upper: 'П', key: "'" }
+  ],
+  row4: [
+    { lower: 'я', upper: 'Я', key: 'z' },
+    { lower: 'ч', upper: 'Ч', key: 'x' },
+    { lower: 'ё', upper: 'Ё', key: 'c' },
+    { lower: 'с', upper: 'С', key: 'v' },
+    { lower: 'м', upper: 'М', key: 'b' },
+    { lower: 'и', upper: 'И', key: 'n' },
+    { lower: 'т', upper: 'Т', key: 'm' },
+    { lower: 'ь', upper: 'Ь', key: ',' },
+    { lower: 'в', upper: 'В', key: '.' },
+    { lower: 'ю', upper: 'Ю', key: '/' }
+  ]
+};
+
 // よく使う特殊文字（クイックバー用）
 export const SPECIAL_CYRILLIC_BAR = ['ө', 'ү', 'Ө', 'Ү', 'ь', 'ъ', 'э', 'ы', 'я', 'ё', 'ю'];
+
+/**
+ * 初心者にも分かりやすいキリル文字入力パレット＆PC標準キーボード切り替えバーの共通HTML
+ */
+export function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showKeyboardToggle = true) {
+  return `
+    <div class="cyrillic-assistant-container mt-2 space-y-2 select-none" data-target-input="${inputId}">
+      <!-- クイック特有文字バー -->
+      <div class="flex items-center justify-between gap-1.5 flex-wrap bg-slate-50 dark:bg-slate-800/80 p-2 rounded-xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center gap-1 overflow-x-auto py-0.5 scrollbar-none flex-1">
+          <span class="text-[11px] font-bold text-emerald-800 dark:text-emerald-400 bg-emerald-100/70 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md shrink-0 flex items-center gap-1">
+            <span>🇲🇳</span> 特有文字:
+          </span>
+          ${['ө', 'ү', 'Ө', 'Ү', 'ь', 'ъ', 'э', 'ы', 'я', 'ё', 'ю'].map(char => `
+            <button type="button" class="btn-insert-char shrink-0 px-2 py-1 text-xs font-bold bg-white dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded-lg border border-slate-300 dark:border-slate-600 shadow-2xs active:scale-95 transition-all" data-char="${char}">
+              ${char}
+            </button>
+          `).join('')}
+        </div>
+        ${showKeyboardToggle ? `
+          <button type="button" class="btn-toggle-pc-keyboard shrink-0 text-xs px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-2xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer">
+            <span>⌨️</span> <span>PC配列キーボード</span>
+          </button>
+        ` : ''}
+      </div>
+
+      <!-- PC標準モンゴル語配列ソフトウェアキーボード（展開式） -->
+      <div class="pc-keyboard-panel hidden bg-slate-100 dark:bg-slate-800 p-2.5 rounded-2xl border-2 border-emerald-500/40 shadow-lg space-y-1.5 animate-fade-in">
+        <div class="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-slate-700 text-[11px]">
+          <span class="font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-1">
+            <span>💻</span> PC標準モンゴル語キーボード配列（JCUKEN）
+          </span>
+          <div class="flex items-center gap-1.5">
+            <button type="button" class="btn-kb-shift px-2.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-700 dark:text-slate-200 font-bold transition-all cursor-pointer">
+              ⇧ Shift
+            </button>
+            <button type="button" class="btn-kb-backspace px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950/60 hover:bg-rose-200 text-rose-700 dark:text-rose-300 font-bold transition-all cursor-pointer">
+              ⌫ 1文字消す
+            </button>
+            <button type="button" class="btn-close-pc-keyboard px-2 py-0.5 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-bold cursor-pointer">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Row 2 (ф ц у ж э н г ш ү з к ъ) -->
+        <div class="grid grid-cols-12 gap-1 text-center">
+          ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row2.map(k => `
+            <button type="button" class="btn-kb-key py-2 px-1 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer ${k.special ? 'border-amber-400 bg-amber-50/70 text-amber-950 dark:bg-amber-950/40 dark:text-amber-200' : 'border-slate-200 dark:border-slate-600'}" data-lower="${k.lower}" data-upper="${k.upper}">
+              ${k.lower}
+            </button>
+          `).join('')}
+        </div>
+
+        <!-- Row 3 (й ы б ө а х р о л д п) -->
+        <div class="grid grid-cols-11 gap-1 text-center">
+          ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row3.map(k => `
+            <button type="button" class="btn-kb-key py-2 px-1 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer ${k.special ? 'border-amber-400 bg-amber-50/70 text-amber-950 dark:bg-amber-950/40 dark:text-amber-200' : 'border-slate-200 dark:border-slate-600'}" data-lower="${k.lower}" data-upper="${k.upper}">
+              ${k.lower}
+            </button>
+          `).join('')}
+        </div>
+
+        <!-- Row 4 (я ч ё с м и т ь в ю) -->
+        <div class="grid grid-cols-10 gap-1 text-center">
+          ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row4.map(k => `
+            <button type="button" class="btn-kb-key py-2 px-1 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer border-slate-200 dark:border-slate-600" data-lower="${k.lower}" data-upper="${k.upper}">
+              ${k.lower}
+            </button>
+          `).join('')}
+        </div>
+
+        <!-- 制御列（スペース等） -->
+        <div class="flex items-center justify-center gap-2 pt-0.5">
+          <button type="button" class="btn-kb-space flex-1 max-w-xs py-1.5 bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold rounded-lg border border-slate-300 dark:border-slate-600 text-xs shadow-2xs active:scale-98 cursor-pointer">
+            ␣ スペース
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * キリル文字入力アシスタントのイベントバインド（入力欄への挿入、Shift切替、PC配列対応）
+ */
+export function bindCyrillicInputAssistant(container, targetInputSelector = 'input[data-cyrillic="true"]') {
+  if (!container) return;
+
+  const assistantContainers = container.querySelectorAll('.cyrillic-assistant-container');
+  assistantContainers.forEach(box => {
+    let isShift = false;
+    const targetInputId = box.getAttribute('data-target-input');
+    const input = targetInputId ? container.querySelector(`#${targetInputId}`) : container.querySelector(targetInputSelector);
+
+    const insertText = (char) => {
+      const activeInput = input || document.activeElement;
+      if (!activeInput || (activeInput.tagName !== 'INPUT' && activeInput.tagName !== 'TEXTAREA')) return;
+      const start = activeInput.selectionStart || activeInput.value.length;
+      const end = activeInput.selectionEnd || activeInput.value.length;
+      const val = activeInput.value;
+      activeInput.value = val.substring(0, start) + char + val.substring(end);
+      activeInput.selectionStart = activeInput.selectionEnd = start + char.length;
+      activeInput.focus();
+      activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+
+    const backspace = () => {
+      const activeInput = input || document.activeElement;
+      if (!activeInput || (activeInput.tagName !== 'INPUT' && activeInput.tagName !== 'TEXTAREA')) return;
+      const start = activeInput.selectionStart;
+      const end = activeInput.selectionEnd;
+      const val = activeInput.value;
+      if (start === end && start > 0) {
+        activeInput.value = val.substring(0, start - 1) + val.substring(end);
+        activeInput.selectionStart = activeInput.selectionEnd = start - 1;
+      } else if (start !== end) {
+        activeInput.value = val.substring(0, start) + val.substring(end);
+        activeInput.selectionStart = activeInput.selectionEnd = start;
+      }
+      activeInput.focus();
+      activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+
+    // クイック特有文字ボタン
+    box.querySelectorAll('.btn-insert-char').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        insertText(btn.getAttribute('data-char'));
+      });
+    });
+
+    // キーボードトグル
+    const toggleBtn = box.querySelector('.btn-toggle-pc-keyboard');
+    const kbPanel = box.querySelector('.pc-keyboard-panel');
+    const closeBtn = box.querySelector('.btn-close-pc-keyboard');
+
+    if (toggleBtn && kbPanel) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        kbPanel.classList.toggle('hidden');
+      });
+    }
+    if (closeBtn && kbPanel) {
+      closeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        kbPanel.classList.add('hidden');
+      });
+    }
+
+    // Shiftキー切替
+    const shiftBtn = box.querySelector('.btn-kb-shift');
+    if (shiftBtn && kbPanel) {
+      shiftBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        isShift = !isShift;
+        shiftBtn.classList.toggle('bg-emerald-600', isShift);
+        shiftBtn.classList.toggle('text-white', isShift);
+        kbPanel.querySelectorAll('.btn-kb-key').forEach(kBtn => {
+          const char = isShift ? kBtn.getAttribute('data-upper') : kBtn.getAttribute('data-lower');
+          kBtn.textContent = char;
+        });
+      });
+    }
+
+    // PCキーボタン押下
+    box.querySelectorAll('.btn-kb-key').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const char = isShift ? btn.getAttribute('data-upper') : btn.getAttribute('data-lower');
+        insertText(char);
+      });
+    });
+
+    // Backspace & Space
+    const bsBtn = box.querySelector('.btn-kb-backspace');
+    if (bsBtn) {
+      bsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        backspace();
+      });
+    }
+    const spBtn = box.querySelector('.btn-kb-space');
+    if (spBtn) {
+      spBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        insertText(' ');
+      });
+    }
+  });
+}
+
 
 /**
  * テキストがキリル文字を含むか判定
@@ -3081,6 +3316,9 @@ export function renderGrammarExplanationHTML({
       <!-- 語呂合わせ・楽しい覚え方カード（動詞・名詞問わず存在すれば必ず表示） -->
       ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(item, correctAnswer) : ''}
 
+      <!-- 表現の使い分け・類義語ガイド（要件6準拠） -->
+      ${(typeof getSynonymExpressionsCardHTML === 'function') ? getSynonymExpressionsCardHTML(meaning || (item && item.japanese) || correctAnswer) : ''}
+
       <!-- 似ている単語との違い・使い分けカード（要件準拠） -->
       ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML(item, correctAnswer) : ''}
 
@@ -3730,4 +3968,215 @@ export function showUniversalWordModal({ wordInfo, passageTitle = '', onNavigate
   modal.addEventListener('click', (e) => {
     if (e.target === modal) cleanup();
   });
+}
+
+
+/**
+ * 複数のモンゴル語表現・ニュアンス使い分けマスターデータ（要件6）
+ */
+export const SYNONYM_EXPRESSIONS_MAP = {
+  "気にしない": {
+    topicJa: "気にしない・構わない・大丈夫",
+    expressions: [
+      {
+        word: "хамаагүй",
+        pron: "ハマアグイ",
+        meaning: "構わない、気にしない、どちらでもよい",
+        nuance: "【日常口語】何事にもこだわらず「どっちでもいいよ」「気にしなくていいよ」と軽く流す最も一般的な表現。",
+        scene: "選択肢を問われた時や、相手の遠慮を解く場面（例: Аль нь ч хамаагүй = どちらでも構いません）。"
+      },
+      {
+        word: "зүгээр",
+        pron: "ズゲール",
+        meaning: "大丈夫、平気、問題ない",
+        nuance: "【感謝・謝罪への返答】相手の「すみません（Уучлаарай）」に対して「いいえ、平気ですよ、気にしないで」と答える決まり文句。",
+        scene: "失敗を謝られた時（例: Зүгээр, зүгээр. Би өөрөө хийчихнэ = 大丈夫です、自分でやりますから気にしないで）。"
+      },
+      {
+        word: "тоохгүй",
+        pron: "トーホグイ",
+        meaning: "意に介さない、気に留めない、相手にしない",
+        nuance: "【動詞否定】動詞「тоох（気にかける、重視する）」の否定形で、他人の悪口や小さなトラブルを「本人が全く気にしていない」という客観的な態度を表す。",
+        scene: "他人の目を気にしない時（例: Тэр бусдын үгийг огт тоодоггүй = 彼は他人の言うことを全く気にしません）。"
+      },
+      {
+        word: "санаа зоволтгүй",
+        pron: "サナア ゾウォルトグイ",
+        meaning: "心配しないで、気を揉まないで、ご心配なく",
+        nuance: "【思いやり・気遣い】相手が心配して気兼ねしている時に「心配ご無用ですよ」と安心させる丁寧な表現。",
+        scene: "相手の心配を和らげる時（例: Та санаа зоволтгүй, бүх зүイル бүтнэ = 心配しないでください、すべてうまくいきます）。"
+      }
+    ]
+  },
+  "ありがとう": {
+    topicJa: "ありがとう・感謝の表現",
+    expressions: [
+      {
+        word: "Баярлалаа",
+        pron: "バヤルララー",
+        meaning: "ありがとう",
+        nuance: "【標準的感謝】誰に対しても日常的に幅広く使える基本の「ありがとう」。"
+      },
+      {
+        word: "Их баярлалаа",
+        pron: "イヒ バヤルララー",
+        meaning: "どうもありがとうございます",
+        nuance: "【丁寧な感謝】「Их（大いに）」を付けて感謝の深さを表す丁寧な表現。"
+      },
+      {
+        word: "Маш их баярлалаа",
+        pron: "マシ イヒ バヤルララー",
+        meaning: "誠にありがとうございます・大変感謝いたします",
+        nuance: "【最大級の敬意・感謝】改まった場や心からの感謝を伝える最上級表現。"
+      },
+      {
+        word: "Гялайлаа",
+        pron: "ギャライラー",
+        meaning: "かたじけない、ありがたい",
+        nuance: "【伝統的・親愛表現】主に年配者や目上の人が親しみを込めて「ありがとよ」と述べる伝統的な感謝表現。"
+      }
+    ]
+  },
+  "さようなら": {
+    topicJa: "さようなら・別れの挨拶",
+    expressions: [
+      {
+        word: "Баяртай",
+        pron: "バヤルタイ",
+        meaning: "さようなら",
+        nuance: "【標準的別れの挨拶】時間帯や相手を問わずいつでも使える最も標準的な別れの言葉。"
+      },
+      {
+        word: "Дараа уулзъя",
+        pron: "ダラア ウールズィヤ",
+        meaning: "また会いましょう・またね",
+        nuance: "【再会を前提とする別れ】「Дараа（後で・次回）」＋「уулзъя（会おう）」で親しい間柄でよく使われる。"
+      },
+      {
+        word: "Маргааш уулзъя",
+        pron: "マルガーシ ウールズィヤ",
+        meaning: "また明日",
+        nuance: "【翌日会う約束】職場や学校で「明日会いましょう」と別れる時の定番表現。"
+      },
+      {
+        word: "Түр баяртай",
+        pron: "トゥル バヤルタイ",
+        meaning: "じゃあ後でね・一時的に失礼します",
+        nuance: "【短い別れ】「Түр（少しの間）」だけ席を外したり、同日中に再会する時の挨拶。"
+      }
+    ]
+  },
+  "美味しい": {
+    topicJa: "おいしい・味覚表現",
+    expressions: [
+      {
+        word: "амттай",
+        pron: "アムトタイ",
+        meaning: "美味しい（味がある）",
+        nuance: "【一般的表現】「амт（味）」＋「-тай（有属接尾辞）」で、美味しい料理全般を指す最も基本の語。"
+      },
+      {
+        word: "маш амттай",
+        pron: "マシ アムトタイ",
+        meaning: "とても美味しい",
+        nuance: "【強調表現】ごちそうを称賛する丁寧な褒め言葉。"
+      },
+      {
+        word: "янзтай",
+        pron: "ヤンズタイ",
+        meaning: "うまい！最高！格別だ！",
+        nuance: "【親しい口語スラング】「янз（スタイル・格好）」から転じて「これはたまらん、抜群にうまい！」と感動を表す口語。"
+      }
+    ]
+  },
+  "きれい": {
+    topicJa: "綺麗・美しい・かわいい",
+    expressions: [
+      {
+        word: "сайхан",
+        pron: "サイハン",
+        meaning: "美しい、素晴らしい、清々しい",
+        nuance: "【内面・景色・総合的美】外見だけでなく、景色・心・天気などあらゆる良い状態を広く称賛する語。"
+      },
+      {
+        word: "хөөрхөн",
+        pron: "フールホン",
+        meaning: "かわいい、愛らしい",
+        nuance: "【愛らしさ】小さな子ども、動物、愛嬌のある人物に対して「可愛い」と述べる表現。"
+      },
+      {
+        word: "үзэсгэлэнтэй",
+        pron: "ウゼスゲレントエイ",
+        meaning: "息をのむほど美しい、絶景の、見目麗しい",
+        nuance: "【壮大な美しさ・格式】大自然の絶景や、気品ある美しい人物を形容する詩的・格式ある表現。"
+      },
+      {
+        word: "цэвэрхэн",
+        pron: "ツェウェルヘン",
+        meaning: "清潔な、綺麗に片付いている",
+        nuance: "【衛生・整然さ】部屋や身だしなみが汚れておらず小綺麗に整っている状態を表す。"
+      }
+    ]
+  }
+};
+
+/**
+ * 日本語またはモンゴル語キーから複数表現カードのHTMLを生成
+ */
+export function getSynonymExpressionsCardHTML(keyWord) {
+  if (!keyWord) return '';
+  const cleanKey = String(keyWord).toLowerCase().trim().replace(/[.,!?。、！？\s]/g, '');
+
+  let matchedData = null;
+  for (const [topic, data] of Object.entries(SYNONYM_EXPRESSIONS_MAP)) {
+    if (cleanKey.includes(topic) || topic.includes(cleanKey)) {
+      matchedData = data;
+      break;
+    }
+    for (const exp of data.expressions) {
+      const wClean = exp.word.toLowerCase().replace(/[.,!?。、！？\s]/g, '');
+      if (cleanKey === wClean || cleanKey.includes(wClean)) {
+        matchedData = data;
+        break;
+      }
+    }
+    if (matchedData) break;
+  }
+
+  if (!matchedData) return '';
+
+  const cardsHTML = matchedData.expressions.map(exp => `
+    <div class="p-2.5 rounded-xl bg-white/95 dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 shadow-2xs space-y-1">
+      <div class="flex items-center justify-between text-xs">
+        <span class="font-extrabold text-indigo-900 dark:text-indigo-300 cyrillic-text text-sm">
+          ${exp.word} <span class="text-[11px] font-normal text-slate-500">(${exp.pron})</span>
+        </span>
+        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">${exp.meaning}</span>
+      </div>
+      <div class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+        ${exp.nuance}
+      </div>
+      ${exp.scene ? `
+        <div class="text-[10px] text-indigo-700 dark:text-indigo-400 font-medium bg-indigo-50/70 dark:bg-indigo-950/40 p-1 rounded-md">
+          💡 使用場面: ${exp.scene}
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+
+  return `
+    <div class="mt-3 p-3.5 rounded-2xl bg-gradient-to-br from-indigo-50/90 to-purple-50/80 dark:from-slate-800 dark:to-slate-900 border-2 border-indigo-300 dark:border-indigo-800 text-xs space-y-2.5 shadow-sm">
+      <div class="flex items-center justify-between font-black text-indigo-950 dark:text-indigo-200">
+        <span class="flex items-center gap-1.5 text-sm">
+          <span>✨</span> 表現の使い分け・類義語ガイド: 【${matchedData.topicJa}】
+        </span>
+        <span class="text-[10px] bg-indigo-200 dark:bg-indigo-900 text-indigo-900 dark:text-indigo-200 px-2 py-0.5 rounded-full font-bold">
+          全${matchedData.expressions.length}表現
+        </span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        ${cardsHTML}
+      </div>
+    </div>
+  `;
 }

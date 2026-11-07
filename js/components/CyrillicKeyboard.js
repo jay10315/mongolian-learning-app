@@ -1,17 +1,16 @@
-// モンゴル語キリル文字オンスクリーンキーボード＆クイック入力バー
-import { SPECIAL_CYRILLIC_BAR, MONGOLIAN_CYRILLIC_LETTERS } from '../utils/helpers.js';
+// モンゴル語キリル文字オンスクリーンキーボード（Windows PC標準JCUKEN配列完全準拠）
+import { MONGOLIAN_PC_KEYBOARD_LAYOUT } from '../utils/helpers.js';
 
 export class CyrillicKeyboard {
   static activeInput = null;
   static isShift = false;
-  static isExpanded = false;
+  static isVisible = false;
 
   static init() {
     // 画面内の input[type="text"], textarea にフォーカスイベントを設定
     document.addEventListener('focusin', (e) => {
       if (e.target && (e.target.matches('input[data-cyrillic="true"]') || e.target.classList.contains('cyrillic-input'))) {
         this.activeInput = e.target;
-        this.showBar();
       }
     });
 
@@ -20,7 +19,6 @@ export class CyrillicKeyboard {
 
   static setActiveInput(inputElement) {
     this.activeInput = inputElement;
-    this.showBar();
   }
 
   static render() {
@@ -33,54 +31,61 @@ export class CyrillicKeyboard {
     }
 
     container.innerHTML = `
-      <div class="bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-2xl p-2 max-w-3xl mx-auto rounded-t-2xl">
-        <!-- クイックバー ＆ コントロール -->
-        <div class="flex items-center justify-between gap-1 mb-1.5 px-1">
-          <div class="flex items-center gap-1 overflow-x-auto py-1 scrollbar-none flex-1">
-            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md shrink-0 flex items-center gap-1">
-              🇲🇳 モンゴル語キリル文字:
-            </span>
-            ${SPECIAL_CYRILLIC_BAR.map(char => `
-              <button type="button" class="cyr-quick-key shrink-0 px-2.5 py-1 text-sm font-semibold bg-slate-100 hover:bg-emerald-100 hover:text-emerald-800 text-slate-800 rounded-lg active:scale-95 transition-all shadow-sm border border-slate-200" data-char="${char}">
-                ${char}
-              </button>
-            `).join('')}
+      <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t-2 border-emerald-500 shadow-2xl p-2.5 max-w-3xl mx-auto rounded-t-2xl">
+        <!-- ヘッダー＆コントロール -->
+        <div class="flex items-center justify-between gap-2 mb-2 px-1">
+          <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-400">
+            <span>💻</span>
+            <span>Windows標準 モンゴル語キーボード配列（JCUKEN）</span>
           </div>
 
-          <div class="flex items-center gap-1.5 shrink-0 ml-1">
-            <button type="button" id="btn-toggle-full-keyboard" class="text-xs px-2.5 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-medium transition-colors">
-              ${this.isExpanded ? '▼ 閉じる' : '▲ 全キー'}
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" id="btn-shift-key" class="text-xs px-3 py-1 ${this.isShift ? 'bg-emerald-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200'} rounded-lg font-bold transition-colors cursor-pointer">
+              ⇧ Shift
             </button>
-            <button type="button" id="btn-hide-keyboard" class="text-xs p-1 text-slate-400 hover:text-slate-600 rounded-lg">
-              ✕
+            <button type="button" id="btn-backspace-key" class="text-xs px-2.5 py-1 bg-rose-100 dark:bg-rose-950/60 hover:bg-rose-200 text-rose-700 dark:text-rose-300 rounded-lg font-bold transition-colors cursor-pointer">
+              ⌫ 消す
+            </button>
+            <button type="button" id="btn-hide-keyboard" class="text-xs p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg cursor-pointer">
+              ✕ 閉じる
             </button>
           </div>
         </div>
 
-        <!-- フルキーボード（トグル表示） -->
-        <div id="full-keyboard-panel" class="${this.isExpanded ? 'block' : 'hidden'} pt-1 border-t border-slate-100">
-          <div class="flex justify-end gap-2 mb-1 px-1">
-            <button type="button" id="btn-shift-key" class="text-xs px-3 py-1 ${this.isShift ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-700'} rounded font-semibold transition-colors">
-              ⇧ Shift
-            </button>
-            <button type="button" id="btn-space-key" class="text-xs px-4 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded font-semibold">
-              スペース
-            </button>
-            <button type="button" id="btn-backspace-key" class="text-xs px-3 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded font-semibold">
-              ⌫ 1文字消す
-            </button>
+        <!-- PC標準モンゴル語キーボード（Row 2 〜 Row 4） -->
+        <div class="space-y-1.5 text-center">
+          <!-- Row 2 (ф ц у ж э н г ш ү з к ъ) -->
+          <div class="grid grid-cols-12 gap-1">
+            ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row2.map(k => `
+              <button type="button" class="cyr-pc-key py-2 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer ${k.special ? 'border-amber-400 bg-amber-50/70 text-amber-950 dark:bg-amber-950/40 dark:text-amber-200' : 'border-slate-200 dark:border-slate-700'}" data-char="${this.isShift ? k.upper : k.lower}">
+                ${this.isShift ? k.upper : k.lower}
+              </button>
+            `).join('')}
           </div>
 
-          <div class="grid grid-cols-11 sm:grid-cols-12 gap-1 p-1 max-h-48 overflow-y-auto">
-            ${MONGOLIAN_CYRILLIC_LETTERS.map(item => {
-              const displayChar = this.isShift ? item.upper : item.char;
-              const isHighlight = item.special ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold' : 'bg-slate-50 text-slate-800 border-slate-200';
-              return `
-                <button type="button" class="cyr-full-key p-2 text-sm font-medium rounded border hover:bg-emerald-50 active:scale-95 transition-all text-center shadow-xs ${isHighlight}" data-char="${displayChar}">
-                  ${displayChar}
-                </button>
-              `;
-            }).join('')}
+          <!-- Row 3 (й ы б ө а х р о л д п) -->
+          <div class="grid grid-cols-11 gap-1">
+            ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row3.map(k => `
+              <button type="button" class="cyr-pc-key py-2 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer ${k.special ? 'border-amber-400 bg-amber-50/70 text-amber-950 dark:bg-amber-950/40 dark:text-amber-200' : 'border-slate-200 dark:border-slate-700'}" data-char="${this.isShift ? k.upper : k.lower}">
+                ${this.isShift ? k.upper : k.lower}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Row 4 (я ч ё с м и т ь в ю) -->
+          <div class="grid grid-cols-10 gap-1">
+            ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row4.map(k => `
+              <button type="button" class="cyr-pc-key py-2 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer border-slate-200 dark:border-slate-700" data-char="${this.isShift ? k.upper : k.lower}">
+                ${this.isShift ? k.upper : k.lower}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- 最下段（スペース） -->
+          <div class="flex items-center justify-center gap-2 pt-1">
+            <button type="button" id="btn-space-key" class="flex-1 max-w-sm py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-lg border border-slate-300 dark:border-slate-600 text-xs shadow-2xs active:scale-98 cursor-pointer">
+              ␣ スペース
+            </button>
           </div>
         </div>
       </div>
@@ -90,32 +95,14 @@ export class CyrillicKeyboard {
   }
 
   static bindEvents(container) {
-    // クイックキー
-    container.querySelectorAll('.cyr-quick-key').forEach(btn => {
+    // 各キー押下
+    container.querySelectorAll('.cyr-pc-key').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const char = btn.getAttribute('data-char');
         this.insertChar(char);
       });
     });
-
-    // フルキー
-    container.querySelectorAll('.cyr-full-key').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const char = btn.getAttribute('data-char');
-        this.insertChar(char);
-      });
-    });
-
-    // フルキーボードトグル
-    const toggleBtn = container.querySelector('#btn-toggle-full-keyboard');
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', () => {
-        this.isExpanded = !this.isExpanded;
-        this.render();
-      });
-    }
 
     // 非表示
     const hideBtn = container.querySelector('#btn-hide-keyboard');
@@ -153,9 +140,9 @@ export class CyrillicKeyboard {
 
   static insertChar(char) {
     if (!this.activeInput) {
-      // 直近のアクティブなcyrillic inputを探す
       this.activeInput = document.querySelector('input[data-cyrillic="true"]:focus') || 
-                         document.querySelector('input[data-cyrillic="true"]');
+                         document.querySelector('input[data-cyrillic="true"]') ||
+                         document.querySelector('input:focus');
     }
     if (!this.activeInput) return;
 
@@ -167,12 +154,15 @@ export class CyrillicKeyboard {
     input.value = text.substring(0, start) + char + text.substring(end);
     input.selectionStart = input.selectionEnd = start + char.length;
     input.focus();
-
-    // inputイベントをディスパッチしてReactやVanillaの状態を更新
     input.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
   static deleteChar() {
+    if (!this.activeInput) {
+      this.activeInput = document.querySelector('input[data-cyrillic="true"]:focus') || 
+                         document.querySelector('input[data-cyrillic="true"]') ||
+                         document.querySelector('input:focus');
+    }
     if (!this.activeInput) return;
     const input = this.activeInput;
     const start = input.selectionStart;
@@ -195,6 +185,7 @@ export class CyrillicKeyboard {
     if (container) {
       container.classList.remove('translate-y-full');
       container.classList.add('translate-y-0');
+      this.isVisible = true;
     }
   }
 
@@ -203,6 +194,7 @@ export class CyrillicKeyboard {
     if (container) {
       container.classList.add('translate-y-full');
       container.classList.remove('translate-y-0');
+      this.isVisible = false;
     }
   }
 }

@@ -1,4 +1,3 @@
-// モンゴル語 基礎語彙マスターデータベース (ジャンル別体系完全対応)
 export const initialVocabulary = [
   {
     "id": "v_1_1",
@@ -25250,8 +25249,7 @@ export const initialVocabulary = [
     "isVerb": false,
     "caseGovernment": "",
     "caseNote": ""
-  }
-,
+  },
   {
     "id": "vocab_core_tul",
     "mongolian": "тул",
@@ -25327,7 +25325,42 @@ export const initialVocabulary = [
     "baseMeaning": "絵のある、絵付きの",
     "grammarRole": "名詞「зураг」に有属接尾辞「-тай」が付いた派生語。「зурагтай ном（絵本）」のように名詞を修飾します。",
     "derivation": "名詞「зураг（絵、写真）」＋ 有属・共同格「-тай（〜のある、〜を持つ）」＝「絵のある」。"
+  },
+  {
+    "id": "vocab_syn_khamagui",
+    "mongolian": "хамаагүй",
+    "japanese": "構わない、気にしない、どちらでもよい",
+    "pos": "副詞・形容詞",
+    "pronunciation": "ハマアグイ",
+    "level": "初級",
+    "category": "日常会話・感情",
+    "exampleMn": "Аль нь ч хамаагүй, та өөрөө сонгоорой.",
+    "exampleJa": "どちらでも構いません、ご自身で選んでください。",
+    "dictForm": "хамаагүй",
+    "baseMeaning": "構わない、気にしない",
+    "note": "「気にしない」の代表的口語表現。類義語: зүгээр（大丈夫）, тоохгүй（気に留めない）。",
+    "acceptableAnswers": [
+      "хамаагүй",
+      "хамаагүй ээ",
+      "Аль нь ч хамаагүй"
+    ]
+  },
+  {
+    "id": "vocab_syn_sanaa_zovoltgui",
+    "mongolian": "санаа зоволтгүй",
+    "japanese": "心配しないで、気を揉まないで、ご心配なく",
+    "pos": "慣用語句",
+    "pronunciation": "サナア ゾウォルトグイ",
+    "level": "初級",
+    "category": "挨拶・思いやり",
+    "exampleMn": "Та санаа зоволтгүй, бүх зүйл сайхан болно.",
+    "exampleJa": "ご心配なく、すべてうまくいきますよ。",
+    "dictForm": "санаа зоволтгүй",
+    "baseMeaning": "心配しないで",
+    "note": "相手の気遣いを解く親切な「気にしないで」表現。",
+    "acceptableAnswers": [
+      "санаа зоволтгүй",
+      "санаа бүү зов"
+    ]
   }
 ];
-
-export const INITIAL_VOCABULARY = initialVocabulary;

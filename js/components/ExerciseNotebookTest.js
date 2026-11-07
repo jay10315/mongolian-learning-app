@@ -1,10 +1,8 @@
-// モンゴル語練習ノート（МОНГОЛ ХЭЛНИЙ ДАСГАЛЫН ДЭВТЭР）学習コンポーネント
-// 教科書全18課の練習問題を課ごとに学習可能
-// 正解・不正解問わず超詳細な解説（文法、語尾、母音調和、語順、他表現との違い）を常時表示
+// 練習ノート問題集コンポーネント（全18課・1242問完全網羅・出題数選択・PC配列キーボード・4択対応）
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { GamificationService } from '../services/gamification.js';
-import { SoundEffects, SPECIAL_CYRILLIC_BAR, shuffleArray } from '../utils/helpers.js';
+import { SoundEffects, shuffleArray, isFuzzyMatch, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant } from '../utils/helpers.js';
 import { exerciseNotebookQuizzes } from '../data/exerciseNotebookQuizzes.js';
 
 export class ExerciseNotebookTestComponent {
@@ -15,6 +13,7 @@ export class ExerciseNotebookTestComponent {
   static state = {
     view: 'lesson_select', // 'lesson_select' | 'quiz' | 'result'
     selectedLesson: 'all', // 'all' | 1 .. 18
+    selectedCount: 10,     // 5 | 10 | 20 | 'all'
     quizzes: [],
     currentIndex: 0,
     currentQuiz: null,
@@ -23,6 +22,7 @@ export class ExerciseNotebookTestComponent {
     combo: 0,
     maxCombo: 0,
     userAnswer: '',
+    selectedChoice: null,
     isAnswered: false,
     isCorrect: false,
     results: []
@@ -43,7 +43,7 @@ export class ExerciseNotebookTestComponent {
   }
 
   // ==========================================
-  // 1. 課選択画面
+  // 1. 課選択＆出題数設定画面
   // ==========================================
   static renderLessonSelect() {
     const lessons = exerciseNotebookQuizzes || [];
@@ -53,74 +53,121 @@ export class ExerciseNotebookTestComponent {
       const qCount = l.quizzes ? l.quizzes.length : 0;
       return `
         <div class="lesson-card bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-lesson="${l.lesson}">
-          <div class="space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-black text-xs">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300">
                 第${l.lesson}課
               </span>
-              <span class="text-xs font-bold text-slate-500 dark:text-slate-400">
-                ${qCount}問収録
+              <span class="text-xs text-slate-500 dark:text-slate-400 font-bold">
+                全${qCount}問
               </span>
             </div>
-            <h3 class="font-black text-slate-900 dark:text-white text-sm sm:text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <h4 class="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
               ${l.lessonTitle}
-            </h3>
+            </h4>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
-            <span class="text-slate-500 font-bold">筆記・空欄補充・文法</span>
-            <span class="font-black text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-              スタート <span>→</span>
-            </span>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs font-bold text-indigo-600 dark:text-indigo-400">
+            <span>この課を特訓する</span>
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
           </div>
         </div>
       `;
     }).join('');
 
     this.container.innerHTML = `
-      <div class="animate-fade-in max-w-4xl mx-auto px-4 py-4 space-y-6">
+      <div class="max-w-4xl mx-auto px-4 py-5 space-y-6 animate-fade-in">
         
-        <!-- ヘッダーバナー -->
-        <div class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-          <div class="relative z-10 space-y-3">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold text-indigo-100">
-              <span>📓</span> МОНГОЛ ХЭЛНИЙ ДАСГАЛЫН ДЭВТЭР
+        <!-- ヘッダー -->
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-2xl font-bold shadow-md">
+              📓
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black tracking-tight">
-              練習ノート問題集（全18課）
-            </h1>
-            <p class="text-xs sm:text-sm text-indigo-100/90 leading-relaxed max-w-2xl font-bold">
-              教科書と直結した練習ノートの全問題を解く専用モードです。筆記練習、空欄補充、疑問助詞、格変化、文の書き換えを網羅。<br>
-              正解・不正解問わず、<strong class="text-amber-300">文法・語尾・母音調和・構文の超詳細な解説</strong>をすべて確認できます！
-            </p>
-            <div class="pt-2 flex flex-wrap gap-2.5">
-              <button type="button" class="btn-start-all-lessons px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
-                <span>⚡</span> 全18課からランダム出題（10問）
-              </button>
+            <div>
+              <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                練習ノート問題集
+                <span class="text-xs px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold">全18課・1,242問</span>
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+                教材原本（МОНГОЛ ХЭЛНИЙ ДАСГАЛЫН ДЭВТЭР）の全練習問題を完全網羅
+              </p>
             </div>
           </div>
-          <div class="absolute -right-10 -bottom-10 text-9xl opacity-10 select-none pointer-events-none">📓</div>
+          <button type="button" id="btn-back-home" class="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all cursor-pointer">
+            ✕ ホームへ
+          </button>
+        </div>
+
+        <!-- 出題設定パネル（出題数選択） -->
+        <div class="bg-gradient-to-br from-indigo-50/70 to-purple-50/60 dark:from-slate-800 dark:to-slate-800/80 rounded-2xl p-4 sm:p-5 border border-indigo-200 dark:border-slate-700 shadow-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <span>🎯</span> 1回のセッションの出題数を選択
+            </span>
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-bold">選択中: ${this.state.selectedCount === 'all' ? '全問' : this.state.selectedCount + '問'}</span>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2">
+            ${[5, 10, 20, 'all'].map(countVal => {
+              const isActive = this.state.selectedCount === countVal;
+              const label = countVal === 'all' ? '全問' : `${countVal}問`;
+              return `
+                <button type="button" class="btn-select-count py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm transition-all shadow-2xs active:scale-95 cursor-pointer ${isActive ? 'bg-indigo-600 text-white border-2 border-indigo-600 shadow-md' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 hover:bg-slate-50'}" data-count="${countVal}">
+                  ${label}
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- 全課ランダム総合チャレンジ -->
+        <div class="bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 rounded-2xl p-5 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="space-y-1 text-center sm:text-left">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-xs font-bold">
+              <span>⚡</span> 実力診断モード
+            </div>
+            <h3 class="text-lg font-black">全18課からランダム総合テスト</h3>
+            <p class="text-xs text-indigo-100 font-medium">全${totalQuizCount}問の中から選択した出題数で総合実力テストを実施します。</p>
+          </div>
+          <button type="button" id="btn-start-random-all" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-white text-indigo-900 font-black text-sm shadow-md hover:bg-indigo-50 active:scale-95 transition-all cursor-pointer whitespace-nowrap">
+            🚀 総合テストを開始
+          </button>
         </div>
 
         <!-- 課一覧グリッド -->
         <div class="space-y-3">
-          <div class="flex items-center justify-between">
-            <h2 class="font-black text-slate-900 dark:text-white text-base sm:text-lg flex items-center gap-2">
-              <span>📚</span> 学習する課を選択
-            </h2>
-            <span class="text-xs font-bold text-slate-500">全${lessons.length}課・計${totalQuizCount}問</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+          <h3 class="font-black text-slate-900 dark:text-white text-base flex items-center gap-2">
+            <span>📚</span> 課を選んで集中特訓（全18課）
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
             ${lessonCards}
           </div>
         </div>
+
       </div>
     `;
 
     // イベントバインド
-    const btnAll = this.container.querySelector('.btn-start-all-lessons');
-    if (btnAll) {
-      btnAll.addEventListener('click', () => {
+    const btnHome = this.container.querySelector('#btn-back-home');
+    if (btnHome) {
+      btnHome.addEventListener('click', () => {
+        if (this.onNavigate) this.onNavigate('home');
+      });
+    }
+
+    // 出題数選択ボタン
+    this.container.querySelectorAll('.btn-select-count').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const c = btn.getAttribute('data-count');
+        this.state.selectedCount = c === 'all' ? 'all' : parseInt(c, 10);
+        this.renderLessonSelect();
+      });
+    });
+
+    const btnRandomAll = this.container.querySelector('#btn-start-random-all');
+    if (btnRandomAll) {
+      btnRandomAll.addEventListener('click', () => {
         this.startSession('all');
       });
     }
@@ -144,7 +191,7 @@ export class ExerciseNotebookTestComponent {
       (exerciseNotebookQuizzes || []).forEach(l => {
         if (l.quizzes) pool.push(...l.quizzes.map(q => ({ ...q, lessonNumber: l.lesson, lessonTitle: l.lessonTitle })));
       });
-      pool = shuffleArray(pool).slice(0, 10);
+      pool = shuffleArray(pool);
     } else {
       const found = (exerciseNotebookQuizzes || []).find(l => l.lesson === lessonChoice);
       if (found && found.quizzes) {
@@ -155,6 +202,17 @@ export class ExerciseNotebookTestComponent {
     if (pool.length === 0) {
       alert('問題が準備されていません。');
       return;
+    }
+
+    // 出題数制限（5問, 10問, 20問, 全問）
+    const targetCount = this.state.selectedCount;
+    if (targetCount !== 'all' && typeof targetCount === 'number') {
+      if (lessonChoice !== 'all') {
+        // 特定の課の場合：ランダム抽出で指定数
+        pool = shuffleArray(pool).slice(0, Math.min(targetCount, pool.length));
+      } else {
+        pool = pool.slice(0, Math.min(targetCount, pool.length));
+      }
     }
 
     this.state.quizzes = pool;
@@ -171,117 +229,134 @@ export class ExerciseNotebookTestComponent {
 
   static initQuiz(index) {
     this.state.currentIndex = index;
-    this.state.currentQuiz = this.state.quizzes[index] || null;
+    this.state.currentQuiz = this.state.quizzes[index];
     this.state.userAnswer = '';
+    this.state.selectedChoice = null;
     this.state.isAnswered = false;
     this.state.isCorrect = false;
+
+    // 4択選択肢のシャッフル準備（choices または options に両対応）
+    const q = this.state.currentQuiz;
+    const rawList = q ? (q.choices || q.options) : null;
+    if (q && q.exerciseType === 'choice' && Array.isArray(rawList) && rawList.length > 0) {
+      q.shuffledChoices = shuffleArray([...rawList]);
+    }
   }
 
   // ==========================================
-  // 3. クイズ画面のレンダリング
+  // 3. クイズ出題画面（4択 ＆ 記述式両対応）
   // ==========================================
   static renderQuiz() {
     const q = this.state.currentQuiz;
-    if (!q) {
-      this.finishSession();
-      return;
-    }
-
+    const idx = this.state.currentIndex;
     const total = this.state.quizzes.length;
-    const currentNum = this.state.currentIndex + 1;
-    const progressPercent = Math.round((currentNum / total) * 100);
+    const progress = Math.round(((idx + 1) / total) * 100);
 
-    const isInput = q.exerciseType === 'input';
-    const hasOptions = Array.isArray(q.options) && q.options.length > 0;
+    const isChoice = q.exerciseType === 'choice' && Array.isArray(q.shuffledChoices) && q.shuffledChoices.length > 0;
 
     let inputAreaHTML = '';
-    if (this.state.isAnswered) {
-      // 解答済みの結果＆超詳細解説表示
-      const badgeClass = this.state.isCorrect 
-        ? 'bg-emerald-500 text-white' 
-        : 'bg-rose-500 text-white';
-      const badgeIcon = this.state.isCorrect ? '⭕ 正解！' : '❌ 不正解';
+
+    if (isChoice) {
+      // 4択選択肢ボタン
+      const choiceButtons = q.shuffledChoices.map((c, cIdx) => {
+        let btnClass = "bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:border-indigo-500 hover:bg-indigo-50/50";
+        if (this.state.isAnswered) {
+          if (c === q.correctAnswer) {
+            btnClass = "bg-emerald-50 dark:bg-emerald-950/50 border-2 border-emerald-500 text-emerald-900 dark:text-emerald-200 font-bold";
+          } else if (c === this.state.selectedChoice && !this.state.isCorrect) {
+            btnClass = "bg-rose-50 dark:bg-rose-950/50 border-2 border-rose-500 text-rose-900 dark:text-rose-200 line-through";
+          } else {
+            btnClass = "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-400 opacity-60";
+          }
+        }
+
+        const labelLetter = String.fromCharCode(65 + cIdx);
+
+        return `
+          <button type="button" class="btn-choice-option w-full p-3.5 sm:p-4 rounded-2xl text-left font-bold text-sm sm:text-base flex items-start gap-3 transition-all shadow-xs active:scale-98 cursor-pointer ${btnClass}" data-choice="${c.replace(/"/g, '&quot;')}" ${this.state.isAnswered ? 'disabled' : ''}>
+            <span class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-black text-xs flex items-center justify-center shrink-0">
+              ${labelLetter}
+            </span>
+            <span class="cyrillic-text leading-relaxed flex-1">${c}</span>
+          </button>
+        `;
+      }).join('');
 
       inputAreaHTML = `
-        <div class="space-y-4 animate-fade-in">
-          <!-- 正否バナー -->
-          <div class="p-4 rounded-2xl ${this.state.isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-500' : 'bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-500'} flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="px-3 py-1 rounded-xl ${badgeClass} font-black text-sm">
-                ${badgeIcon}
-              </span>
-              <span class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-                あなたの回答: <strong class="font-black">${this.state.userAnswer || '（未入力）'}</strong>
-              </span>
-            </div>
-            ${this.state.isCorrect ? `<span class="text-xs font-black text-emerald-600 dark:text-emerald-400">+10 PTS / +5 XP</span>` : ''}
+        <div class="space-y-2.5">
+          <div class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">
+            正しいと思う選択肢を1つ選んでタップしてください:
           </div>
-
-          <!-- 正解の提示 -->
-          <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 space-y-1">
-            <div class="text-xs font-bold text-slate-500 dark:text-slate-400">正しい解答:</div>
-            <div class="font-black text-indigo-600 dark:text-indigo-400 text-xl cyrillic-text">
-              ${q.correctAnswer}
-            </div>
+          <div class="grid grid-cols-1 gap-2.5">
+            ${choiceButtons}
           </div>
-
-          <!-- ★ 超詳細解説エリア（正解・不正解問わず必ず表示） -->
-          <div class="p-5 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50/70 dark:from-slate-800 dark:to-slate-800/90 border-2 border-amber-300 dark:border-amber-500/50 space-y-3 shadow-sm">
-            <div class="flex items-center justify-between">
-              <span class="font-black text-amber-950 dark:text-amber-300 text-sm sm:text-base flex items-center gap-1.5">
-                <span>📖</span> 文法・語尾・正解の徹底解説:
-              </span>
-              <button type="button" class="btn-play-answer-audio px-2.5 py-1 rounded-lg bg-amber-200 dark:bg-amber-900/60 hover:bg-amber-300 text-amber-950 dark:text-amber-200 font-bold text-xs flex items-center gap-1">
-                <span>🔊</span> 発音を聞く
-              </button>
-            </div>
-            <div class="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line font-medium border-t border-amber-200 dark:border-slate-700 pt-2.5">
-              ${q.explanation}
-            </div>
-          </div>
-
-          <!-- 次へボタン -->
-          <div class="pt-2 flex justify-end">
-            <button type="button" class="btn-next-quiz px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-sm sm:text-base shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2">
-              <span>${currentNum >= total ? '結果発表を見る' : '次の問題へ'}</span>
-              <span>→</span>
-            </button>
-          </div>
-        </div>
-      `;
-    } else if (hasOptions && !isInput) {
-      // 選択肢形式
-      const optionButtons = q.options.map((opt, idx) => `
-        <button type="button" class="btn-option w-full p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/40 text-left font-black text-sm sm:text-base text-slate-900 dark:text-white transition-all active:scale-98 shadow-2xs flex items-center gap-3 cursor-pointer group" data-answer="${opt}">
-          <span class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 group-hover:bg-indigo-500 group-hover:text-white transition-colors flex items-center justify-center text-xs font-black">
-            ${idx + 1}
-          </span>
-          <span class="cyrillic-text flex-1">${opt}</span>
-        </button>
-      `).join('');
-
-      inputAreaHTML = `
-        <div class="space-y-3 pt-2">
-          ${optionButtons}
         </div>
       `;
     } else {
-      // キリル文字入力形式
+      // 記述式入力エリア（PC配列キーボード＆特有文字パレット統合）
       inputAreaHTML = `
-        <div class="space-y-4 pt-2">
+        <div class="space-y-3">
           <div class="relative">
-            <input type="text" class="quiz-input-field w-full p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 focus:border-indigo-500 dark:focus:border-indigo-400 text-slate-900 dark:text-white font-black text-base sm:text-lg cyrillic-text outline-hidden shadow-inner" placeholder="キリル文字で解答を入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <input type="text" id="input-exercise-answer" 
+              class="w-full text-base sm:text-lg p-3.5 rounded-2xl border-2 border-slate-300 dark:border-slate-600 focus:border-indigo-600 focus:outline-hidden text-center font-bold text-slate-900 dark:text-white cyrillic-text bg-white dark:bg-slate-800 shadow-inner" 
+              placeholder="キリル文字で解答を入力..." 
+              value="${this.state.userAnswer}"
+              data-cyrillic="true"
+              autocomplete="off" 
+              autocapitalize="none"
+              spellcheck="false"
+              ${this.state.isAnswered ? 'disabled' : ''}>
           </div>
 
-          <!-- キリル文字バー -->
-          <div class="pt-1">
-            ${SPECIAL_CYRILLIC_BAR}
+          <!-- PC標準モンゴル語キーボード＆特有文字パレット（刷新版） -->
+          ${!this.state.isAnswered ? renderCyrillicInputAssistantHTML('input-exercise-answer', true) : ''}
+
+          ${!this.state.isAnswered ? `
+            <div class="pt-2 flex justify-end">
+              <button type="button" class="btn-submit-input px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-extrabold text-sm shadow-md active:scale-95 transition-all flex items-center gap-2 cursor-pointer">
+                <span>回答する（Enter）</span>
+                <span>✓</span>
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // 解答後フィードバック・解説エリア
+    let feedbackHTML = '';
+    if (this.state.isAnswered) {
+      feedbackHTML = `
+        <div class="animate-fade-in p-4 sm:p-5 rounded-2xl border-2 ${this.state.isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-900 text-rose-950 dark:text-rose-100'} shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${this.state.isCorrect ? '🎉' : '❌'}</span>
+              <h4 class="font-black text-base sm:text-lg">
+                ${this.state.isCorrect ? '見事正解です！' : '惜しい！不正解です'}
+              </h4>
+            </div>
+            <div class="text-xs font-bold px-2 py-0.5 rounded-full ${this.state.isCorrect ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900'}">
+              ${this.state.isCorrect ? `+10 PTS | +6 XP` : `+0 PTS`}
+            </div>
           </div>
 
-          <div class="pt-2 flex justify-end">
-            <button type="button" class="btn-submit-input px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm sm:text-base shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2">
-              <span>回答する（Enter）</span>
-              <span>✓</span>
+          <div class="text-xs sm:text-sm font-medium space-y-1 bg-white/70 dark:bg-slate-800/70 p-3 rounded-xl border border-slate-200/60 dark:border-slate-700">
+            <div><strong>あなたの回答:</strong> <span class="font-bold ${this.state.isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}">${this.state.userAnswer || this.state.selectedChoice || '（未入力）'}</span></div>
+            <div><strong>正しい解答:</strong> <span class="font-extrabold text-indigo-700 dark:text-indigo-400 cyrillic-text">${q.correctAnswer}</span></div>
+          </div>
+
+          <!-- 詳細解説 -->
+          <div class="text-xs leading-relaxed text-slate-700 dark:text-slate-300 bg-white/90 dark:bg-slate-800/90 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 whitespace-pre-wrap">
+            <div class="font-bold text-slate-900 dark:text-white flex items-center gap-1 mb-1">
+              <span>📖</span> 文法・語尾・正解の徹底解説:
+            </div>
+            ${q.explanation || '文法規則および語尾の接続形式を確認してください。'}
+          </div>
+
+          <div class="flex justify-end pt-1">
+            <button type="button" class="btn-next-quiz px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-sm shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>${idx + 1 >= total ? '結果発表を見る' : '次の問題へ'}</span>
+              <span>→</span>
             </button>
           </div>
         </div>
@@ -289,191 +364,200 @@ export class ExerciseNotebookTestComponent {
     }
 
     this.container.innerHTML = `
-      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-4 space-y-5">
+      <div class="max-w-2xl mx-auto px-4 py-4 space-y-4 animate-fade-in">
         
-        <!-- ナビゲーションバー -->
-        <div class="flex items-center justify-between text-xs font-bold text-slate-500">
-          <button type="button" class="btn-back-to-lessons hover:text-slate-800 dark:hover:text-slate-200 transition-colors flex items-center gap-1 cursor-pointer">
-            <span>←</span> 課一覧に戻る
-          </button>
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-black">
-              第${q.lessonNumber}課
+        <!-- ヘッダー・進捗バー -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
+            <span class="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
+              <span>第${q.lessonNumber || this.state.selectedLesson}課</span>
+              <span>•</span>
+              <span>${q.exerciseName || '練習問題'}</span>
             </span>
-            <span>問題 ${currentNum} / ${total}</span>
+            <div class="flex items-center gap-3">
+              <span>問題 ${idx + 1} / ${total}</span>
+              <button type="button" id="btn-quit-session" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer">中断</button>
+            </div>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-full transition-all duration-300" style="width: ${progress}%"></div>
           </div>
         </div>
 
-        <!-- プログレスバー -->
-        <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
-          <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full transition-all duration-300" style="width: ${progressPercent}%;"></div>
-        </div>
-
-        <!-- スコア・コンボ -->
-        <div class="flex items-center justify-between text-xs font-bold px-1">
-          <span class="text-amber-600 dark:text-amber-400 font-black">
-            スコア: ${this.state.score} PTS ｜ +${this.state.xpEarned} XP
-          </span>
+        <!-- スコア・コンボ・XP情報 -->
+        <div class="flex items-center justify-between text-xs font-black text-slate-600 dark:text-slate-300 px-1">
+          <div class="flex items-center gap-2">
+            <span class="text-amber-500">スコア: ${this.state.score} PTS</span>
+            <span>|</span>
+            <span class="text-emerald-500">+${this.state.xpEarned} XP</span>
+          </div>
           ${this.state.combo > 1 ? `
-            <span class="text-orange-500 font-black animate-bounce inline-flex items-center gap-1">
+            <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-black animate-bounce">
               🔥 ${this.state.combo} 連続正解！
             </span>
           ` : ''}
         </div>
 
         <!-- 問題カード -->
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-7 border-2 border-slate-200 dark:border-slate-700 shadow-md space-y-4">
-          <div class="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400">
-            ${q.prompt}
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 sm:p-7 border-2 border-indigo-100 dark:border-slate-700 shadow-sm space-y-4">
+          <div class="text-xs sm:text-sm font-bold text-indigo-700 dark:text-indigo-300 leading-relaxed whitespace-pre-wrap">
+            ${q.prompt || '指示に従って正しい解答を入力または選択してください。'}
           </div>
 
-          <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-relaxed cyrillic-text py-2">
+          <div class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white cyrillic-text leading-relaxed tracking-wide">
             ${q.question}
+          </div>
+
+          <div class="pt-2">
+            ${inputAreaHTML}
           </div>
         </div>
 
-        <!-- 回答入力または解説エリア -->
-        ${inputAreaHTML}
+        <!-- フィードバック -->
+        ${feedbackHTML}
 
       </div>
     `;
 
-    // イベントバインド
-    const btnBack = this.container.querySelector('.btn-back-to-lessons');
-    if (btnBack) {
-      btnBack.addEventListener('click', () => {
-        if (confirm('学習を中断して課一覧に戻りますか？')) {
+    this.bindQuizEvents();
+  }
+
+  // ==========================================
+  // 4. イベントバインド
+  // ==========================================
+  static bindQuizEvents() {
+    const q = this.state.currentQuiz;
+    const isChoice = q.exerciseType === 'choice' && Array.isArray(q.shuffledChoices) && q.shuffledChoices.length > 0;
+
+    // 中断ボタン
+    const btnQuit = this.container.querySelector('#btn-quit-session');
+    if (btnQuit) {
+      btnQuit.addEventListener('click', () => {
+        if (confirm('練習ノートを中断してメニューに戻りますか？')) {
           this.state.view = 'lesson_select';
           this.renderLessonSelect();
         }
       });
     }
 
-    if (this.state.isAnswered) {
-      const btnNext = this.container.querySelector('.btn-next-quiz');
-      if (btnNext) {
-        btnNext.addEventListener('click', () => {
-          if (this.state.currentIndex + 1 < this.state.quizzes.length) {
-            this.initQuiz(this.state.currentIndex + 1);
-            this.renderQuiz();
-          } else {
-            this.finishSession();
-          }
-        });
-      }
-
-      const btnAudio = this.container.querySelector('.btn-play-answer-audio');
-      if (btnAudio) {
-        btnAudio.addEventListener('click', () => {
-          const speakText = q.correctAnswer || q.question.replace(/\[____\]/g, q.correctAnswer);
-          SpeechService.speak(speakText);
-        });
-      }
-    } else if (hasOptions && !isInput) {
-      this.container.querySelectorAll('.btn-option').forEach(btn => {
+    if (isChoice) {
+      // 4択選択イベント
+      this.container.querySelectorAll('.btn-choice-option').forEach(btn => {
         btn.addEventListener('click', () => {
-          const ans = btn.getAttribute('data-answer');
-          this.handleAnswer(ans);
+          if (this.state.isAnswered) return;
+          const choice = btn.getAttribute('data-choice');
+          this.state.selectedChoice = choice;
+          this.checkChoiceAnswer(choice);
         });
       });
     } else {
-      const inputField = this.container.querySelector('.quiz-input-field');
-      const btnSubmit = this.container.querySelector('.btn-submit-input');
-      this.activeInput = inputField;
+      // 記述式入力イベント
+      const input = this.container.querySelector('#input-exercise-answer');
+      if (input) {
+        if (!this.state.isAnswered) {
+          input.focus();
+        }
 
-      if (inputField) {
-        inputField.focus();
-        inputField.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !this.state.isAnswered) {
             e.preventDefault();
-            this.handleAnswer(inputField.value);
+            this.state.userAnswer = input.value.trim();
+            this.checkInputAnswer(this.state.userAnswer);
           }
         });
+
+        input.addEventListener('input', (e) => {
+          this.state.userAnswer = e.target.value;
+        });
+
+        // PC標準モンゴル語キーボード＆特有文字パレットのイベントバインド
+        bindCyrillicInputAssistant(this.container, '#input-exercise-answer');
       }
 
-      if (btnSubmit && inputField) {
+      const btnSubmit = this.container.querySelector('.btn-submit-input');
+      if (btnSubmit) {
         btnSubmit.addEventListener('click', () => {
-          this.handleAnswer(inputField.value);
+          if (this.state.isAnswered) return;
+          const val = input ? input.value.trim() : this.state.userAnswer;
+          this.state.userAnswer = val;
+          this.checkInputAnswer(val);
         });
       }
+    }
 
-      // キリル文字パレット
-      this.container.querySelectorAll('.btn-insert-char').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          const char = btn.getAttribute('data-char');
-          if (inputField && char) {
-            const start = inputField.selectionStart || inputField.value.length;
-            const end = inputField.selectionEnd || inputField.value.length;
-            const val = inputField.value;
-            inputField.value = val.substring(0, start) + char + val.substring(end);
-            inputField.selectionStart = inputField.selectionEnd = start + char.length;
-            inputField.focus();
-          }
-        });
+    // 次へボタン
+    const btnNext = this.container.querySelector('.btn-next-quiz');
+    if (btnNext) {
+      btnNext.addEventListener('click', () => {
+        if (this.state.currentIndex + 1 >= this.state.quizzes.length) {
+          this.state.view = 'result';
+          this.renderResult();
+        } else {
+          this.initQuiz(this.state.currentIndex + 1);
+          this.renderQuiz();
+        }
       });
     }
   }
 
   // ==========================================
-  // 4. 解答判定
+  // 5. 判定処理（柔軟な文法・スペル・別表現受容）
   // ==========================================
-  static handleAnswer(answer) {
+  static checkChoiceAnswer(choice) {
     const q = this.state.currentQuiz;
-    if (!q || this.state.isAnswered) return;
+    const isCorrect = isFuzzyMatch(choice, q.correctAnswer);
+    this.handleAnswerResult(isCorrect, choice);
+  }
 
-    const trimmedUser = (answer || '').trim();
-    const cleanUser = trimmedUser.toLowerCase().replace(/[.,!?\s]/g, '');
-    const cleanCorrect = (q.correctAnswer || '').toLowerCase().replace(/[.,!?\s]/g, '');
+  static checkInputAnswer(val) {
+    const q = this.state.currentQuiz;
+    let isCorrect = false;
 
-    let isCorrect = (cleanUser === cleanCorrect);
-    if (!isCorrect && Array.isArray(q.acceptableAnswers)) {
-      isCorrect = q.acceptableAnswers.some(ans => cleanUser === ans.toLowerCase().replace(/[.,!?\s]/g, ''));
+    // 許容回答一覧との照合（文法・スペルが合っている別表現を完全受容）
+    if (q.acceptableAnswers && Array.isArray(q.acceptableAnswers)) {
+      isCorrect = q.acceptableAnswers.some(ans => isFuzzyMatch(val, ans));
+    }
+    if (!isCorrect) {
+      isCorrect = isFuzzyMatch(val, q.correctAnswer);
     }
 
-    this.state.userAnswer = trimmedUser;
+    this.handleAnswerResult(isCorrect, val);
+  }
+
+  static handleAnswerResult(isCorrect, answeredVal) {
     this.state.isAnswered = true;
     this.state.isCorrect = isCorrect;
 
+    const q = this.state.currentQuiz;
+
     if (isCorrect) {
       SoundEffects.playCorrect();
-      this.state.score += 10;
-      this.state.xpEarned += 5;
       this.state.combo += 1;
       if (this.state.combo > this.state.maxCombo) {
         this.state.maxCombo = this.state.combo;
       }
-      try {
-        if (typeof GamificationService !== 'undefined' && GamificationService.addXp) {
-          GamificationService.addXp(5);
-        }
-      } catch (_) {}
+      this.state.score += 10;
+      this.state.xpEarned += 6;
+      GamificationService.addXP(6);
     } else {
       SoundEffects.playWrong();
       this.state.combo = 0;
-      this.state.xpEarned += 1;
-      try {
-        if (typeof GamificationService !== 'undefined' && GamificationService.addXp) {
-          GamificationService.addXp(1);
-        }
-      } catch (_) {}
 
-      // 間違いノートに自動記録
-      try {
-        StorageService.recordMistake({
-          question: `【第${q.lessonNumber}課 練習ノート】${q.question}`,
-          userAnswer: trimmedUser || '（未入力）',
-          correctAnswer: q.correctAnswer,
-          type: 'grammar',
-          category: `練習ノート 第${q.lessonNumber}課`,
-          explanation: q.explanation
-        });
-      } catch (_) {}
+      // 間違い帳に記録（復習ノートで再特訓可能）
+      StorageService.recordMistake({
+        type: 'exercise_notebook',
+        question: q.question,
+        prompt: q.prompt,
+        correctAnswer: q.correctAnswer,
+        userAnswer: answeredVal,
+        explanation: q.explanation,
+        lesson: q.lessonNumber
+      });
     }
 
     this.state.results.push({
       quiz: q,
-      userAnswer: trimmedUser,
+      userAnswer: answeredVal,
       isCorrect: isCorrect
     });
 
@@ -481,88 +565,65 @@ export class ExerciseNotebookTestComponent {
   }
 
   // ==========================================
-  // 5. 結果発表画面
+  // 6. 結果発表画面
   // ==========================================
-  static finishSession() {
-    this.state.view = 'result';
-    this.renderResult();
-  }
-
   static renderResult() {
     const total = this.state.results.length;
     const correctCount = this.state.results.filter(r => r.isCorrect).length;
     const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
 
-    const listHTML = this.state.results.map((r, idx) => `
-      <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 ${r.isCorrect ? 'border-emerald-200 dark:border-emerald-900/60' : 'border-rose-200 dark:border-rose-900/60'} space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-slate-500">
-            問題 ${idx + 1} ｜ 第${r.quiz.lessonNumber}課
-          </span>
-          <span class="px-2.5 py-0.5 rounded-full ${r.isCorrect ? 'bg-emerald-100 text-emerald-800 font-black' : 'bg-rose-100 text-rose-800 font-black'} text-xs">
-            ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
-          </span>
+    const listHTML = this.state.results.map((r, i) => `
+      <div class="p-3.5 sm:p-4 rounded-xl border ${r.isCorrect ? 'bg-emerald-50/70 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800' : 'bg-rose-50/70 border-rose-200 dark:bg-rose-950/30 dark:border-rose-900'} space-y-1.5 text-xs sm:text-sm">
+        <div class="flex items-center justify-between font-bold">
+          <span class="text-slate-500">第${i+1}問 (${r.quiz.exerciseName || '練習問題'})</span>
+          <span class="${r.isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}">${r.isCorrect ? '✓ 正解' : '✗ 不正解'}</span>
         </div>
-        <div class="font-black text-slate-900 dark:text-white text-sm cyrillic-text">
-          ${r.quiz.question}
-        </div>
-        <div class="text-xs space-y-1">
-          <div class="text-slate-600 dark:text-slate-300">
-            あなたの回答: <strong class="${r.isCorrect ? 'text-emerald-600' : 'text-rose-600'}">${r.userAnswer || '（未入力）'}</strong>
-          </div>
-          ${!r.isCorrect ? `
-            <div class="text-indigo-600 dark:text-indigo-400 font-bold">
-              模範解答: ${r.quiz.correctAnswer}
-            </div>
-          ` : ''}
-        </div>
-        <div class="p-2.5 rounded-xl bg-amber-50 dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 whitespace-pre-line font-medium leading-relaxed">
-          ${r.quiz.explanation}
+        <div class="font-black text-slate-900 dark:text-white cyrillic-text">${r.quiz.question}</div>
+        <div class="text-slate-600 dark:text-slate-400">
+          あなたの回答: <span class="font-bold">${r.userAnswer || '（未入力）'}</span> ｜ 
+          正解: <span class="font-bold text-indigo-700 dark:text-indigo-400 cyrillic-text">${r.quiz.correctAnswer}</span>
         </div>
       </div>
     `).join('');
 
     this.container.innerHTML = `
-      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <div class="max-w-xl mx-auto px-4 py-6 space-y-5 animate-fade-in">
         
-        <!-- サマリーカード -->
-        <div class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl text-center space-y-4">
-          <div class="text-4xl">🎉</div>
-          <h2 class="text-2xl sm:text-3xl font-black">
-            練習ノート完了！
-          </h2>
-          <div class="grid grid-cols-3 gap-3 pt-2 max-w-md mx-auto text-center">
-            <div class="p-3 rounded-2xl bg-white/20 backdrop-blur-md">
-              <div class="text-2xl font-black">${correctCount}/${total}</div>
-              <div class="text-[11px] text-indigo-100 font-bold">正解数</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-white/20 backdrop-blur-md">
-              <div class="text-2xl font-black">${accuracy}%</div>
-              <div class="text-[11px] text-indigo-100 font-bold">正解率</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-white/20 backdrop-blur-md">
-              <div class="text-2xl font-black">+${this.state.xpEarned}</div>
-              <div class="text-[11px] text-indigo-100 font-bold">獲得XP</div>
-            </div>
+        <div class="text-center space-y-2">
+          <div class="text-4xl animate-bounce">${accuracy >= 80 ? '🏆' : (accuracy >= 50 ? '🌟' : '💪')}</div>
+          <h2 class="text-2xl font-black text-slate-900 dark:text-white">練習ノートセッション完了！</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">お疲れ様でした！練習成果を確認しましょう。</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="p-3.5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs">
+            <div class="text-xs text-slate-500 font-bold">正答率</div>
+            <div class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400">${accuracy}%</div>
+          </div>
+          <div class="p-3.5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs">
+            <div class="text-xs text-slate-500 font-bold">正解数</div>
+            <div class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">${correctCount} / ${total}</div>
+          </div>
+          <div class="p-3.5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs">
+            <div class="text-xs text-slate-500 font-bold">最大コンボ</div>
+            <div class="text-xl sm:text-2xl font-black text-amber-500">${this.state.maxCombo}</div>
           </div>
         </div>
 
-        <!-- アクションボタン -->
-        <div class="flex flex-wrap gap-3 justify-center">
-          <button type="button" class="btn-retry-session px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-sm shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-2">
-            <span>🔄</span> もう一度挑戦
+        <div class="flex items-center gap-2 pt-2">
+          <button type="button" class="btn-retry-session flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm rounded-xl shadow-md active:scale-95 transition-all cursor-pointer">
+            🔄 もう一度特訓する
           </button>
-          <button type="button" class="btn-back-to-menu px-6 py-3 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 hover:bg-slate-100 text-slate-800 dark:text-slate-200 font-black text-sm shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-2">
-            <span>📚</span> 課の選択に戻る
+          <button type="button" class="btn-back-to-menu flex-1 py-3 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-800 dark:text-slate-100 font-black text-sm rounded-xl transition-all cursor-pointer">
+            📋 課選択へ戻る
           </button>
         </div>
 
-        <!-- 振り返りリスト -->
-        <div class="space-y-3 pt-2">
+        <div class="space-y-3 pt-3">
           <h3 class="font-black text-slate-900 dark:text-white text-base flex items-center gap-2">
-            <span>📝</span> 解答と全問解説
+            <span>📝</span> 解答と全問解説一覧
           </h3>
-          <div class="space-y-3">
+          <div class="space-y-2.5">
             ${listHTML}
           </div>
         </div>
@@ -570,7 +631,6 @@ export class ExerciseNotebookTestComponent {
       </div>
     `;
 
-    // イベントバインド
     const btnRetry = this.container.querySelector('.btn-retry-session');
     if (btnRetry) {
       btnRetry.addEventListener('click', () => {

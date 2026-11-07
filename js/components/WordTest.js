@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR, isPronunciationCautionWord } from '../utils/helpers.js';
+import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR, isPronunciationCautionWord, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
@@ -12,6 +12,7 @@ export class WordTestComponent {
     settings: {
       count: 10,
       mode: 'ja_to_mn', // 'ja_to_mn' | 'mn_to_ja' | 'choice_4' | 'root_input'
+      choiceDirection: 'mn_to_ja', // 'ja_to_mn' | 'mn_to_ja'
       category: 'all',
       filter: 'all', // 'all' | 'mistakes_only' | 'unlearned'
       priority: 'all' // 'all' | '★★★' | '★★'
@@ -77,6 +78,22 @@ export class WordTestComponent {
                 <input type="radio" name="mode" value="choice_4" ${this.state.settings.mode === 'choice_4' ? 'checked' : ''} class="hidden">
                 <span>🎯 4択選択問題（タップで解答）</span>
               </label>
+            </div>
+
+            <!-- 4択の出題方向選択（要件7） -->
+            <div id="choice-direction-panel" class="${this.state.settings.mode === 'choice_4' ? 'block' : 'hidden'} mt-3 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1.5 animate-fade-in">
+              <span class="text-xs font-bold text-slate-700 dark:text-slate-300 block">🎯 4択問題の出題方向:</span>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <label class="flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition-all ${this.state.settings.choiceDirection === 'ja_to_mn' ? 'bg-emerald-600 text-white font-bold border-emerald-600 shadow-xs' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600'}">
+                  <input type="radio" name="choiceDirection" value="ja_to_mn" ${this.state.settings.choiceDirection === 'ja_to_mn' ? 'checked' : ''} class="hidden">
+                  <span>🇯🇵 日本語 → 🇲🇳 モンゴル語</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition-all ${this.state.settings.choiceDirection === 'mn_to_ja' ? 'bg-emerald-600 text-white font-bold border-emerald-600 shadow-xs' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600'}">
+                  <input type="radio" name="choiceDirection" value="mn_to_ja" ${this.state.settings.choiceDirection === 'mn_to_ja' ? 'checked' : ''} class="hidden">
+                  <span>🇲🇳 モンゴル語 → 🇯🇵 日本語</span>
+                </label>
+              </div>
+            </div>
 
               <label class="flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer hover:bg-slate-50 ${this.state.settings.mode === 'root_input' ? 'border-emerald-600 bg-emerald-50/50 text-emerald-900 font-bold' : 'border-slate-200'}">
                 <input type="radio" name="mode" value="root_input" ${this.state.settings.mode === 'root_input' ? 'checked' : ''} class="hidden">
@@ -155,6 +172,13 @@ export class WordTestComponent {
     this.container.querySelectorAll('input[name="mode"]').forEach(r => {
       r.addEventListener('change', (e) => {
         this.state.settings.mode = e.target.value;
+        this.renderSettings();
+      });
+    });
+
+    this.container.querySelectorAll('input[name="choiceDirection"]').forEach(r => {
+      r.addEventListener('change', (e) => {
+        this.state.settings.choiceDirection = e.target.value;
         this.renderSettings();
       });
     });
@@ -243,10 +267,18 @@ export class WordTestComponent {
     this.state.hasAnswered = false;
     this.state.isCorrect = false;
 
-    // 4択選択肢の作成
+    // 4択選択肢の作成（出題方向両対応：日本語→モンゴル語 / モンゴル語→日本語）
     if (this.state.settings.mode === 'choice_4') {
       const allVocab = StorageService.getVocabulary();
-      const otherVocab = allVocab.filter(v => v.id !== q.id);
+      const isJaToMn = this.state.settings.choiceDirection === 'ja_to_mn';
+      
+      const qVal = isJaToMn ? (q.dictForm || q.mongolian) : q.japanese;
+      const otherVocab = allVocab.filter(v => {
+        if (v.id === q.id) return false;
+        const vVal = isJaToMn ? (v.dictForm || v.mongolian) : v.japanese;
+        return vVal && vVal !== qVal;
+      });
+
       const distractors = shuffleArray(otherVocab).slice(0, 3);
       const rawChoices = [q, ...distractors];
       this.state.choices = shuffleArray(rawChoices);
@@ -288,9 +320,16 @@ export class WordTestComponent {
       subHint = (typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `⚠️ 読み注意: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
       isCyrillicInput = false;
     } else if (mode === 'choice_4') {
-      questionPrompt = "正しい日本語訳を選択してください";
-      questionMain = details.dictForm;
-      subHint = (typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `⚠️ 読み注意: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
+      const isJaToMn = this.state.settings.choiceDirection === 'ja_to_mn';
+      if (isJaToMn) {
+        questionPrompt = "日本語に合う正しいモンゴル語（キリル文字）を選択してください";
+        questionMain = q.japanese;
+        subHint = q.pos ? `【品詞: ${q.pos}】` : '';
+      } else {
+        questionPrompt = "正しい日本語訳を選択してください";
+        questionMain = details.dictForm || q.mongolian;
+        subHint = (typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `⚠️ 読み注意: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
+      }
     } else if (mode === 'root_input') {
       questionPrompt = `動詞の【語幹（活用の土台）】を答えてください`;
       questionMain = `${details.dictForm}（${q.japanese}）`;

@@ -70,7 +70,8 @@ tests = [
     'test_vocabulary_unification_and_synonyms.py',
     'test_eradicate_katakana_mojibake.py',
     'test_perfect_100_points.py',
-    'test_all_user_requirements.py'
+    'test_all_user_requirements.py',
+    'test_all_new_requirements_comprehensive.py'
 ]
 
 for t in tests:
