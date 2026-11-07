@@ -1377,9 +1377,7 @@ export const wordFamilyData = {
         { word: "хараа", meaning: "視力・視界", suffix: "-аа (感覚名詞)", note: "目の良さ" },
         { word: "харуул", meaning: "見張り・守衛・歩哨", suffix: "-уул (人名詞)", note: "周囲を警戒して見守る人" }
       ]
-    }
-  ]
-};,
+    },
     {
       id: "fam_oilgo",
       root: "ойлго-",
@@ -1479,4 +1477,5 @@ export const wordFamilyData = {
         { word: "цангаах", meaning: "喉を渇かせる", suffix: "-аах (使役動詞)", note: "塩辛い物などが喉を渇かせること" }
       ]
     }
-
+  ]
+};
