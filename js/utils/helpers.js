@@ -43,6 +43,20 @@ export const MONGOLIAN_CYRILLIC_LETTERS = [
 
 // Windows PC 標準モンゴル語キリル文字キーボード配列（JCUKEN / Standard Mongolian Layout）
 export const MONGOLIAN_PC_KEYBOARD_LAYOUT = {
+  row1: [
+    { lower: '№', upper: '1', key: '1' },
+    { lower: '-', upper: '2', key: '2' },
+    { lower: '"', upper: '3', key: '3' },
+    { lower: '₮', upper: '4', key: '4' },
+    { lower: ':', upper: '5', key: '5' },
+    { lower: '.', upper: '6', key: '6', special: true },
+    { lower: '_', upper: '7', key: '7' },
+    { lower: ',', upper: '8', key: '8', special: true },
+    { lower: '%', upper: '9', key: '9' },
+    { lower: '?', upper: '0', key: '0', special: true },
+    { lower: '!', upper: '-', key: '-' },
+    { lower: '=', upper: '+', key: '=' }
+  ],
   row2: [
     { lower: 'ф', upper: 'Ф', key: 'q' },
     { lower: 'ц', upper: 'Ц', key: 'w' },
@@ -131,6 +145,15 @@ export function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showK
           </div>
         </div>
 
+        <!-- Row 1: 最上段（コンマ , や 疑問符 ? 、ピリオド . 、感嘆符 ! 、数字） -->
+        <div class="grid grid-cols-12 gap-1 text-center">
+          ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row1.map(k => `
+            <button type="button" class="btn-kb-key py-1.5 px-1 text-xs font-bold rounded-lg border bg-slate-50 dark:bg-slate-700/80 text-slate-800 dark:text-slate-100 hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer ${k.special ? 'border-amber-400 bg-amber-50/80 text-amber-950 dark:bg-amber-950/50 dark:text-amber-200 font-extrabold' : 'border-slate-300 dark:border-slate-600'}" data-lower="${k.lower}" data-upper="${k.upper}">
+              ${k.lower}
+            </button>
+          `).join('')}
+        </div>
+
         <!-- Row 2 (ф ц у ж э н г ш ү з к ъ) -->
         <div class="grid grid-cols-12 gap-1 text-center">
           ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row2.map(k => `
@@ -177,6 +200,7 @@ export function bindCyrillicInputAssistant(container, targetInputSelector = 'inp
 
   // PC標準モンゴル語配列（JCUKEN）物理キーボード変換マップ
   const JCUKEN_PHYSICAL_KEY_MAP = {
+    '1': '№', '2': '-', '3': '"', '4': '₮', '5': ':', '6': '.', '7': '_', '8': ',', '9': '%', '0': '?', '-': '!', '=': '=',
     'q': 'ф', 'w': 'ц', 'e': 'у', 'r': 'ж', 't': 'э', 'y': 'н', 'u': 'г', 'i': 'ш', 'o': 'ү', 'p': 'з', '[': 'к', ']': 'ъ',
     'a': 'й', 's': 'ы', 'd': 'б', 'f': 'ө', 'g': 'а', 'h': 'х', 'j': 'р', 'k': 'о', 'l': 'л', ';': 'д', "'": 'п',
     'z': 'я', 'x': 'ч', 'c': 'ё', 'v': 'с', 'b': 'м', 'n': 'и', 'm': 'т', ',': 'ь', '.': 'в', '/': 'ю',

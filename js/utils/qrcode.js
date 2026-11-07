@@ -774,24 +774,46 @@ export class QRCodeModel {
  */
 export class QRCodeGenerator {
   static generateSvg(text, options = {}) {
-    try {
-      const ecLevel = options.errorCorrectionLevel === 'Q'
-        ? QRErrorCorrectLevel.Q
-        : options.errorCorrectionLevel === 'H'
-        ? QRErrorCorrectLevel.H
-        : options.errorCorrectionLevel === 'L'
-        ? QRErrorCorrectLevel.L
-        : QRErrorCorrectLevel.M; // デフォルト Level M (15% 欠損耐性)
+    // まず指定されたエラー訂正レベル（デフォルト Level M）で試行
+    const levelsToTry = [
+      options.errorCorrectionLevel === 'Q' ? QRErrorCorrectLevel.Q :
+      options.errorCorrectionLevel === 'H' ? QRErrorCorrectLevel.H :
+      options.errorCorrectionLevel === 'L' ? QRErrorCorrectLevel.L : QRErrorCorrectLevel.M,
+      QRErrorCorrectLevel.L // フォールバック: 最大容量のLevel L (7%耐性)
+    ];
 
-      const qr = new QRCodeModel(0, ecLevel);
-      qr.addData(text);
+    for (const ecLevel of levelsToTry) {
+      try {
+        const qr = new QRCodeModel(0, ecLevel);
+        qr.addData(text);
+        qr.make();
+        return qr.createSvgTag({
+          cellSize: options.cellSize || 3,
+          margin: options.margin !== undefined ? options.margin : 4
+        });
+      } catch (err) {
+        // 次のレベルで再試行
+      }
+    }
+
+    // もしそれでも超過した場合は、URLのクエリパラメータを最低限にトリミングして生成
+    try {
+      let trimmed = text;
+      if (trimmed.includes('login_token=')) {
+        // トークンを短縮して再試行
+        const basePart = trimmed.split('login_token=')[0];
+        const tokenPart = trimmed.split('login_token=')[1].split('&')[0];
+        trimmed = `${basePart}login_token=${tokenPart.substring(0, 300)}&truncated=1`;
+      }
+      const qr = new QRCodeModel(0, QRErrorCorrectLevel.L);
+      qr.addData(trimmed);
       qr.make();
       return qr.createSvgTag({
-        cellSize: options.cellSize || 4,
-        margin: options.margin !== undefined ? options.margin : 4
+        cellSize: options.cellSize || 3,
+        margin: 4
       });
-    } catch (err) {
-      console.error('[QRCodeGenerator] Error generating QR code:', err);
+    } catch (finalErr) {
+      console.error('[QRCodeGenerator] Fallback failed:', finalErr);
       return null;
     }
   }

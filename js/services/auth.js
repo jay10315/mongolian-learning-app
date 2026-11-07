@@ -514,6 +514,33 @@ export class AuthService {
       };
     } catch (_) {}
 
+    // QRコード容量（最大2KB）を超えないよう直近重要データに最適化
+    try {
+      if (mistakesData) {
+        const arr = JSON.parse(mistakesData);
+        mistakesData = Array.isArray(arr) ? arr.slice(-10) : mistakesData;
+      }
+    } catch (_) {}
+
+    try {
+      if (lookedUpWordsData) {
+        const arr = JSON.parse(lookedUpWordsData);
+        lookedUpWordsData = Array.isArray(arr) ? arr.slice(-10) : lookedUpWordsData;
+      }
+    } catch (_) {}
+
+    try {
+      if (wordProgressData) {
+        const obj = JSON.parse(wordProgressData);
+        if (obj && typeof obj === 'object') {
+          const keys = Object.keys(obj).slice(-15);
+          const compactW = {};
+          keys.forEach(k => { compactW[k] = obj[k]; });
+          wordProgressData = compactW;
+        }
+      }
+    } catch (_) {}
+
     const payload = {
       v: 2,
       u: {
@@ -528,10 +555,9 @@ export class AuthService {
       },
       p: mascotData ? JSON.parse(mascotData) : null,
       g: gamificationData ? JSON.parse(gamificationData) : null,
-      m: mistakesData ? JSON.parse(mistakesData) : null,
-      l: lookedUpWordsData ? JSON.parse(lookedUpWordsData) : null,
-      w: wordProgressData ? JSON.parse(wordProgressData) : null,
-      storage: storageSnapshot,
+      m: mistakesData,
+      l: lookedUpWordsData,
+      w: wordProgressData,
       t: Date.now()
     };
 
