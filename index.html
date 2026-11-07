@@ -3499,7 +3499,7 @@ function renderGrammarExplanationHTML({
       `}
 
       <!-- 単語の成り立ち・構成カード（動詞・派生語で存在する場合） -->
-      ${parsed.isVerb && (typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(item, correctAnswer) : ''}
+      ${isV && (typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(item, correctAnswer) : ''}
 
       <!-- 語呂合わせ・楽しい覚え方カード（動詞・名詞問わず存在すれば必ず表示） -->
       ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(item, correctAnswer) : ''}
