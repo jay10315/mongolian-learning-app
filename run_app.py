@@ -19,6 +19,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 PORT = 5173
 ACCOUNTS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data_accounts.json')
+ACTIVE_PAIR_SESSIONS = {}
 SYNC_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data_sync_store.json')
 CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'audio_cache')
 PHRASES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'audio_phrases.json')
@@ -117,6 +118,33 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == '/api/sync/pair/status':
+            qs = urllib.parse.parse_qs(parsed.query)
+            session_id = qs.get('sessionId', [''])[0]
+            session_data = ACTIVE_PAIR_SESSIONS.get(session_id)
+            if session_data and session_data.get('status') == 'paired':
+                body = json.dumps({'status': 'paired', 'session': session_data}, ensure_ascii=False).encode('utf-8')
+            else:
+                body = json.dumps({'status': 'waiting'}, ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
+        if parsed.path == '/api/sync/pair/data':
+            qs = urllib.parse.parse_qs(parsed.query)
+            session_id = qs.get('sessionId', [''])[0]
+            session_data = ACTIVE_PAIR_SESSIONS.get(session_id, {})
+            body = json.dumps(session_data, ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
         if parsed.path == '/api/server_info':
             info = {
                 'status': 'ok',
@@ -251,6 +279,59 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == '/api/sync/pair':
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                post_data = self.rfile.read(content_length)
+                payload = json.loads(post_data.decode('utf-8'))
+                session_id = payload.get('sessionId', '')
+                if session_id:
+                    ACTIVE_PAIR_SESSIONS[session_id] = {
+                        'status': 'paired',
+                        'sessionId': session_id,
+                        'username': payload.get('username', ''),
+                        'displayName': payload.get('displayName', ''),
+                        'device': payload.get('device', ''),
+                        'timestamp': payload.get('timestamp') or 0
+                    }
+                resp = json.dumps({'status': 'ok', 'sessionId': session_id}).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(resp)))
+                self.end_headers()
+                self.wfile.write(resp)
+            except Exception as e:
+                self.send_response(500)
+                err_resp = json.dumps({'status': 'error', 'message': str(e)}).encode('utf-8')
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(err_resp)))
+                self.end_headers()
+                self.wfile.write(err_resp)
+            return
+
+        if parsed.path == '/api/sync/pair/register':
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                post_data = self.rfile.read(content_length)
+                payload = json.loads(post_data.decode('utf-8'))
+                session_id = payload.get('sessionId', '')
+                if session_id:
+                    ACTIVE_PAIR_SESSIONS[session_id] = payload
+                resp = json.dumps({'status': 'ok', 'sessionId': session_id}).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(resp)))
+                self.end_headers()
+                self.wfile.write(resp)
+            except Exception as e:
+                self.send_response(500)
+                err_resp = json.dumps({'status': 'error', 'message': str(e)}).encode('utf-8')
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(err_resp)))
+                self.end_headers()
+                self.wfile.write(err_resp)
+            return
+
         if parsed.path == '/api/sync/all':
             try:
                 content_length = int(self.headers.get('Content-Length', 0))

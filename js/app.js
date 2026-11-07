@@ -37,14 +37,19 @@ class App {
   static currentTab = 'home';
 
   static init() {
-    // 0. ワンクリックURLログイン（Magic Login Token）の自動処理
+    // 0. ワンクリックURLログイン（Magic Login Token）および端末同期の自動処理
     if (typeof window !== 'undefined' && window.location) {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('login_token') || urlParams.get('auth_token');
+        const sessionId = urlParams.get('session_id') || urlParams.get('pair');
+
         if (token) {
           const res = AuthService.processMagicLoginToken(token);
           if (res.success) {
+            if (sessionId) {
+              AuthService.notifyPairSuccess(sessionId, res.user);
+            }
             // アドレスバーからトークンパラメータを消去してURLをクリーンに保つ
             const cleanUrl = window.location.pathname;
             window.history.replaceState({}, document.title, cleanUrl);
@@ -52,6 +57,23 @@ class App {
               AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
             }, 300);
           }
+        } else if (sessionId) {
+          // 軽量ペアリングURLの場合：サーバーからセッション情報を取得して自動ログイン
+          fetch(`/api/sync/pair/data?sessionId=${encodeURIComponent(sessionId)}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+              if (data && data.token) {
+                const res = AuthService.processMagicLoginToken(data.token);
+                if (res.success) {
+                  AuthService.notifyPairSuccess(sessionId, res.user);
+                  const cleanUrl = window.location.pathname;
+                  window.history.replaceState({}, document.title, cleanUrl);
+                  setTimeout(() => {
+                    AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
+                  }, 300);
+                }
+              }
+            }).catch(() => {});
         }
       } catch (err) {
         console.warn('[App] Magic login token check error:', err);

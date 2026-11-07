@@ -4183,6 +4183,807 @@ function getSynonymExpressionsCardHTML(keyWord) {
 }
 
 
+// === js/utils/qrcode.js ===
+// QR Code Generator in pure JavaScript (Kazuhiko Arase QR Code engine, MIT License)
+// Standard ISO/IEC 18004 QR Code with Level L, M, Q, H, auto-sizing versions 1-40,
+// UTF-8 byte encoding, high-contrast SVG output with quiet zone.
+
+const QRErrorCorrectLevel = {
+  L: 1,
+  M: 0,
+  Q: 3,
+  H: 2
+};
+
+const QRMode = {
+  MODE_NUMBER: 1 << 0,
+  MODE_ALPHA_NUM: 1 << 1,
+  MODE_8BIT_BYTE: 1 << 2,
+  MODE_KANJI: 1 << 3
+};
+
+const QRMaskPattern = {
+  PATTERN000: 0,
+  PATTERN001: 1,
+  PATTERN010: 2,
+  PATTERN011: 3,
+  PATTERN100: 4,
+  PATTERN101: 5,
+  PATTERN110: 6,
+  PATTERN111: 7
+};
+
+const QRMath = {
+  glog(n) {
+    if (n < 1) throw new Error('glog(' + n + ')');
+    return QRMath.LOG_TABLE[n];
+  },
+  gexp(n) {
+    while (n < 0) n += 255;
+    while (n >= 255) n -= 255;
+    return QRMath.EXP_TABLE[n];
+  },
+  EXP_TABLE: new Array(256),
+  LOG_TABLE: new Array(256)
+};
+
+for (let i = 0; i < 8; i++) QRMath.EXP_TABLE[i] = 1 << i;
+for (let i = 8; i < 256; i++) {
+  QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4] ^ QRMath.EXP_TABLE[i - 5] ^ QRMath.EXP_TABLE[i - 6] ^ QRMath.EXP_TABLE[i - 8];
+}
+for (let i = 0; i < 255; i++) {
+  QRMath.LOG_TABLE[QRMath.EXP_TABLE[i]] = i;
+}
+
+class QRPolynomial {
+  constructor(num, shift) {
+    if (num.length === undefined) throw new Error(num.length + '/' + shift);
+    let offset = 0;
+    while (offset < num.length && num[offset] === 0) offset++;
+    this.num = new Array(num.length - offset + shift);
+    for (let i = 0; i < num.length - offset; i++) this.num[i] = num[i + offset];
+    for (let i = num.length - offset; i < this.num.length; i++) this.num[i] = 0;
+  }
+  get(index) {
+    return this.num[index];
+  }
+  getLength() {
+    return this.num.length;
+  }
+  multiply(e) {
+    const num = new Array(this.getLength() + e.getLength() - 1);
+    for (let i = 0; i < this.getLength(); i++) {
+      for (let j = 0; j < e.getLength(); j++) {
+        num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i)) + QRMath.glog(e.get(j)));
+      }
+    }
+    return new QRPolynomial(num, 0);
+  }
+  mod(e) {
+    if (this.getLength() - e.getLength() < 0) return this;
+    const ratio = QRMath.glog(this.get(0)) - QRMath.glog(e.get(0));
+    const num = new Array(this.getLength());
+    for (let i = 0; i < this.getLength(); i++) num[i] = this.get(i);
+    for (let i = 0; i < e.getLength(); i++) {
+      num[i] ^= QRMath.gexp(QRMath.glog(e.get(i)) + ratio);
+    }
+    return new QRPolynomial(num, 0).mod(e);
+  }
+}
+
+class QRRSBlock {
+  constructor(totalCount, dataCount) {
+    this.totalCount = totalCount;
+    this.dataCount = dataCount;
+  }
+  static getRSBlocks(typeNumber, errorCorrectLevel) {
+    const rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+    if (!rsBlock) throw new Error('bad rs block @ typeNumber:' + typeNumber + '/errorCorrectLevel:' + errorCorrectLevel);
+    const length = rsBlock.length / 3;
+    const list = [];
+    for (let i = 0; i < length; i++) {
+      const count = rsBlock[i * 3 + 0];
+      const totalCount = rsBlock[i * 3 + 1];
+      const dataCount = rsBlock[i * 3 + 2];
+      for (let j = 0; j < count; j++) {
+        list.push(new QRRSBlock(totalCount, dataCount));
+      }
+    }
+    return list;
+  }
+  static getRsBlockTable(typeNumber, errorCorrectLevel) {
+    switch (errorCorrectLevel) {
+      case QRErrorCorrectLevel.L: return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+      case QRErrorCorrectLevel.M: return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+      case QRErrorCorrectLevel.Q: return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+      case QRErrorCorrectLevel.H: return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+      default: return undefined;
+    }
+  }
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+  // 1
+  [1, 26, 19], [1, 26, 16], [1, 26, 13], [1, 26, 9],
+  // 2
+  [1, 44, 34], [1, 44, 28], [1, 44, 22], [1, 44, 16],
+  // 3
+  [1, 70, 55], [1, 70, 44], [2, 35, 17], [2, 35, 13],
+  // 4
+  [1, 100, 80], [2, 50, 32], [2, 50, 24], [4, 25, 9],
+  // 5
+  [1, 134, 108], [2, 67, 43], [2, 33, 15, 2, 34, 16], [2, 33, 11, 2, 34, 12],
+  // 6
+  [2, 86, 68], [4, 43, 27], [4, 43, 19], [4, 43, 15],
+  // 7
+  [2, 98, 78], [4, 49, 31], [2, 32, 14, 4, 33, 15], [4, 39, 13, 1, 40, 14],
+  // 8
+  [2, 121, 97], [2, 60, 38, 2, 61, 39], [4, 40, 18, 2, 41, 19], [4, 40, 14, 2, 41, 15],
+  // 9
+  [2, 146, 116], [3, 58, 36, 2, 59, 37], [4, 36, 16, 4, 37, 17], [4, 36, 12, 4, 37, 13],
+  // 10
+  [2, 86, 68, 2, 87, 69], [4, 69, 43, 1, 70, 44], [6, 43, 19, 2, 44, 20], [6, 43, 15, 2, 44, 16],
+  // 11
+  [4, 101, 81], [1, 80, 50, 4, 81, 51], [4, 50, 22, 4, 51, 23], [3, 36, 12, 8, 37, 13],
+  // 12
+  [2, 116, 92, 2, 117, 93], [6, 58, 36, 2, 59, 37], [4, 46, 20, 6, 47, 21], [7, 42, 14, 4, 43, 15],
+  // 13
+  [4, 133, 107], [8, 59, 37, 1, 60, 38], [8, 44, 20, 4, 45, 21], [12, 33, 11, 4, 34, 12],
+  // 14
+  [3, 145, 115, 1, 146, 116], [4, 64, 40, 5, 65, 41], [11, 36, 16, 5, 37, 17], [11, 36, 12, 5, 37, 13],
+  // 15
+  [5, 109, 87, 1, 110, 88], [5, 65, 41, 5, 66, 42], [5, 54, 24, 7, 55, 25], [11, 36, 12, 7, 37, 13],
+  // 16
+  [5, 122, 98, 1, 123, 99], [7, 73, 45, 3, 74, 46], [15, 43, 19, 2, 44, 20], [3, 45, 15, 13, 46, 16],
+  // 17
+  [1, 135, 107, 5, 136, 108], [10, 74, 46, 1, 75, 47], [1, 50, 22, 15, 51, 23], [2, 42, 14, 17, 43, 15],
+  // 18
+  [5, 150, 120, 1, 151, 121], [9, 69, 43, 4, 70, 44], [17, 50, 22, 1, 51, 23], [2, 42, 14, 19, 43, 15],
+  // 19
+  [3, 141, 113, 4, 142, 114], [3, 70, 44, 11, 71, 45], [17, 47, 21, 4, 48, 22], [9, 39, 13, 16, 40, 14],
+  // 20
+  [3, 135, 107, 5, 136, 108], [3, 67, 41, 13, 68, 42], [15, 54, 24, 5, 55, 25], [15, 43, 15, 10, 44, 16],
+  // 21
+  [4, 144, 116, 4, 145, 117], [17, 68, 42], [17, 50, 22, 6, 51, 23], [19, 46, 16, 6, 47, 17],
+  // 22
+  [2, 139, 111, 7, 140, 112], [17, 74, 46], [7, 54, 24, 16, 55, 25], [34, 37, 13],
+  // 23
+  [4, 151, 121, 5, 152, 122], [4, 75, 47, 14, 76, 48], [11, 54, 24, 14, 55, 25], [16, 45, 15, 14, 46, 16],
+  // 24
+  [6, 147, 117, 4, 148, 118], [6, 73, 45, 14, 74, 46], [11, 54, 24, 16, 55, 25], [30, 46, 16, 2, 47, 17],
+  // 25
+  [8, 132, 106, 4, 133, 107], [8, 75, 47, 13, 76, 48], [7, 54, 24, 22, 55, 25], [22, 45, 15, 13, 46, 16],
+  // 26
+  [10, 142, 114, 2, 143, 115], [19, 74, 46, 4, 75, 47], [28, 50, 22, 6, 51, 23], [33, 46, 16, 4, 47, 17],
+  // 27
+  [8, 152, 122, 4, 153, 123], [22, 73, 45, 3, 74, 46], [8, 53, 23, 26, 54, 24], [12, 45, 15, 28, 46, 16],
+  // 28
+  [3, 147, 117, 10, 148, 118], [3, 73, 45, 23, 74, 46], [4, 54, 24, 31, 55, 25], [11, 45, 15, 31, 46, 16],
+  // 29
+  [7, 146, 116, 7, 147, 117], [21, 73, 45, 7, 74, 46], [1, 53, 23, 37, 54, 24], [19, 45, 15, 26, 46, 16],
+  // 30
+  [5, 145, 115, 10, 146, 116], [19, 75, 47, 10, 76, 48], [15, 54, 24, 25, 55, 25], [23, 45, 15, 25, 46, 16],
+  // 31
+  [13, 145, 115, 3, 146, 116], [2, 74, 46, 29, 75, 47], [42, 54, 24, 1, 55, 25], [23, 45, 15, 28, 46, 16],
+  // 32
+  [17, 145, 115], [10, 74, 46, 23, 75, 47], [10, 54, 24, 35, 55, 25], [19, 45, 15, 35, 46, 16],
+  // 33
+  [17, 145, 115, 1, 146, 116], [14, 74, 46, 21, 75, 47], [29, 54, 24, 19, 55, 25], [11, 45, 15, 46, 46, 16],
+  // 34
+  [13, 145, 115, 6, 146, 116], [14, 74, 46, 23, 75, 47], [44, 54, 24, 7, 55, 25], [59, 46, 16, 1, 47, 17],
+  // 35
+  [12, 151, 121, 7, 152, 122], [12, 75, 47, 26, 76, 48], [39, 54, 24, 14, 55, 25], [22, 45, 15, 41, 46, 16],
+  // 36
+  [6, 151, 121, 14, 152, 122], [6, 75, 47, 34, 76, 48], [46, 54, 24, 10, 55, 25], [2, 45, 15, 64, 46, 16],
+  // 37
+  [17, 152, 122, 4, 153, 123], [29, 74, 46, 14, 75, 47], [49, 54, 24, 10, 55, 25], [24, 45, 15, 46, 46, 16],
+  // 38
+  [4, 152, 122, 18, 153, 123], [13, 74, 46, 32, 75, 47], [48, 54, 24, 14, 55, 25], [42, 45, 15, 32, 46, 16],
+  // 39
+  [20, 147, 117, 4, 148, 118], [40, 75, 47, 7, 76, 48], [43, 54, 24, 22, 55, 25], [10, 45, 15, 67, 46, 16],
+  // 40
+  [19, 148, 118, 6, 149, 119], [18, 75, 47, 31, 76, 48], [34, 54, 24, 34, 55, 25], [20, 45, 15, 61, 46, 16]
+];
+
+class QRBitBuffer {
+  constructor() {
+    this.buffer = [];
+    this.length = 0;
+  }
+  get(index) {
+    const bufIndex = Math.floor(index / 8);
+    return ((this.buffer[bufIndex] >>> (7 - (index % 8))) & 1) === 1;
+  }
+  put(num, length) {
+    for (let i = 0; i < length; i++) {
+      this.putBit(((num >>> (length - i - 1)) & 1) === 1);
+    }
+  }
+  getLengthInBits() {
+    return this.length;
+  }
+  putBit(bit) {
+    const bufIndex = Math.floor(this.length / 8);
+    if (this.buffer.length <= bufIndex) {
+      this.buffer.push(0);
+    }
+    if (bit) {
+      this.buffer[bufIndex] |= 0x80 >>> (this.length % 8);
+    }
+    this.length++;
+  }
+}
+
+class QR8bitByte {
+  constructor(data) {
+    this.mode = QRMode.MODE_8BIT_BYTE;
+    this.data = data;
+    this.parsedData = [];
+    // UTF-8 encode
+    for (let i = 0; i < this.data.length; i++) {
+      const byteArray = [];
+      const code = this.data.charCodeAt(i);
+      if (code > 0x10000) {
+        byteArray[0] = 0xf0 | ((code & 0x1c0000) >>> 18);
+        byteArray[1] = 0x80 | ((code & 0x3f000) >>> 12);
+        byteArray[2] = 0x80 | ((code & 0xfc0) >>> 6);
+        byteArray[3] = 0x80 | (code & 0x3f);
+      } else if (code > 0x800) {
+        byteArray[0] = 0xe0 | ((code & 0xf000) >>> 12);
+        byteArray[1] = 0x80 | ((code & 0xfc0) >>> 6);
+        byteArray[2] = 0x80 | (code & 0x3f);
+      } else if (code > 0x80) {
+        byteArray[0] = 0xc0 | ((code & 0x7c0) >>> 6);
+        byteArray[1] = 0x80 | (code & 0x3f);
+      } else {
+        byteArray[0] = code;
+      }
+      this.parsedData.push(byteArray);
+    }
+    this.parsedData = Array.prototype.concat.apply([], this.parsedData);
+    if (this.parsedData.length !== this.data.length) {
+      this.parsedData.unshift(191);
+      this.parsedData.unshift(187);
+      this.parsedData.unshift(239);
+    }
+  }
+  getLength() {
+    return this.parsedData.length;
+  }
+  write(buffer) {
+    for (let i = 0; i < this.parsedData.length; i++) {
+      buffer.put(this.parsedData[i], 8);
+    }
+  }
+}
+
+const QRUtil = {
+  PATTERN_POSITION_TABLE: [
+    [],
+    [6, 18],
+    [6, 22],
+    [6, 26],
+    [6, 30],
+    [6, 34],
+    [6, 22, 38],
+    [6, 24, 42],
+    [6, 26, 46],
+    [6, 28, 50],
+    [6, 30, 54],
+    [6, 32, 58],
+    [6, 34, 62],
+    [6, 26, 46, 66],
+    [6, 26, 48, 70],
+    [6, 26, 50, 74],
+    [6, 30, 54, 78],
+    [6, 30, 56, 82],
+    [6, 30, 58, 86],
+    [6, 34, 62, 90],
+    [6, 28, 50, 72, 94],
+    [6, 26, 50, 74, 98],
+    [6, 30, 54, 78, 102],
+    [6, 28, 54, 80, 106],
+    [6, 32, 58, 84, 110],
+    [6, 30, 58, 86, 114],
+    [6, 34, 62, 90, 118],
+    [6, 26, 50, 74, 98, 122],
+    [6, 30, 54, 78, 102, 126],
+    [6, 26, 52, 78, 104, 130],
+    [6, 30, 56, 82, 108, 134],
+    [6, 34, 60, 86, 112, 138],
+    [6, 30, 58, 86, 114, 142],
+    [6, 34, 62, 90, 118, 146],
+    [6, 30, 54, 78, 102, 126, 150],
+    [6, 24, 50, 76, 102, 128, 154],
+    [6, 28, 54, 80, 106, 132, 158],
+    [6, 32, 58, 84, 110, 136, 162],
+    [6, 26, 54, 82, 110, 138, 166],
+    [6, 30, 58, 86, 114, 142, 170]
+  ],
+  G15: (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+  G18: (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+  G15_MASK: (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1),
+  getBCHTypeInfo(data) {
+    let d = data << 10;
+    while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+      d ^= QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15));
+    }
+    return ((data << 10) | d) ^ QRUtil.G15_MASK;
+  },
+  getBCHTypeNumber(data) {
+    let d = data << 12;
+    while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+      d ^= QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18));
+    }
+    return (data << 12) | d;
+  },
+  getBCHDigit(data) {
+    let digit = 0;
+    while (data !== 0) {
+      digit++;
+      data >>>= 1;
+    }
+    return digit;
+  },
+  getPatternPosition(typeNumber) {
+    return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+  },
+  getMask(maskPattern, i, j) {
+    switch (maskPattern) {
+      case QRMaskPattern.PATTERN000: return (i + j) % 2 === 0;
+      case QRMaskPattern.PATTERN001: return i % 2 === 0;
+      case QRMaskPattern.PATTERN010: return j % 3 === 0;
+      case QRMaskPattern.PATTERN011: return (i + j) % 3 === 0;
+      case QRMaskPattern.PATTERN100: return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 === 0;
+      case QRMaskPattern.PATTERN101: return ((i * j) % 2) + ((i * j) % 3) === 0;
+      case QRMaskPattern.PATTERN110: return (((i * j) % 2) + ((i * j) % 3)) % 2 === 0;
+      case QRMaskPattern.PATTERN111: return (((i * j) % 3) + ((i + j) % 2)) % 2 === 0;
+      default: throw new Error('bad maskPattern:' + maskPattern);
+    }
+  },
+  getErrorCorrectPolynomial(errorCorrectLength) {
+    let a = new QRPolynomial([1], 0);
+    for (let i = 0; i < errorCorrectLength; i++) {
+      a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0));
+    }
+    return a;
+  },
+  getLengthInBits(mode, type) {
+    if (1 <= type && type < 10) {
+      switch (mode) {
+        case QRMode.MODE_NUMBER: return 10;
+        case QRMode.MODE_ALPHA_NUM: return 9;
+        case QRMode.MODE_8BIT_BYTE: return 8;
+        case QRMode.MODE_KANJI: return 8;
+        default: throw new Error('mode:' + mode);
+      }
+    } else if (type < 27) {
+      switch (mode) {
+        case QRMode.MODE_NUMBER: return 12;
+        case QRMode.MODE_ALPHA_NUM: return 11;
+        case QRMode.MODE_8BIT_BYTE: return 16;
+        case QRMode.MODE_KANJI: return 10;
+        default: throw new Error('mode:' + mode);
+      }
+    } else if (type < 41) {
+      switch (mode) {
+        case QRMode.MODE_NUMBER: return 14;
+        case QRMode.MODE_ALPHA_NUM: return 13;
+        case QRMode.MODE_8BIT_BYTE: return 16;
+        case QRMode.MODE_KANJI: return 12;
+        default: throw new Error('mode:' + mode);
+      }
+    } else {
+      throw new Error('type:' + type);
+    }
+  },
+  getLostPoint(qrCode) {
+    const moduleCount = qrCode.getModuleCount();
+    let lostPoint = 0;
+    // LEVEL1
+    for (let row = 0; row < moduleCount; row++) {
+      for (let col = 0; col < moduleCount; col++) {
+        let sameCount = 0;
+        const dark = qrCode.isDark(row, col);
+        for (let r = -1; r <= 1; r++) {
+          if (row + r < 0 || moduleCount <= row + r) continue;
+          for (let c = -1; c <= 1; c++) {
+            if (col + c < 0 || moduleCount <= col + c) continue;
+            if (r === 0 && c === 0) continue;
+            if (dark === qrCode.isDark(row + r, col + c)) sameCount++;
+          }
+        }
+        if (sameCount > 5) lostPoint += 3 + sameCount - 5;
+      }
+    }
+    // LEVEL2
+    for (let row = 0; row < moduleCount - 1; row++) {
+      for (let col = 0; col < moduleCount - 1; col++) {
+        let count = 0;
+        if (qrCode.isDark(row, col)) count++;
+        if (qrCode.isDark(row + 1, col)) count++;
+        if (qrCode.isDark(row, col + 1)) count++;
+        if (qrCode.isDark(row + 1, col + 1)) count++;
+        if (count === 0 || count === 4) lostPoint += 3;
+      }
+    }
+    // LEVEL3
+    for (let row = 0; row < moduleCount; row++) {
+      for (let col = 0; col < moduleCount - 6; col++) {
+        if (
+          qrCode.isDark(row, col) &&
+          !qrCode.isDark(row, col + 1) &&
+          qrCode.isDark(row, col + 2) &&
+          qrCode.isDark(row, col + 3) &&
+          qrCode.isDark(row, col + 4) &&
+          !qrCode.isDark(row, col + 5) &&
+          qrCode.isDark(row, col + 6)
+        ) {
+          lostPoint += 40;
+        }
+      }
+    }
+    for (let col = 0; col < moduleCount; col++) {
+      for (let row = 0; row < moduleCount - 6; row++) {
+        if (
+          qrCode.isDark(row, col) &&
+          !qrCode.isDark(row + 1, col) &&
+          qrCode.isDark(row + 2, col) &&
+          qrCode.isDark(row + 3, col) &&
+          qrCode.isDark(row + 4, col) &&
+          !qrCode.isDark(row + 5, col) &&
+          qrCode.isDark(row + 6, col)
+        ) {
+          lostPoint += 40;
+        }
+      }
+    }
+    // LEVEL4
+    let darkCount = 0;
+    for (let col = 0; col < moduleCount; col++) {
+      for (let row = 0; row < moduleCount; row++) {
+        if (qrCode.isDark(row, col)) darkCount++;
+      }
+    }
+    const ratio = Math.abs((100 * darkCount) / moduleCount / moduleCount - 50) / 5;
+    lostPoint += ratio * 10;
+    return lostPoint;
+  }
+};
+
+class QRCodeModel {
+  constructor(typeNumber = 0, errorCorrectLevel = QRErrorCorrectLevel.M) {
+    this.typeNumber = typeNumber;
+    this.errorCorrectLevel = errorCorrectLevel;
+    this.modules = null;
+    this.moduleCount = 0;
+    this.dataCache = null;
+    this.dataList = [];
+  }
+  addData(data) {
+    const newData = new QR8bitByte(data);
+    this.dataList.push(newData);
+    this.dataCache = null;
+  }
+  isDark(row, col) {
+    if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+      throw new Error(row + ',' + col);
+    }
+    return this.modules[row][col];
+  }
+  getModuleCount() {
+    return this.moduleCount;
+  }
+  make() {
+    if (this.typeNumber < 1) {
+      let typeNumber = 1;
+      for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+        const rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+        const buffer = new QRBitBuffer();
+        let totalDataCount = 0;
+        for (let i = 0; i < rsBlocks.length; i++) {
+          totalDataCount += rsBlocks[i].dataCount;
+        }
+        for (let i = 0; i < this.dataList.length; i++) {
+          const data = this.dataList[i];
+          buffer.put(data.mode, 4);
+          buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber));
+          data.write(buffer);
+        }
+        if (buffer.getLengthInBits() <= totalDataCount * 8) break;
+      }
+      this.typeNumber = typeNumber;
+    }
+    this.makeImpl(false, this.getBestMaskPattern());
+  }
+  makeImpl(test, maskPattern) {
+    this.moduleCount = this.typeNumber * 4 + 17;
+    this.modules = new Array(this.moduleCount);
+    for (let row = 0; row < this.moduleCount; row++) {
+      this.modules[row] = new Array(this.moduleCount);
+      for (let col = 0; col < this.moduleCount; col++) {
+        this.modules[row][col] = null;
+      }
+    }
+    this.setupPositionProbePattern(0, 0);
+    this.setupPositionProbePattern(this.moduleCount - 7, 0);
+    this.setupPositionProbePattern(0, this.moduleCount - 7);
+    this.setupPositionAdjustPattern();
+    this.setupTimingPattern();
+    this.setupTypeInfo(test, maskPattern);
+    if (this.typeNumber >= 7) {
+      this.setupTypeNumber(test);
+    }
+    if (this.dataCache === null) {
+      this.dataCache = QRCodeModel.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+    }
+    this.mapData(this.dataCache, maskPattern);
+  }
+  setupPositionProbePattern(row, col) {
+    for (let r = -1; r <= 7; r++) {
+      if (row + r <= -1 || this.moduleCount <= row + r) continue;
+      for (let c = -1; c <= 7; c++) {
+        if (col + c <= -1 || this.moduleCount <= col + c) continue;
+        if (
+          (0 <= r && r <= 6 && (c === 0 || c === 6)) ||
+          (0 <= c && c <= 6 && (r === 0 || r === 6)) ||
+          (2 <= r && r <= 4 && 2 <= c && c <= 4)
+        ) {
+          this.modules[row + r][col + c] = true;
+        } else {
+          this.modules[row + r][col + c] = false;
+        }
+      }
+    }
+  }
+  getBestMaskPattern() {
+    let minLostPoint = 0;
+    let pattern = 0;
+    for (let i = 0; i < 8; i++) {
+      this.makeImpl(true, i);
+      const lostPoint = QRUtil.getLostPoint(this);
+      if (i === 0 || minLostPoint > lostPoint) {
+        minLostPoint = lostPoint;
+        pattern = i;
+      }
+    }
+    return pattern;
+  }
+  setupTimingPattern() {
+    for (let r = 8; r < this.moduleCount - 8; r++) {
+      if (this.modules[r][6] !== null) continue;
+      this.modules[r][6] = r % 2 === 0;
+    }
+    for (let c = 8; c < this.moduleCount - 8; c++) {
+      if (this.modules[6][c] !== null) continue;
+      this.modules[6][c] = c % 2 === 0;
+    }
+  }
+  setupPositionAdjustPattern() {
+    const pos = QRUtil.getPatternPosition(this.typeNumber);
+    for (let i = 0; i < pos.length; i++) {
+      for (let j = 0; j < pos.length; j++) {
+        const row = pos[i];
+        const col = pos[j];
+        if (this.modules[row][col] !== null) continue;
+        for (let r = -2; r <= 2; r++) {
+          for (let c = -2; c <= 2; c++) {
+            if (r === -2 || r === 2 || c === -2 || c === 2 || (r === 0 && c === 0)) {
+              this.modules[row + r][col + c] = true;
+            } else {
+              this.modules[row + r][col + c] = false;
+            }
+          }
+        }
+      }
+    }
+  }
+  setupTypeNumber(test) {
+    const bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+    for (let i = 0; i < 18; i++) {
+      const mod = !test && ((bits >> i) & 1) === 1;
+      this.modules[Math.floor(i / 3)][(i % 3) + this.moduleCount - 8 - 3] = mod;
+    }
+    for (let i = 0; i < 18; i++) {
+      const mod = !test && ((bits >> i) & 1) === 1;
+      this.modules[(i % 3) + this.moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+    }
+  }
+  setupTypeInfo(test, maskPattern) {
+    const data = (this.errorCorrectLevel << 3) | maskPattern;
+    const bits = QRUtil.getBCHTypeInfo(data);
+    for (let i = 0; i < 15; i++) {
+      const mod = !test && ((bits >> i) & 1) === 1;
+      if (i < 6) {
+        this.modules[i][8] = mod;
+      } else if (i < 8) {
+        this.modules[i + 1][8] = mod;
+      } else {
+        this.modules[this.moduleCount - 15 + i][8] = mod;
+      }
+    }
+    for (let i = 0; i < 15; i++) {
+      const mod = !test && ((bits >> i) & 1) === 1;
+      if (i < 8) {
+        this.modules[8][this.moduleCount - i - 1] = mod;
+      } else if (i < 9) {
+        this.modules[8][15 - i - 1 + 1] = mod;
+      } else {
+        this.modules[8][15 - i - 1] = mod;
+      }
+    }
+    this.modules[this.moduleCount - 8][8] = !test;
+  }
+  mapData(data, maskPattern) {
+    let inc = -1;
+    let row = this.moduleCount - 1;
+    let bitIndex = 7;
+    let byteIndex = 0;
+    for (let col = this.moduleCount - 1; col > 0; col -= 2) {
+      if (col === 6) col--;
+      while (true) {
+        for (let c = 0; c < 2; c++) {
+          if (this.modules[row][col - c] === null) {
+            let dark = false;
+            if (byteIndex < data.length) {
+              dark = ((data[byteIndex] >>> bitIndex) & 1) === 1;
+            }
+            const mask = QRUtil.getMask(maskPattern, row, col - c);
+            if (mask) dark = !dark;
+            this.modules[row][col - c] = dark;
+            bitIndex--;
+            if (bitIndex === -1) {
+              byteIndex++;
+              bitIndex = 7;
+            }
+          }
+        }
+        row += inc;
+        if (row < 0 || this.moduleCount <= row) {
+          row -= inc;
+          inc = -inc;
+          break;
+        }
+      }
+    }
+  }
+  static createData(typeNumber, errorCorrectLevel, dataList) {
+    const rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+    const buffer = new QRBitBuffer();
+    for (let i = 0; i < dataList.length; i++) {
+      const data = dataList[i];
+      buffer.put(data.mode, 4);
+      buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber));
+      data.write(buffer);
+    }
+    let totalDataCount = 0;
+    for (let i = 0; i < rsBlocks.length; i++) {
+      totalDataCount += rsBlocks[i].dataCount;
+    }
+    if (buffer.getLengthInBits() > totalDataCount * 8) {
+      throw new Error('code length overflow. (' + buffer.getLengthInBits() + '>' + totalDataCount * 8 + ')');
+    }
+    if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+      buffer.put(0, 4);
+    }
+    while (buffer.getLengthInBits() % 8 !== 0) {
+      buffer.putBit(false);
+    }
+    while (true) {
+      if (buffer.getLengthInBits() >= totalDataCount * 8) break;
+      buffer.put(0xec, 8);
+      if (buffer.getLengthInBits() >= totalDataCount * 8) break;
+      buffer.put(0x11, 8);
+    }
+    return QRCodeModel.createBytes(buffer, rsBlocks);
+  }
+  static createBytes(buffer, rsBlocks) {
+    let offset = 0;
+    let maxDcCount = 0;
+    let maxEcCount = 0;
+    const dcdata = new Array(rsBlocks.length);
+    const ecdata = new Array(rsBlocks.length);
+    for (let r = 0; r < rsBlocks.length; r++) {
+      const dcCount = rsBlocks[r].dataCount;
+      const ecCount = rsBlocks[r].totalCount - dcCount;
+      maxDcCount = Math.max(maxDcCount, dcCount);
+      maxEcCount = Math.max(maxEcCount, ecCount);
+      dcdata[r] = new Array(dcCount);
+      for (let i = 0; i < dcdata[r].length; i++) {
+        dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+      }
+      offset += dcCount;
+      const rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+      const rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+      const modPoly = rawPoly.mod(rsPoly);
+      ecdata[r] = new Array(rsPoly.getLength() - 1);
+      for (let i = 0; i < ecdata[r].length; i++) {
+        const modIndex = i + modPoly.getLength() - ecdata[r].length;
+        ecdata[r][i] = modIndex >= 0 ? modPoly.get(modIndex) : 0;
+      }
+    }
+    let totalCodeCount = 0;
+    for (let i = 0; i < rsBlocks.length; i++) {
+      totalCodeCount += rsBlocks[i].totalCount;
+    }
+    const data = new Array(totalCodeCount);
+    let index = 0;
+    for (let i = 0; i < maxDcCount; i++) {
+      for (let r = 0; r < rsBlocks.length; r++) {
+        if (i < dcdata[r].length) {
+          data[index++] = dcdata[r][i];
+        }
+      }
+    }
+    for (let i = 0; i < maxEcCount; i++) {
+      for (let r = 0; r < rsBlocks.length; r++) {
+        if (i < ecdata[r].length) {
+          data[index++] = ecdata[r][i];
+        }
+      }
+    }
+    return data;
+  }
+
+  /**
+   * スマートフォンカメラで確実に認識できる高コントラスト＆余白（Quiet Zone）付きSVGを生成
+   */
+  createSvgTag(options = {}) {
+    const cellSize = options.cellSize || 4;
+    const margin = options.margin !== undefined ? options.margin : 4; // ISO標準4モジュール
+    const size = this.getModuleCount() * cellSize + margin * 2 * cellSize;
+    let path = '';
+
+    for (let r = 0; r < this.getModuleCount(); r++) {
+      for (let c = 0; c < this.getModuleCount(); c++) {
+        if (this.isDark(r, c)) {
+          const x = (c + margin) * cellSize;
+          const y = (r + margin) * cellSize;
+          path += `M${x},${y}h${cellSize}v${cellSize}h-${cellSize}z `;
+        }
+      }
+    }
+
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="100%" height="100%" shape-rendering="crispEdges" style="display:block;margin:auto;">
+        <rect width="${size}" height="${size}" fill="#ffffff"/>
+        <path d="${path.trim()}" fill="#000000"/>
+      </svg>
+    `.trim();
+
+    return svg;
+  }
+}
+
+/**
+ * 簡易ラッパーAPI: URL文字列からSVG要素文字列を一発生成
+ */
+class QRCodeGenerator {
+  static generateSvg(text, options = {}) {
+    try {
+      const ecLevel = options.errorCorrectionLevel === 'Q'
+        ? QRErrorCorrectLevel.Q
+        : options.errorCorrectionLevel === 'H'
+        ? QRErrorCorrectLevel.H
+        : options.errorCorrectionLevel === 'L'
+        ? QRErrorCorrectLevel.L
+        : QRErrorCorrectLevel.M; // デフォルト Level M (15% 欠損耐性)
+
+      const qr = new QRCodeModel(0, ecLevel);
+      qr.addData(text);
+      qr.make();
+      return qr.createSvgTag({
+        cellSize: options.cellSize || 4,
+        margin: options.margin !== undefined ? options.margin : 4
+      });
+    } catch (err) {
+      console.error('[QRCodeGenerator] Error generating QR code:', err);
+      return null;
+    }
+  }
+}
+
+
 // === js/data/initialVocabulary.js ===
 const initialVocabulary = [
   {
@@ -79936,6 +80737,84 @@ class AuthService {
       }
     }, 4500);
   }
+  /**
+   * ペアリング完了通知をホスト端末（PC）へ送信（マルチチャネル：API・BroadcastChannel・LocalStorage）
+   */
+  static notifyPairSuccess(sessionId, user) {
+    if (!sessionId) return;
+    const deviceName = typeof navigator !== 'undefined'
+      ? (/iPad/.test(navigator.userAgent) ? 'iPad' :
+         /iPhone/.test(navigator.userAgent) ? 'iPhone' :
+         /Android/.test(navigator.userAgent) ? 'Android端末' : 'モバイル端末')
+      : 'モバイル端末';
+
+    const payload = {
+      sessionId,
+      username: user ? user.username : '',
+      displayName: user ? (user.displayName || user.username) : '',
+      device: deviceName,
+      timestamp: Date.now()
+    };
+
+    // 1. ローカルサーバーAPI送信 (LAN経由の異端末間同期)
+    try {
+      fetch('/api/sync/pair', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
+    } catch (_) {}
+
+    // 2. BroadcastChannel送信 (同一ブラウザ/PWA間)
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        const bc = new BroadcastChannel('mongol_app_sync_channel');
+        bc.postMessage(payload);
+        setTimeout(() => { try { bc.close(); } catch(_) {} }, 1000);
+      }
+    } catch (_) {}
+
+    // 3. StorageEvent発火 (他タブ/ウィンドウ検知)
+    try {
+      localStorage.setItem('mongol_app_last_pair_event', JSON.stringify(payload));
+    } catch (_) {}
+  }
+
+  /**
+   * ホスト側でペアリング完了状態を確認
+   */
+  static async checkPairStatus(sessionId) {
+    if (!sessionId) return { status: 'waiting' };
+    try {
+      const res = await fetch(`/api/sync/pair/status?sessionId=${encodeURIComponent(sessionId)}`, {
+        cache: 'no-store'
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (_) {}
+    return { status: 'waiting' };
+  }
+
+  /**
+   * ホスト側でセッションデータを登録（軽量QR用）
+   */
+  static async registerPairSession(sessionId, user, token) {
+    if (!sessionId || !user) return;
+    try {
+      await fetch('/api/sync/pair/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          username: user.username,
+          displayName: user.displayName || user.username,
+          token,
+          createdAt: Date.now()
+        })
+      });
+    } catch (_) {}
+  }
 }
 
 
@@ -84491,7 +85370,9 @@ class AuthModal {
     const isLocalhost = host === 'localhost' || host === '127.0.0.1' || !host;
     const targetIp = isLocalhost ? '192.168.2.226' : host;
     const protocol = typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http') ? window.location.protocol : 'http:';
-    const targetBaseUrl = `${protocol}//${targetIp}:${port}`;
+    const pathname = typeof window !== 'undefined' && window.location ? (window.location.pathname || '/') : '/';
+    const cleanPath = pathname.endsWith('.html') ? pathname : (pathname.endsWith('/') ? pathname : pathname + '/');
+    const targetBaseUrl = `${protocol}//${targetIp}:${port}${cleanPath}`;
     const magicLoginUrl = AuthService.createMagicLoginUrl(user, targetBaseUrl);
 
     return `
@@ -85652,6 +86533,8 @@ class ThemeModal {
 
 
 // === js/components/Navbar.js ===
+
+
 // ナビゲーションバー（デスクトップ上部 ＆ モバイル下部固定）
 
 
@@ -86013,123 +86896,371 @@ class Navbar {
       document.body.appendChild(modal);
     }
 
-    const host = window.location.hostname;
-    const port = window.location.port || '5173';
-    // localhostの場合、Wi-FiローカルIPアドレス（192.168.2.226）を推奨URLとして提示
+    const host = typeof window !== 'undefined' && window.location ? window.location.hostname : '';
+    const port = typeof window !== 'undefined' && window.location && window.location.port ? window.location.port : '5173';
     const isLocalhost = host === 'localhost' || host === '127.0.0.1' || !host;
-    const targetIp = isLocalhost ? '192.168.2.226' : host;
-    const targetBaseUrl = window.location.protocol.startsWith('http')
-      ? `${window.location.protocol}//${targetIp}:${port}`
-      : `http://${targetIp}:${port}`;
+    let targetIp = isLocalhost ? '192.168.2.226' : host;
+    const protocol = typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')
+      ? window.location.protocol
+      : 'http:';
+    const pathname = typeof window !== 'undefined' && window.location ? (window.location.pathname || '/') : '/';
+    const cleanPath = pathname.endsWith('.html') ? pathname : (pathname.endsWith('/') ? pathname : pathname + '/');
 
     const currentUser = AuthService.getCurrentUser();
     const magicToken = currentUser ? AuthService.createMagicLoginToken(currentUser) : null;
-    const targetUrl = magicToken ? AuthService.createMagicLoginUrl(currentUser, targetBaseUrl) : targetBaseUrl;
+    const sessionId = 'pair_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
 
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(targetUrl)}`;
+    // サーバーにペアセッションを登録（軽量QR用）
+    if (currentUser && magicToken) {
+      AuthService.registerPairSession(sessionId, currentUser, magicToken);
+    }
 
-    modal.className = "fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in";
-    modal.innerHTML = `
-      <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-          <div class="flex items-center gap-2">
-            <span class="text-2xl">📱</span>
-            <div>
-              <h3 class="font-extrabold text-base text-slate-800">タブレット・スマホで開く</h3>
-              <p class="text-[11px] text-slate-500">iPad・Android・iPhoneと連携</p>
-            </div>
-          </div>
-          <button type="button" id="btn-close-tablet-modal" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors">
-            ✕
-          </button>
-        </div>
+    // 動作モード: 'quick' (軽量・高速読取) | 'full' (完全データ同封)
+    let qrMode = 'quick';
+    let isPaired = false;
+    let pollInterval = null;
+    let broadcastChannel = null;
 
-        ${currentUser ? `
-          <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
+    const buildUrl = (mode) => {
+      const base = `${protocol}//${targetIp}:${port}${cleanPath}`;
+      if (mode === 'quick') {
+        const sep = base.includes('?') ? '&' : '?';
+        return `${base}${sep}pair=${encodeURIComponent(sessionId)}&device_sync=1`;
+      }
+      if (currentUser) {
+        const fullMagicUrl = AuthService.createMagicLoginUrl(currentUser, base);
+        const sep = fullMagicUrl.includes('?') ? '&' : '?';
+        return `${fullMagicUrl}${sep}session_id=${encodeURIComponent(sessionId)}&device_sync=1`;
+      }
+      const sep = base.includes('?') ? '&' : '?';
+      return `${base}${sep}session_id=${encodeURIComponent(sessionId)}&device_sync=1`;
+    };
+
+    const renderModal = () => {
+      const currentUrl = buildUrl(qrMode);
+      const qrSvg = QRCodeGenerator.generateSvg(currentUrl, {
+        errorCorrectionLevel: 'M',
+        cellSize: qrMode === 'quick' ? 4 : 3,
+        margin: 4
+      });
+
+      modal.className = "fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in";
+      modal.innerHTML = `
+        <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-100 space-y-4 max-h-[92vh] overflow-y-auto">
+          
+          <!-- ヘッダー -->
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <div class="flex items-center gap-2">
-              <span class="text-lg">👤</span>
-              <div class="text-left">
-                <div class="text-[10px] text-emerald-700 font-bold">自動ログイン設定済み</div>
-                <div class="text-xs font-black text-emerald-900">${currentUser.displayName || currentUser.username}</div>
+              <span class="text-2xl">📱</span>
+              <div>
+                <h3 class="font-extrabold text-base text-slate-800">タブレット・スマホで開く</h3>
+                <p class="text-[11px] text-slate-500">iPad・Android・iPhoneと連携</p>
               </div>
             </div>
-            <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">ワンタップ連携</span>
+            <button type="button" id="btn-close-tablet-modal" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+              ✕
+            </button>
           </div>
-        ` : ''}
 
-        <div class="text-center space-y-3">
-          <div class="inline-block p-3 bg-white rounded-2xl border-2 border-slate-200 shadow-xs">
-            <img src="${qrUrl}" alt="QRコード" class="w-44 h-44 mx-auto rounded-lg" onerror="this.style.display='none'; document.getElementById('qr-fallback-box').classList.remove('hidden');">
-            <div id="qr-fallback-box" class="hidden text-xs text-slate-500 py-6">
-              カメラまたはブラウザに下記URLを入力してください
+          <!-- ユーザーバッジ -->
+          ${currentUser ? `
+            <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">👤</span>
+                <div class="text-left">
+                  <div class="text-[10px] text-emerald-700 font-bold">自動ログイン設定済み</div>
+                  <div class="text-xs font-black text-emerald-900">${currentUser.displayName || currentUser.username}</div>
+                </div>
+              </div>
+              <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">ワンタップ連携</span>
+            </div>
+          ` : ''}
+
+          <!-- リアルタイム同期・疎通ステータスバナー -->
+          <div id="tablet-sync-status-box" class="p-3 rounded-2xl flex items-center justify-center gap-2.5 text-xs font-bold transition-all shadow-xs ${
+            isPaired
+              ? 'bg-emerald-50 border-2 border-emerald-500 text-emerald-900 shadow-md'
+              : 'bg-amber-50 border border-amber-200 text-amber-900'
+          }">
+            ${
+              isPaired
+                ? `<span class="text-xl animate-bounce">🎉</span>
+                   <div class="text-left">
+                     <div class="text-xs sm:text-sm font-black text-emerald-800">同期完了！ 端末が正常に連携されました</div>
+                     <div id="tablet-sync-paired-details" class="text-[11px] text-emerald-700 font-semibold mt-0.5">接続待機から自動ログインへ切り替えました</div>
+                   </div>`
+                : `<span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping shrink-0"></span>
+                   <span id="tablet-sync-status-text">📡 接続待機中... スマホやタブレットでQRコードを読み取ってください</span>`
+            }
+          </div>
+
+          <!-- QRコード表示エリア（完全オフライン＆高コントラスト） -->
+          <div class="text-center space-y-2.5">
+            <div class="inline-block p-3 bg-white rounded-2xl border-2 border-slate-200 shadow-sm max-w-[240px] w-full mx-auto">
+              <div id="tablet-qr-svg-wrapper" class="w-48 h-48 sm:w-52 sm:h-52 mx-auto flex items-center justify-center overflow-hidden">
+                ${qrSvg || '<div class="text-xs text-red-500">QRコードの生成に失敗しました</div>'}
+              </div>
+            </div>
+
+            <!-- QRモード切替ピル -->
+            <div class="flex items-center justify-center gap-1.5 p-1 bg-slate-100 rounded-xl max-w-xs mx-auto text-[11px] font-bold">
+              <button type="button" id="btn-toggle-qr-quick" class="flex-1 py-1 px-2 rounded-lg transition-all cursor-pointer ${
+                qrMode === 'quick' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }">
+                ⚡️ クイック同期 (高速読取)
+              </button>
+              <button type="button" id="btn-toggle-qr-full" class="flex-1 py-1 px-2 rounded-lg transition-all cursor-pointer ${
+                qrMode === 'full' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }">
+                📦 完全データ同封
+              </button>
             </div>
           </div>
 
+          <!-- URLコピー欄 -->
           <div class="space-y-1.5">
-            <label class="block text-[11px] font-bold text-slate-500">タブレットのブラウザ（Safari / Chrome）に入力 または開く:</label>
+            <div class="flex items-center justify-between text-[11px] font-bold text-slate-500">
+              <label>タブレットのブラウザ（Safari / Chrome）に入力 または開く:</label>
+              <button type="button" id="btn-toggle-ip-edit" class="text-indigo-600 hover:underline text-[10px]">
+                IP変更
+              </button>
+            </div>
+            
+            <div id="ip-edit-container" class="hidden pb-1">
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-bold text-[11px]">PCのWi-Fi IP:</span>
+                <input type="text" id="input-custom-ip" value="${targetIp}" class="flex-1 px-2 py-1 border border-indigo-300 rounded-md text-xs font-mono font-bold">
+                <button type="button" id="btn-apply-custom-ip" class="px-2.5 py-1 bg-indigo-600 text-white rounded-md text-xs font-bold">反映</button>
+              </div>
+            </div>
+
             <div class="flex items-center gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200">
-              <input type="text" id="tablet-connect-url-input" value="${targetUrl}" readonly class="w-full bg-transparent text-xs sm:text-sm font-black text-indigo-700 text-center select-all focus:outline-hidden">
-              <button type="button" id="btn-copy-tablet-url" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shrink-0 transition-all active:scale-95">
+              <input type="text" id="tablet-connect-url-input" value="${currentUrl}" readonly class="w-full bg-transparent text-xs sm:text-sm font-black text-indigo-700 text-center select-all focus:outline-hidden">
+              <button type="button" id="btn-copy-tablet-url" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shrink-0 transition-all active:scale-95 cursor-pointer">
                 URLコピー
               </button>
             </div>
+
             ${magicToken ? `
               <div class="flex items-center justify-between gap-2 pt-1">
-                <button type="button" id="btn-copy-tablet-token-only" class="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all" data-token="${magicToken}">
+                <button type="button" id="btn-copy-tablet-token-only" class="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all cursor-pointer" data-token="${magicToken}">
                   📋 同期コードのみコピー
                 </button>
-                <button type="button" id="btn-download-tablet-backup" class="flex-1 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-bold transition-all">
+                <button type="button" id="btn-download-tablet-backup" class="flex-1 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-bold transition-all cursor-pointer">
                   💾 バックアップ保存 (.json)
                 </button>
               </div>
             ` : ''}
           </div>
-        </div>
 
-        <div class="bg-amber-50 rounded-2xl p-3.5 border border-amber-200 text-xs text-amber-900 space-y-1.5 leading-relaxed">
-          <div class="font-bold flex items-center gap-1">
-            <span>💡</span> 接続の手順
+          <!-- 接続の手順ガイド -->
+          <div class="bg-amber-50 rounded-2xl p-3.5 border border-amber-200 text-xs text-amber-900 space-y-1.5 leading-relaxed">
+            <div class="font-bold flex items-center gap-1">
+              <span>💡</span> 接続の手順
+            </div>
+            <ol class="list-decimal list-inside space-y-1 text-[11px] text-amber-950">
+              <li>タブレットをこのPCと<strong>同じWi-Fi</strong>に接続します</li>
+              <li>タブレットのカメラでQRコードを読み取るか、ブラウザのURL欄に入力します</li>
+              ${currentUser ? `<li><strong>パスワード入力不要</strong>で自動ログイン＆ペンギンの育成状況も引き継がれます</li>` : `<li>画面共有やAirDrop不要で、そのままタッチ操作で快適に学習できます</li>`}
+            </ol>
           </div>
-          <ol class="list-decimal list-inside space-y-1 text-[11px] text-amber-950">
-            <li>タブレットをこのPCと<strong>同じWi-Fi</strong>に接続します</li>
-            <li>タブレットのカメラでQRコードを読み取るか、ブラウザのURL欄に上記を入力します</li>
-            ${currentUser ? `<li><strong>パスワード入力不要</strong>で自動ログイン＆ペンギンの育成状況も引き継がれます</li>` : `<li>画面共有やAirDrop不要で、そのままタッチ操作で快適に学習できます</li>`}
-          </ol>
+
+          <button type="button" id="btn-close-tablet-modal-bottom" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-colors cursor-pointer">
+            ${isPaired ? '✅ 連携完了（閉じる）' : '閉じる'}
+          </button>
         </div>
+      `;
 
-        <button type="button" id="btn-close-tablet-modal-bottom" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-colors">
-          閉じる
-        </button>
-      </div>
-    `;
+      bindEvents();
+    };
 
-    const closeModal = () => modal.remove();
-    modal.querySelector('#btn-close-tablet-modal').addEventListener('click', closeModal);
-    modal.querySelector('#btn-close-tablet-modal-bottom').addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
+    // ペアリング成功時の処理
+    const onPairSuccess = (info) => {
+      if (isPaired) return;
+      isPaired = true;
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+      try {
+        if (typeof SoundEffects !== 'undefined' && SoundEffects.playCorrect) {
+          SoundEffects.playCorrect();
+        }
+      } catch (_) {}
 
-    const copyBtn = modal.querySelector('#btn-copy-tablet-url');
-    if (copyBtn) {
-      copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(targetUrl).then(() => {
-          copyBtn.textContent = 'コピー完了！';
-          copyBtn.className = "px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold shrink-0";
-          setTimeout(() => {
-            copyBtn.textContent = 'コピー';
-            copyBtn.className = "px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shrink-0 transition-all active:scale-95";
-          }, 2000);
-        }).catch(() => {
-          const input = modal.querySelector('#tablet-connect-url-input');
-          if (input) {
-            input.select();
-            document.execCommand('copy');
-            copyBtn.textContent = 'コピー完了！';
+      const statusBox = modal.querySelector('#tablet-sync-status-box');
+      if (statusBox) {
+        statusBox.className = "p-3.5 bg-emerald-50 border-2 border-emerald-500 text-emerald-900 rounded-2xl flex items-center justify-center gap-2.5 text-xs font-black shadow-md animate-bounce";
+        statusBox.innerHTML = `
+          <span class="text-xl">🎉</span>
+          <div class="text-left">
+            <div class="text-xs sm:text-sm font-black text-emerald-800">同期完了！ 端末が正常に連携されました</div>
+            <div class="text-[11px] text-emerald-700 font-semibold mt-0.5">接続端末: ${info.device || 'モバイル端末'} （${info.displayName || info.username || 'アカウント連携済'}）</div>
+          </div>
+        `;
+      }
+      const bottomBtn = modal.querySelector('#btn-close-tablet-modal-bottom');
+      if (bottomBtn) {
+        bottomBtn.textContent = '✅ 連携完了（閉じる）';
+        bottomBtn.className = "w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-xs transition-colors cursor-pointer";
+      }
+    };
+
+    const bindEvents = () => {
+      const closeModal = () => {
+        if (pollInterval) clearInterval(pollInterval);
+        if (broadcastChannel) {
+          try { broadcastChannel.close(); } catch (_) {}
+        }
+        window.removeEventListener('storage', storageHandler);
+        modal.remove();
+      };
+
+      const closeTopBtn = modal.querySelector('#btn-close-tablet-modal');
+      if (closeTopBtn) closeTopBtn.addEventListener('click', closeModal);
+      const closeBottomBtn = modal.querySelector('#btn-close-tablet-modal-bottom');
+      if (closeBottomBtn) closeBottomBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      // QRモード切替
+      const btnQuick = modal.querySelector('#btn-toggle-qr-quick');
+      if (btnQuick) {
+        btnQuick.addEventListener('click', () => {
+          qrMode = 'quick';
+          renderModal();
+        });
+      }
+      const btnFull = modal.querySelector('#btn-toggle-qr-full');
+      if (btnFull) {
+        btnFull.addEventListener('click', () => {
+          qrMode = 'full';
+          renderModal();
+        });
+      }
+
+      // IP変更トグル
+      const ipToggleBtn = modal.querySelector('#btn-toggle-ip-edit');
+      const ipContainer = modal.querySelector('#ip-edit-container');
+      if (ipToggleBtn && ipContainer) {
+        ipToggleBtn.addEventListener('click', () => {
+          ipContainer.classList.toggle('hidden');
+        });
+      }
+      const applyIpBtn = modal.querySelector('#btn-apply-custom-ip');
+      if (applyIpBtn) {
+        applyIpBtn.addEventListener('click', () => {
+          const input = modal.querySelector('#input-custom-ip');
+          if (input && input.value.trim()) {
+            targetIp = input.value.trim();
+            renderModal();
           }
         });
-      });
-    }
+      }
+
+      // URLコピー
+      const copyBtn = modal.querySelector('#btn-copy-tablet-url');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const url = buildUrl(qrMode);
+          navigator.clipboard.writeText(url).then(() => {
+            copyBtn.textContent = 'コピー完了！';
+            copyBtn.className = "px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold shrink-0";
+            setTimeout(() => {
+              copyBtn.textContent = 'URLコピー';
+              copyBtn.className = "px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shrink-0 transition-all active:scale-95 cursor-pointer";
+            }, 2000);
+          }).catch(() => {
+            const input = modal.querySelector('#tablet-connect-url-input');
+            if (input) {
+              input.select();
+              document.execCommand('copy');
+              copyBtn.textContent = 'コピー完了！';
+            }
+          });
+        });
+      }
+
+      // トークンのみコピー
+      const copyTokenBtn = modal.querySelector('#btn-copy-tablet-token-only');
+      if (copyTokenBtn) {
+        copyTokenBtn.addEventListener('click', () => {
+          const token = copyTokenBtn.getAttribute('data-token');
+          if (token) {
+            navigator.clipboard.writeText(token).then(() => {
+              copyTokenBtn.textContent = '✅ トークンをコピーしました';
+              setTimeout(() => {
+                copyTokenBtn.textContent = '📋 同期コードのみコピー';
+              }, 2000);
+            });
+          }
+        });
+      }
+
+      // バックアップJSONダウンロード
+      const backupBtn = modal.querySelector('#btn-download-tablet-backup');
+      if (backupBtn) {
+        backupBtn.addEventListener('click', () => {
+          const dataStr = AuthService.exportBackupData(currentUser);
+          if (dataStr) {
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mongol_learning_backup_${currentUser.username}_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        });
+      }
+    };
+
+    // 疎通監視リスナー 1: BroadcastChannel
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        broadcastChannel = new BroadcastChannel('mongol_app_sync_channel');
+        broadcastChannel.onmessage = (event) => {
+          if (event.data && (event.data.sessionId === sessionId || event.data.username === (currentUser && currentUser.username))) {
+            onPairSuccess(event.data);
+          }
+        };
+      }
+    } catch (_) {}
+
+    // 疎通監視リスナー 2: StorageEvent
+    const storageHandler = (e) => {
+      if (e.key === 'mongol_app_last_pair_event' && e.newValue) {
+        try {
+          const data = JSON.parse(e.newValue);
+          if (data.sessionId === sessionId || data.username === (currentUser && currentUser.username)) {
+            onPairSuccess(data);
+          }
+        } catch (_) {}
+      }
+    };
+    window.addEventListener('storage', storageHandler);
+
+    // 疎通監視リスナー 3: サーバーポーリング (LAN経由の異端末同期)
+    pollInterval = setInterval(async () => {
+      if (isPaired) return;
+      const res = await AuthService.checkPairStatus(sessionId);
+      if (res && res.status === 'paired') {
+        onPairSuccess(res.session || {});
+      }
+    }, 1200);
+
+    // サーバー情報から正確なWi-FiローカルIPを取得して反映
+    fetch('/api/server_info')
+      .then(r => r.ok ? r.json() : null)
+      .then(info => {
+        if (info && info.local_ip && info.local_ip !== targetIp) {
+          targetIp = info.local_ip;
+          if (!isPaired) renderModal();
+        }
+      }).catch(() => {});
+
+    renderModal();
   }
 }
 
@@ -112157,14 +113288,19 @@ class App {
   static currentTab = 'home';
 
   static init() {
-    // 0. ワンクリックURLログイン（Magic Login Token）の自動処理
+    // 0. ワンクリックURLログイン（Magic Login Token）および端末同期の自動処理
     if (typeof window !== 'undefined' && window.location) {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('login_token') || urlParams.get('auth_token');
+        const sessionId = urlParams.get('session_id') || urlParams.get('pair');
+
         if (token) {
           const res = AuthService.processMagicLoginToken(token);
           if (res.success) {
+            if (sessionId) {
+              AuthService.notifyPairSuccess(sessionId, res.user);
+            }
             // アドレスバーからトークンパラメータを消去してURLをクリーンに保つ
             const cleanUrl = window.location.pathname;
             window.history.replaceState({}, document.title, cleanUrl);
@@ -112172,6 +113308,23 @@ class App {
               AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
             }, 300);
           }
+        } else if (sessionId) {
+          // 軽量ペアリングURLの場合：サーバーからセッション情報を取得して自動ログイン
+          fetch(`/api/sync/pair/data?sessionId=${encodeURIComponent(sessionId)}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+              if (data && data.token) {
+                const res = AuthService.processMagicLoginToken(data.token);
+                if (res.success) {
+                  AuthService.notifyPairSuccess(sessionId, res.user);
+                  const cleanUrl = window.location.pathname;
+                  window.history.replaceState({}, document.title, cleanUrl);
+                  setTimeout(() => {
+                    AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
+                  }, 300);
+                }
+              }
+            }).catch(() => {});
         }
       } catch (err) {
         console.warn('[App] Magic login token check error:', err);

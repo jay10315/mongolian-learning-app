@@ -286,7 +286,9 @@ export class AuthModal {
     const isLocalhost = host === 'localhost' || host === '127.0.0.1' || !host;
     const targetIp = isLocalhost ? '192.168.2.226' : host;
     const protocol = typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http') ? window.location.protocol : 'http:';
-    const targetBaseUrl = `${protocol}//${targetIp}:${port}`;
+    const pathname = typeof window !== 'undefined' && window.location ? (window.location.pathname || '/') : '/';
+    const cleanPath = pathname.endsWith('.html') ? pathname : (pathname.endsWith('/') ? pathname : pathname + '/');
+    const targetBaseUrl = `${protocol}//${targetIp}:${port}${cleanPath}`;
     const magicLoginUrl = AuthService.createMagicLoginUrl(user, targetBaseUrl);
 
     return `

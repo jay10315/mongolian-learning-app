@@ -843,4 +843,82 @@ export class AuthService {
       }
     }, 4500);
   }
+  /**
+   * ペアリング完了通知をホスト端末（PC）へ送信（マルチチャネル：API・BroadcastChannel・LocalStorage）
+   */
+  static notifyPairSuccess(sessionId, user) {
+    if (!sessionId) return;
+    const deviceName = typeof navigator !== 'undefined'
+      ? (/iPad/.test(navigator.userAgent) ? 'iPad' :
+         /iPhone/.test(navigator.userAgent) ? 'iPhone' :
+         /Android/.test(navigator.userAgent) ? 'Android端末' : 'モバイル端末')
+      : 'モバイル端末';
+
+    const payload = {
+      sessionId,
+      username: user ? user.username : '',
+      displayName: user ? (user.displayName || user.username) : '',
+      device: deviceName,
+      timestamp: Date.now()
+    };
+
+    // 1. ローカルサーバーAPI送信 (LAN経由の異端末間同期)
+    try {
+      fetch('/api/sync/pair', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
+    } catch (_) {}
+
+    // 2. BroadcastChannel送信 (同一ブラウザ/PWA間)
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        const bc = new BroadcastChannel('mongol_app_sync_channel');
+        bc.postMessage(payload);
+        setTimeout(() => { try { bc.close(); } catch(_) {} }, 1000);
+      }
+    } catch (_) {}
+
+    // 3. StorageEvent発火 (他タブ/ウィンドウ検知)
+    try {
+      localStorage.setItem('mongol_app_last_pair_event', JSON.stringify(payload));
+    } catch (_) {}
+  }
+
+  /**
+   * ホスト側でペアリング完了状態を確認
+   */
+  static async checkPairStatus(sessionId) {
+    if (!sessionId) return { status: 'waiting' };
+    try {
+      const res = await fetch(`/api/sync/pair/status?sessionId=${encodeURIComponent(sessionId)}`, {
+        cache: 'no-store'
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (_) {}
+    return { status: 'waiting' };
+  }
+
+  /**
+   * ホスト側でセッションデータを登録（軽量QR用）
+   */
+  static async registerPairSession(sessionId, user, token) {
+    if (!sessionId || !user) return;
+    try {
+      await fetch('/api/sync/pair/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          username: user.username,
+          displayName: user.displayName || user.username,
+          token,
+          createdAt: Date.now()
+        })
+      });
+    } catch (_) {}
+  }
 }

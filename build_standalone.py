@@ -9,6 +9,7 @@ def read_f(rel):
 # 読み込むファイル順序（依存関係順）
 files_order = [
     'js/utils/helpers.js',
+    'js/utils/qrcode.js',
     'js/data/initialVocabulary.js',
     'js/data/initialGrammar.js',
     'js/data/grammarQuizzes.js',
