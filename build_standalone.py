@@ -109,7 +109,9 @@ html_template = f"""<!DOCTYPE html>
   <script>
     // タブレットやスマホでのエラー発生時に画面上に診断情報を表示（手動で閉じられるUI）
     window.addEventListener('error', function(e) {{
-      var msg = (e.message || (e.error && e.error.message) || String(e)) + ' [line ' + (e.lineno || '?') + ', col ' + (e.colno || '?') + ']';
+      var rawMsg = (e.message || (e.error && e.error.message) || String(e));
+      if (rawMsg === 'Script error.' || rawMsg === 'Script error') return;
+      var msg = rawMsg + ' [line ' + (e.lineno || '?') + ', col ' + (e.colno || '?') + ']';
       console.error('Mobile Global Error:', msg);
       if (document.body && !document.getElementById('mobile-debug-alert')) {{
         var d = document.createElement('div');
@@ -148,11 +150,14 @@ html_template = f"""<!DOCTYPE html>
     }} catch (_) {{}}
   </script>
   
-  <!-- iOS PWA対応 -->
+  <!-- iOS PWA & ホーム画面追加対応 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="モンゴル語ノート">
-  <link rel="apple-touch-icon" href="./icon-192.svg">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="./icon-192.svg">
   
   <link rel="manifest" href="./manifest.json">
   <title>Монгол хэл｜モンゴル語学習ノート</title>

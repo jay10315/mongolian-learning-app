@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "node build.js",
+  "outputDirectory": "dist",
   "cleanUrls": true,
   "headers": [
     {
@@ -12,7 +14,7 @@
       ]
     },
     {
-      "source": "/(icon-192.svg|icon-512.svg|favicon.ico)",
+      "source": "/(icon-192.svg|icon-512.svg|apple-touch-icon.png|favicon.ico)",
       "headers": [
         {
           "key": "Cache-Control",

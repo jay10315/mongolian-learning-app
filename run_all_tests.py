@@ -75,7 +75,8 @@ tests = [
     'test_qr_and_sync_features.py',
     'test_vercel_deployment_sync.py',
     'test_row1_keyboard_and_cloud_sync.py',
-    'test_supabase_and_paste_sync.py'
+    'test_supabase_and_paste_sync.py',
+    'test_ios_pwa_and_button_input.py'
 ]
 
 for t in tests:

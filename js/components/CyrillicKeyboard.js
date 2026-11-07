@@ -138,46 +138,58 @@ export class CyrillicKeyboard {
     }
   }
 
-  static insertChar(char) {
-    if (!this.activeInput) {
-      this.activeInput = document.querySelector('input[data-cyrillic="true"]:focus') || 
-                         document.querySelector('input[data-cyrillic="true"]') ||
-                         document.querySelector('input:focus');
+  static resolveInput() {
+    if (this.activeInput && !this.activeInput.disabled && document.body.contains(this.activeInput)) {
+      return this.activeInput;
     }
-    if (!this.activeInput) return;
+    if (typeof window !== 'undefined' && window.__lastActiveCyrillicInput && !window.__lastActiveCyrillicInput.disabled && document.body.contains(window.__lastActiveCyrillicInput)) {
+      return window.__lastActiveCyrillicInput;
+    }
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') && !document.activeElement.disabled) {
+      return document.activeElement;
+    }
+    return document.querySelector('#input-exercise-answer:not([disabled]), #input-word-answer:not([disabled]), #input-decl-answer:not([disabled]), #input-review-answer:not([disabled]), input[data-cyrillic="true"]:not([disabled]), input:not([disabled])');
+  }
 
-    const input = this.activeInput;
-    const start = input.selectionStart || input.value.length;
-    const end = input.selectionEnd || input.value.length;
+  static insertChar(char) {
+    const input = this.resolveInput();
+    if (!input) return;
+    this.activeInput = input;
+    if (typeof window !== 'undefined') window.__lastActiveCyrillicInput = input;
+
+    const start = (typeof input.selectionStart === 'number') ? input.selectionStart : input.value.length;
+    const end = (typeof input.selectionEnd === 'number') ? input.selectionEnd : input.value.length;
     const text = input.value;
 
     input.value = text.substring(0, start) + char + text.substring(end);
-    input.selectionStart = input.selectionEnd = start + char.length;
+    const newPos = start + char.length;
+    try { input.setSelectionRange(newPos, newPos); } catch (_) {}
     input.focus();
     input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   static deleteChar() {
-    if (!this.activeInput) {
-      this.activeInput = document.querySelector('input[data-cyrillic="true"]:focus') || 
-                         document.querySelector('input[data-cyrillic="true"]') ||
-                         document.querySelector('input:focus');
-    }
-    if (!this.activeInput) return;
-    const input = this.activeInput;
-    const start = input.selectionStart;
-    const end = input.selectionEnd;
+    const input = this.resolveInput();
+    if (!input) return;
+    this.activeInput = input;
+    if (typeof window !== 'undefined') window.__lastActiveCyrillicInput = input;
+
+    const start = (typeof input.selectionStart === 'number') ? input.selectionStart : input.value.length;
+    const end = (typeof input.selectionEnd === 'number') ? input.selectionEnd : input.value.length;
     const text = input.value;
 
     if (start === end && start > 0) {
       input.value = text.substring(0, start - 1) + text.substring(end);
-      input.selectionStart = input.selectionEnd = start - 1;
+      const newPos = start - 1;
+      try { input.setSelectionRange(newPos, newPos); } catch (_) {}
     } else if (start !== end) {
       input.value = text.substring(0, start) + text.substring(end);
-      input.selectionStart = input.selectionEnd = start;
+      try { input.setSelectionRange(start, start); } catch (_) {}
     }
     input.focus();
     input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   static showBar() {

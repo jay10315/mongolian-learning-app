@@ -198,6 +198,21 @@ export function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showK
 export function bindCyrillicInputAssistant(container, targetInputSelector = 'input[data-cyrillic="true"]') {
   if (!container) return;
 
+  // グローバル入力欄フォーカス追跡（初回のみ初期化）
+  if (typeof window !== 'undefined' && !window.__cyrillicGlobalInputTrackingInitialized) {
+    window.__cyrillicGlobalInputTrackingInitialized = true;
+    document.addEventListener('focusin', (e) => {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+        window.__lastActiveCyrillicInput = e.target;
+      }
+    });
+    document.addEventListener('pointerdown', (e) => {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+        window.__lastActiveCyrillicInput = e.target;
+      }
+    });
+  }
+
   // PC標準モンゴル語配列（JCUKEN）物理キーボード変換マップ
   const JCUKEN_PHYSICAL_KEY_MAP = {
     '1': '№', '2': '-', '3': '"', '4': '₮', '5': ':', '6': '.', '7': '_', '8': ',', '9': '%', '0': '?', '-': '!', '=': '=',
@@ -208,18 +223,72 @@ export function bindCyrillicInputAssistant(container, targetInputSelector = 'inp
     'A': 'Й', 'S': 'Ы', 'D': 'Б', 'F': 'Ө', 'G': 'А', 'H': 'Х', 'J': 'Р', 'K': 'О', 'L': 'Л', ':': 'Д', '"': 'П',
     'Z': 'Я', 'X': 'Ч', 'C': 'Ё', 'V': 'С', 'B': 'М', 'N': 'И', 'M': 'Т', '<': 'Ь', '>': 'В', '?': 'Ю'
   };
-  if (!container) return;
+
+  const resolveTargetInput = (box) => {
+    const targetInputId = box ? box.getAttribute('data-target-input') : null;
+    if (targetInputId) {
+      const el = document.getElementById(targetInputId) || container.querySelector(`#${targetInputId}`);
+      if (el && !el.disabled) return el;
+    }
+    if (window.__lastActiveCyrillicInput && !window.__lastActiveCyrillicInput.disabled && document.body.contains(window.__lastActiveCyrillicInput)) {
+      return window.__lastActiveCyrillicInput;
+    }
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') && !document.activeElement.disabled) {
+      return document.activeElement;
+    }
+    const inBox = container.querySelector('input[data-cyrillic="true"]:not([disabled]), input:not([disabled]), textarea:not([disabled])');
+    if (inBox) return inBox;
+    return document.querySelector('#input-exercise-answer:not([disabled]), #input-word-answer:not([disabled]), #input-decl-answer:not([disabled]), #input-review-answer:not([disabled]), input[data-cyrillic="true"]:not([disabled]), input:not([disabled])');
+  };
 
   const assistantContainers = container.querySelectorAll('.cyrillic-assistant-container');
   assistantContainers.forEach(box => {
     let isShift = false;
-    const targetInputId = box.getAttribute('data-target-input');
-    const input = targetInputId ? container.querySelector(`#${targetInputId}`) : container.querySelector(targetInputSelector);
-    if (input) {
-      input.addEventListener('keydown', (e) => {
-        // Ctrl, Alt, Metaキーは除外
+
+    const insertText = (char) => {
+      const activeInput = resolveTargetInput(box);
+      if (!activeInput) return;
+      window.__lastActiveCyrillicInput = activeInput;
+
+      const start = (typeof activeInput.selectionStart === 'number') ? activeInput.selectionStart : activeInput.value.length;
+      const end = (typeof activeInput.selectionEnd === 'number') ? activeInput.selectionEnd : activeInput.value.length;
+      const val = activeInput.value;
+      activeInput.value = val.substring(0, start) + char + val.substring(end);
+      const newPos = start + char.length;
+      try {
+        activeInput.setSelectionRange(newPos, newPos);
+      } catch (_) {}
+      activeInput.focus();
+      activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+      activeInput.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+
+    const backspace = () => {
+      const activeInput = resolveTargetInput(box);
+      if (!activeInput) return;
+      window.__lastActiveCyrillicInput = activeInput;
+
+      const start = (typeof activeInput.selectionStart === 'number') ? activeInput.selectionStart : activeInput.value.length;
+      const end = (typeof activeInput.selectionEnd === 'number') ? activeInput.selectionEnd : activeInput.value.length;
+      const val = activeInput.value;
+      if (start === end && start > 0) {
+        activeInput.value = val.substring(0, start - 1) + val.substring(end);
+        const newPos = start - 1;
+        try { activeInput.setSelectionRange(newPos, newPos); } catch (_) {}
+      } else if (start !== end) {
+        activeInput.value = val.substring(0, start) + val.substring(end);
+        try { activeInput.setSelectionRange(start, start); } catch (_) {}
+      }
+      activeInput.focus();
+      activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+      activeInput.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+
+    // 物理キーボード変換バインド
+    const currentInput = resolveTargetInput(box);
+    if (currentInput) {
+      currentInput.addEventListener('keydown', (e) => {
         if (e.ctrlKey || e.altKey || e.metaKey) return;
-        // 物理キーがキリル配列マップにある場合
         if (JCUKEN_PHYSICAL_KEY_MAP[e.key]) {
           e.preventDefault();
           insertText(JCUKEN_PHYSICAL_KEY_MAP[e.key]);
@@ -227,41 +296,23 @@ export function bindCyrillicInputAssistant(container, targetInputSelector = 'inp
       });
     }
 
-    const insertText = (char) => {
-      const activeInput = input || document.activeElement;
-      if (!activeInput || (activeInput.tagName !== 'INPUT' && activeInput.tagName !== 'TEXTAREA')) return;
-      const start = activeInput.selectionStart || activeInput.value.length;
-      const end = activeInput.selectionEnd || activeInput.value.length;
-      const val = activeInput.value;
-      activeInput.value = val.substring(0, start) + char + val.substring(end);
-      activeInput.selectionStart = activeInput.selectionEnd = start + char.length;
-      activeInput.focus();
-      activeInput.dispatchEvent(new Event('input', { bubbles: true }));
-    };
-
-    const backspace = () => {
-      const activeInput = input || document.activeElement;
-      if (!activeInput || (activeInput.tagName !== 'INPUT' && activeInput.tagName !== 'TEXTAREA')) return;
-      const start = activeInput.selectionStart;
-      const end = activeInput.selectionEnd;
-      const val = activeInput.value;
-      if (start === end && start > 0) {
-        activeInput.value = val.substring(0, start - 1) + val.substring(end);
-        activeInput.selectionStart = activeInput.selectionEnd = start - 1;
-      } else if (start !== end) {
-        activeInput.value = val.substring(0, start) + val.substring(end);
-        activeInput.selectionStart = activeInput.selectionEnd = start;
-      }
-      activeInput.focus();
-      activeInput.dispatchEvent(new Event('input', { bubbles: true }));
-    };
+    // ボタンのフォーカス損失防止（タップ・クリック時にフォーカスを入力欄に残す）
+    box.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('pointerdown', (e) => {
+        e.preventDefault(); // 入力欄からフォーカスを奪わせない
+      });
+      btn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+      });
+    });
 
     // クイック特有文字ボタン
     box.querySelectorAll('.btn-insert-char').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      const handleChar = (e) => {
         e.preventDefault();
         insertText(btn.getAttribute('data-char'));
-      });
+      };
+      btn.addEventListener('click', handleChar);
     });
 
     // キーボードトグル
@@ -299,11 +350,12 @@ export function bindCyrillicInputAssistant(container, targetInputSelector = 'inp
 
     // PCキーボタン押下
     box.querySelectorAll('.btn-kb-key').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      const handleKey = (e) => {
         e.preventDefault();
         const char = isShift ? btn.getAttribute('data-upper') : btn.getAttribute('data-lower');
         insertText(char);
-      });
+      };
+      btn.addEventListener('click', handleKey);
     });
 
     // Backspace & Space
