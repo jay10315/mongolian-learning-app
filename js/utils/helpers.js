@@ -651,6 +651,53 @@ export function isListeningAnswerMatch(userAnswer, quizItem, mode = 'blank') {
  * 単語の成り立ち・語の構成（2語以上の複合語、派生語、接尾辞結合）を解析してHTMLカードを生成
  */
 export const RICH_ETYMOLOGY_MAP = {
+  "зурагтай ном": {
+    totalMeaning: "絵本、図鑑",
+    components: [
+      {
+        word: "зураг",
+        pos: "名詞",
+        meaning: "絵、写真、図面",
+        standalone: "単独使用可能な独立した名詞",
+        details: "事物や風景を描いた絵・写真を指す基本名詞。"
+      },
+      {
+        word: "-тай",
+        pos: "有属・共同格接尾辞",
+        meaning: "〜のある、〜付きの、〜を持つ",
+        standalone: "接尾辞（単独使用不可・名詞に後置）",
+        details: "名詞「зураг」に結合して「зурагтай（絵のある、絵付きの）」という修飾語句を作ります。"
+      },
+      {
+        word: "ном",
+        pos: "名詞",
+        meaning: "本、書籍、経典",
+        standalone: "単独使用可能な独立した名詞",
+        details: "書物全般を指す基本名詞。"
+      }
+    ],
+    synthesis: "「絵・写真（зураг）」＋「〜付きの（-тай）」＋「本（ном）」＝「絵のある本」から【絵本・図鑑】となります。"
+  },
+  "сайн дурын гишүүн": {
+    totalMeaning: "ボランティア隊員（青年海外協力隊員）",
+    components: [
+      {
+        word: "сайн дурын",
+        pos: "名詞句（属格修飾）",
+        meaning: "自発的な、有志の、ボランティアの",
+        standalone: "「сайн дур（自発意志）」の属格形",
+        details: "「良き（сайн）意志（дур）」から自発性・奉仕精神を表します。"
+      },
+      {
+        word: "гишүүн",
+        pos: "名詞",
+        meaning: "メンバー、構成員、会員、隊員",
+        standalone: "単独使用可能な独立した名詞",
+        details: "組織や団体の構成メンバーを指す基本名詞。"
+      }
+    ],
+    synthesis: "「自発的意志の（сайн дурын）」＋「メンバー（гишүүн）」＝【ボランティア隊員】となります。"
+  },
   "зөөлөн тоглоом": {
     totalMeaning: "ぬいぐるみ",
     components: [
@@ -868,20 +915,34 @@ export function getWordEtymologyHTML(item, targetWord) {
       } catch (_) {}
 
       const compRows = tokens.map(t => {
-        const match = vocabList.find(w => 
+        let match = vocabList.find(w => 
           (w.mongolian && w.mongolian.toLowerCase() === t) ||
           (w.dictForm && w.dictForm.toLowerCase() === t)
         );
-        const pos = match ? (match.pos || '名詞句構成要素') : '語句';
-        const meaning = match ? (match.japanese || match.baseMeaning || '固有構成語') : '複合語構成要素';
+
+        let parsed = null;
+        if (!match && typeof findWordInDictionary === 'function') {
+          parsed = findWordInDictionary(t);
+        }
+
+        let pos = match ? (match.pos || '独立した名詞') : (parsed ? parsed.pos : '名詞・修飾語句');
+        let meaning = match ? (match.japanese || match.baseMeaning) : (parsed ? parsed.meaning : '基本構成語');
+        let standalone = match ? '辞書見出し語として単独使用可能' : (parsed && parsed.derivation ? parsed.derivation : '独立した単語');
+
+        // -тай/-тэй/-той（有属・共同格）の特殊成形
+        if (t.endsWith('тай') || t.endsWith('тэй') || t.endsWith('той')) {
+          pos = '形容詞的修飾語（有属形）';
+          standalone = '名詞に接尾辞「-тай/-тэй/-той（〜のある、〜付きの）」が結合した形（後続名詞を修飾）';
+        }
+
         return `
-          <div class="p-2 rounded-lg bg-white/90 border border-amber-200 shadow-2xs space-y-0.5">
+          <div class="p-2.5 rounded-lg bg-white/95 border border-amber-200 shadow-2xs space-y-1">
             <div class="flex items-center justify-between text-xs">
               <span class="font-black text-amber-900 cyrillic-text text-sm">「${t}」</span>
-              <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-950 font-bold text-[10px]">${pos}</span>
+              <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-950 font-black text-[10px]">${pos}</span>
             </div>
             <div class="text-xs text-slate-800 font-bold">意味: <span class="text-amber-950">${meaning}</span></div>
-            <div class="text-[11px] text-slate-600">単独使用: ${match ? '辞書見出し語として単独使用可能' : '文脈で活用・結合'}</div>
+            <div class="text-[11px] text-slate-600 leading-tight"><span class="font-bold text-slate-700">役割・単独使用:</span> ${standalone}</div>
           </div>
         `;
       }).join('');
@@ -3420,13 +3481,17 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
         (v.mongolian && v.mongolian.toLowerCase().startsWith(stem))
       );
       if (match) {
+        let naturalMeaning = match.japanese || match.baseMeaning || match.meaning;
+        if (s.suffix === 'тай' || s.suffix === 'тэй' || s.suffix === 'той') {
+          naturalMeaning = `${match.baseMeaning || match.japanese.split(/[、,（(]/)[0]}のある、〜付きの、〜を持つ（共同格・有属）`;
+        }
         return {
           rawWord: cleanWord,
           dictForm: match.dictForm || match.mongolian,
-          meaning: match.japanese || match.baseMeaning || match.meaning,
-          pos: match.pos || '名詞',
+          meaning: naturalMeaning,
+          pos: match.pos || '名詞（格変化形）',
           pron: match.pronunciation || '',
-          derivation: `語幹「${match.dictForm || match.mongolian}」＋ ${s.name}「-${s.suffix}」`
+          derivation: `名詞「${match.dictForm || match.mongolian}」＋ ${s.name}「-${s.suffix}」`
         };
       }
     }
@@ -3459,10 +3524,25 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
   for (const v of verbSuffixes) {
     if (lower.endsWith(v.suffix) && lower.length > v.suffix.length + 1) {
       const stem = lower.slice(0, -v.suffix.length);
-      const match = vocab.find(item => 
-        (item.root && item.root.replace(/-/g, '').toLowerCase() === stem) ||
-        (item.dictForm && item.dictForm.toLowerCase().startsWith(stem))
-      );
+      
+      // 1. スペースを含まない純粋な単一動詞を優先検索（ярилцах өрөөなどの複合語による誤マッチを完全防止）
+      let match = vocab.find(item => {
+        const df = (item.dictForm || item.mongolian || '').toLowerCase();
+        if (df.includes(' ')) return false;
+        if (item.root && item.root.replace(/-/g, '').toLowerCase() === stem) return true;
+        // 動詞辞書形 (-х, -ах, -эх, -ох, -өх) との完全一致
+        if (df === stem + 'х' || df === stem + 'ах' || df === stem + 'эх' || df === stem + 'ох' || df === stem + 'өх') return true;
+        return false;
+      });
+
+      // 2. なければ語幹前方一致（ただしスペースを含まない単一動詞のみ）
+      if (!match) {
+        match = vocab.find(item => {
+          const df = (item.dictForm || item.mongolian || '').toLowerCase();
+          return !df.includes(' ') && df.startsWith(stem) && df.endsWith('х');
+        });
+      }
+
       if (match) {
         return {
           rawWord: cleanWord,

@@ -460,14 +460,22 @@ export class ReviewNotebookComponent {
     const isCyrillicAns = /[\u0400-\u04FF]/.test(cleanAns || (matchedWord ? (details.root || details.dictForm) : ''));
 
     if (item && item.sourceType === 'looked_up') {
-      const rawMeaning = item.rawLookup?.meaning || item.meaning || cleanRawQ.replace(/^【調べた単語】\s*/, '');
+      let rawMeaning = item.rawLookup?.meaning || item.meaning || cleanRawQ.replace(/^【調べた単語】\s*/, '');
+      const rawWord = item.rawLookup?.rawWord || '';
+      const dictForm = item.rawLookup?.dictForm || item.correctAnswer || '';
+      
+      // 不自然な機械的表記「〜を持つ（共格）」を自然な日本語に補正
+      rawMeaning = rawMeaning.replace(/（共格）|\(共格\)/g, '（共同格・有属）');
+
       return {
         promptText: rawMeaning,
         displayPrefix: '【調べた単語】',
-        categoryLabel: '読解・タイピングで調べた単語',
+        categoryLabel: rawWord && rawWord !== dictForm 
+          ? `読解・タイピングで調べた単語（辞書形「${dictForm}」または文中形「${rawWord}」）`
+          : '読解・タイピングで調べた単語',
         isCyrillicAnswer: true,
-        placeholder: 'キリル文字で入力...',
-        subHint: item.rawLookup?.rawWord ? `文中出現形: ${item.rawLookup.rawWord}` : '',
+        placeholder: '辞書形（または文中形）をキリル文字で入力...',
+        subHint: rawWord && rawWord !== dictForm ? `【文中形: ${rawWord}】 辞書形・文中形のどちらでも正解になります` : '',
         matchedWord: matchedWord,
         details: details,
         isVerb: isV

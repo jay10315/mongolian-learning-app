@@ -347,26 +347,26 @@ export class HomeComponent {
               </div>
             </div>
 
-            <!-- 満月のスペルゲーム（星空タイル並び替え ＆ 自力入力 ＆ ペンギンご飯フィーディング） -->
-            <div class="bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-indigo-900/30 rounded-xl p-5 border-2 border-amber-400 hover:border-amber-500 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between" data-target="spelling_game">
+            <!-- 練習ノート（全18課：筆記・空欄補充・文法・翻訳問題集） -->
+            <div class="bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-pink-500/20 rounded-xl p-5 border-2 border-indigo-400 hover:border-indigo-500 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between" data-target="exercise_notebook">
               <div>
                 <div class="flex items-center justify-between mb-3">
-                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-yellow-300 to-amber-500 text-slate-950 flex items-center justify-center text-xl font-bold shadow-md animate-pulse">
-                    🌕
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-xl font-bold shadow-md">
+                    📓
                   </div>
-                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 shadow-2xs flex items-center gap-1">
-                    <span>🐟</span> ご飯フィーディング！
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-indigo-600 text-white shadow-2xs flex items-center gap-1">
+                    <span>✏️</span> 全18課・全問題完全収録
                   </span>
                 </div>
-                <h4 class="text-base font-black text-slate-900 group-hover:text-amber-700 transition-colors flex items-center gap-1.5">
-                  満月のスペルゲーム
+                <h4 class="text-base font-black text-slate-900 group-hover:text-indigo-600 transition-colors flex items-center gap-1.5">
+                  練習ノート問題集
                 </h4>
                 <p class="text-xs text-slate-600 mt-1">
-                  星空の文字タイル並び替え ＆ 完全自力入力！正解すると美味しいお魚がペンギンのお口に飛び込んでモグモグ満腹フィーバー！
+                  教科書と直結した練習ノート全18課の問題を完全収録！筆記・空欄補充・疑問助詞・格変化・文の書き換えを網羅。超詳細な全問解説付き！
                 </p>
               </div>
-              <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-between text-xs font-black text-amber-700">
-                <span class="flex items-center gap-1"><span>🐟</span> ペンギンにご飯をあげる</span>
+              <div class="mt-4 pt-3 border-t border-indigo-200/60 flex items-center justify-between text-xs font-black text-indigo-600">
+                <span class="flex items-center gap-1"><span>📓</span> 練習問題を解く</span>
                 <span class="group-hover:translate-x-1 transition-transform">→</span>
               </div>
             </div>

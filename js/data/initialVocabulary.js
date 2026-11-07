@@ -25251,6 +25251,83 @@ export const initialVocabulary = [
     "caseGovernment": "",
     "caseNote": ""
   }
+,
+  {
+    "id": "vocab_core_tul",
+    "mongolian": "тул",
+    "japanese": "〜ので、〜だから、〜のため（理由・原因を表す後置接続詞）",
+    "pos": "接続詞",
+    "pronunciation": "トル",
+    "level": "中級",
+    "category": "文法・接続詞",
+    "exampleMn": "Цаг агаар хүйтэн тул дулаан хувцаслаарай.",
+    "exampleJa": "天気が寒いので、暖かく着込んでください。",
+    "dictForm": "тул",
+    "baseMeaning": "〜なので、〜だから",
+    "grammarRole": "先行節の末尾に置かれ、後続の事柄に対する理由・原因・根拠を表す接続詞。",
+    "derivation": "単独で使用される理由接続詞（語根）。動詞の形動詞形（-сан, -даг, -х等）や形容詞の直後に置かれます。"
+  },
+  {
+    "id": "vocab_core_gishuun",
+    "mongolian": "гишүүн",
+    "japanese": "メンバー、構成員、会員、委員",
+    "pos": "名詞",
+    "pronunciation": "ギシューン",
+    "level": "初級",
+    "category": "人・社会",
+    "exampleMn": "Тэр бол манай багийн идэвхтэй гишүүн.",
+    "exampleJa": "彼は私たちのチームの積極的なメンバーです。",
+    "dictForm": "гишүүн",
+    "baseMeaning": "メンバー、会員",
+    "grammarRole": "単独で用いられる普通名詞。共同格語尾「-тэй」が付くと「гишүүнтэй（メンバーがいる、会員を持つ）」となります。",
+    "derivation": "基本名詞「гишүүн（メンバー、枝・手足）」。単独で使用可能。"
+  },
+  {
+    "id": "vocab_core_geshuun",
+    "mongolian": "гэшүүн",
+    "japanese": "メンバー、構成員、会員（гишүүнの許容表記）",
+    "pos": "名詞",
+    "pronunciation": "ギシューン",
+    "level": "初級",
+    "category": "人・社会",
+    "exampleMn": "Манай клубын гэшүүн.",
+    "exampleJa": "私たちのクラブのメンバー。",
+    "dictForm": "гэшүүн",
+    "baseMeaning": "メンバー、会員",
+    "grammarRole": "「гишүүн」の口語・慣用表記ゆれ。単独で使用可能な名詞。",
+    "derivation": "名詞「гишүүн」と同義。"
+  },
+  {
+    "id": "vocab_core_yariltsakh",
+    "mongolian": "ярилцах",
+    "japanese": "話し合う、語り合う、相談する、対談する",
+    "pos": "動詞",
+    "pronunciation": "ヤリルツァホ",
+    "level": "初級",
+    "category": "日常動作",
+    "exampleMn": "Бид монгол хэлээр чөлөөтэй ярилцана.",
+    "exampleJa": "私たちはモンゴル語で自由に語り合います。",
+    "dictForm": "ярилцах",
+    "root": "ярилц",
+    "baseMeaning": "話し合う、語り合う",
+    "grammarRole": "自動詞。現在未来形は「ярилцана（話し合います）」、接続形は「ярилцаж（話し合って）」。",
+    "derivation": "動詞「ярих（話す）」に協同・相互態接尾辞「-лцах」が結合した動詞（語幹: ярилц-）。"
+  },
+  {
+    "id": "vocab_core_zuragtai",
+    "mongolian": "зурагтай",
+    "japanese": "絵のある、絵付きの、写真入りの",
+    "pos": "形容詞・有属名詞",
+    "pronunciation": "ゾラグタイ",
+    "level": "初級",
+    "category": "事物・状態",
+    "exampleMn": "Зурагтай ном унших нь хөгжилтэй.",
+    "exampleJa": "絵本を読むのは楽しいです。",
+    "dictForm": "зурагтай",
+    "baseMeaning": "絵のある、絵付きの",
+    "grammarRole": "名詞「зураг」に有属接尾辞「-тай」が付いた派生語。「зурагтай ном（絵本）」のように名詞を修飾します。",
+    "derivation": "名詞「зураг（絵、写真）」＋ 有属・共同格「-тай（〜のある、〜を持つ）」＝「絵のある」。"
+  }
 ];
 
 export const INITIAL_VOCABULARY = initialVocabulary;

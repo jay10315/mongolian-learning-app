@@ -67,9 +67,11 @@ def test_spelling_game():
         html = f.read()
 
     assert 'case \'spelling_game\':' in html, "Missing case 'spelling_game' in index.html"
-    assert 'data-target="spelling_game"' in html, "Missing data-target='spelling_game' in Home card"
-    assert '満月のスペルゲーム' in html, "Missing Home card title in index.html"
-    assert 'スペルゲーム' in html, "Missing Navbar item in index.html"
+    # 新仕様: ホーム画面およびナビゲーションバーにはスペルゲーム単独メニューは存在せず、WordGame内から起動
+    assert 'data-target="spelling_game"' not in html, "Home card must NOT have standalone spelling_game"
+    assert 'data-target="exercise_notebook"' in html, "Home card must have exercise_notebook"
+    assert 'data-mode="spelling"' in bundled, "WordGame must contain spelling game mode launcher"
+    assert 'class SpellingGameComponent' in html, "SpellingGameComponent must remain intact in index.html"
     print("  [OK] index.html includes router case and Home card")
 
     print("All Spelling Game tests passed successfully!")
