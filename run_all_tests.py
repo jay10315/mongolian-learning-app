@@ -72,7 +72,8 @@ tests = [
     'test_perfect_100_points.py',
     'test_all_user_requirements.py',
     'test_all_new_requirements_comprehensive.py',
-    'test_qr_and_sync_features.py'
+    'test_qr_and_sync_features.py',
+    'test_vercel_deployment_sync.py'
 ]
 
 for t in tests:

@@ -726,8 +726,9 @@ export class ReviewNotebookComponent {
               </div>
 
               ${(() => {
+                const currentParsed = (typeof parsed !== 'undefined' && parsed) ? parsed : this.parseReviewItem(item);
                 const isExplicitNonWord = item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review';
-                const matchedWord = (!isExplicitNonWord) ? parsed.matchedWord : null;
+                const matchedWord = (!isExplicitNonWord && currentParsed) ? currentParsed.matchedWord : null;
 
                 // 単語情報がある場合：動詞・名詞・複合語問わず詳細解説＆成り立ちHTMLを完全展開
                 if (matchedWord) {
@@ -737,7 +738,7 @@ export class ReviewNotebookComponent {
                     isCorrect: this.state.isCorrect,
                     item: matchedWord,
                     grammarExplanation: item.explanation,
-                    isVerbQuestion: parsed.isVerb
+                    isVerbQuestion: currentParsed ? currentParsed.isVerb : false
                   });
                 }
 

@@ -361,9 +361,9 @@ export class Navbar {
       document.body.appendChild(modal);
     }
 
-    const host = typeof window !== 'undefined' && window.location ? window.location.hostname : '';
-    const port = typeof window !== 'undefined' && window.location && window.location.port ? window.location.port : '5173';
+    const host = typeof window !== 'undefined' && window.location ? (window.location.hostname || '') : '';
     const isLocalhost = host === 'localhost' || host === '127.0.0.1' || !host;
+    const port = typeof window !== 'undefined' && window.location && window.location.port ? window.location.port : '5173';
     let targetIp = isLocalhost ? '192.168.2.226' : host;
     const protocol = typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')
       ? window.location.protocol
@@ -371,27 +371,52 @@ export class Navbar {
     const pathname = typeof window !== 'undefined' && window.location ? (window.location.pathname || '/') : '/';
     const cleanPath = pathname.endsWith('.html') ? pathname : (pathname.endsWith('/') ? pathname : pathname + '/');
 
+    // 保存されているカスタムVercel URLを取得
+    let savedVercelUrl = '';
+    try {
+      savedVercelUrl = localStorage.getItem('mongol_app_custom_vercel_url') || '';
+    } catch (_) {}
+
+    // 本番Web環境（Vercel等）の場合は現在のオリジンを自動記憶
+    if (!isLocalhost && typeof window !== 'undefined' && window.location && window.location.origin) {
+      savedVercelUrl = window.location.origin;
+      try {
+        localStorage.setItem('mongol_app_custom_vercel_url', savedVercelUrl);
+      } catch (_) {}
+    }
+
+    // 連携先モード: 'vercel' (Vercel公開URL) | 'local' (ローカルWi-Fi)
+    let syncTargetMode = (!isLocalhost || savedVercelUrl) ? 'vercel' : 'local';
+
     const currentUser = AuthService.getCurrentUser();
     const magicToken = currentUser ? AuthService.createMagicLoginToken(currentUser) : null;
     const sessionId = 'pair_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
 
-    // サーバーにペアセッションを登録（軽量QR用）
-    if (currentUser && magicToken) {
+    // ローカルサーバー稼働時のみセッション登録
+    if (isLocalhost && currentUser && magicToken) {
       AuthService.registerPairSession(sessionId, currentUser, magicToken);
     }
 
-    // 動作モード: 'quick' (軽量・高速読取) | 'full' (完全データ同封)
-    let qrMode = 'quick';
     let isPaired = false;
     let pollInterval = null;
     let broadcastChannel = null;
+    let qrMode = (isLocalhost && syncTargetMode === 'local') ? 'quick' : 'full';
 
-    const buildUrl = (mode) => {
-      const base = `${protocol}//${targetIp}:${port}${cleanPath}`;
-      if (mode === 'quick') {
+    // 連携先URLの構築（Vercel環境では絶対にポート5173を付けず、originを使用）
+    const buildUrl = (mode = qrMode) => {
+      let base = '';
+      if (syncTargetMode === 'vercel') {
+        const customOrigin = savedVercelUrl || (typeof window !== 'undefined' && window.location ? window.location.origin : '');
+        base = `${customOrigin.replace(/\/+$/, '')}${cleanPath}`;
+      } else {
+        base = `${protocol}//${targetIp}:${port}${cleanPath}`;
+      }
+
+      if (mode === 'quick' && isLocalhost && syncTargetMode === 'local') {
         const sep = base.includes('?') ? '&' : '?';
         return `${base}${sep}pair=${encodeURIComponent(sessionId)}&device_sync=1`;
       }
+
       if (currentUser) {
         const fullMagicUrl = AuthService.createMagicLoginUrl(currentUser, base);
         const sep = fullMagicUrl.includes('?') ? '&' : '?';
@@ -402,10 +427,10 @@ export class Navbar {
     };
 
     const renderModal = () => {
-      const currentUrl = buildUrl(qrMode);
+      const currentUrl = buildUrl();
       const qrSvg = QRCodeGenerator.generateSvg(currentUrl, {
         errorCorrectionLevel: 'M',
-        cellSize: qrMode === 'quick' ? 4 : 3,
+        cellSize: 3,
         margin: 4
       });
 
@@ -427,19 +452,63 @@ export class Navbar {
             </button>
           </div>
 
-          <!-- ユーザーバッジ -->
-          ${currentUser ? `
-            <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <span class="text-lg">👤</span>
-                <div class="text-left">
-                  <div class="text-[10px] text-emerald-700 font-bold">自動ログイン設定済み</div>
-                  <div class="text-xs font-black text-emerald-900">${currentUser.displayName || currentUser.username}</div>
+          <!-- モード切替タブ（Vercel公開版 vs ローカルWi-Fi） -->
+          <div class="flex items-center gap-1 p-1 bg-slate-100 rounded-2xl text-xs font-bold">
+            <button type="button" id="btn-tab-target-vercel" class="flex-1 py-1.5 px-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 ${
+              syncTargetMode === 'vercel' ? 'bg-white text-sky-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }">
+              <span>🌐</span>
+              <span>Vercel公開版（クラウド連携モード）</span>
+            </button>
+            <button type="button" id="btn-tab-target-local" class="flex-1 py-1.5 px-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 ${
+              syncTargetMode === 'local' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }">
+              <span>🏠</span>
+              <span>ローカルWi-Fi</span>
+            </button>
+          </div>
+
+          <!-- 環境識別バッジ＆ユーザーバッジ -->
+          <div class="space-y-1.5">
+            ${syncTargetMode === 'vercel' ? `
+              <div class="p-2.5 bg-sky-50 border border-sky-200 rounded-xl space-y-1.5 text-[11px] text-sky-900">
+                <div class="flex items-center justify-between font-bold">
+                  <span class="flex items-center gap-1">
+                    <span>🌐</span>
+                    <span>Vercel公開連携URL:</span>
+                  </span>
+                  <span class="text-[10px] bg-sky-200 text-sky-900 px-2 py-0.5 rounded-full font-black">4G/5G・外出先OK</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <input type="text" id="input-vercel-origin" value="${savedVercelUrl || (typeof window !== 'undefined' && window.location ? window.location.origin : '')}" placeholder="https://your-app.vercel.app" class="flex-1 px-2.5 py-1 text-xs border border-sky-300 rounded-lg bg-white font-mono">
+                  <button type="button" id="btn-save-vercel-origin" class="px-2.5 py-1 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-bold shrink-0 cursor-pointer">
+                    反映
+                  </button>
                 </div>
               </div>
-              <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">ワンタップ連携</span>
-            </div>
-          ` : ''}
+            ` : `
+              <div class="flex items-center justify-between px-3 py-1 bg-slate-100 border border-slate-200 rounded-xl text-[11px] font-bold text-slate-700">
+                <span class="flex items-center gap-1">
+                  <span>🏠</span>
+                  <span>ローカルWi-Fi接続モード</span>
+                </span>
+                <span class="text-[10px] bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full font-bold">同一Wi-Fi</span>
+              </div>
+            `}
+
+            ${currentUser ? `
+              <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">👤</span>
+                  <div class="text-left">
+                    <div class="text-[10px] text-emerald-700 font-bold">自動ログイン設定済み</div>
+                    <div class="text-xs font-black text-emerald-900">${currentUser.displayName || currentUser.username}</div>
+                  </div>
+                </div>
+                <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">ワンタップ連携</span>
+              </div>
+            ` : ''}
+          </div>
 
           <!-- リアルタイム同期・疎通ステータスバナー -->
           <div id="tablet-sync-status-box" class="p-3 rounded-2xl flex items-center justify-center gap-2.5 text-xs font-bold transition-all shadow-xs ${
@@ -452,7 +521,7 @@ export class Navbar {
                 ? `<span class="text-xl animate-bounce">🎉</span>
                    <div class="text-left">
                      <div class="text-xs sm:text-sm font-black text-emerald-800">同期完了！ 端末が正常に連携されました</div>
-                     <div id="tablet-sync-paired-details" class="text-[11px] text-emerald-700 font-semibold mt-0.5">接続待機から自動ログインへ切り替えました</div>
+                     <div id="tablet-sync-paired-details" class="text-[11px] text-emerald-700 font-semibold mt-0.5">アカウントと学習データを引き継ぎました</div>
                    </div>`
                 : `<span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping shrink-0"></span>
                    <span id="tablet-sync-status-text">📡 接続待機中... スマホやタブレットでQRコードを読み取ってください</span>`
@@ -460,19 +529,18 @@ export class Navbar {
           </div>
 
           <!-- QRコード表示エリア（完全オフライン＆高コントラスト） -->
-          <div class="text-center space-y-2.5">
+          <div class="text-center space-y-2">
             <div class="inline-block p-3 bg-white rounded-2xl border-2 border-slate-200 shadow-sm max-w-[240px] w-full mx-auto">
               <div id="tablet-qr-svg-wrapper" class="w-48 h-48 sm:w-52 sm:h-52 mx-auto flex items-center justify-center overflow-hidden">
                 ${qrSvg || '<div class="text-xs text-red-500">QRコードの生成に失敗しました</div>'}
               </div>
             </div>
-
-            <!-- QRモード切替ピル -->
+            <!-- QRモード切替ピル（ローカル時） -->
             <div class="flex items-center justify-center gap-1.5 p-1 bg-slate-100 rounded-xl max-w-xs mx-auto text-[11px] font-bold">
               <button type="button" id="btn-toggle-qr-quick" class="flex-1 py-1 px-2 rounded-lg transition-all cursor-pointer ${
                 qrMode === 'quick' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }">
-                ⚡️ クイック同期 (高速読取)
+                ⚡️ クイック同期
               </button>
               <button type="button" id="btn-toggle-qr-full" class="flex-1 py-1 px-2 rounded-lg transition-all cursor-pointer ${
                 qrMode === 'full' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
@@ -480,55 +548,72 @@ export class Navbar {
                 📦 完全データ同封
               </button>
             </div>
+            <p class="text-[11px] text-slate-500 font-medium">
+              カメラをかざすと${syncTargetMode === 'vercel' ? 'Vercelリンク' : '連携リンク'}が自動認識されます
+            </p>
           </div>
 
           <!-- URLコピー欄 -->
           <div class="space-y-1.5">
             <div class="flex items-center justify-between text-[11px] font-bold text-slate-500">
               <label>タブレットのブラウザ（Safari / Chrome）に入力 または開く:</label>
-              <button type="button" id="btn-toggle-ip-edit" class="text-indigo-600 hover:underline text-[10px]">
-                IP変更
-              </button>
+              ${syncTargetMode === 'local' ? `
+                <button type="button" id="btn-toggle-ip-edit" class="text-indigo-600 hover:underline text-[10px]">
+                  IP変更
+                </button>
+              ` : ''}
             </div>
             
-            <div id="ip-edit-container" class="hidden pb-1">
-              <div class="flex items-center gap-1 text-xs">
-                <span class="text-slate-500 font-bold text-[11px]">PCのWi-Fi IP:</span>
-                <input type="text" id="input-custom-ip" value="${targetIp}" class="flex-1 px-2 py-1 border border-indigo-300 rounded-md text-xs font-mono font-bold">
-                <button type="button" id="btn-apply-custom-ip" class="px-2.5 py-1 bg-indigo-600 text-white rounded-md text-xs font-bold">反映</button>
+            ${syncTargetMode === 'local' ? `
+              <div id="ip-edit-container" class="hidden pb-1">
+                <div class="flex items-center gap-1 text-xs">
+                  <span class="text-slate-500 font-bold text-[11px]">PCのWi-Fi IP:</span>
+                  <input type="text" id="input-custom-ip" value="${targetIp}" class="flex-1 px-2 py-1 border border-indigo-300 rounded-md text-xs font-mono font-bold">
+                  <button type="button" id="btn-apply-custom-ip" class="px-2.5 py-1 bg-indigo-600 text-white rounded-md text-xs font-bold">反映</button>
+                </div>
               </div>
-            </div>
+            ` : ''}
 
-            <div class="flex items-center gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200">
-              <input type="text" id="tablet-connect-url-input" value="${currentUrl}" readonly class="w-full bg-transparent text-xs sm:text-sm font-black text-indigo-700 text-center select-all focus:outline-hidden">
-              <button type="button" id="btn-copy-tablet-url" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shrink-0 transition-all active:scale-95 cursor-pointer">
+            <div class="flex items-center gap-2">
+              <input type="text" readonly value="${currentUrl}" id="input-tablet-url" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-600 focus:outline-hidden">
+              <button type="button" id="btn-copy-tablet-url" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer">
                 URLコピー
               </button>
             </div>
-
-            ${magicToken ? `
-              <div class="flex items-center justify-between gap-2 pt-1">
-                <button type="button" id="btn-copy-tablet-token-only" class="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all cursor-pointer" data-token="${magicToken}">
-                  📋 同期コードのみコピー
-                </button>
-                <button type="button" id="btn-download-tablet-backup" class="flex-1 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-bold transition-all cursor-pointer">
-                  💾 バックアップ保存 (.json)
-                </button>
-              </div>
-            ` : ''}
           </div>
 
-          <!-- 接続の手順ガイド -->
-          <div class="bg-amber-50 rounded-2xl p-3.5 border border-amber-200 text-xs text-amber-900 space-y-1.5 leading-relaxed">
-            <div class="font-bold flex items-center gap-1">
-              <span>💡</span> 接続の手順
+          <!-- 代替アクション: 同期コードコピー＆JSON保存＆別タブテスト -->
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button type="button" id="btn-copy-sync-code-only" class="py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <span>📋</span>
+              <span>同期コードのみコピー</span>
+            </button>
+            <button type="button" id="btn-download-backup-json" class="py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <span>💾</span>
+              <span>バックアップ保存 (.json)</span>
+            </button>
+          </div>
+
+          <!-- 接続手順ガイド -->
+          <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3.5 text-xs text-amber-900 space-y-1.5">
+            <div class="font-bold flex items-center gap-1 text-amber-800">
+              <span>💡</span>
+              <span>接続の手順</span>
             </div>
-            <ol class="list-decimal list-inside space-y-1 text-[11px] text-amber-950">
-              <li>タブレットをこのPCと<strong>同じWi-Fi</strong>に接続します</li>
-              <li>タブレットのカメラでQRコードを読み取るか、ブラウザのURL欄に入力します</li>
-              ${currentUser ? `<li><strong>パスワード入力不要</strong>で自動ログイン＆ペンギンの育成状況も引き継がれます</li>` : `<li>画面共有やAirDrop不要で、そのままタッチ操作で快適に学習できます</li>`}
+            <ol class="list-decimal list-inside space-y-1 text-[11px] text-amber-900/90 leading-relaxed">
+              ${syncTargetMode === 'local' ? `<li>タブレットをこのPCと<strong>同じWi-Fi</strong>に接続します</li>` : `<li>タブレット側は<strong>Wi-Fiまたは4G/5G通信</strong>のどちらでもOK！タッチ操作で快適に学習できます</li>`}
+              <li>タブレットやスマホのカメラで上記のQRコードを読み取ります</li>
+              <li>画面に表示されたリンク（${syncTargetMode === 'vercel' ? 'VercelのURL' : 'PCのURL'}）をタップして開きます</li>
+              <li><strong>パスワード入力不要</strong>で自動ログイン＆ペンギンの育成状況も引き継がれます</li>
+              ${syncTargetMode === 'vercel' ? `<li>※ PCと同じWi-Fiでなくても、4G/5Gや外出先からでも連携可能です！</li>` : `<li>※ PCとタブレットが同じWi-Fiルーターに接続されていることをご確認ください。</li>`}
             </ol>
           </div>
+
+          ${!isPaired ? `
+            <button type="button" id="btn-manual-paired-confirm" class="w-full py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>✅ タブレット側で開けたらタップ（同期完了にする）</span>
+            </button>
+          ` : ''}
 
           <button type="button" id="btn-close-tablet-modal-bottom" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-colors cursor-pointer">
             ${isPaired ? '✅ 連携完了（閉じる）' : '閉じる'}
@@ -536,76 +621,74 @@ export class Navbar {
         </div>
       `;
 
-      bindEvents();
-    };
-
-    // ペアリング成功時の処理
-    const onPairSuccess = (info) => {
-      if (isPaired) return;
-      isPaired = true;
-      if (pollInterval) {
-        clearInterval(pollInterval);
-        pollInterval = null;
-      }
-      try {
-        if (typeof SoundEffects !== 'undefined' && SoundEffects.playCorrect) {
-          SoundEffects.playCorrect();
-        }
-      } catch (_) {}
-
-      const statusBox = modal.querySelector('#tablet-sync-status-box');
-      if (statusBox) {
-        statusBox.className = "p-3.5 bg-emerald-50 border-2 border-emerald-500 text-emerald-900 rounded-2xl flex items-center justify-center gap-2.5 text-xs font-black shadow-md animate-bounce";
-        statusBox.innerHTML = `
-          <span class="text-xl">🎉</span>
-          <div class="text-left">
-            <div class="text-xs sm:text-sm font-black text-emerald-800">同期完了！ 端末が正常に連携されました</div>
-            <div class="text-[11px] text-emerald-700 font-semibold mt-0.5">接続端末: ${info.device || 'モバイル端末'} （${info.displayName || info.username || 'アカウント連携済'}）</div>
-          </div>
-        `;
-      }
-      const bottomBtn = modal.querySelector('#btn-close-tablet-modal-bottom');
-      if (bottomBtn) {
-        bottomBtn.textContent = '✅ 連携完了（閉じる）';
-        bottomBtn.className = "w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-xs transition-colors cursor-pointer";
-      }
-    };
-
-    const bindEvents = () => {
-      const closeModal = () => {
+      // イベントリスナーの登録
+      const close = () => {
         if (pollInterval) clearInterval(pollInterval);
-        if (broadcastChannel) {
-          try { broadcastChannel.close(); } catch (_) {}
-        }
+        if (broadcastChannel) broadcastChannel.close();
         window.removeEventListener('storage', storageHandler);
-        modal.remove();
+        modal.classList.add('hidden');
+        modal.innerHTML = '';
       };
 
-      const closeTopBtn = modal.querySelector('#btn-close-tablet-modal');
-      if (closeTopBtn) closeTopBtn.addEventListener('click', closeModal);
-      const closeBottomBtn = modal.querySelector('#btn-close-tablet-modal-bottom');
-      if (closeBottomBtn) closeBottomBtn.addEventListener('click', closeModal);
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-      });
+      modal.querySelector('#btn-close-tablet-modal')?.addEventListener('click', close);
+      modal.querySelector('#btn-close-tablet-modal-bottom')?.addEventListener('click', close);
 
-      // QRモード切替
-      const btnQuick = modal.querySelector('#btn-toggle-qr-quick');
-      if (btnQuick) {
-        btnQuick.addEventListener('click', () => {
-          qrMode = 'quick';
+      // タブ切替（Vercel vs Local）
+      const tabVercel = modal.querySelector('#btn-tab-target-vercel');
+      const tabLocal = modal.querySelector('#btn-tab-target-local');
+      if (tabVercel && tabLocal) {
+        tabVercel.addEventListener('click', () => {
+          syncTargetMode = 'vercel';
+          qrMode = 'full';
+          renderModal();
+        });
+        tabLocal.addEventListener('click', () => {
+          syncTargetMode = 'local';
+          qrMode = isLocalhost ? 'quick' : 'full';
           renderModal();
         });
       }
-      const btnFull = modal.querySelector('#btn-toggle-qr-full');
-      if (btnFull) {
-        btnFull.addEventListener('click', () => {
+
+      // Vercel URL保存ボタン
+      const btnSaveVercel = modal.querySelector('#btn-save-vercel-origin');
+      const inputVercel = modal.querySelector('#input-vercel-origin');
+      if (btnSaveVercel && inputVercel) {
+        btnSaveVercel.addEventListener('click', () => {
+          let val = inputVercel.value.trim().replace(/\/+$/, '');
+          if (val && !val.startsWith('http://') && !val.startsWith('https://')) {
+            val = 'https://' + val;
+          }
+          savedVercelUrl = val;
+          try {
+            localStorage.setItem('mongol_app_custom_vercel_url', savedVercelUrl);
+          } catch (_) {}
+          renderModal();
+        });
+      }
+
+      // QRモード切替
+      const quickBtn = modal.querySelector('#btn-toggle-qr-quick');
+      const fullBtn = modal.querySelector('#btn-toggle-qr-full');
+      if (quickBtn && fullBtn) {
+        quickBtn.addEventListener('click', () => {
+          qrMode = 'quick';
+          renderModal();
+        });
+        fullBtn.addEventListener('click', () => {
           qrMode = 'full';
           renderModal();
         });
       }
 
-      // IP変更トグル
+      // 手動同期完了ボタン
+      const manualConfirmBtn = modal.querySelector('#btn-manual-paired-confirm');
+      if (manualConfirmBtn) {
+        manualConfirmBtn.addEventListener('click', () => {
+          onPairSuccess({ device: 'モバイル端末', username: currentUser ? currentUser.username : '' });
+        });
+      }
+
+      // IP変更トグル（local時のみ）
       const ipToggleBtn = modal.querySelector('#btn-toggle-ip-edit');
       const ipContainer = modal.querySelector('#ip-edit-container');
       if (ipToggleBtn && ipContainer) {
@@ -613,12 +696,14 @@ export class Navbar {
           ipContainer.classList.toggle('hidden');
         });
       }
+
       const applyIpBtn = modal.querySelector('#btn-apply-custom-ip');
-      if (applyIpBtn) {
+      const customIpInput = modal.querySelector('#input-custom-ip');
+      if (applyIpBtn && customIpInput) {
         applyIpBtn.addEventListener('click', () => {
-          const input = modal.querySelector('#input-custom-ip');
-          if (input && input.value.trim()) {
-            targetIp = input.value.trim();
+          const val = customIpInput.value.trim();
+          if (val) {
+            targetIp = val;
             renderModal();
           }
         });
@@ -628,35 +713,32 @@ export class Navbar {
       const copyBtn = modal.querySelector('#btn-copy-tablet-url');
       if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-          const url = buildUrl(qrMode);
+          const url = buildUrl();
           navigator.clipboard.writeText(url).then(() => {
             copyBtn.textContent = 'コピー完了！';
-            copyBtn.className = "px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold shrink-0";
+            copyBtn.className = "px-3 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold shrink-0";
             setTimeout(() => {
               copyBtn.textContent = 'URLコピー';
-              copyBtn.className = "px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shrink-0 transition-all active:scale-95 cursor-pointer";
+              copyBtn.className = "px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer";
             }, 2000);
-          }).catch(() => {
-            const input = modal.querySelector('#tablet-connect-url-input');
-            if (input) {
-              input.select();
-              document.execCommand('copy');
-              copyBtn.textContent = 'コピー完了！';
-            }
           });
         });
       }
 
-      // トークンのみコピー
-      const copyTokenBtn = modal.querySelector('#btn-copy-tablet-token-only');
+      // 同期コードのみコピー
+      const copyTokenBtn = modal.querySelector('#btn-copy-sync-code-only');
       if (copyTokenBtn) {
         copyTokenBtn.addEventListener('click', () => {
-          const token = copyTokenBtn.getAttribute('data-token');
+          if (!currentUser) {
+            alert('ログイン中のアカウントがありません。');
+            return;
+          }
+          const token = AuthService.createMagicLoginToken(currentUser);
           if (token) {
             navigator.clipboard.writeText(token).then(() => {
-              copyTokenBtn.textContent = '✅ トークンをコピーしました';
+              copyTokenBtn.innerHTML = '<span>✅</span><span>コードコピー完了！</span>';
               setTimeout(() => {
-                copyTokenBtn.textContent = '📋 同期コードのみコピー';
+                copyTokenBtn.innerHTML = '<span>📋</span><span>同期コードのみコピー</span>';
               }, 2000);
             });
           }
@@ -664,30 +746,68 @@ export class Navbar {
       }
 
       // バックアップJSONダウンロード
-      const backupBtn = modal.querySelector('#btn-download-tablet-backup');
+      const backupBtn = modal.querySelector('#btn-download-backup-json');
       if (backupBtn) {
         backupBtn.addEventListener('click', () => {
-          const dataStr = AuthService.exportBackupData(currentUser);
-          if (dataStr) {
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `mongol_learning_backup_${currentUser.username}_${Date.now()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
+          if (!currentUser) {
+            alert('ログイン中のアカウントがありません。');
+            return;
           }
+          const backupJson = AuthService.createAccountBackupJson(currentUser);
+          const blob = new Blob([backupJson], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `mongol_app_backup_${currentUser.username}_${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
         });
       }
+    };
+
+    // ペアリング成功時の処理
+    const onPairSuccess = (info = {}) => {
+      if (isPaired) return;
+      isPaired = true;
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+
+      const statusBox = modal.querySelector('#tablet-sync-status-box');
+      if (statusBox) {
+        statusBox.className = "p-3 rounded-2xl flex items-center justify-center gap-2.5 text-xs font-bold transition-all shadow-md bg-emerald-50 border-2 border-emerald-500 text-emerald-900";
+        statusBox.innerHTML = `
+          <span class="text-xl animate-bounce">🎉</span>
+          <div class="text-left">
+            <div class="text-xs sm:text-sm font-black text-emerald-800">同期完了！ 端末が正常に連携されました</div>
+            <div class="text-[11px] text-emerald-700 font-semibold mt-0.5">
+              ${info.device ? `【${info.device}】` : ''}アカウント「${info.username || (currentUser ? currentUser.username : '')}」と学習データを引き継ぎました
+            </div>
+          </div>
+        `;
+      }
+      const confirmBtn = modal.querySelector('#btn-manual-paired-confirm');
+      if (confirmBtn) confirmBtn.remove();
+      const bottomBtn = modal.querySelector('#btn-close-tablet-modal-bottom');
+      if (bottomBtn) {
+        bottomBtn.textContent = '✅ 連携完了（閉じる）';
+        bottomBtn.className = "w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md cursor-pointer";
+      }
+      try {
+        SoundEffects.playCorrect();
+      } catch (_) {}
     };
 
     // 疎通監視リスナー 1: BroadcastChannel
     try {
       if (typeof BroadcastChannel !== 'undefined') {
         broadcastChannel = new BroadcastChannel('mongol_app_sync_channel');
-        broadcastChannel.onmessage = (event) => {
-          if (event.data && (event.data.sessionId === sessionId || event.data.username === (currentUser && currentUser.username))) {
-            onPairSuccess(event.data);
+        broadcastChannel.onmessage = (e) => {
+          if (e.data && e.data.type === 'DEVICE_PAIRED' && (e.data.sessionId === sessionId || !e.data.sessionId)) {
+            onPairSuccess(e.data);
           }
         };
       }
@@ -698,7 +818,7 @@ export class Navbar {
       if (e.key === 'mongol_app_last_pair_event' && e.newValue) {
         try {
           const data = JSON.parse(e.newValue);
-          if (data.sessionId === sessionId || data.username === (currentUser && currentUser.username)) {
+          if (data && (data.sessionId === sessionId || !data.sessionId)) {
             onPairSuccess(data);
           }
         } catch (_) {}
@@ -706,24 +826,25 @@ export class Navbar {
     };
     window.addEventListener('storage', storageHandler);
 
-    // 疎通監視リスナー 3: サーバーポーリング (LAN経由の異端末同期)
-    pollInterval = setInterval(async () => {
-      if (isPaired) return;
-      const res = await AuthService.checkPairStatus(sessionId);
-      if (res && res.status === 'paired') {
-        onPairSuccess(res.session || {});
-      }
-    }, 1200);
-
-    // サーバー情報から正確なWi-FiローカルIPを取得して反映
-    fetch('/api/server_info')
-      .then(r => r.ok ? r.json() : null)
-      .then(info => {
-        if (info && info.local_ip && info.local_ip !== targetIp) {
-          targetIp = info.local_ip;
-          if (!isPaired) renderModal();
+    // 疎通監視リスナー 3: ローカルサーバー稼働時のみポーリング
+    if (isLocalhost) {
+      pollInterval = setInterval(async () => {
+        if (isPaired) return;
+        const res = await AuthService.checkPairStatus(sessionId);
+        if (res && res.status === 'paired') {
+          onPairSuccess(res.session || {});
         }
-      }).catch(() => {});
+      }, 1200);
+
+      fetch('/api/server_info')
+        .then(r => r.ok ? r.json() : null)
+        .then(info => {
+          if (info && info.local_ip && info.local_ip !== targetIp) {
+            targetIp = info.local_ip;
+            if (!isPaired) renderModal();
+          }
+        }).catch(() => {});
+    }
 
     renderModal();
   }

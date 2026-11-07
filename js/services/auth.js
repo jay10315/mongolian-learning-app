@@ -491,12 +491,21 @@ export class AuthService {
       mistakesData = localStorage.getItem('mongol_app_mistakes_v1');
       lookedUpWordsData = localStorage.getItem('mongol_app_looked_up_words_v1');
       wordProgressData = localStorage.getItem('mongol_app_word_progress_v1');
+      let cleanHistory = null;
+      try {
+        const rawH = localStorage.getItem('mongol_app_history_v1');
+        if (rawH) {
+          const parsed = JSON.parse(rawH);
+          cleanHistory = Array.isArray(parsed) ? JSON.stringify(parsed.slice(-15)) : rawH;
+        }
+      } catch (_) {}
+
       storageSnapshot = {
         gameStats: localStorage.getItem('mongol_app_game_stats_v1'),
         mistakes: mistakesData,
         wordProgress: wordProgressData,
         lookedUpWords: lookedUpWordsData,
-        history: localStorage.getItem('mongol_app_history_v1'),
+        history: cleanHistory || localStorage.getItem('mongol_app_history_v1'),
         dailyStats: localStorage.getItem('mongol_app_daily_stats_v1'),
         settings: localStorage.getItem('mongol_app_settings_v1'),
         customTyping: localStorage.getItem('mongol_app_custom_typing_sentences_v1'),

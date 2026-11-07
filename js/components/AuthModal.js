@@ -281,14 +281,16 @@ export class AuthModal {
     const isCloud = SyncService.isCloudConfigured();
     const queueCount = SyncService.getQueue().length;
 
-    const host = typeof window !== 'undefined' && window.location ? window.location.hostname : 'localhost';
-    const port = typeof window !== 'undefined' && window.location && window.location.port ? window.location.port : '5173';
+    const host = typeof window !== 'undefined' && window.location ? (window.location.hostname || '') : '';
     const isLocalhost = host === 'localhost' || host === '127.0.0.1' || !host;
-    const targetIp = isLocalhost ? '192.168.2.226' : host;
     const protocol = typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http') ? window.location.protocol : 'http:';
     const pathname = typeof window !== 'undefined' && window.location ? (window.location.pathname || '/') : '/';
     const cleanPath = pathname.endsWith('.html') ? pathname : (pathname.endsWith('/') ? pathname : pathname + '/');
-    const targetBaseUrl = `${protocol}//${targetIp}:${port}${cleanPath}`;
+    
+    // Vercel等の公開Web環境では絶対に:5173を付けず、window.location.originを使用
+    const targetBaseUrl = !isLocalhost && typeof window !== 'undefined' && window.location && window.location.origin
+      ? `${window.location.origin}${cleanPath}`
+      : `${protocol}//192.168.2.226:${(typeof window !== 'undefined' && window.location && window.location.port) || '5173'}${cleanPath}`;
     const magicLoginUrl = AuthService.createMagicLoginUrl(user, targetBaseUrl);
 
     return `
