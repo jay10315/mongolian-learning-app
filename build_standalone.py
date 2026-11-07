@@ -105,7 +105,7 @@ html_template = f"""<!DOCTYPE html>
   <script>
     // タブレットやスマホでのエラー発生時に画面上に診断情報を表示（手動で閉じられるUI）
     window.addEventListener('error', function(e) {{
-      var msg = e.message || (e.error && e.error.message) || String(e);
+      var msg = (e.message || (e.error && e.error.message) || String(e)) + ' [line ' + (e.lineno || '?') + ', col ' + (e.colno || '?') + ']';
       console.error('Mobile Global Error:', msg);
       if (document.body && !document.getElementById('mobile-debug-alert')) {{
         var d = document.createElement('div');

@@ -113,7 +113,7 @@ function cleanMongolianMojibake(text) {
     '\u30e9': 'р', // ラ
     '\u30ea': 'р', // リ
     '\u30ec': 'р', // レ
-    '\u30ef': 'в'  # ワ
+    '\u30ef': 'в'  // ワ
   };
 
   for (let i = 0; i < 2; i++) {
@@ -2441,7 +2441,9 @@ if (typeof window !== 'undefined') {
   window.SIMILAR_WORDS_DISTINCTIONS = SIMILAR_WORDS_DISTINCTIONS;
   window.getSimilarWordDistinctionHTML = getSimilarWordDistinctionHTML;
 }
-\n\nfunction renderChoiceExplanationsHTML(choices, options = {}) {
+
+
+function renderChoiceExplanationsHTML(choices, options = {}) {
   if (!choices || !Array.isArray(choices) || choices.length === 0) return '';
 
   const expectedAnswer = (options.expectedAnswer || '').toLowerCase().trim();
