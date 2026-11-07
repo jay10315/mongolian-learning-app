@@ -54,8 +54,8 @@ export class CyrillicKeyboard {
 
         <!-- PC標準モンゴル語キーボード（Row 2 〜 Row 4） -->
         <div class="space-y-1.5 text-center">
-          <!-- Row 2 (ф ц у ж э н г ш ү з к ъ) -->
-          <div class="grid grid-cols-12 gap-1">
+          <!-- Row 2 (ф ц у ж э н г ш ү з к ъ щ) -->
+          <div class="grid gap-1" style="grid-template-columns: repeat(13, minmax(0, 1fr));">
             ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row2.map(k => `
               <button type="button" class="cyr-pc-key py-2 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer ${k.special ? 'border-amber-400 bg-amber-50/70 text-amber-950 dark:bg-amber-950/40 dark:text-amber-200' : 'border-slate-200 dark:border-slate-700'}" data-char="${this.isShift ? k.upper : k.lower}">
                 ${this.isShift ? k.upper : k.lower}
@@ -72,8 +72,8 @@ export class CyrillicKeyboard {
             `).join('')}
           </div>
 
-          <!-- Row 4 (я ч ё с м и т ь в ю) -->
-          <div class="grid grid-cols-10 gap-1">
+          <!-- Row 4 (я ч ё е с м и т ь в ю) -->
+          <div class="grid grid-cols-11 gap-1">
             ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row4.map(k => `
               <button type="button" class="cyr-pc-key py-2 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer border-slate-200 dark:border-slate-700" data-char="${this.isShift ? k.upper : k.lower}">
                 ${this.isShift ? k.upper : k.lower}

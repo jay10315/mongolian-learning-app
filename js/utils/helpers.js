@@ -69,7 +69,8 @@ export const MONGOLIAN_PC_KEYBOARD_LAYOUT = {
     { lower: 'ү', upper: 'Ү', key: 'o', special: true }, // モンゴル語特有母音
     { lower: 'з', upper: 'З', key: 'p' },
     { lower: 'к', upper: 'К', key: '[' },
-    { lower: 'ъ', upper: 'Ъ', key: ']' }
+    { lower: 'ъ', upper: 'Ъ', key: ']' },
+    { lower: 'щ', upper: 'Щ', key: '\\', special: true }
   ],
   row3: [
     { lower: 'й', upper: 'Й', key: 'a' },
@@ -88,6 +89,7 @@ export const MONGOLIAN_PC_KEYBOARD_LAYOUT = {
     { lower: 'я', upper: 'Я', key: 'z' },
     { lower: 'ч', upper: 'Ч', key: 'x' },
     { lower: 'ё', upper: 'Ё', key: 'c' },
+    { lower: 'е', upper: 'Е', key: '`', special: true },
     { lower: 'с', upper: 'С', key: 'v' },
     { lower: 'м', upper: 'М', key: 'b' },
     { lower: 'и', upper: 'И', key: 'n' },
@@ -99,7 +101,7 @@ export const MONGOLIAN_PC_KEYBOARD_LAYOUT = {
 };
 
 // よく使う特殊文字（クイックバー用）
-export const SPECIAL_CYRILLIC_BAR = ['ө', 'ү', 'Ө', 'Ү', 'ь', 'ъ', 'э', 'ы', 'я', 'ё', 'ю'];
+export const SPECIAL_CYRILLIC_BAR = ['ө', 'ү', 'Ө', 'Ү', 'е', 'Е', 'щ', 'Щ', 'ь', 'ъ', 'э', 'ы', 'я', 'ё', 'ю'];
 
 /**
  * 初心者にも分かりやすいキリル文字入力パレット＆PC標準キーボード切り替えバーの共通HTML
@@ -113,7 +115,7 @@ export function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showK
           <span class="text-[11px] font-bold text-emerald-800 dark:text-emerald-400 bg-emerald-100/70 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md shrink-0 flex items-center gap-1">
             <span>🇲🇳</span> 特有文字:
           </span>
-          ${['ө', 'ү', 'Ө', 'Ү', 'ь', 'ъ', 'э', 'ы', 'я', 'ё', 'ю'].map(char => `
+          ${SPECIAL_CYRILLIC_BAR.map(char => `
             <button type="button" class="btn-insert-char shrink-0 px-2 py-1 text-xs font-bold bg-white dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded-lg border border-slate-300 dark:border-slate-600 shadow-2xs active:scale-95 transition-all" data-char="${char}">
               ${char}
             </button>
@@ -154,8 +156,8 @@ export function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showK
           `).join('')}
         </div>
 
-        <!-- Row 2 (ф ц у ж э н г ш ү з к ъ) -->
-        <div class="grid grid-cols-12 gap-1 text-center">
+        <!-- Row 2 (ф ц у ж э н г ш ү з к ъ щ) -->
+        <div class="grid gap-1 text-center" style="grid-template-columns: repeat(13, minmax(0, 1fr));">
           ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row2.map(k => `
             <button type="button" class="btn-kb-key py-2 px-1 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer ${k.special ? 'border-amber-400 bg-amber-50/70 text-amber-950 dark:bg-amber-950/40 dark:text-amber-200' : 'border-slate-200 dark:border-slate-600'}" data-lower="${k.lower}" data-upper="${k.upper}">
               ${k.lower}
@@ -172,8 +174,8 @@ export function renderCyrillicInputAssistantHTML(inputId = 'input-answer', showK
           `).join('')}
         </div>
 
-        <!-- Row 4 (я ч ё с м и т ь в ю) -->
-        <div class="grid grid-cols-10 gap-1 text-center">
+        <!-- Row 4 (я ч ё е с м и т ь в ю) -->
+        <div class="grid grid-cols-11 gap-1 text-center">
           ${MONGOLIAN_PC_KEYBOARD_LAYOUT.row4.map(k => `
             <button type="button" class="btn-kb-key py-2 px-1 text-xs sm:text-sm font-bold rounded-lg border bg-white dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-emerald-100 dark:hover:bg-emerald-950/60 shadow-2xs active:scale-95 transition-all cursor-pointer border-slate-200 dark:border-slate-600" data-lower="${k.lower}" data-upper="${k.upper}">
               ${k.lower}
@@ -215,7 +217,7 @@ export function bindCyrillicInputAssistant(container, targetInputSelector = 'inp
 
   // PC標準モンゴル語配列（JCUKEN）物理キーボード変換マップ
   const JCUKEN_PHYSICAL_KEY_MAP = {
-    '1': '№', '2': '-', '3': '"', '4': '₮', '5': ':', '6': '.', '7': '_', '8': ',', '9': '%', '0': '?', '-': '!', '=': '=',
+    '1': '№', '2': '-', '3': '"', '4': '₮', '5': ':', '6': '.', '7': '_', '8': ',', '9': '%', '0': '?', '-': '!', '=': '=', '`': 'е', '~': 'Е', '\\': 'щ', '|': 'Щ',
     'q': 'ф', 'w': 'ц', 'e': 'у', 'r': 'ж', 't': 'э', 'y': 'н', 'u': 'г', 'i': 'ш', 'o': 'ү', 'p': 'з', '[': 'к', ']': 'ъ',
     'a': 'й', 's': 'ы', 'd': 'б', 'f': 'ө', 'g': 'а', 'h': 'х', 'j': 'р', 'k': 'о', 'l': 'л', ';': 'д', "'": 'п',
     'z': 'я', 'x': 'ч', 'c': 'ё', 'v': 'с', 'b': 'м', 'n': 'и', 'm': 'т', ',': 'ь', '.': 'в', '/': 'ю',
