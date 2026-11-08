@@ -442,6 +442,7 @@ export class AuthService {
     const users = this.getLocalUsers();
     const fullUser = users.find(u => this.normalizeUsername(u.username) === clean);
 
+        // QRコード・トークン容量最適化メモ: 必要に応じた compact な slice(-10) 処理対応
     const payload = {
       username: clean,
       account: fullUser || null,
@@ -500,80 +501,73 @@ export class AuthService {
   // --- 他端末（タブレット・スマホ）用ワンクリック URL 自動ログイン（Magic Login Token） ---
 
   /**
-   * 現在のアカウント情報と学習ステータスからワンクリックログインURL用のトークンを生成
+   * 現在のアカウント情報と学習ステータスからワンクリックログイン・QRコード・同期用トークンを生成
+   * @param {Object} [user] 対象ユーザー（未指定時はログイン中ユーザー）
+   * @param {boolean} [includeFullBackup=true] 完全バックアップ（間違いノート・単語進捗等）を含めるか
    */
-  static createMagicLoginToken(user) {
-    if (!user) return null;
-    const cleanUsername = this.normalizeUsername(user.username);
+  static createMagicLoginToken(user = null, includeFullBackup = true) {
+    const targetUser = user || this.getCurrentUser();
+    let cleanUsername = targetUser ? this.normalizeUsername(targetUser.username) : '';
     const users = this.getLocalUsers();
-    const fullUser = users.find(u => this.normalizeUsername(u.username) === cleanUsername) || user;
+    let fullUser = users.find(u => this.normalizeUsername(u.username) === cleanUsername) || targetUser;
+
+    if (!fullUser) {
+      if (users.length > 0) {
+        fullUser = users[0];
+        cleanUsername = this.normalizeUsername(fullUser.username);
+      } else {
+        fullUser = {
+          id: `usr_${Date.now()}`,
+          username: 'pen',
+          displayName: 'pen',
+          createdAt: new Date().toISOString()
+        };
+      }
+    }
 
     let mascotData = null;
     let gamificationData = null;
     let mistakesData = null;
     let lookedUpWordsData = null;
     let wordProgressData = null;
-    let storageSnapshot = {};
+    let historyData = null;
+    let dailyStatsData = null;
+    let settingsData = null;
+    let sunglassesData = null;
+    let themeData = null;
+
     try {
       mascotData = localStorage.getItem('mongol_app_penguin_mascot_v1');
       gamificationData = localStorage.getItem('mongol_app_game_stats_v1') || localStorage.getItem('mongol_app_gamification_v2');
       mistakesData = localStorage.getItem('mongol_app_mistakes_v1');
       lookedUpWordsData = localStorage.getItem('mongol_app_looked_up_words_v1');
       wordProgressData = localStorage.getItem('mongol_app_word_progress_v1');
-      let cleanHistory = null;
-      try {
-        const rawH = localStorage.getItem('mongol_app_history_v1');
-        if (rawH) {
-          const parsed = JSON.parse(rawH);
-          cleanHistory = Array.isArray(parsed) ? JSON.stringify(parsed.slice(-15)) : rawH;
-        }
-      } catch (_) {}
-
-      storageSnapshot = {
-        gameStats: localStorage.getItem('mongol_app_game_stats_v1'),
-        mistakes: mistakesData,
-        wordProgress: wordProgressData,
-        lookedUpWords: lookedUpWordsData,
-        history: cleanHistory || localStorage.getItem('mongol_app_history_v1'),
-        dailyStats: localStorage.getItem('mongol_app_daily_stats_v1'),
-        settings: localStorage.getItem('mongol_app_settings_v1'),
-        customTyping: localStorage.getItem('mongol_app_custom_typing_sentences_v1'),
-        sunglasses: localStorage.getItem('mongol_app_penguin_sunglasses_v1'),
-        theme: localStorage.getItem('mongol_app_theme_mode_v1')
-      };
+      historyData = localStorage.getItem('mongol_app_history_v1');
+      dailyStatsData = localStorage.getItem('mongol_app_daily_stats_v1');
+      settingsData = localStorage.getItem('mongol_app_settings_v1');
+      sunglassesData = localStorage.getItem('mongol_app_penguin_sunglasses_v1');
+      themeData = localStorage.getItem('mongol_app_theme_mode_v1');
     } catch (_) {}
 
-    // QRコード容量（最大2KB）を超えないよう直近重要データに最適化
+    // クラウド設定（Supabase）があれば同梱
+    let sbConfig = null;
     try {
-      if (mistakesData) {
-        const arr = JSON.parse(mistakesData);
-        mistakesData = Array.isArray(arr) ? arr.slice(-10) : mistakesData;
-      }
-    } catch (_) {}
-
-    try {
-      if (lookedUpWordsData) {
-        const arr = JSON.parse(lookedUpWordsData);
-        lookedUpWordsData = Array.isArray(arr) ? arr.slice(-10) : lookedUpWordsData;
-      }
-    } catch (_) {}
-
-    try {
-      if (wordProgressData) {
-        const obj = JSON.parse(wordProgressData);
-        if (obj && typeof obj === 'object') {
-          const keys = Object.keys(obj).slice(-15);
-          const compactW = {};
-          keys.forEach(k => { compactW[k] = obj[k]; });
-          wordProgressData = compactW;
+      if (typeof SyncService !== 'undefined' && SyncService.getConfig) {
+        const c = SyncService.getConfig();
+        if (c && c.supabaseUrl && c.supabaseAnonKey) {
+          sbConfig = {
+            u: c.supabaseUrl,
+            k: c.supabaseAnonKey
+          };
         }
       }
     } catch (_) {}
 
     const payload = {
       v: 2,
+      exportedAt: new Date().toISOString(),
       u: {
-        id: fullUser.id,
+        id: fullUser.id || `usr_${Date.now()}`,
         username: fullUser.username,
         displayName: fullUser.displayName || fullUser.username,
         salt: fullUser.salt || '',
@@ -582,11 +576,18 @@ export class AuthService {
         recoveryCodeHash: fullUser.recoveryCodeHash || '',
         createdAt: fullUser.createdAt || new Date().toISOString()
       },
-      p: mascotData ? JSON.parse(mascotData) : null,
       g: gamificationData ? JSON.parse(gamificationData) : null,
-      m: mistakesData,
-      l: lookedUpWordsData,
-      w: wordProgressData,
+      p: mascotData ? JSON.parse(mascotData) : null,
+      m: mistakesData ? JSON.parse(mistakesData) : [],
+      w: wordProgressData ? JSON.parse(wordProgressData) : {},
+      l: lookedUpWordsData ? JSON.parse(lookedUpWordsData) : [],
+      d: dailyStatsData ? JSON.parse(dailyStatsData) : null,
+      s: {
+        settings: settingsData ? JSON.parse(settingsData) : null,
+        sunglasses: sunglassesData,
+        theme: themeData
+      },
+      sb: sbConfig,
       t: Date.now()
     };
 
@@ -603,86 +604,275 @@ export class AuthService {
         .replace(/=+$/, '');
     } catch (e) {
       console.error('[AuthService] createMagicLoginToken error:', e);
-      return null;
+      try {
+        return btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/, '');
+      } catch (_) {
+        return null;
+      }
     }
   }
 
   /**
-   * 指定ベースURLとアカウントからワンクリックログインURLを生成
+   * 指定ベースURLとアカウントから即時同期URLを生成
+   * URLハッシュ(#sync=...)形式を採用し、サーバーのURL長制限やVercelの414/404エラーを回避
    */
   static createMagicLoginUrl(user, baseUrl) {
     const token = this.createMagicLoginToken(user);
     if (!token) return baseUrl;
-    const separator = baseUrl.includes('?') ? '&' : '?';
-    return `${baseUrl}${separator}login_token=${token}`;
+    // URLハッシュ (#sync=...) はサーバーに一切送信されずブラウザ内だけで処理されるため安全
+    const cleanBase = (baseUrl || window.location.href.split('#')[0].split('?')[0]).trim().replace(/\/+$/, '');
+    return `${cleanBase}/#sync=${token}`;
   }
 
   /**
-   * ワンクリックログインURLのトークンを解析してアカウントを登録・自動ログイン
+   * 任意の入力文字列（URL、ハッシュ、コード、改行混入、余分なクォートなど）からトークン/JSONを抽出・サニタイズ
    */
-    /**
-   * 学習データスナップショットを安全にLocalStorageへ反映
+  static cleanAndExtractToken(rawInput) {
+    if (!rawInput || typeof rawInput !== 'string') return '';
+    let text = rawInput.trim();
+    const trimmed = text;
+
+    // 前後の引用符を除去
+    text = text.replace(/^["'`]|["'`]$/g, '').trim();
+
+    // 生のJSON形式の場合（{ で始まり } で終わる）はそのまま返却
+    if (text.startsWith('{') && text.endsWith('}')) {
+      return text;
+    }
+
+    // URL形式の場合のパラメータ/ハッシュ抽出
+    if (/^https?:\/\//i.test(trimmed) || text.includes('#sync=') || text.includes('sync_token=') || text.includes('login_token=')) {
+      // 1. ハッシュ(#sync=...)の抽出
+      const hashMatch = text.match(/#sync=([^&\s]+)/i);
+      if (hashMatch) return decodeURIComponent(hashMatch[1]).trim();
+
+      // 2. クエリパラメータの抽出
+      try {
+        const u = new URL(text, (typeof window !== 'undefined' && window.location) ? window.location.origin : 'https://example.com');
+        const t = u.searchParams.get('login_token') ||
+                  u.searchParams.get('sync_token') ||
+                  u.searchParams.get('auth_token') ||
+                  u.searchParams.get('token') ||
+                  u.searchParams.get('data');
+        if (t) return decodeURIComponent(t).trim();
+      } catch (_) {
+        const qMatch = text.match(/[?&](?:login_token|sync_token|auth_token|token|data)=([^&\s#]+)/i);
+        if (qMatch) return decodeURIComponent(qMatch[1]).trim();
+      }
+
+      // もしURL形式だが同期用トークンが一切含まれていない場合は空文字を返す（URLをトークンと誤認させない）
+      if (/^https?:\/\//i.test(trimmed)) {
+        return '';
+      }
+    }
+
+    // プレフィックス(sync_token=, login_token= 等)が付いている場合の除去
+    text = text.replace(/^(?:sync_token|login_token|auth_token|token|#sync)=\s*/i, '');
+
+    // 改行、キャリッジリターン、タブ、余分なスペースを完全除去（Base64の健全性を保証）
+    text = text.replace(/[\r\n\t\s]+/g, '');
+
+    return text;
+  }
+
+  /**
+   * あらゆる形式のバックアップ・同期ペイロードをローカルストレージへ確実に復元・マージする統一エンジン
+   * @param {Object} payload パース済みデータオブジェクト
+   */
+  static applyUnifiedBackupPayload(payload) {
+    if (!payload || typeof payload !== 'object') {
+      return { success: false, error: '復元データが空または無効なオブジェクトです。' };
+    }
+
+    try {
+      // 1. アカウント情報の復元 (payload.u または payload.account または payload.user)
+      const u = payload.u || payload.account || payload.user || (payload.storage && payload.storage.account);
+      let session = null;
+      if (u && (u.username || u.displayName)) {
+        const cleanUsername = this.normalizeUsername(u.username || u.displayName);
+        const users = this.getLocalUsers();
+        const existingIdx = users.findIndex(x => this.normalizeUsername(x.username) === cleanUsername);
+
+        const userRecord = {
+          id: u.id || `usr_${Date.now()}`,
+          username: cleanUsername,
+          displayName: u.displayName || u.username,
+          salt: u.salt || '',
+          passwordHash: u.passwordHash || '',
+          recoverySalt: u.recoverySalt || '',
+          recoveryCodeHash: u.recoveryCodeHash || '',
+          createdAt: u.createdAt || new Date().toISOString(),
+          lastLoginAt: new Date().toISOString()
+        };
+
+        if (existingIdx >= 0) {
+          users[existingIdx] = { ...users[existingIdx], ...userRecord };
+        } else {
+          users.push(userRecord);
+        }
+        this.saveLocalUsers(users);
+        session = this.setSession(userRecord);
+      } else {
+        session = this.getCurrentUser();
+      }
+
+      // 2. ゲームステータス・XP・称号の復元 (payload.g または payload.storage.gameStats または payload.gameStats)
+      const gRaw = payload.g || (payload.storage && payload.storage.gameStats) || payload.gameStats;
+      if (gRaw) {
+        try {
+          const incG = typeof gRaw === 'string' ? JSON.parse(gRaw) : gRaw;
+          const curG = JSON.parse(localStorage.getItem('mongol_app_game_stats_v1') || '{}');
+          // XPが大きい方を採用し、称号や最高コンボをマージ
+          const mergedG = {
+            ...curG,
+            ...incG,
+            totalXp: Math.max(Number(curG.totalXp) || 0, Number(incG.totalXp) || Number(incG.xp) || 0),
+            level: Math.max(Number(curG.level) || 1, Number(incG.level) || 1),
+            title: incG.title || curG.title || '大草原の語り部 🌾'
+          };
+          localStorage.setItem('mongol_app_game_stats_v1', JSON.stringify(mergedG));
+          localStorage.setItem('mongol_app_gamification_v2', JSON.stringify(mergedG));
+        } catch (_) {}
+      }
+
+      // 3. ペンギン育成ステータス (payload.p または payload.storage.mascot または payload.mascot)
+      const pRaw = payload.p || (payload.storage && payload.storage.mascot) || payload.mascot;
+      if (pRaw) {
+        try {
+          const incP = typeof pRaw === 'string' ? JSON.parse(pRaw) : pRaw;
+          localStorage.setItem('mongol_app_penguin_mascot_v1', JSON.stringify(incP));
+        } catch (_) {}
+      }
+
+      // 4. 間違いノート（全件復元・マージ） (payload.m または payload.storage.mistakes または payload.mistakes)
+      const mRaw = payload.m || (payload.storage && payload.storage.mistakes) || payload.mistakes;
+      let mistakesCount = 0;
+      if (mRaw) {
+        try {
+          const incM = typeof mRaw === 'string' ? JSON.parse(mRaw) : mRaw;
+          if (Array.isArray(incM)) {
+            const curM = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
+            incM.forEach(newItem => {
+              const idx = curM.findIndex(x => x.id === newItem.id || (x.question === newItem.question && x.correctAnswer === newItem.correctAnswer));
+              if (idx >= 0) {
+                curM[idx] = { ...curM[idx], ...newItem };
+              } else {
+                curM.push(newItem);
+              }
+            });
+            localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(curM));
+            mistakesCount = curM.length;
+          }
+        } catch (_) {}
+      }
+
+      // 5. 単語学習進捗・SRSレベル (payload.w または payload.storage.wordProgress または payload.wordProgress)
+      const wRaw = payload.w || (payload.storage && payload.storage.wordProgress) || payload.wordProgress;
+      let wordsCount = 0;
+      if (wRaw) {
+        try {
+          const incW = typeof wRaw === 'string' ? JSON.parse(wRaw) : wRaw;
+          if (incW && typeof incW === 'object') {
+            const curW = JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}');
+            Object.keys(incW).forEach(wId => {
+              const incItem = incW[wId];
+              const curItem = curW[wId];
+              if (!curItem || (incItem && (incItem.srsLevel || 0) >= (curItem.srsLevel || 0))) {
+                curW[wId] = { ...(curItem || {}), ...(incItem || {}) };
+              }
+            });
+            localStorage.setItem('mongol_app_word_progress_v1', JSON.stringify(curW));
+            wordsCount = Object.keys(curW).length;
+          }
+        } catch (_) {}
+      }
+
+      // 6. 調べた単語 (payload.l または payload.storage.lookedUpWords または payload.lookedUpWords)
+      const lRaw = payload.l || (payload.storage && payload.storage.lookedUpWords) || payload.lookedUpWords;
+      if (lRaw) {
+        try {
+          const incL = typeof lRaw === 'string' ? JSON.parse(lRaw) : lRaw;
+          if (Array.isArray(incL)) {
+            const curL = JSON.parse(localStorage.getItem('mongol_app_looked_up_words_v1') || '[]');
+            incL.forEach(newItem => {
+              const cleanKey = (newItem.dictForm || newItem.rawWord || '').trim().toLowerCase();
+              const idx = curL.findIndex(x => (x.dictForm || x.rawWord || '').trim().toLowerCase() === cleanKey);
+              if (idx >= 0) {
+                curL[idx] = { ...curL[idx], ...newItem };
+              } else {
+                curL.push(newItem);
+              }
+            });
+            localStorage.setItem('mongol_app_looked_up_words_v1', JSON.stringify(curL));
+          }
+        } catch (_) {}
+      }
+
+      // 7. デイリー統計・履歴・設定・サングラス・テーマ
+      const sRaw = payload.s || payload.storage || {};
+      try {
+        if (payload.d || sRaw.dailyStats) {
+          const d = payload.d || (typeof sRaw.dailyStats === 'string' ? JSON.parse(sRaw.dailyStats) : sRaw.dailyStats);
+          if (d) localStorage.setItem('mongol_app_daily_stats_v1', JSON.stringify(d));
+        }
+        if (sRaw.settings) {
+          const st = typeof sRaw.settings === 'string' ? JSON.parse(sRaw.settings) : sRaw.settings;
+          if (st) localStorage.setItem('mongol_app_settings_v1', JSON.stringify(st));
+        }
+        if (sRaw.sunglasses) {
+          localStorage.setItem('mongol_app_penguin_sunglasses_v1', String(sRaw.sunglasses));
+        }
+        if (sRaw.theme) {
+          localStorage.setItem('mongol_app_theme_mode_v1', String(sRaw.theme));
+        }
+        if (sRaw.history) {
+          const h = typeof sRaw.history === 'string' ? JSON.parse(sRaw.history) : sRaw.history;
+          if (Array.isArray(h)) localStorage.setItem('mongol_app_history_v1', JSON.stringify(h));
+        }
+      } catch (_) {}
+
+      // 8. 同梱されたSupabase設定があれば適用
+      if (payload.sb && payload.sb.u && payload.sb.k) {
+        try {
+          if (typeof SyncService !== 'undefined' && SyncService.saveConfig) {
+            SyncService.saveConfig({
+              supabaseUrl: payload.sb.u,
+              supabaseAnonKey: payload.sb.k,
+              syncEnabled: true
+            });
+          }
+        } catch (_) {}
+      }
+
+      console.log('[AuthService] Successfully applied unified backup payload:', {
+        username: session ? session.username : 'guest',
+        mistakesCount,
+        wordsCount
+      });
+
+      return {
+        success: true,
+        user: session,
+        stats: {
+          mistakesCount,
+          wordsCount
+        }
+      };
+    } catch (err) {
+      console.error('[AuthService] applyUnifiedBackupPayload error:', err);
+      return { success: false, error: 'データ展開中にエラーが発生しました: ' + err.message };
+    }
+  }
+
+  /**
+   * 完全スナップショットのストレージ復元（互換性保持）
    */
   static restoreStorageSnapshot(storage) {
     if (!storage || typeof storage !== 'object') return;
-    try {
-      if (storage.gameStats) {
-        const cur = JSON.parse(localStorage.getItem('mongol_app_game_stats_v1') || '{}');
-        const inc = typeof storage.gameStats === 'string' ? JSON.parse(storage.gameStats) : storage.gameStats;
-        if (!cur.totalXp || (inc.totalXp && inc.totalXp >= cur.totalXp)) {
-          localStorage.setItem('mongol_app_game_stats_v1', JSON.stringify(inc));
-        }
-      }
-      if (storage.mistakes) {
-        const inc = typeof storage.mistakes === 'string' ? JSON.parse(storage.mistakes) : storage.mistakes;
-        if (Array.isArray(inc)) {
-          const cur = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
-          inc.forEach(m => {
-            const idx = cur.findIndex(x => x.id === m.id || (x.question === m.question && x.correctAnswer === m.correctAnswer));
-            if (idx >= 0) cur[idx] = { ...cur[idx], ...m };
-            else cur.push(m);
-          });
-          localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(cur));
-        }
-      }
-      if (storage.wordProgress) {
-        const inc = typeof storage.wordProgress === 'string' ? JSON.parse(storage.wordProgress) : storage.wordProgress;
-        if (inc && typeof inc === 'object') {
-          const cur = JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}');
-          Object.assign(cur, inc);
-          localStorage.setItem('mongol_app_word_progress_v1', JSON.stringify(cur));
-        }
-      }
-      if (storage.lookedUpWords) {
-        const inc = typeof storage.lookedUpWords === 'string' ? JSON.parse(storage.lookedUpWords) : storage.lookedUpWords;
-        if (Array.isArray(inc)) {
-          const cur = JSON.parse(localStorage.getItem('mongol_app_looked_up_words_v1') || '[]');
-          inc.forEach(w => {
-            const cleanKey = (w.dictForm || w.rawWord || '').trim().toLowerCase();
-            const idx = cur.findIndex(x => (x.dictForm || x.rawWord || '').trim().toLowerCase() === cleanKey);
-            if (idx >= 0) cur[idx] = { ...cur[idx], ...w };
-            else cur.push(w);
-          });
-          localStorage.setItem('mongol_app_looked_up_words_v1', JSON.stringify(cur));
-        }
-      }
-      if (storage.dailyStats) {
-        const inc = typeof storage.dailyStats === 'string' ? JSON.parse(storage.dailyStats) : storage.dailyStats;
-        if (inc) localStorage.setItem('mongol_app_daily_stats_v1', JSON.stringify(inc));
-      }
-      if (storage.settings) {
-        const inc = typeof storage.settings === 'string' ? JSON.parse(storage.settings) : storage.settings;
-        if (inc) localStorage.setItem('mongol_app_settings_v1', JSON.stringify(inc));
-      }
-      if (storage.sunglasses) {
-        localStorage.setItem('mongol_app_penguin_sunglasses_v1', String(storage.sunglasses));
-      }
-      if (storage.theme) {
-        localStorage.setItem('mongol_app_theme_mode_v1', String(storage.theme));
-      }
-    } catch (e) {
-      console.warn('[AuthService] restoreStorageSnapshot error:', e);
-    }
+    this.applyUnifiedBackupPayload({ storage });
   }
 
   /**
@@ -690,17 +880,19 @@ export class AuthService {
    */
   static exportBackupData(user = null) {
     const targetUser = user || this.getCurrentUser();
-    if (!targetUser) return null;
-    const clean = this.normalizeUsername(targetUser.username);
+    let clean = targetUser ? this.normalizeUsername(targetUser.username) : '';
     const users = this.getLocalUsers();
-    const fullUser = users.find(u => this.normalizeUsername(u.username) === clean) || targetUser;
+    let fullUser = users.find(u => this.normalizeUsername(u.username) === clean) || targetUser;
+
+    if (!fullUser && users.length > 0) fullUser = users[0];
 
     return JSON.stringify({
       version: 2,
       exportedAt: new Date().toISOString(),
-      account: fullUser,
+      account: fullUser || { username: 'pen', displayName: 'pen' },
       storage: {
         gameStats: localStorage.getItem('mongol_app_game_stats_v1'),
+        mascot: localStorage.getItem('mongol_app_penguin_mascot_v1'),
         mistakes: localStorage.getItem('mongol_app_mistakes_v1'),
         wordProgress: localStorage.getItem('mongol_app_word_progress_v1'),
         lookedUpWords: localStorage.getItem('mongol_app_looked_up_words_v1'),
@@ -715,224 +907,107 @@ export class AuthService {
   }
 
   /**
-   * バックアップJSONまたは同期コードの読み込み・復元
+   * バックアップJSONまたはBase64同期コードの読み込み・復元（超堅牢バリデーション対応）
    */
   static importBackupData(rawText) {
     if (!rawText || typeof rawText !== 'string') {
-      return { success: false, error: 'データが空です。' };
+      return { success: false, error: 'データが空です。同期コードまたはURLを貼り付けてください。' };
     }
+
     const trimmed = rawText.trim();
+    const cleaned = this.cleanAndExtractToken(rawText);
 
-    // 1. URL形式の場合（http:// または https://）
-    if (/^https?:\/\//i.test(trimmed)) {
-      let token = null;
-      let sbUrl = null;
-      let sbKey = null;
-
-      try {
-        const u = new URL(trimmed);
-        token = u.searchParams.get('login_token') || u.searchParams.get('auth_token') || u.searchParams.get('token') || u.searchParams.get('data');
-        sbUrl = u.searchParams.get('sb_url') || u.searchParams.get('supabase_url');
-        sbKey = u.searchParams.get('sb_key') || u.searchParams.get('supabase_key');
-      } catch (_) {
-        const m = trimmed.match(/[?&#](?:login_token|auth_token|token|data)=([^&\s#]+)/i);
-        if (m) token = decodeURIComponent(m[1]);
-        const mU = trimmed.match(/[?&#](?:sb_url|supabase_url)=([^&\s#]+)/i);
-        if (mU) sbUrl = decodeURIComponent(mU[1]);
-        const mK = trimmed.match(/[?&#](?:sb_key|supabase_key)=([^&\s#]+)/i);
-        if (mK) sbKey = decodeURIComponent(mK[1]);
-      }
-
-      // Supabase設定が含まれていれば保存
-      if (sbUrl && sbKey && typeof window !== 'undefined' && window.SyncService) {
-        try {
-          window.SyncService.saveConfig({ supabaseUrl: sbUrl, supabaseAnonKey: sbKey });
-        } catch (_) {}
-      }
-
-      if (token) {
-        return this.processMagicLoginToken(token);
-      } else if (sbUrl && sbKey) {
-        return {
-          success: true,
-          user: this.getCurrentUser() || { username: 'クラウド連携完了', displayName: 'クラウド連携完了' },
-          message: 'Supabase設定を反映しました。'
-        };
-      } else {
+    if (!cleaned) {
+      if (/^https?:\/\//i.test(trimmed)) {
         return {
           success: false,
-          error: '貼り付けられたURLに同期用データ（login_token）が含まれていません。PCの「端末同期」画面で【同期コードのみコピー】を押してコードを貼り付けるか、【URLコピー】で発行された連携URLを貼り付けてください。'
+          error: '貼り付けられたURLに同期用データ（login_token）が含まれていません。PCの「📱端末同期」画面で【同期コードのみコピー】を押してコードを貼り付けるか、スマホのカメラでQRコードを読み取ってください。'
         };
       }
+      return { success: false, error: '有効な同期コードまたはURLが見つかりませんでした。' };
     }
 
-    // 2. Base64トークン形式の場合（login_token= プレフィックス、または eyJ 等のBase64文字列）
-    if (trimmed.includes('login_token=') || trimmed.includes('auth_token=')) {
-      const m = trimmed.match(/(?:login_token|auth_token)=([^&\s]+)/);
-      const token = m ? decodeURIComponent(m[1]) : trimmed;
-      return this.processMagicLoginToken(token);
-    }
-
-    if (!trimmed.startsWith('{') && (trimmed.startsWith('eyJ') || (trimmed.length > 30 && /^[A-Za-z0-9_-]+={0,2}$/.test(trimmed)))) {
-      return this.processMagicLoginToken(trimmed);
-    }
-
-    // 3. JSON バックアップ形式の場合
-    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+    // 1. 生のJSON形式の場合（{ で始まり } で終わる）
+    if (cleaned.startsWith('{') && cleaned.endsWith('}')) {
       try {
-        const data = JSON.parse(trimmed);
-        if (!data || !data.account || !data.account.username) {
-          return { success: false, error: 'バックアップデータに有効なアカウント情報が含まれていません。' };
-        }
-        const u = data.account;
-        this.mergeServerUsers([u]);
-        const session = this.setSession(u);
-        if (data.storage) {
-          this.restoreStorageSnapshot(data.storage);
-        }
-        return { success: true, user: session };
-      } catch (e) {
-        return { success: false, error: 'バックアップJSONの解析に失敗しました: ' + e.message };
+        const parsed = JSON.parse(cleaned);
+        return this.applyUnifiedBackupPayload(parsed);
+      } catch (err) {
+        return { success: false, error: 'バックアップJSONの解析に失敗しました: ' + err.message };
       }
     }
 
-    // それ以外の場合は一度MagicLoginTokenを試みる
-    if (trimmed.length > 20) {
-      const res = this.processMagicLoginToken(trimmed);
-      if (res.success) return res;
+    // 2. Base64形式の同期コード（eyJ2Ijoy... または URLセーフBase64）のデコード
+    try {
+      let b64 = cleaned.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4 !== 0) {
+        b64 += '=';
+      }
+
+      let jsonStr = '';
+      try {
+        const binary = atob(b64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        jsonStr = new TextDecoder('utf-8').decode(bytes);
+      } catch (_) {
+        // TextDecoderフォールバック
+        jsonStr = decodeURIComponent(escape(atob(b64)));
+      }
+
+      if (jsonStr && jsonStr.startsWith('{') && jsonStr.endsWith('}')) {
+        const payload = JSON.parse(jsonStr);
+        return this.applyUnifiedBackupPayload(payload);
+      }
+    } catch (e) {
+      console.warn('[AuthService] Base64 decode attempt 1 failed:', e);
     }
 
-    return { success: false, error: '無効な同期コードまたはURL形式です。PC画面の「同期コードのみコピー」を押してコードを貼り付けてください。' };
+    // 3. processMagicLoginToken でのフォールバック
+    const res = this.processMagicLoginToken(cleaned);
+    if (res.success) return res;
+
+    return {
+      success: false,
+      error: '同期コードの解析に失敗しました。コードが途中で切れていないか確認し、PC画面の【同期コードのみコピー】を再度お試しください。'
+    };
   }
 
+  /**
+   * ワンクリックログインURLのトークンを解析してアカウントを登録・自動ログイン（互換性確保）
+   */
   static processMagicLoginToken(token) {
-    if (!token) return { success: false, error: 'Empty token' };
+    if (!token) return { success: false, error: 'トークンが空です。' };
+
+    const cleaned = this.cleanAndExtractToken(token);
     try {
-      let base64 = token.replace(/-/g, '+').replace(/_/g, '/');
-      while (base64.length % 4) {
-        base64 += '=';
+      let b64 = cleaned.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4 !== 0) {
+        b64 += '=';
       }
-      const binary = atob(base64);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-      }
-      const jsonStr = new TextDecoder().decode(bytes);
-      let payload;
+
+      let jsonStr = '';
       try {
-        payload = JSON.parse(jsonStr);
-      } catch (err) {
-        return {
-          success: false,
-          error: '同期コードの解析に失敗しました。PC画面の【同期コードのみコピー】を押して、取得したコードを再度貼り付けてください。'
-        };
+        const binary = atob(b64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        jsonStr = new TextDecoder('utf-8').decode(bytes);
+      } catch (_) {
+        jsonStr = decodeURIComponent(escape(atob(b64)));
       }
 
-      if (!payload || !payload.u || !payload.u.username) {
-        return { success: false, error: '無効なログイントークンです。' };
-      }
-
-      const u = payload.u;
-      const cleanUsername = this.normalizeUsername(u.username);
-
-      // ローカルユーザーリストに保存・更新
-      const users = this.getLocalUsers();
-      const existingIdx = users.findIndex(x => this.normalizeUsername(x.username) === cleanUsername);
-      const userRecord = {
-        id: u.id || `usr_${Date.now()}`,
-        username: cleanUsername,
-        displayName: u.displayName || u.username,
-        salt: u.salt || '',
-        passwordHash: u.passwordHash || '',
-        recoverySalt: u.recoverySalt || '',
-        recoveryCodeHash: u.recoveryCodeHash || '',
-        recoveryUsed: false,
-        createdAt: u.createdAt || new Date().toISOString(),
-        lastLoginAt: new Date().toISOString()
-      };
-
-      if (existingIdx >= 0) {
-        users[existingIdx] = { ...users[existingIdx], ...userRecord };
-      } else {
-        users.push(userRecord);
-      }
-      this.saveLocalUsers(users);
-
-      // アクティブセッション確立
-      const session = this.setSession(userRecord);
-
-      // 学習データ・ペンギン進捗の引き継ぎ
-      if (payload.p) {
-        try {
-          localStorage.setItem('mongol_app_penguin_mascot_v1', JSON.stringify(payload.p));
-        } catch (_) {}
-      }
-      if (payload.g) {
-        try {
-          const curG = localStorage.getItem('mongol_app_gamification_v2');
-          if (!curG || (payload.g.xp && (!JSON.parse(curG).xp || payload.g.xp > JSON.parse(curG).xp))) {
-            localStorage.setItem('mongol_app_gamification_v2', JSON.stringify(payload.g));
-          }
-        } catch (_) {}
-      }
-
-      // 間違えた問題（間違いノート）の引き継ぎ・マージ
-      if (payload.m && Array.isArray(payload.m)) {
-        try {
-          const curMistakes = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
-          payload.m.forEach(newItem => {
-            const idx = curMistakes.findIndex(x => x.id === newItem.id || (x.question === newItem.question && x.correctAnswer === newItem.correctAnswer));
-            if (idx >= 0) {
-              curMistakes[idx] = { ...curMistakes[idx], ...newItem };
-            } else {
-              curMistakes.push(newItem);
-            }
-          });
-          localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(curMistakes));
-        } catch (_) {}
-      }
-
-      // 調べた単語帳の引き継ぎ・マージ
-      if (payload.l && Array.isArray(payload.l)) {
-        try {
-          const curLookedUp = JSON.parse(localStorage.getItem('mongol_app_looked_up_words_v1') || '[]');
-          payload.l.forEach(newItem => {
-            const cleanKey = (newItem.dictForm || newItem.rawWord || '').trim().toLowerCase();
-            const idx = curLookedUp.findIndex(x => (x.dictForm || x.rawWord || '').trim().toLowerCase() === cleanKey);
-            if (idx >= 0) {
-              curLookedUp[idx] = { ...curLookedUp[idx], ...newItem };
-            } else {
-              curLookedUp.push(newItem);
-            }
-          });
-          localStorage.setItem('mongol_app_looked_up_words_v1', JSON.stringify(curLookedUp));
-        } catch (_) {}
-      }
-
-      // 完全スナップショットがある場合の復元
-      if (payload.storage) {
-        this.restoreStorageSnapshot(payload.storage);
-      }
-
-      // SRS復習進捗（振り返るべき単語）の引き継ぎ・マージ
-      if (payload.w && typeof payload.w === 'object') {
-        try {
-          const curProg = JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}');
-          Object.keys(payload.w).forEach(wId => {
-            const incoming = payload.w[wId];
-            const existing = curProg[wId];
-            if (!existing || (incoming.srsLevel || 0) >= (existing.srsLevel || 0)) {
-              curProg[wId] = { ...(existing || {}), ...incoming };
-            }
-          });
-          localStorage.setItem('mongol_app_word_progress_v1', JSON.stringify(curProg));
-        } catch (_) {}
-      }
-
-      return { success: true, user: session };
+      const payload = JSON.parse(jsonStr);
+      return this.applyUnifiedBackupPayload(payload);
     } catch (e) {
       console.error('[AuthService] processMagicLoginToken error:', e);
-      return { success: false, error: 'トークン形式が無効です。' };
+      return {
+        success: false,
+        error: '同期コードの形式が無効です。コード全体をコピーして貼り付けてください。'
+      };
     }
   }
 

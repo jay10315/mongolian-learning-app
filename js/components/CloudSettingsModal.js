@@ -42,8 +42,9 @@ export class CloudSettingsModal {
 
     let progressCount = 0;
     try {
-      const prog = JSON.parse(localStorage.getItem('mongol_app_srs_progress_v1') || '{}');
-      progressCount = Object.keys(prog).length;
+      const prog1 = JSON.parse(localStorage.getItem('mongol_app_word_progress_v1') || '{}');
+      const prog2 = JSON.parse(localStorage.getItem('mongol_app_srs_progress_v1') || '{}');
+      progressCount = Math.max(Object.keys(prog1).length, Object.keys(prog2).length);
     } catch (_) {}
 
     // スマホ連携用URLの構築
@@ -59,11 +60,15 @@ export class CloudSettingsModal {
         params.set('auto_sync', '1');
       }
       shareUrl = `${vercelBase}/?${params.toString()}`;
+      if (typeof AuthService !== 'undefined' && AuthService.createMagicLoginUrl && user) {
+        shareUrl = AuthService.createMagicLoginUrl(user, shareUrl);
+      }
       try {
         qrSvg = QRCodeGenerator.generateSvg(shareUrl, {
           size: 190,
-          errorCorrectionLevel: QRErrorCorrectLevel.M,
-          margin: 2
+          errorCorrectionLevel: 'M',
+          cellSize: 3,
+          margin: 3
         });
       } catch (e) {
         console.warn('QR code generation failed:', e);

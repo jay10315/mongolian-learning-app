@@ -37,40 +37,72 @@ class App {
   static currentTab = 'home';
 
   static init() {
-    // 0. ワンクリックURLログイン（Magic Login Token）およびSupabaseクラウド自動設定
+    // 0. QRコード・同期用リンク・URLハッシュによる即時データ自動引き継ぎ
     if (typeof window !== 'undefined' && window.location) {
       try {
+        let syncInput = '';
+
+        // 1. URLハッシュ (#sync=...) の最優先検知（サーバーにデータ送信せず414/404完全防止）
+        if (window.location.hash && window.location.hash.includes('sync=')) {
+          const m = window.location.hash.match(/sync=([^&\s]+)/i);
+          if (m) syncInput = decodeURIComponent(m[1]).trim();
+        }
+
+        // 2. クエリパラメータ (?sync_token=... / ?login_token=... / ?token=...) の検知
         const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('login_token') || urlParams.get('auth_token');
-        const sessionId = urlParams.get('session_id') || urlParams.get('pair');
+        if (!syncInput) {
+          syncInput = urlParams.get('sync_token') ||
+                      urlParams.get('login_token') ||
+                      urlParams.get('auth_token') ||
+                      urlParams.get('token') ||
+                      urlParams.get('data') || '';
+        }
+
         const sbUrl = urlParams.get('sb_url') || urlParams.get('supabase_url');
         const sbKey = urlParams.get('sb_key') || urlParams.get('supabase_key');
-
-        let hasCustomParams = false;
+        const userParam = urlParams.get('u') || urlParams.get('user') || urlParams.get('username');
+        const sessionId = urlParams.get('session_id') || urlParams.get('pair');
 
         // A. Supabase 設定の自動注入
         if (sbUrl && sbKey) {
-          hasCustomParams = true;
           try {
             const decodedUrl = decodeURIComponent(sbUrl).trim();
             const decodedKey = decodeURIComponent(sbKey).trim();
-            SyncService.saveConfig({ supabaseUrl: decodedUrl, supabaseAnonKey: decodedKey });
-            console.log('[App] Auto-configured Supabase credentials from URL parameters');
-          } catch (e) {
-            console.warn('[App] Failed to auto-configure Supabase:', e);
-          }
+            if (typeof SyncService !== 'undefined' && SyncService.saveConfig) {
+              SyncService.saveConfig({ supabaseUrl: decodedUrl, supabaseAnonKey: decodedKey, syncEnabled: true });
+            }
+          } catch (_) {}
         }
 
-        // B. クラウド（Supabase）直結の超軽量QR同期（u=pen & sb_url/key）
-        const userParam = urlParams.get('u') || urlParams.get('user') || urlParams.get('username');
-        const autoSync = urlParams.get('auto_sync');
+        // B. 同期コード / ハッシュ / トークンによる即時データ自動引き継ぎ（最優先）
+        if (syncInput) {
+          console.log('[App] Detected sync token in URL/Hash. Restoring data...');
+          const res = (typeof AuthService.importBackupData === 'function')
+            ? AuthService.importBackupData(syncInput)
+            : AuthService.processMagicLoginToken(syncInput);
+          if (res.success) {
+            if (sessionId && AuthService.notifyPairSuccess) {
+              AuthService.notifyPairSuccess(sessionId, res.user);
+            }
 
-        if (!token && userParam && (sbUrl || (typeof SyncService !== 'undefined' && SyncService.getConfig && SyncService.getConfig().supabaseUrl))) {
-          hasCustomParams = true;
+            // URLをクリーンアップ（ハッシュやクエリパラメータを除去）
+            try {
+              const cleanUrl = window.location.origin + window.location.pathname;
+              window.history.replaceState(null, '', cleanUrl);
+            } catch (_) {}
+
+            setTimeout(() => {
+              const uName = (res.user && (res.user.displayName || res.user.username)) || 'pen';
+              const stats = res.stats || {};
+              const note = stats.mistakesCount ? ` (間違い${stats.mistakesCount}問 / 進捗${stats.wordsCount}語)` : '';
+              AuthService.showLoginSuccessToast(`データを同期しました！【${uName}】${note}`);
+            }, 300);
+          } else {
+            console.warn('[App] Automatic sync token restore failed:', res.error);
+          }
+        } else if (userParam && (sbUrl || (typeof SyncService !== 'undefined' && SyncService.isCloudConfigured && SyncService.isCloudConfigured()))) {
+          // C. クラウド（Supabase）直結のURL引継ぎ
           const cleanUser = userParam.trim().toLowerCase();
-          const activeConfig = SyncService.getConfig();
-
-          // クラウドからアカウントを取得、または仮セッションを作成
           const existingUsers = AuthService.getLocalUsers();
           let matchedUser = existingUsers.find(u => AuthService.normalizeUsername(u.username) === cleanUser);
           if (!matchedUser) {
@@ -84,79 +116,23 @@ class App {
             existingUsers.push(matchedUser);
             AuthService.saveLocalUsers(existingUsers);
           }
-
           const session = AuthService.setSession(matchedUser);
-
-          // クラウドから最新データ（XP 27,736, Lv.25, 間違い82件, 進捗97語）を完全Pull
+          const activeConfig = SyncService.getConfig();
           if (activeConfig && activeConfig.supabaseUrl) {
-            SyncService.pullFromCloud(activeConfig, session).then((res) => {
-              if (res && res.success) {
-                // UI再描画
-                if (typeof App !== 'undefined' && App.render) {
-                  App.render();
-                }
-                setTimeout(() => {
-                  AuthService.showLoginSuccessToast(`PCのデータ同期完了（${cleanUser}）`);
-                }, 400);
-              }
-            }).catch(e => console.warn('[App] Direct cloud pull warning:', e));
-          }
-        }
-
-        // C. Magic Login Token による自動ログイン
-        if (token) {
-          hasCustomParams = true;
-          const res = AuthService.processMagicLoginToken(token);
-          if (res.success) {
-            if (sessionId) {
-              AuthService.notifyPairSuccess(sessionId, res.user);
-            }
-            // Supabase設定があれば即座に最新データをPull
-            const activeConfig = SyncService.getConfig();
-            if (activeConfig && activeConfig.supabaseUrl) {
-              SyncService.pullFromCloud(activeConfig, res.user).catch(() => {});
-            }
-            setTimeout(() => {
-              AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
-            }, 300);
-          }
-        } else if (sessionId) {
-          fetch(`/api/sync/pair/data?sessionId=${encodeURIComponent(sessionId)}`)
-            .then(r => r.ok ? r.json() : null)
-            .then(data => {
-              if (data && data.token) {
-                const res = AuthService.processMagicLoginToken(data.token);
-                if (res.success) {
-                  AuthService.notifyPairSuccess(sessionId, res.user);
-                  const activeConfig = SyncService.getConfig();
-                  if (activeConfig && activeConfig.supabaseUrl) {
-                    SyncService.pullFromCloud(activeConfig, res.user).catch(() => {});
-                  }
-                  setTimeout(() => {
-                    AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
-                  }, 300);
-                }
-              }
+            SyncService.pullFromCloud(activeConfig, session).then(() => {
+              setTimeout(() => {
+                AuthService.showLoginSuccessToast(`データを同期しました（${cleanUser}）`);
+              }, 400);
             }).catch(() => {});
-        } else if (sbUrl && sbKey) {
-          // トークンなしでもログイン中なら即座にPull
-          const currentUser = AuthService.getCurrentUser();
-          if (currentUser) {
-            const activeConfig = SyncService.getConfig();
-            SyncService.pullFromCloud(activeConfig, currentUser).catch(() => {});
           }
-        }
-
-        // URLをクリーンに保つ
-        if (hasCustomParams) {
-          const cleanUrl = window.location.pathname;
-          window.history.replaceState({}, document.title, cleanUrl);
+          try {
+            window.history.replaceState(null, '', window.location.origin + window.location.pathname);
+          } catch (_) {}
         }
       } catch (err) {
-        console.warn('[App] Magic login token check error:', err);
+        console.warn('[App] Automatic sync detection error:', err);
       }
     }
-
     // 1. ストレージ初期化
     StorageService.init();
 

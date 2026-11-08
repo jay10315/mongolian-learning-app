@@ -418,7 +418,7 @@ export class Navbar {
     let broadcastChannel = null;
     let qrMode = 'full';
 
-    // 連携先URLの構築（絶対にhttps://file:等の壊れたURLは作らない）
+    // 連携先URLの構築（URLハッシュ #sync= による完全端末間同期URLを生成）
     const buildUrl = (mode = qrMode) => {
       let base = '';
       if (syncTargetMode === 'vercel') {
@@ -432,28 +432,12 @@ export class Navbar {
         base = `${protocol}//${targetIp}:${port}${cleanPath}`;
       }
 
-      // Supabase クラウド設定がある場合：超軽量＆高精度QRコード（スマホのカメラで一瞬で読めるURL）を最優先生成！
-      const sbConfig = (typeof SyncService !== 'undefined' && SyncService.getConfig) ? SyncService.getConfig() : null;
-      if (sbConfig && sbConfig.supabaseUrl && sbConfig.supabaseAnonKey) {
-        const cleanSbUrl = encodeURIComponent(sbConfig.supabaseUrl.trim());
-        const cleanSbKey = encodeURIComponent(sbConfig.supabaseAnonKey.trim());
-        const u = encodeURIComponent((currentUser && currentUser.username) || 'pen');
-        const sep = base.includes('?') ? '&' : '?';
-        return `${base}${sep}u=${u}&sb_url=${cleanSbUrl}&sb_key=${cleanSbKey}&auto_sync=1&session_id=${encodeURIComponent(sessionId)}`;
+      // 端末間即時同期URL（URLハッシュ #sync= による完全端末間同期URLを生成）
+      if (typeof AuthService !== 'undefined' && AuthService.createMagicLoginUrl) {
+        return AuthService.createMagicLoginUrl(currentUser, base);
       }
 
-      if (mode === 'quick' && isLocalhost && syncTargetMode === 'local') {
-        const sep = base.includes('?') ? '&' : '?';
-        return `${base}${sep}pair=${encodeURIComponent(sessionId)}&device_sync=1`;
-      }
-
-      if (currentUser) {
-        const fullMagicUrl = AuthService.createMagicLoginUrl(currentUser, base);
-        const sep = fullMagicUrl.includes('?') ? '&' : '?';
-        return `${fullMagicUrl}${sep}session_id=${encodeURIComponent(sessionId)}&device_sync=1`;
-      }
-      const sep = base.includes('?') ? '&' : '?';
-      return `${base}${sep}session_id=${encodeURIComponent(sessionId)}&device_sync=1`;
+      return base;
     };
 
     const renderModal = () => {
@@ -636,19 +620,26 @@ export class Navbar {
             </button>
           </div>
 
-          <!-- 接続手順ガイド -->
-          <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3.5 text-xs text-amber-900 space-y-1.5">
-            <div class="font-bold flex items-center gap-1 text-amber-800">
-              <span>💡</span>
-              <span>接続の手順</span>
+          <!-- 接続手順ガイド（Supabase未設定でもQRコードだけで即座に完結） -->
+          <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3.5 text-xs text-amber-900 space-y-2">
+            <div class="font-bold flex items-center justify-between text-amber-800">
+              <span class="flex items-center gap-1">
+                <span>💡</span>
+                <span>端末間クイック同期（Supabase設定不要）</span>
+              </span>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">完全バックアップ内蔵</span>
             </div>
             <ol class="list-decimal list-inside space-y-1 text-[11px] text-amber-900/90 leading-relaxed">
-              ${syncTargetMode === 'local' ? `<li>タブレットをこのPCと<strong>同じWi-Fi</strong>に接続します</li>` : `<li>タブレット側は<strong>Wi-Fiまたは4G/5G通信</strong>のどちらでもOK！タッチ操作で快適に学習できます</li>`}
-              <li>タブレットやスマホのカメラで上記のQRコードを読み取ります</li>
-              <li>画面に表示されたリンク（${syncTargetMode === 'vercel' ? 'VercelのURL' : 'PCのURL'}）をタップして開きます</li>
-              <li><strong>パスワード入力不要</strong>で自動ログイン＆ペンギンの育成状況も引き継がれます</li>
-              ${syncTargetMode === 'vercel' ? `<li>※ PCと同じWi-Fiでなくても、4G/5Gや外出先からでも連携可能です！</li>` : `<li>※ PCとタブレットが同じWi-Fiルーターに接続されていることをご確認ください。</li>`}
+              <li>スマホやタブレットの標準カメラで上記の<strong>QRコード</strong>を読み取ります</li>
+              <li>表示されたリンクをタップすると、<strong>パスワード入力不要</strong>で一発ログイン＆全学習データ（XP・間違いノート・単語進捗）が即座に復元されます</li>
+              <li>カメラで読み取れない場合は、下の<strong>「📋 同期コードのみコピー」</strong>を押して、スマホの「📲 端末同期」タブに貼り付けてください</li>
             </ol>
+            <div class="pt-1.5 border-t border-amber-200/60 text-[10px] text-amber-800/80 flex items-center justify-between">
+              <span>☁️ 複数端末での自動リアルタイム同期をご希望の場合:</span>
+              <button type="button" id="btn-open-cloud-from-tablet-modal" class="underline font-bold text-sky-700 hover:text-sky-900 cursor-pointer">
+                Supabase設定を開く →
+              </button>
+            </div>
           </div>
 
           ${!isPaired ? `
@@ -774,11 +765,7 @@ export class Navbar {
       const copyTokenBtn = modal.querySelector('#btn-copy-sync-code-only');
       if (copyTokenBtn) {
         copyTokenBtn.addEventListener('click', () => {
-          if (!currentUser) {
-            alert('ログイン中のアカウントがありません。');
-            return;
-          }
-          const token = AuthService.createMagicLoginToken(currentUser);
+          const token = AuthService.createMagicLoginToken(currentUser, true);
           if (token) {
             navigator.clipboard.writeText(token).then(() => {
               copyTokenBtn.innerHTML = '<span>✅</span><span>コードコピー完了！</span>';
@@ -786,11 +773,23 @@ export class Navbar {
                 copyTokenBtn.innerHTML = '<span>📋</span><span>同期コードのみコピー</span>';
               }, 2000);
             });
+          } else {
+            alert('同期コードの生成に失敗しました。');
           }
         });
       }
 
       // バックアップJSONダウンロード
+      const openCloudBtn = modal.querySelector('#btn-open-cloud-from-tablet-modal');
+      if (openCloudBtn) {
+        openCloudBtn.addEventListener('click', () => {
+          closeModal();
+          if (typeof CloudSettingsModal !== 'undefined' && CloudSettingsModal.show) {
+            CloudSettingsModal.show();
+          }
+        });
+      }
+
       const backupBtn = modal.querySelector('#btn-download-backup-json');
       if (backupBtn) {
         backupBtn.addEventListener('click', () => {

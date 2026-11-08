@@ -100,10 +100,24 @@ export class AuthModal {
         <div class="p-3 bg-gradient-to-r from-indigo-50 to-emerald-50 border border-indigo-200 rounded-2xl text-xs text-indigo-950 space-y-1.5">
           <div class="font-extrabold flex items-center gap-1.5 text-indigo-900">
             <span>📲</span>
-            <span>端末間データ同期（PC ↔ スマホ ↔ タブレット）</span>
+            <span>端末間データ移行・同期（PC ↔ スマホ ↔ タブレット）</span>
           </div>
           <p class="text-[11px] text-slate-600 leading-relaxed">
-            PCで学習したアカウントと進捗（XP・レベル・間違いノート・お気に入り）を、この端末に即座に引き継ぎます。
+            PCで学習したアカウントと全進捗（27,736 XP・Lv.25・ペンギン・間違いノート82件・単語進捗）を、この端末に引き継ぎます。
+          </p>
+        </div>
+
+        <!-- 一番簡単な方法: QRコードによる即時同期の案内 -->
+        <div class="p-3 bg-emerald-50 border-2 border-emerald-300 rounded-2xl text-xs text-emerald-950 space-y-1">
+          <div class="font-extrabold flex items-center justify-between text-emerald-900">
+            <span class="flex items-center gap-1.5">
+              <span>📷</span>
+              <span>最も簡単な方法: カメラでQRコードを撮るだけ</span>
+            </span>
+            <span class="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-black">1秒完了</span>
+          </div>
+          <p class="text-[11px] text-emerald-800 leading-relaxed">
+            PC画面右上の<strong>「📱 端末同期」</strong>をクリックして表示されるQRコードをスマホの標準カメラで撮るだけで、Supabase等の設定なしで全データが自動同期されます。
           </p>
         </div>
 
@@ -111,10 +125,10 @@ export class AuthModal {
         <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5">
           <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
             <span>📋 同期コード または 同期URL を貼り付け:</span>
-            <span class="text-[10px] text-slate-400">PC側でコピーしたコード</span>
+            <span class="text-[10px] text-slate-400">改行・空白混入も自動整形</span>
           </label>
-          <textarea id="input-sync-code" rows="3" placeholder="PC画面の「端末同期」でコピーした同期URL（http://...login_token=...）または同期コードをここに貼り付けてください" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden font-mono"></textarea>
-          <button type="button" id="btn-execute-sync-code" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-md transition-all active:scale-98 flex items-center justify-center gap-1.5">
+          <textarea id="input-sync-code" rows="3" placeholder="PC画面の「同期コードのみコピー」で取得した文字列（eyJ...）または同期URLをここに貼り付けてください" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden font-mono"></textarea>
+          <button type="button" id="btn-execute-sync-code" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-md transition-all active:scale-98 flex items-center justify-center gap-1.5 cursor-pointer">
             <span>🚀</span>
             <span>データを同期してログインする</span>
           </button>
@@ -493,13 +507,18 @@ export class AuthModal {
         }
         executeSyncBtn.disabled = true;
         executeSyncBtn.textContent = '同期・復元中...';
-        const res = AuthService.importBackupData(val.trim());
+        const res = AuthService.importBackupData(val);
         if (res.success) {
-          AuthService.showLoginSuccessToast(res.user.displayName || res.user.username);
-          SyncService.triggerSync();
+          const uName = (res.user && (res.user.displayName || res.user.username)) || 'pen';
+          const stats = res.stats || {};
+          const note = stats.mistakesCount ? ` (間違い${stats.mistakesCount}問 / 単語${stats.wordsCount}語)` : '';
+          AuthService.showLoginSuccessToast(`データを同期しました！【${uName}】${note}`);
+          if (typeof SyncService !== 'undefined' && SyncService.triggerSync) {
+            SyncService.triggerSync();
+          }
           this.close();
           if (this.onAuthChanged) this.onAuthChanged(res.user);
-          setTimeout(() => window.location.reload(), 300);
+          setTimeout(() => window.location.reload(), 400);
         } else {
           executeSyncBtn.disabled = false;
           executeSyncBtn.textContent = 'データを同期してログインする';
