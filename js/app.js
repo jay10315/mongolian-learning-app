@@ -136,6 +136,26 @@ class App {
     // 1. ストレージ初期化
     StorageService.init();
 
+    // 1.1 デフォルトアカウント「pen」の自動ログイン保証（ログイン操作不要で常時同期）
+    try {
+      let curUser = AuthService.getCurrentUser();
+      if (!curUser) {
+        const users = AuthService.getLocalUsers();
+        let penUser = users.find(u => AuthService.normalizeUsername(u.username) === 'pen') || users[0];
+        if (!penUser) {
+          penUser = {
+            id: 'usr_1793885321289_e34dbfca',
+            username: 'pen',
+            displayName: 'pen',
+            createdAt: '2026-11-07T00:00:00.000Z'
+          };
+          users.push(penUser);
+          AuthService.saveLocalUsers(users);
+        }
+        AuthService.setSession(penUser);
+      }
+    } catch (_) {}
+
     // 2. テーマ・背景色初期化（ユーザー設定またはナイトモード反映）
     try {
       ThemeService.init();

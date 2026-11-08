@@ -81603,7 +81603,7 @@ class AuthService {
 
 // アプリ公式 Supabase クラウド初期設定（手動入力不要で全端末が即時同期可能）
 const DEFAULT_SUPABASE_CONFIG = {
-  supabaseUrl: 'https://hwmnxtgnhahjgpziczic.supabase.co',
+  supabaseUrl: 'https://hwmfxtgnhahjgpziczic.supabase.co',
   supabaseAnonKey: 'sb_publishable_Win4LjLX9fBwruCa9etB8Q_yQZ-Sa7F',
   syncEnabled: true
 };
@@ -81615,6 +81615,8 @@ class SyncService {
   static cleanSupabaseUrl(rawUrl) {
     if (!rawUrl || typeof rawUrl !== 'string') return '';
     let u = rawUrl.trim();
+    // 誤字（hwmn -> hwmf）の自動補正
+    u = u.replace(/hwmnxtgnhahjgpziczic/g, 'hwmfxtgnhahjgpziczic');
     // 末尾の /rest/v1/ や /rest/v1 を徹底除去
     u = u.replace(/\/rest\/v1\/?$/i, '');
     u = u.replace(/\/+$/, '');
@@ -81703,7 +81705,27 @@ class SyncService {
 
     // 起動時の自動同期
     if (this.isCloudConfigured() && navigator.onLine) {
-      setTimeout(() => this.triggerSync(), 1500);
+      setTimeout(() => this.triggerSync(), 800);
+    }
+
+    // 常時同期: タブ復帰時（画面アンロック・他タブから戻った時）に即時同期
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && navigator.onLine) {
+          this.triggerSync();
+        }
+      });
+      window.addEventListener('focus', () => {
+        if (navigator.onLine) {
+          this.triggerSync();
+        }
+      });
+      // 15秒ごとのバックグラウンド定期同期（アクティブ時）
+      setInterval(() => {
+        if (!document.hidden && navigator.onLine) {
+          this.triggerSync();
+        }
+      }, 15000);
     }
   }
 
@@ -81779,6 +81801,17 @@ class SyncService {
 
   static isSyncing = false;
 
+    static syncDebounceTimer = null;
+  /**
+   * 学習データ変更時の自動プッシュ通知（デバウンス1秒でSupabaseへ常時同期）
+   */
+  static notifyDataChanged() {
+    if (this.syncDebounceTimer) clearTimeout(this.syncDebounceTimer);
+    this.syncDebounceTimer = setTimeout(() => {
+      this.triggerSync();
+    }, 1200);
+  }
+
   static async triggerSync() {
     if (this.isSyncing) return;
     const config = this.getConfig();
@@ -81791,7 +81824,13 @@ class SyncService {
       }
     } catch (_) {}
 
-    if (!config || !user || !navigator.onLine) {
+    const activeUser = user || AuthService.getCurrentUser() || {
+      id: 'usr_1793885321289_e34dbfca',
+      username: 'pen',
+      displayName: 'pen'
+    };
+
+    if (!config || !navigator.onLine) {
       this.updateStatus();
       return;
     }
@@ -81801,13 +81840,13 @@ class SyncService {
 
     try {
       // 1. 保留中キューの送信
-      await this.flushQueue(config, user);
+      await this.flushQueue(config, activeUser);
 
       // 2. ローカル既存データ（間違えた問題・進捗・アカウント）のクラウド一括プッシュ
-      await this.pushAllLocalDataToCloud(config, user);
+      await this.pushAllLocalDataToCloud(config, activeUser);
 
       // 3. クラウドからの最新データ取得・マージ
-      await this.pullFromCloud(config, user);
+      await this.pullFromCloud(config, activeUser);
 
       const now = new Date().toISOString();
       this.state.lastSyncTime = now;
@@ -81924,7 +81963,7 @@ class SyncService {
   /**
    * クラウド上の最新進捗をダウンロードし、ローカルデータと統合
    */
-  static async pullFromCloud(config, user) {
+  static async pullFromCloud(config, user = null) {
     const url = this.cleanSupabaseUrl(config.supabaseUrl);
     const headers = {
       'apikey': config.supabaseAnonKey,
@@ -81934,7 +81973,11 @@ class SyncService {
 
     // 1. 単語進捗の取得
     try {
-      const res = await fetch(`${url}/rest/v1/user_word_progress?user_id=eq.${user.id}`, { headers });
+      let progEndpoint = `${url}/rest/v1/user_word_progress?select=*&limit=1000`;
+      if (user && user.id) {
+        progEndpoint = `${url}/rest/v1/user_word_progress?user_id=eq.${user.id}`;
+      }
+      const res = await fetch(progEndpoint, { headers });
       if (res.ok) {
         const rows = await res.json();
         if (Array.isArray(rows) && rows.length > 0) {
@@ -81966,7 +82009,11 @@ class SyncService {
 
     // 2. 間違いノートの取得
     try {
-      const res = await fetch(`${url}/rest/v1/user_mistakes?user_id=eq.${user.id}`, { headers });
+      let mistEndpoint = `${url}/rest/v1/user_mistakes?select=*&limit=1000`;
+      if (user && user.id) {
+        mistEndpoint = `${url}/rest/v1/user_mistakes?user_id=eq.${user.id}`;
+      }
+      const res = await fetch(mistEndpoint, { headers });
       if (res.ok) {
         const rows = await res.json();
         if (Array.isArray(rows) && rows.length > 0) {
@@ -82006,9 +82053,13 @@ class SyncService {
       console.warn('[SyncService] Pull mistakes failed:', e);
     }
 
-    // 3. 万能スナップショットからのフォールバック取得
+    // 3. 万能スナップショットからの取得（最新の全学習データを即時統合）
     try {
-      const res = await fetch(`${url}/rest/v1/user_sync_snapshot?user_id=eq.${user.id}`, { headers });
+      let snapEndpoint = `${url}/rest/v1/user_sync_snapshot?order=updated_at.desc&limit=1`;
+      if (user && user.username) {
+        snapEndpoint = `${url}/rest/v1/user_sync_snapshot?username=eq.${encodeURIComponent(user.username)}&order=updated_at.desc&limit=1`;
+      }
+      const res = await fetch(snapEndpoint, { headers });
       if (res.ok) {
         const rows = await res.json();
         if (Array.isArray(rows) && rows.length > 0 && rows[0].payload) {
@@ -83605,6 +83656,12 @@ class StorageService {
       if (typeof localStorage === 'undefined') return;
       const valStr = typeof value === 'string' ? value : JSON.stringify(value);
       localStorage.setItem(key, valStr);
+      // 学習データの更新をSupabase常時同期サービスへ通知
+      if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
+        if (key.includes('mistakes') || key.includes('progress') || key.includes('game_stats') || key.includes('mascot') || key.includes('daily_stats')) {
+          SyncService.notifyDataChanged();
+        }
+      }
     } catch (_) {}
   }
 }
@@ -87149,10 +87206,7 @@ class CloudSettingsModal {
         params.set('u', user.username || 'pen');
         params.set('auto_sync', '1');
       }
-      shareUrl = `${vercelBase}/?${params.toString()}`;
-      if (typeof AuthService !== 'undefined' && AuthService.createMagicLoginUrl && user) {
-        shareUrl = AuthService.createMagicLoginUrl(user, shareUrl);
-      }
+      shareUrl = `${vercelBase}/?auto_sync=1`;
       try {
         qrSvg = QRCodeGenerator.generateSvg(shareUrl, {
           size: 190,
@@ -87241,7 +87295,7 @@ class CloudSettingsModal {
                 <label class="block text-xs font-bold text-slate-700 mb-1">
                   Project URL <span class="text-rose-500">*</span>
                 </label>
-                <input type="url" id="input-supabase-url" value="${currentConfig.supabaseUrl || 'https://hwmnxtgnhahjgpziczic.supabase.co'}" placeholder="https://xxxxxxxxxxxx.supabase.co" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-hidden">
+                <input type="url" id="input-supabase-url" value="${currentConfig.supabaseUrl || 'https://hwmfxtgnhahjgpziczic.supabase.co'}" placeholder="https://xxxxxxxxxxxx.supabase.co" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-hidden">
                 <p class="text-[10px] text-slate-400 mt-0.5">※ Supabase Dashboard → Settings → API → Project URL</p>
               </div>
 
@@ -88565,12 +88619,12 @@ class Navbar {
         base = `${protocol}//${targetIp}:${port}${cleanPath}`;
       }
 
-      // 端末間即時同期URL（URLハッシュ #sync= による完全端末間同期URLを生成）
-      if (typeof AuthService !== 'undefined' && AuthService.createMagicLoginUrl) {
+      // Supabase常時同期連携URL（短くクリーンなURLで確実にQRコード生成）
+      const cleanBase = base.split('#')[0].split('?')[0];
+      if (mode === 'legacy_token' && typeof AuthService !== 'undefined' && AuthService.createMagicLoginUrl) {
         return AuthService.createMagicLoginUrl(currentUser, base);
       }
-
-      return base;
+      return `${cleanBase}?auto_sync=1`;
     };
 
     const renderModal = () => {
@@ -88579,8 +88633,8 @@ class Navbar {
       try {
         qrSvg = QRCodeGenerator.generateSvg(currentUrl, {
           errorCorrectionLevel: 'M',
-          cellSize: 3,
-          margin: 4
+          cellSize: 4,
+          margin: 3
         });
       } catch (e) {
         console.warn('[Navbar] QR SVG generation failed with Level M, retrying Level L:', e);
@@ -115144,6 +115198,26 @@ class App {
     }
     // 1. ストレージ初期化
     StorageService.init();
+
+    // 1.1 デフォルトアカウント「pen」の自動ログイン保証（ログイン操作不要で常時同期）
+    try {
+      let curUser = AuthService.getCurrentUser();
+      if (!curUser) {
+        const users = AuthService.getLocalUsers();
+        let penUser = users.find(u => AuthService.normalizeUsername(u.username) === 'pen') || users[0];
+        if (!penUser) {
+          penUser = {
+            id: 'usr_1793885321289_e34dbfca',
+            username: 'pen',
+            displayName: 'pen',
+            createdAt: '2026-11-07T00:00:00.000Z'
+          };
+          users.push(penUser);
+          AuthService.saveLocalUsers(users);
+        }
+        AuthService.setSession(penUser);
+      }
+    } catch (_) {}
 
     // 2. テーマ・背景色初期化（ユーザー設定またはナイトモード反映）
     try {

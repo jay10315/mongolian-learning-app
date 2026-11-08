@@ -3,7 +3,7 @@ import { AuthService } from './auth.js';
 
 // アプリ公式 Supabase クラウド初期設定（手動入力不要で全端末が即時同期可能）
 export const DEFAULT_SUPABASE_CONFIG = {
-  supabaseUrl: 'https://hwmnxtgnhahjgpziczic.supabase.co',
+  supabaseUrl: 'https://hwmfxtgnhahjgpziczic.supabase.co',
   supabaseAnonKey: 'sb_publishable_Win4LjLX9fBwruCa9etB8Q_yQZ-Sa7F',
   syncEnabled: true
 };
@@ -15,6 +15,8 @@ export class SyncService {
   static cleanSupabaseUrl(rawUrl) {
     if (!rawUrl || typeof rawUrl !== 'string') return '';
     let u = rawUrl.trim();
+    // 誤字（hwmn -> hwmf）の自動補正
+    u = u.replace(/hwmnxtgnhahjgpziczic/g, 'hwmfxtgnhahjgpziczic');
     // 末尾の /rest/v1/ や /rest/v1 を徹底除去
     u = u.replace(/\/rest\/v1\/?$/i, '');
     u = u.replace(/\/+$/, '');
@@ -103,7 +105,27 @@ export class SyncService {
 
     // 起動時の自動同期
     if (this.isCloudConfigured() && navigator.onLine) {
-      setTimeout(() => this.triggerSync(), 1500);
+      setTimeout(() => this.triggerSync(), 800);
+    }
+
+    // 常時同期: タブ復帰時（画面アンロック・他タブから戻った時）に即時同期
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && navigator.onLine) {
+          this.triggerSync();
+        }
+      });
+      window.addEventListener('focus', () => {
+        if (navigator.onLine) {
+          this.triggerSync();
+        }
+      });
+      // 15秒ごとのバックグラウンド定期同期（アクティブ時）
+      setInterval(() => {
+        if (!document.hidden && navigator.onLine) {
+          this.triggerSync();
+        }
+      }, 15000);
     }
   }
 
@@ -179,6 +201,17 @@ export class SyncService {
 
   static isSyncing = false;
 
+    static syncDebounceTimer = null;
+  /**
+   * 学習データ変更時の自動プッシュ通知（デバウンス1秒でSupabaseへ常時同期）
+   */
+  static notifyDataChanged() {
+    if (this.syncDebounceTimer) clearTimeout(this.syncDebounceTimer);
+    this.syncDebounceTimer = setTimeout(() => {
+      this.triggerSync();
+    }, 1200);
+  }
+
   static async triggerSync() {
     if (this.isSyncing) return;
     const config = this.getConfig();
@@ -191,7 +224,13 @@ export class SyncService {
       }
     } catch (_) {}
 
-    if (!config || !user || !navigator.onLine) {
+    const activeUser = user || AuthService.getCurrentUser() || {
+      id: 'usr_1793885321289_e34dbfca',
+      username: 'pen',
+      displayName: 'pen'
+    };
+
+    if (!config || !navigator.onLine) {
       this.updateStatus();
       return;
     }
@@ -201,13 +240,13 @@ export class SyncService {
 
     try {
       // 1. 保留中キューの送信
-      await this.flushQueue(config, user);
+      await this.flushQueue(config, activeUser);
 
       // 2. ローカル既存データ（間違えた問題・進捗・アカウント）のクラウド一括プッシュ
-      await this.pushAllLocalDataToCloud(config, user);
+      await this.pushAllLocalDataToCloud(config, activeUser);
 
       // 3. クラウドからの最新データ取得・マージ
-      await this.pullFromCloud(config, user);
+      await this.pullFromCloud(config, activeUser);
 
       const now = new Date().toISOString();
       this.state.lastSyncTime = now;
@@ -324,7 +363,7 @@ export class SyncService {
   /**
    * クラウド上の最新進捗をダウンロードし、ローカルデータと統合
    */
-  static async pullFromCloud(config, user) {
+  static async pullFromCloud(config, user = null) {
     const url = this.cleanSupabaseUrl(config.supabaseUrl);
     const headers = {
       'apikey': config.supabaseAnonKey,
@@ -334,7 +373,11 @@ export class SyncService {
 
     // 1. 単語進捗の取得
     try {
-      const res = await fetch(`${url}/rest/v1/user_word_progress?user_id=eq.${user.id}`, { headers });
+      let progEndpoint = `${url}/rest/v1/user_word_progress?select=*&limit=1000`;
+      if (user && user.id) {
+        progEndpoint = `${url}/rest/v1/user_word_progress?user_id=eq.${user.id}`;
+      }
+      const res = await fetch(progEndpoint, { headers });
       if (res.ok) {
         const rows = await res.json();
         if (Array.isArray(rows) && rows.length > 0) {
@@ -366,7 +409,11 @@ export class SyncService {
 
     // 2. 間違いノートの取得
     try {
-      const res = await fetch(`${url}/rest/v1/user_mistakes?user_id=eq.${user.id}`, { headers });
+      let mistEndpoint = `${url}/rest/v1/user_mistakes?select=*&limit=1000`;
+      if (user && user.id) {
+        mistEndpoint = `${url}/rest/v1/user_mistakes?user_id=eq.${user.id}`;
+      }
+      const res = await fetch(mistEndpoint, { headers });
       if (res.ok) {
         const rows = await res.json();
         if (Array.isArray(rows) && rows.length > 0) {
@@ -406,9 +453,13 @@ export class SyncService {
       console.warn('[SyncService] Pull mistakes failed:', e);
     }
 
-    // 3. 万能スナップショットからのフォールバック取得
+    // 3. 万能スナップショットからの取得（最新の全学習データを即時統合）
     try {
-      const res = await fetch(`${url}/rest/v1/user_sync_snapshot?user_id=eq.${user.id}`, { headers });
+      let snapEndpoint = `${url}/rest/v1/user_sync_snapshot?order=updated_at.desc&limit=1`;
+      if (user && user.username) {
+        snapEndpoint = `${url}/rest/v1/user_sync_snapshot?username=eq.${encodeURIComponent(user.username)}&order=updated_at.desc&limit=1`;
+      }
+      const res = await fetch(snapEndpoint, { headers });
       if (res.ok) {
         const rows = await res.json();
         if (Array.isArray(rows) && rows.length > 0 && rows[0].payload) {

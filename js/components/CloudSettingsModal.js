@@ -59,10 +59,7 @@ export class CloudSettingsModal {
         params.set('u', user.username || 'pen');
         params.set('auto_sync', '1');
       }
-      shareUrl = `${vercelBase}/?${params.toString()}`;
-      if (typeof AuthService !== 'undefined' && AuthService.createMagicLoginUrl && user) {
-        shareUrl = AuthService.createMagicLoginUrl(user, shareUrl);
-      }
+      shareUrl = `${vercelBase}/?auto_sync=1`;
       try {
         qrSvg = QRCodeGenerator.generateSvg(shareUrl, {
           size: 190,
@@ -151,7 +148,7 @@ export class CloudSettingsModal {
                 <label class="block text-xs font-bold text-slate-700 mb-1">
                   Project URL <span class="text-rose-500">*</span>
                 </label>
-                <input type="url" id="input-supabase-url" value="${currentConfig.supabaseUrl || 'https://hwmnxtgnhahjgpziczic.supabase.co'}" placeholder="https://xxxxxxxxxxxx.supabase.co" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-hidden">
+                <input type="url" id="input-supabase-url" value="${currentConfig.supabaseUrl || 'https://hwmfxtgnhahjgpziczic.supabase.co'}" placeholder="https://xxxxxxxxxxxx.supabase.co" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-hidden">
                 <p class="text-[10px] text-slate-400 mt-0.5">※ Supabase Dashboard → Settings → API → Project URL</p>
               </div>
 

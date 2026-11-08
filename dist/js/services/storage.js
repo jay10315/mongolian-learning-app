@@ -1296,6 +1296,12 @@ export class StorageService {
       if (typeof localStorage === 'undefined') return;
       const valStr = typeof value === 'string' ? value : JSON.stringify(value);
       localStorage.setItem(key, valStr);
+      // 学習データの更新をSupabase常時同期サービスへ通知
+      if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
+        if (key.includes('mistakes') || key.includes('progress') || key.includes('game_stats') || key.includes('mascot') || key.includes('daily_stats')) {
+          SyncService.notifyDataChanged();
+        }
+      }
     } catch (_) {}
   }
 }

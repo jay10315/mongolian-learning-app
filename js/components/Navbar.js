@@ -432,12 +432,12 @@ export class Navbar {
         base = `${protocol}//${targetIp}:${port}${cleanPath}`;
       }
 
-      // 端末間即時同期URL（URLハッシュ #sync= による完全端末間同期URLを生成）
-      if (typeof AuthService !== 'undefined' && AuthService.createMagicLoginUrl) {
+      // Supabase常時同期連携URL（短くクリーンなURLで確実にQRコード生成）
+      const cleanBase = base.split('#')[0].split('?')[0];
+      if (mode === 'legacy_token' && typeof AuthService !== 'undefined' && AuthService.createMagicLoginUrl) {
         return AuthService.createMagicLoginUrl(currentUser, base);
       }
-
-      return base;
+      return `${cleanBase}?auto_sync=1`;
     };
 
     const renderModal = () => {
@@ -446,8 +446,8 @@ export class Navbar {
       try {
         qrSvg = QRCodeGenerator.generateSvg(currentUrl, {
           errorCorrectionLevel: 'M',
-          cellSize: 3,
-          margin: 4
+          cellSize: 4,
+          margin: 3
         });
       } catch (e) {
         console.warn('[Navbar] QR SVG generation failed with Level M, retrying Level L:', e);
