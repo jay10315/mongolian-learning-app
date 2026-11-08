@@ -146,7 +146,7 @@ export class CloudSettingsModal {
                 <label class="block text-xs font-bold text-slate-700 mb-1">
                   Project URL <span class="text-rose-500">*</span>
                 </label>
-                <input type="url" id="input-supabase-url" value="${currentConfig.supabaseUrl || ''}" placeholder="https://xxxxxxxxxxxx.supabase.co" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-hidden">
+                <input type="url" id="input-supabase-url" value="${currentConfig.supabaseUrl || 'https://hwmnxtgnhahjgpziczic.supabase.co'}" placeholder="https://xxxxxxxxxxxx.supabase.co" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-hidden">
                 <p class="text-[10px] text-slate-400 mt-0.5">※ Supabase Dashboard → Settings → API → Project URL</p>
               </div>
 
@@ -320,7 +320,7 @@ export class CloudSettingsModal {
         if (testBtnText) testBtnText.textContent = '診断中...';
 
         try {
-          const cleanUrl = url.replace(/\/+$/, '');
+          const cleanUrl = (typeof SyncService !== 'undefined' && SyncService.cleanSupabaseUrl) ? SyncService.cleanSupabaseUrl(url) : url.replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '');
           const headers = {
             'apikey': key,
             'Authorization': `Bearer ${key}`
@@ -403,7 +403,8 @@ export class CloudSettingsModal {
           if (saveBtnText) saveBtnText.textContent = 'クラウド同期中...';
         }
 
-        const newConfig = { supabaseUrl: url, supabaseAnonKey: key };
+        const cleanUrl = (typeof SyncService !== 'undefined' && SyncService.cleanSupabaseUrl) ? SyncService.cleanSupabaseUrl(url) : url.replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '');
+        const newConfig = { supabaseUrl: cleanUrl, supabaseAnonKey: key };
         SyncService.saveConfig(newConfig);
 
         const user = (typeof AuthService !== 'undefined' && AuthService.getCurrentUser) ? AuthService.getCurrentUser() : null;

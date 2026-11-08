@@ -81526,7 +81526,28 @@ class AuthService {
 // クラウド同期・オフラインキューサービス（Supabase REST / LocalStorage ハイブリッド）
 
 
+// アプリ公式 Supabase クラウド初期設定（手動入力不要で全端末が即時同期可能）
+const DEFAULT_SUPABASE_CONFIG = {
+  supabaseUrl: 'https://hwmnxtgnhahjgpziczic.supabase.co',
+  supabaseAnonKey: 'sb_publishable_Win4LjLX9fBwruCa9etB8Q_yQZ-Sa7F',
+  syncEnabled: true
+};
+
 class SyncService {
+  /**
+   * Supabase URL をサニタイズ（末尾の /rest/v1 や余分なスラッシュを自動除去）
+   */
+  static cleanSupabaseUrl(rawUrl) {
+    if (!rawUrl || typeof rawUrl !== 'string') return '';
+    let u = rawUrl.trim();
+    // 末尾の /rest/v1/ や /rest/v1 を徹底除去
+    u = u.replace(/\/rest\/v1\/?$/i, '');
+    u = u.replace(/\/+$/, '');
+    if (u && !u.startsWith('http://') && !u.startsWith('https://')) {
+      u = 'https://' + u;
+    }
+    return u;
+  }
   static CONFIG_KEY = 'mongol_app_cloud_config_v1';
   static QUEUE_KEY = 'mongol_app_sync_queue_v1';
   static LAST_SYNC_KEY = 'mongol_app_last_sync_time_v1';
@@ -81545,19 +81566,32 @@ class SyncService {
   static getConfig() {
     try {
       const stored = localStorage.getItem(this.CONFIG_KEY);
-      if (stored) return JSON.parse(stored);
-      if (typeof window !== 'undefined' && window.MONGOL_APP_CONFIG) {
-        return window.MONGOL_APP_CONFIG;
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && parsed.supabaseUrl) {
+          parsed.supabaseUrl = this.cleanSupabaseUrl(parsed.supabaseUrl);
+          return parsed;
+        }
       }
-      return null;
+      if (typeof window !== 'undefined' && window.MONGOL_APP_CONFIG) {
+        const c = window.MONGOL_APP_CONFIG;
+        c.supabaseUrl = this.cleanSupabaseUrl(c.supabaseUrl);
+        return c;
+      }
+      // デフォルト設定を返却（全端末で初期設定なしでも即使えるようにする）
+      return { ...DEFAULT_SUPABASE_CONFIG };
     } catch (e) {
-      return null;
+      return { ...DEFAULT_SUPABASE_CONFIG };
     }
   }
 
   static saveConfig(config) {
     if (config) {
-      localStorage.setItem(this.CONFIG_KEY, JSON.stringify(config));
+      const sanitized = {
+        ...config,
+        supabaseUrl: this.cleanSupabaseUrl(config.supabaseUrl)
+      };
+      localStorage.setItem(this.CONFIG_KEY, JSON.stringify(sanitized));
     } else {
       localStorage.removeItem(this.CONFIG_KEY);
     }
@@ -81722,7 +81756,7 @@ class SyncService {
     if (queue.length === 0) return;
 
     const remainingQueue = [];
-    const url = config.supabaseUrl.replace(/\/+$/, '');
+    const url = this.cleanSupabaseUrl(config.supabaseUrl);
     const headers = {
       'apikey': config.supabaseAnonKey,
       'Authorization': `Bearer ${config.supabaseAnonKey}`,
@@ -81816,7 +81850,7 @@ class SyncService {
    * クラウド上の最新進捗をダウンロードし、ローカルデータと統合
    */
   static async pullFromCloud(config, user) {
-    const url = config.supabaseUrl.replace(/\/+$/, '');
+    const url = this.cleanSupabaseUrl(config.supabaseUrl);
     const headers = {
       'apikey': config.supabaseAnonKey,
       'Authorization': `Bearer ${config.supabaseAnonKey}`,
@@ -81982,7 +82016,7 @@ class SyncService {
    */
   static async pushAllLocalDataToCloud(config, user) {
     if (!config || !user || !config.supabaseUrl || !config.supabaseAnonKey) return;
-    const url = config.supabaseUrl.replace(/\/+$/, '');
+    const url = this.cleanSupabaseUrl(config.supabaseUrl);
     const headers = {
       'apikey': config.supabaseAnonKey,
       'Authorization': `Bearer ${config.supabaseAnonKey}`,
@@ -82131,7 +82165,7 @@ class SyncService {
   static async fetchAccountFromCloud(targetUsername = null) {
     const config = this.getConfig();
     if (!config || !config.supabaseUrl || !config.supabaseAnonKey) return null;
-    const url = config.supabaseUrl.replace(/\/+$/, '');
+    const url = this.cleanSupabaseUrl(config.supabaseUrl);
     const headers = {
       'apikey': config.supabaseAnonKey,
       'Authorization': `Bearer ${config.supabaseAnonKey}`,
@@ -87108,7 +87142,7 @@ class CloudSettingsModal {
                 <label class="block text-xs font-bold text-slate-700 mb-1">
                   Project URL <span class="text-rose-500">*</span>
                 </label>
-                <input type="url" id="input-supabase-url" value="${currentConfig.supabaseUrl || ''}" placeholder="https://xxxxxxxxxxxx.supabase.co" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-hidden">
+                <input type="url" id="input-supabase-url" value="${currentConfig.supabaseUrl || 'https://hwmnxtgnhahjgpziczic.supabase.co'}" placeholder="https://xxxxxxxxxxxx.supabase.co" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-hidden">
                 <p class="text-[10px] text-slate-400 mt-0.5">※ Supabase Dashboard → Settings → API → Project URL</p>
               </div>
 
@@ -87282,7 +87316,7 @@ class CloudSettingsModal {
         if (testBtnText) testBtnText.textContent = '診断中...';
 
         try {
-          const cleanUrl = url.replace(/\/+$/, '');
+          const cleanUrl = (typeof SyncService !== 'undefined' && SyncService.cleanSupabaseUrl) ? SyncService.cleanSupabaseUrl(url) : url.replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '');
           const headers = {
             'apikey': key,
             'Authorization': `Bearer ${key}`
@@ -87365,7 +87399,8 @@ class CloudSettingsModal {
           if (saveBtnText) saveBtnText.textContent = 'クラウド同期中...';
         }
 
-        const newConfig = { supabaseUrl: url, supabaseAnonKey: key };
+        const cleanUrl = (typeof SyncService !== 'undefined' && SyncService.cleanSupabaseUrl) ? SyncService.cleanSupabaseUrl(url) : url.replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '');
+        const newConfig = { supabaseUrl: cleanUrl, supabaseAnonKey: key };
         SyncService.saveConfig(newConfig);
 
         const user = (typeof AuthService !== 'undefined' && AuthService.getCurrentUser) ? AuthService.getCurrentUser() : null;

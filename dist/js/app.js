@@ -316,7 +316,7 @@ class App {
           if ('caches' in window && caches.keys) {
             caches.keys().then(keys => {
               keys.forEach(k => {
-                if (k !== 'mongol-app-cache-v3') {
+                if (k !== 'mongol-app-cache-v10') {
                   try { caches.delete(k); } catch (_) {}
                 }
               });
