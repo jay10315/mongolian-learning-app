@@ -116220,6 +116220,15 @@ if (typeof window !== 'undefined') {
 
 
 class WordFamilyComponent {
+  static instance = null;
+
+  static render(container, onNavigate) {
+    if (!this.instance) {
+      this.instance = new WordFamilyComponent();
+    }
+    this.instance.onNavigate = onNavigate;
+    this.instance.mount(container);
+  }
   constructor() {
     this.container = null;
     this.searchQuery = '';
@@ -117135,6 +117144,11 @@ class WordFamilyComponent {
 }
 
 
+if (typeof window !== 'undefined') {
+  window.WordFamilyComponent = WordFamilyComponent;
+}
+
+
 // === js/components/Navbar.js ===
 
 
@@ -117206,7 +117220,7 @@ class Navbar {
       { id: 'number_master', label: '数字マスター', icon: '🔢' },
       { id: 'shadowing_dictation', label: 'シャドーイング', icon: '🎙️' },
       { id: 'culture', label: 'ことわざ・なぞなぞ', icon: '🐴' },
-      { id: 'word_family', label: '語根・対義語', icon: '🌳' },
+      { id: 'root_antonym', label: '語根・対義語', icon: '🌲' },
       { id: 'expedition', label: 'ペンギン探検隊', icon: '🗺️' },
       { id: 'listening_test', label: 'リスニング', icon: '🎧' },
       { id: 'reading_test', label: '読解テスト', icon: '📖' },
@@ -133403,7 +133417,7 @@ class CultureComponent {
 
 
 
-class WordFamilyComponent {
+class WordFamilyQuizComponent {
   static container = null;
   static onNavigate = null;
 
@@ -134663,6 +134677,11 @@ class WordFamilyComponent {
       }
     }
   }
+}
+
+
+if (typeof window !== 'undefined') {
+  window.WordFamilyQuizComponent = WordFamilyQuizComponent;
 }
 
 
@@ -144081,6 +144100,7 @@ class ReferenceGuideComponent {
 
 
 
+
 class App {
   static currentTab = 'home';
 
@@ -144332,6 +144352,9 @@ class App {
         break;
       case 'word_family':
         WordFamilyComponent.render(mainContainer, onNavigate);
+        break;
+      case 'root_antonym':
+        WordFamilyQuizComponent.render(mainContainer, onNavigate);
         break;
       case 'suffix_dojo':
         SuffixRuleDojoComponent.render(mainContainer, onNavigate);

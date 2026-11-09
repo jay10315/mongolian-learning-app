@@ -25,7 +25,8 @@ import { RoleplayComponent } from './components/RoleplayTest.js';
 import { NumberMasterComponent } from './components/NumberMasterTest.js';
 import { ShadowingDictationComponent } from './components/ShadowingDictationTest.js';
 import { CultureComponent } from './components/CultureQuiz.js';
-import { WordFamilyComponent } from './components/WordFamilyQuiz.js';
+import { WordFamilyComponent } from './components/WordFamilyComponent.js';
+import { WordFamilyQuizComponent } from './components/WordFamilyQuiz.js';
 import { PenguinExpeditionComponent } from './components/PenguinExpedition.js';
 import { SpellingGameComponent } from './components/SpellingGame.js';
 import { ExerciseNotebookTestComponent } from './components/ExerciseNotebookTest.js';
@@ -285,6 +286,9 @@ class App {
         break;
       case 'word_family':
         WordFamilyComponent.render(mainContainer, onNavigate);
+        break;
+      case 'root_antonym':
+        WordFamilyQuizComponent.render(mainContainer, onNavigate);
         break;
       case 'suffix_dojo':
         SuffixRuleDojoComponent.render(mainContainer, onNavigate);

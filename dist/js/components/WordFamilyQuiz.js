@@ -6,7 +6,7 @@ import { SoundEffects, shuffleArray } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
-export class WordFamilyComponent {
+export class WordFamilyQuizComponent {
   static container = null;
   static onNavigate = null;
 
@@ -1266,4 +1266,9 @@ export class WordFamilyComponent {
       }
     }
   }
+}
+
+
+if (typeof window !== 'undefined') {
+  window.WordFamilyQuizComponent = WordFamilyQuizComponent;
 }

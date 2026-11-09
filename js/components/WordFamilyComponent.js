@@ -6,6 +6,15 @@ import { GamificationService } from '../services/gamification.js';
 import { WORD_FAMILIES_DATA } from '../data/wordFamiliesData.js';
 
 export class WordFamilyComponent {
+  static instance = null;
+
+  static render(container, onNavigate) {
+    if (!this.instance) {
+      this.instance = new WordFamilyComponent();
+    }
+    this.instance.onNavigate = onNavigate;
+    this.instance.mount(container);
+  }
   constructor() {
     this.container = null;
     this.searchQuery = '';
@@ -918,4 +927,9 @@ export class WordFamilyComponent {
       });
     }
   }
+}
+
+
+if (typeof window !== 'undefined') {
+  window.WordFamilyComponent = WordFamilyComponent;
 }

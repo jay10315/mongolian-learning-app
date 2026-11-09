@@ -68,7 +68,7 @@ export class Navbar {
       { id: 'number_master', label: '数字マスター', icon: '🔢' },
       { id: 'shadowing_dictation', label: 'シャドーイング', icon: '🎙️' },
       { id: 'culture', label: 'ことわざ・なぞなぞ', icon: '🐴' },
-      { id: 'word_family', label: '語根・対義語', icon: '🌳' },
+      { id: 'root_antonym', label: '語根・対義語', icon: '🌲' },
       { id: 'expedition', label: 'ペンギン探検隊', icon: '🗺️' },
       { id: 'listening_test', label: 'リスニング', icon: '🎧' },
       { id: 'reading_test', label: '読解テスト', icon: '📖' },
