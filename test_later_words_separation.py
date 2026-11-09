@@ -39,9 +39,9 @@ with open('js/data/textbookClassificationData.js', 'r', encoding='utf-8') as f:
 textbook_count = sum(1 for v in init_vocab if class_data.get(v['id'], {}).get('status') == 'textbook')
 later_count = sum(1 for v in init_vocab if class_data.get(v['id'], {}).get('status') == 'later')
 
-assert textbook_count == 1113, f"Expected 1113 textbook words, got {textbook_count}"
-assert later_count == 326, f"Expected 326 later words, got {later_count}"
-print(f"Test 3 PASS: Classification data verified: 1113 textbook, 326 later words.")
+assert textbook_count == 1305, f"Expected 1305 textbook words, got {textbook_count}"
+assert later_count == 316, f"Expected 316 later words, got {later_count}"
+print(f"Test 3 PASS: Classification data verified: 1305 textbook, 316 later words.")
 tests_passed += 1
 
 # Test 4: Verify storage.js getLaterWords excludes added words by default
@@ -90,11 +90,11 @@ tests_passed += 1
 # Test 8: Verify Service Worker cache v12
 with open('sw.js', 'r', encoding='utf-8') as f:
     sw_text = f.read()
-assert 'mongol-app-cache-v12' in sw_text
+assert 'mongol-app-cache-v13' in sw_text
 with open('dist/sw.js', 'r', encoding='utf-8') as f:
     dsw_text = f.read()
-assert 'mongol-app-cache-v12' in dsw_text
-print("Test 8 PASS: sw.js and dist/sw.js cache bumped to v12.")
+assert 'mongol-app-cache-v13' in dsw_text
+print("Test 8 PASS: sw.js and dist/sw.js cache bumped to v13.")
 tests_passed += 1
 
 # Test 9: Run previous regression test suite

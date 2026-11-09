@@ -35,14 +35,14 @@ class TestLaterWordsFeature(unittest.TestCase):
         json_str = content[start_idx:end_idx+1]
         data = json.loads(json_str)
 
-        self.assertEqual(len(data), 1439, "Total vocabulary items must be exactly 1439")
+        self.assertEqual(len(data), 1621, "Total vocabulary items must be exactly 1621")
         
         textbook_items = [v for v in data.values() if v.get("status") == "textbook"]
         later_items = [v for v in data.values() if v.get("status") == "later"]
 
-        # In request 10, rule updated to include dictionary forms when inflections/roots appear in materials (1079 -> 1113)
-        self.assertEqual(len(textbook_items), 1113, "Textbook items must be 1113 after inflection rule update")
-        self.assertEqual(len(later_items), 326, "Later items must be 326 after inflection rule update")
+        # In request 11, updated with all textbook & e-learning words (1113 -> 1305 textbook, 326 -> 316 later)
+        self.assertEqual(len(textbook_items), 1305, "Textbook items must be 1305 after e-learning words update")
+        self.assertEqual(len(later_items), 316, "Later items must be 316 after e-learning words update")
 
         # Verify properties of a later item
         sample_later = later_items[0]

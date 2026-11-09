@@ -1,6 +1,3 @@
-// 教科書・学習ノート照合による単語分類マスターデータ
-// 自動生成: JICA教科書・練習問題集・文法ハンドブック・学習ノートの全5教材と完全照合済み
-// 語根・活用形・派生形ルール適用版（同じ語根の活用形が教材に登場している場合も「教材登場単語」として分類）
 export const TEXTBOOK_CLASSIFICATION_DATA = {
   "v_1_1": {
     "status": "textbook",
@@ -3539,11 +3536,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "долоо хоног"
   },
   "v_gen_130": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
     "isVerb": false,
     "stem": "",
     "dictForm": "дөнгж сая"
@@ -4337,11 +4336,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "Индонез"
   },
   "v_gen_192": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
     "isVerb": false,
     "stem": "",
     "dictForm": "интернет"
@@ -6529,11 +6530,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "том"
   },
   "v_gen_368": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
     "isVerb": false,
     "stem": "",
     "dictForm": "тор, уут"
@@ -9737,11 +9740,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "жимс"
   },
   "v_gen_630": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
     "isVerb": false,
     "stem": "",
     "dictForm": "гуанз"
@@ -9835,11 +9840,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "үдээс өмнө"
   },
   "v_gen_654": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
     "isVerb": false,
     "stem": "",
     "dictForm": "дөрөвдэхь өдөр"
@@ -10287,9 +10294,10 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "statusLabel": "学習済み教材の単語",
     "appearanceSources": [
       "教科書（PDF）",
-      "JICA教科書（教科書テキスト）"
+      "JICA教科書（教科書テキスト）",
+      "Eラーニング・教科書・学習ノート"
     ],
-    "appearanceDesc": "教科書（PDF）、JICA教科書（教科書テキスト） に登場",
+    "appearanceDesc": "教科書（PDF）、JICA教科書（教科書テキスト）、Eラーニング・教科書・学習ノート に登場",
     "reason": "",
     "isVerb": false,
     "stem": "",
@@ -10311,11 +10319,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "хорь"
   },
   "v_gen_718": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
     "isVerb": false,
     "stem": "",
     "dictForm": "хорин нэг"
@@ -10334,11 +10344,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "гуч"
   },
   "v_gen_720": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
     "isVerb": false,
     "stem": "",
     "dictForm": "гучин нэг"
@@ -10357,11 +10369,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "дөч"
   },
   "v_gen_722": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
     "isVerb": false,
     "stem": "",
     "dictForm": "дөчин хоёр"
@@ -18566,21 +18580,25 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "мөрөөдөх"
   },
   "v_req_extra_9": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
     "isVerb": true,
     "stem": "мөрөөд-",
     "dictForm": "мөрөөдөх"
   },
   "v_req_extra_10": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
     "isVerb": false,
     "stem": "эрх",
     "dictForm": "эрх чөлөө"
@@ -18679,5 +18697,2189 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "isVerb": false,
     "stem": "",
     "dictForm": "санаа зоволтгүй"
+  },
+  "v_el_1": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "суу-",
+    "dictForm": "ширээндээ суух"
+  },
+  "v_el_2": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "гэ-",
+    "dictForm": "гэж үү"
+  },
+  "v_el_3": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "биш",
+    "dictForm": "биш үү биз дээ"
+  },
+  "v_el_4": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "би-",
+    "dictForm": "бил үү"
+  },
+  "v_el_5": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бол-",
+    "dictForm": "болох"
+  },
+  "v_el_6": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бай-",
+    "dictForm": "байх"
+  },
+  "v_el_7": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "мөн",
+    "dictForm": "мөн"
+  },
+  "v_el_8": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "гэ-",
+    "dictForm": "гэх"
+  },
+  "v_el_9": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бай-",
+    "dictForm": "юм шиг байх"
+  },
+  "v_el_10": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хөгш-",
+    "dictForm": "хөгшин"
+  },
+  "v_el_11": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "зал-",
+    "dictForm": "залуу"
+  },
+  "v_el_12": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "царай",
+    "dictForm": "царай"
+  },
+  "v_el_13": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "мал",
+    "dictForm": "мал"
+  },
+  "v_el_14": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "ойр",
+    "dictForm": "ойр"
+  },
+  "v_el_15": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "харилц-",
+    "dictForm": "харилцаатай"
+  },
+  "v_el_16": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хон-",
+    "dictForm": "хоног"
+  },
+  "v_el_17": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "чад-",
+    "dictForm": "чадах"
+  },
+  "v_el_18": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "тэмдэглэ-",
+    "dictForm": "тэмдэглэх"
+  },
+  "v_el_19": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "айл",
+    "dictForm": "айл"
+  },
+  "v_el_20": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "үе",
+    "dictForm": "үе"
+  },
+  "v_el_21": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "тэг-",
+    "dictForm": "тэгэх"
+  },
+  "v_el_22": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "ав-",
+    "dictForm": "цаг авах"
+  },
+  "v_el_23": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "нөгөө",
+    "dictForm": "нөгөө"
+  },
+  "v_el_24": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "-х",
+    "dictForm": "-гийнх"
+  },
+  "v_el_25": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "уу-",
+    "dictForm": "өглөөний цай уух"
+  },
+  "v_el_26": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "тийм",
+    "dictForm": "тийм ч"
+  },
+  "v_el_27": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "аль",
+    "dictForm": "аль нь вэ"
+  },
+  "v_el_28": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "гэ-",
+    "dictForm": "гэх"
+  },
+  "v_el_29": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "ойлго-",
+    "dictForm": "ойлгох"
+  },
+  "v_el_30": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "дуус-",
+    "dictForm": "дуусгах"
+  },
+  "v_el_31": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "ванн",
+    "dictForm": "ванн"
+  },
+  "v_el_32": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хууч-",
+    "dictForm": "хуучин"
+  },
+  "v_el_33": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "аль",
+    "dictForm": "аль"
+  },
+  "v_el_34": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "анд",
+    "dictForm": "анд"
+  },
+  "v_el_35": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "зуун",
+    "dictForm": "зууны үе"
+  },
+  "v_el_36": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "нум",
+    "dictForm": "нум сум"
+  },
+  "v_el_37": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "төр-",
+    "dictForm": "төрөл"
+  },
+  "v_el_38": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "эрт",
+    "dictForm": "эрт дээр үе"
+  },
+  "v_el_39": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "наад-",
+    "dictForm": "наадам"
+  },
+  "v_el_40": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "зөв-",
+    "dictForm": "зөвхөн"
+  },
+  "v_el_41": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "нас",
+    "dictForm": "нас"
+  },
+  "v_el_42": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "чацуу",
+    "dictForm": "чацуу"
+  },
+  "v_el_43": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "анги",
+    "dictForm": "нэг анги"
+  },
+  "v_el_44": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "барь-",
+    "dictForm": "барих"
+  },
+  "v_el_45": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "кино",
+    "dictForm": "хүүхэлдэйн кино"
+  },
+  "v_el_46": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "өнгө",
+    "dictForm": "өнгө өнгийн"
+  },
+  "v_el_47": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "мод",
+    "dictForm": "мод"
+  },
+  "v_el_48": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "-дахь",
+    "dictForm": "-дахь"
+  },
+  "v_el_49": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "дүүр-",
+    "dictForm": "дүүрэг"
+  },
+  "v_el_50": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "улс",
+    "dictForm": "улс"
+  },
+  "v_el_51": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "бар-",
+    "dictForm": "баригдах"
+  },
+  "v_el_52": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "сая",
+    "dictForm": "сая"
+  },
+  "v_el_53": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "шил",
+    "dictForm": "шил"
+  },
+  "v_el_54": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "ухаан",
+    "dictForm": "ухаан"
+  },
+  "v_el_55": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хариу",
+    "dictForm": "хариу"
+  },
+  "v_el_56": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "орчуул-",
+    "dictForm": "орчуулагч"
+  },
+  "v_el_57": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "хичээл-",
+    "dictForm": "хичээллэх"
+  },
+  "v_el_58": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "ир-",
+    "dictForm": "ирэх"
+  },
+  "v_el_59": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "хүргэ-",
+    "dictForm": "хүргэх"
+  },
+  "v_el_60": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "мэнд",
+    "dictForm": "мэнд"
+  },
+  "v_el_61": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бага",
+    "dictForm": "багын найз"
+  },
+  "v_el_62": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "баг",
+    "dictForm": "багийн найз"
+  },
+  "v_el_63": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "таар-",
+    "dictForm": "тааралдах"
+  },
+  "v_el_64": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "учир",
+    "dictForm": "тийм учраас"
+  },
+  "v_el_65": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бэлтгэ-",
+    "dictForm": "бэлтгэл"
+  },
+  "v_el_66": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "цэцэг",
+    "dictForm": "цэцгийн тоос"
+  },
+  "v_el_67": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "тоос",
+    "dictForm": "тоос"
+  },
+  "v_el_68": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бага",
+    "dictForm": "бага багаар"
+  },
+  "v_el_69": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "хүнд-",
+    "dictForm": "хүндрэх"
+  },
+  "v_el_70": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "куртка",
+    "dictForm": "куртка"
+  },
+  "v_el_71": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "костюм",
+    "dictForm": "костюм"
+  },
+  "v_el_72": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "юбка",
+    "dictForm": "юбка"
+  },
+  "v_el_73": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "европ",
+    "dictForm": "европ"
+  },
+  "v_el_74": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хувцас",
+    "dictForm": "хувцаслалт"
+  },
+  "v_el_75": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "сүүл",
+    "dictForm": "сүүлийн үе"
+  },
+  "v_el_76": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "орон",
+    "dictForm": "орон"
+  },
+  "v_el_77": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "агаар",
+    "dictForm": "агаар"
+  },
+  "v_el_78": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "текст",
+    "dictForm": "текст"
+  },
+  "v_el_79": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "тавь-",
+    "dictForm": "илтгэл тавих"
+  },
+  "v_el_80": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "шилж-",
+    "dictForm": "шилжүүлэх"
+  },
+  "v_el_81": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "зай-",
+    "dictForm": "зайлах"
+  },
+  "v_el_82": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "ярь-",
+    "dictForm": "ярилцлага"
+  },
+  "v_el_83": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "вакцин",
+    "dictForm": "вакцин"
+  },
+  "v_el_84": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "хий-",
+    "dictForm": "хийлгэх"
+  },
+  "v_el_85": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "үргэлж",
+    "dictForm": "үргэлжлэл"
+  },
+  "v_el_86": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "алдар",
+    "dictForm": "алдар"
+  },
+  "v_el_87": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "уудам",
+    "dictForm": "уудам"
+  },
+  "v_el_88": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "нут-",
+    "dictForm": "нутаг"
+  },
+  "v_el_89": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "үндэс",
+    "dictForm": "үндэс"
+  },
+  "v_el_90": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "бүс",
+    "dictForm": "бүслэх"
+  },
+  "v_el_91": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "банш",
+    "dictForm": "банш"
+  },
+  "v_el_92": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "гурил",
+    "dictForm": "гурил"
+  },
+  "v_el_93": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "гурил",
+    "dictForm": "гурил"
+  },
+  "v_el_94": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "төр-",
+    "dictForm": "төрөл"
+  },
+  "v_el_95": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бүр",
+    "dictForm": "бүр"
+  },
+  "v_el_96": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "иен",
+    "dictForm": "иен"
+  },
+  "v_el_97": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "соль-",
+    "dictForm": "мөнгө солих"
+  },
+  "v_el_98": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "мэнд",
+    "dictForm": "мэндчилгээ"
+  },
+  "v_el_99": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "жарга-",
+    "dictForm": "аз жаргал"
+  },
+  "v_el_100": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "баяр",
+    "dictForm": "баяр"
+  },
+  "v_el_101": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "төгс-",
+    "dictForm": "төгсөлтийн баяр"
+  },
+  "v_el_102": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "заал",
+    "dictForm": "заал"
+  },
+  "v_el_103": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "тамир",
+    "dictForm": "тамир"
+  },
+  "v_el_104": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "юм",
+    "dictForm": "юм бэ"
+  },
+  "v_el_105": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бол-",
+    "dictForm": "болох"
+  },
+  "v_el_106": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бол-",
+    "dictForm": "болох учраас"
+  },
+  "v_el_107": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "анх",
+    "dictForm": "анх"
+  },
+  "v_el_108": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бараа",
+    "dictForm": "бараа"
+  },
+  "v_el_109": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "худалда-",
+    "dictForm": "худалдах"
+  },
+  "v_el_110": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "тавь-",
+    "dictForm": "тавилга"
+  },
+  "v_el_111": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "телевиз",
+    "dictForm": "телевиз"
+  },
+  "v_el_112": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "дэлхий",
+    "dictForm": "дэлхий"
+  },
+  "v_el_113": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "брэнд",
+    "dictForm": "брэнд"
+  },
+  "v_el_114": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "цахил-",
+    "dictForm": "цахилгаан"
+  },
+  "v_el_115": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "зэмсэг",
+    "dictForm": "зэмсэг"
+  },
+  "v_el_116": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "урьд-",
+    "dictForm": "урьдчилах"
+  },
+  "v_el_117": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "ам",
+    "dictForm": "амны хаалт"
+  },
+  "v_el_118": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "зөр-",
+    "dictForm": "зөрөх"
+  },
+  "v_el_119": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "хөр-",
+    "dictForm": "хөргөх"
+  },
+  "v_el_120": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хаа-",
+    "dictForm": "хаалга"
+  },
+  "v_el_121": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "түгж-",
+    "dictForm": "түгжих"
+  },
+  "v_el_122": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "эс",
+    "dictForm": "эсэх"
+  },
+  "v_el_123": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "шалга-",
+    "dictForm": "шалгах"
+  },
+  "v_el_124": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хуваа-",
+    "dictForm": "хуваарь"
+  },
+  "v_el_125": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хаа-",
+    "dictForm": "хаагуур"
+  },
+  "v_el_126": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "зугаа-",
+    "dictForm": "зугаалах"
+  },
+  "v_el_127": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "гад-",
+    "dictForm": "гадуур"
+  },
+  "v_el_128": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хороо",
+    "dictForm": "хороолол"
+  },
+  "v_el_129": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "ноолуур",
+    "dictForm": "ноолуур"
+  },
+  "v_el_130": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "энэ",
+    "dictForm": "энэ"
+  },
+  "v_el_131": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "урс-",
+    "dictForm": "урсах"
+  },
+  "v_el_132": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "үнэ",
+    "dictForm": "үнэ"
+  },
+  "v_el_133": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хийд",
+    "dictForm": "хийд"
+  },
+  "v_el_134": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "шашин",
+    "dictForm": "Буддын шашин"
+  },
+  "v_el_135": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бө-",
+    "dictForm": "бөгөөд"
+  },
+  "v_el_136": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "гар-",
+    "dictForm": "гаруй"
+  },
+  "v_el_137": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "их",
+    "dictForm": "ихэнх"
+  },
+  "v_el_138": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "лам",
+    "dictForm": "лам нар"
+  },
+  "v_el_139": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "тал",
+    "dictForm": "тал"
+  },
+  "v_el_140": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "суу-",
+    "dictForm": "орон сууц"
+  },
+  "v_el_141": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бай-",
+    "dictForm": "байр"
+  },
+  "v_el_142": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "буй",
+    "dictForm": "буюу"
+  },
+  "v_el_143": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "урагш",
+    "dictForm": "урагш"
+  },
+  "v_el_144": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "чиг",
+    "dictForm": "чиг"
+  },
+  "v_el_145": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "улс",
+    "dictForm": "орон улс"
+  },
+  "v_el_146": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "хоол",
+    "dictForm": "хооллох"
+  },
+  "v_el_147": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "уда-",
+    "dictForm": "удаан"
+  },
+  "v_el_148": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "цанг-",
+    "dictForm": "цангах"
+  },
+  "v_el_149": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "цамц",
+    "dictForm": "цамц"
+  },
+  "v_el_150": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бай-",
+    "dictForm": "Сайн байцгаана уу"
+  },
+  "v_el_151": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "байн-",
+    "dictForm": "Сонин сайхан юу байна вэ"
+  },
+  "v_el_152": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "тайван",
+    "dictForm": "Юмгүй тайван"
+  },
+  "v_el_153": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "баяр",
+    "dictForm": "Баяртай"
+  },
+  "v_el_154": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "уулз-",
+    "dictForm": "Дараа уулзах"
+  },
+  "v_el_155": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "уулз-",
+    "dictForm": "Маргааш уулзах"
+  },
+  "v_el_156": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "танилц-",
+    "dictForm": "Сайхан танилцах"
+  },
+  "v_el_157": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "танилц-",
+    "dictForm": "Танилцсандаа баяртай байх"
+  },
+  "v_el_158": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "за",
+    "dictForm": "За"
+  },
+  "v_el_159": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "үгүй",
+    "dictForm": "Үгүй"
+  },
+  "v_el_160": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бол-",
+    "dictForm": "Бололгүй яах вэ"
+  },
+  "v_el_161": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "ав-",
+    "dictForm": "зураг авхуулах"
+  },
+  "v_el_162": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "зүгээр",
+    "dictForm": "Зүгээр ээ, болсон"
+  },
+  "v_el_163": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "кино",
+    "dictForm": "кинотеатр"
+  },
+  "v_el_164": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "пиво",
+    "dictForm": "пиво"
+  },
+  "v_el_165": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "ресторан",
+    "dictForm": "ресторан"
+  },
+  "v_el_166": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "тийм",
+    "dictForm": "Тийм үү"
+  },
+  "v_el_167": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "яа-",
+    "dictForm": "Яах"
+  },
+  "v_el_168": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "бол-",
+    "dictForm": "болох"
+  },
+  "v_el_169": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "гэ-",
+    "dictForm": "гэж үү"
+  },
+  "v_el_170": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "биш",
+    "dictForm": "биш үү биз дээ"
+  },
+  "v_el_171": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "би-",
+    "dictForm": "бил үү"
+  },
+  "v_el_172": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "би-",
+    "dictForm": "билээ"
+  },
+  "v_el_173": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "гэ-",
+    "dictForm": "гэнэ"
+  },
+  "v_el_174": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "хон-",
+    "dictForm": "хоног"
+  },
+  "v_el_175": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "-х",
+    "dictForm": "-гийнх"
+  },
+  "v_el_176": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "аль",
+    "dictForm": "аль нь вэ"
+  },
+  "v_el_177": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "аз",
+    "dictForm": "аз"
+  },
+  "v_el_178": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "жарга-",
+    "dictForm": "жаргал"
+  },
+  "v_el_179": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "Будда",
+    "dictForm": "Будда"
+  },
+  "v_el_180": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "шашин",
+    "dictForm": "шашин"
+  },
+  "v_el_181": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": true,
+    "stem": "зөр-",
+    "dictForm": "зөрөх"
+  },
+  "v_el_182": {
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "Eラーニング・教科書・学習ノート"
+    ],
+    "appearanceDesc": "Eラーニング・教科書・学習ノート に登場",
+    "reason": "",
+    "isVerb": false,
+    "stem": "гурил",
+    "dictForm": "гурилтой"
   }
 };
