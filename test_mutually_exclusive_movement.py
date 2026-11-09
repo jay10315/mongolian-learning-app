@@ -67,7 +67,7 @@ tests_passed += 1
 # Test 6: Verify Service Worker v16 cache and auto-update
 with open('sw.js', 'r', encoding='utf-8') as f:
     sw_text = f.read()
-assert 'mongol-app-cache-v16' in sw_text
+assert 'mongol-app-cache-v17' in sw_text
 
 with open('build_standalone.py', 'r', encoding='utf-8') as f:
     bs_text = f.read()
