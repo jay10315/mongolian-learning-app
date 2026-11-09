@@ -225,7 +225,15 @@ class App {
         GenreWordMasterComponent.render(mainContainer, onNavigate);
         break;
       case 'later_words':
-        LaterWordsComponent.render(mainContainer, onNavigate);
+        {
+          const Comp = (typeof LaterWordsComponent !== 'undefined' && LaterWordsComponent) ||
+                       (typeof window !== 'undefined' && window.LaterWordsComponent);
+          if (Comp && typeof Comp.render === 'function') {
+            Comp.render(mainContainer, onNavigate);
+          } else {
+            console.error('[App] LaterWordsComponent is not defined on render');
+          }
+        }
         break;
       case 'home':
         HomeComponent.render(mainContainer, onNavigate);

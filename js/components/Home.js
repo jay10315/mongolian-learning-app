@@ -21,18 +21,23 @@ export class HomeComponent {
     const settings = StorageService.getSettings();
     const currentUser = AuthService.getCurrentUser();
 
-    // SRS忘却曲線データ
+    // 「あとで覚える単語」を正式学習単語から完全に分離
+    const unaddedLaterWords = StorageService.getLaterWords ? StorageService.getLaterWords() : [];
+    const promotedLaterWords = StorageService.getPromotedLaterWords ? StorageService.getPromotedLaterWords() : [];
+    const laterWordsCount = unaddedLaterWords.length;
+
+    // SRS忘却曲線データ（正式登録単語のみを対象に集計・あとで覚える単語は完全除外）
     const dueWords = StorageService.getDueReviewWords();
     const highRiskWords = StorageService.getHighRiskWords();
     const studiedWords = vocabList.filter(v => v.srsLevel > 0);
     const unlearnedWords = vocabList.filter(v => v.srsLevel === 0);
 
-    // 習熟度別集計
+    // 習熟度別集計（正式登録単語のみ）
     const masteredWords = vocabList.filter(v => v.srsLevel >= 6);      // 習得済 (Lv.6+)
     const stableWords = vocabList.filter(v => v.srsLevel >= 3 && v.srsLevel < 6); // 定着中 (Lv.3-5)
     const beginnerWords = vocabList.filter(v => v.srsLevel >= 1 && v.srsLevel < 3); // 初見 (Lv.1-2)
 
-    // 統計計算
+    // 統計計算: 正式な登録単語数（教科書掲載単語 ＋ 追加登録単語）
     const totalWords = vocabList.length;
     const totalGrammar = grammarList.length;
     const totalAnswered = historyList.reduce((acc, h) => acc + (h.total || 0), 0);
@@ -294,23 +299,49 @@ export class HomeComponent {
             </div>
           </div>
 
-          <!-- 4分割 主要指標カード -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-              <div class="text-[11px] text-slate-500">登録単語数</div>
-              <div class="text-lg font-extrabold text-slate-900">${totalWords} <span class="text-xs font-normal text-slate-400">語</span></div>
+          <!-- 主要指標カード（正式登録単語数と「あとで覚える単語」を完全に分離） -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3 pt-2">
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
+              <div>
+                <div class="text-[11px] text-slate-500 font-bold">正式な登録単語数</div>
+                <div class="text-base sm:text-lg font-black text-slate-900 mt-0.5">${totalWords} <span class="text-xs font-normal text-slate-400">語</span></div>
+              </div>
+              <div class="text-[10px] text-emerald-600 font-bold mt-1">✓ 全ゲーム出題対象</div>
             </div>
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-              <div class="text-[11px] text-slate-500">登録文法数</div>
-              <div class="text-lg font-extrabold text-slate-900">${totalGrammar} <span class="text-xs font-normal text-slate-400">課</span></div>
+
+            <div class="p-3 bg-amber-50/80 hover:bg-amber-100/70 border border-amber-200 rounded-xl flex flex-col justify-between cursor-pointer transition-all group shadow-2xs" id="home-card-later-words" title="タップして「あとで覚える単語」画面へ">
+              <div>
+                <div class="text-[11px] text-amber-900 font-bold flex items-center justify-between">
+                  <span>あとで覚える単語</span>
+                  <span class="text-[10px] text-amber-600 group-hover:translate-x-0.5 transition-transform">→</span>
+                </div>
+                <div class="text-base sm:text-lg font-black text-amber-700 mt-0.5">${laterWordsCount} <span class="text-xs font-normal text-amber-600/70">語</span></div>
+              </div>
+              <div class="text-[10px] text-amber-800 font-semibold mt-1">⏳ 保管中（出題除外）</div>
             </div>
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-              <div class="text-[11px] text-slate-500">累計正答率</div>
-              <div class="text-lg font-extrabold text-slate-900">${overallAccuracy}% <span class="text-xs font-normal text-slate-400">(${totalCorrect}/${totalAnswered})</span></div>
+
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
+              <div>
+                <div class="text-[11px] text-slate-500 font-bold">登録文法数</div>
+                <div class="text-base sm:text-lg font-black text-slate-900 mt-0.5">${totalGrammar} <span class="text-xs font-normal text-slate-400">課</span></div>
+              </div>
+              <div class="text-[10px] text-slate-400 font-medium mt-1">体系的文法レッスン</div>
             </div>
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-              <div class="text-[11px] text-slate-500">学習継続日数</div>
-              <div class="text-lg font-extrabold text-slate-900">${streakDays} <span class="text-xs font-normal text-slate-400">日連続</span></div>
+
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
+              <div>
+                <div class="text-[11px] text-slate-500 font-bold">累計正答率</div>
+                <div class="text-base sm:text-lg font-black text-slate-900 mt-0.5">${overallAccuracy}%</div>
+              </div>
+              <div class="text-[10px] text-slate-400 font-medium mt-1">${totalCorrect} / ${totalAnswered} 問正答</div>
+            </div>
+
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between col-span-2 sm:col-span-1">
+              <div>
+                <div class="text-[11px] text-slate-500 font-bold">学習継続日数</div>
+                <div class="text-base sm:text-lg font-black text-slate-900 mt-0.5">${streakDays} <span class="text-xs font-normal text-slate-400">日連続</span></div>
+              </div>
+              <div class="text-[10px] text-orange-500 font-bold mt-1">🔥 継続中</div>
             </div>
           </div>
         </div>

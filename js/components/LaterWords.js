@@ -7,16 +7,20 @@ import { SoundEffects } from '../utils/helpers.js';
 export class LaterWordsComponent {
   static searchTerm = '';
   static selectedPos = 'all';
-  static selectedStatus = 'all'; // 'all' | 'unadded' | 'added'
+  static selectedStatus = 'unadded'; // 'all' | 'unadded' | 'added'
   static sortOrder = 'default';  // 'default' | 'ja_asc' | 'mn_asc' | 'pos' | 'status'
 
   static render(container, onNavigate) {
     if (!container) return;
 
-    const allLaterWords = StorageService.getLaterWords();
-    const textbookWords = StorageService.getTextbookWords();
-    const addedCount = allLaterWords.filter(w => w.isAddedToLearning).length;
-    const activeTestCount = textbookWords.length + addedCount;
+    // includeAdded: true で全件取得して統計計算
+    const allLaterWordsTotal = StorageService.getLaterWords ? StorageService.getLaterWords({ includeAdded: true }) : [];
+    const unaddedLaterWords = StorageService.getLaterWords ? StorageService.getLaterWords() : [];
+    const textbookWords = StorageService.getTextbookWords ? StorageService.getTextbookWords() : [];
+    const promotedWords = StorageService.getPromotedLaterWords ? StorageService.getPromotedLaterWords() : [];
+    const addedCount = promotedWords.length;
+    const unaddedCount = unaddedLaterWords.length;
+    const formalLearningCount = StorageService.getVocabulary ? StorageService.getVocabulary().length : (textbookWords.length + addedCount);
 
     container.innerHTML = `
       <div class="animate-fade-in space-y-6 max-w-5xl mx-auto px-4 py-4 sm:py-6">
@@ -52,27 +56,27 @@ export class LaterWordsComponent {
             <!-- 統計バッジ -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
               <div class="bg-black/20 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15">
-                <div class="text-[10px] text-amber-200 font-bold">📚 学習済み教材の単語</div>
-                <div class="text-lg font-black mt-0.5 text-white">${textbookWords.length}<span class="text-xs font-normal ml-0.5">語</span></div>
-                <div class="text-[10px] text-amber-100 opacity-80">常時出題対象</div>
+                <div class="text-[10px] text-amber-200 font-bold">📚 正式な登録単語数</div>
+                <div class="text-lg font-black mt-0.5 text-white" id="stat-formal-count">${formalLearningCount}<span class="text-xs font-normal ml-0.5">語</span></div>
+                <div class="text-[10px] text-emerald-300 font-semibold">全ゲーム・テスト出題</div>
               </div>
 
               <div class="bg-black/20 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15">
                 <div class="text-[10px] text-amber-200 font-bold">⏳ あとで覚える単語</div>
-                <div class="text-lg font-black mt-0.5 text-white">${allLaterWords.length}<span class="text-xs font-normal ml-0.5">語</span></div>
-                <div class="text-[10px] text-amber-100 opacity-80">教材未登場</div>
+                <div class="text-lg font-black mt-0.5 text-white" id="stat-unadded-count">${unaddedCount}<span class="text-xs font-normal ml-0.5">語</span></div>
+                <div class="text-[10px] text-amber-200 opacity-90">一時保管（出題除外）</div>
               </div>
 
               <div class="bg-black/20 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15">
                 <div class="text-[10px] text-amber-200 font-bold">🎯 ゲームに追加済み</div>
                 <div class="text-lg font-black mt-0.5 text-emerald-300" id="stat-added-count">${addedCount}<span class="text-xs font-normal ml-0.5">語</span></div>
-                <div class="text-[10px] text-amber-100 opacity-80">ワンタップで追加</div>
+                <div class="text-[10px] text-amber-100 opacity-90">あとで覚えるから昇格</div>
               </div>
 
               <div class="bg-black/20 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15">
-                <div class="text-[10px] text-amber-200 font-bold">🎮 現在のテスト出題総数</div>
-                <div class="text-lg font-black mt-0.5 text-white" id="stat-total-test-count">${activeTestCount}<span class="text-xs font-normal ml-0.5">語</span></div>
-                <div class="text-[10px] text-amber-100 opacity-80">全ゲーム・テストに反映</div>
+                <div class="text-[10px] text-amber-200 font-bold">📖 教科書掲載基本語</div>
+                <div class="text-lg font-black mt-0.5 text-white">${textbookWords.length}<span class="text-xs font-normal ml-0.5">語</span></div>
+                <div class="text-[10px] text-amber-100 opacity-80">教材で確認済み</div>
               </div>
             </div>
 
@@ -188,7 +192,9 @@ export class LaterWordsComponent {
     const countLabel = container.querySelector('#label-filtered-count');
     if (!listContainer) return;
 
-    let words = StorageService.getLaterWords();
+    // 「すべて」または「追加済みのみ」選択時は追加済みも含めて取得
+    const includeAdded = (this.selectedStatus === 'all' || this.selectedStatus === 'added');
+    let words = StorageService.getLaterWords ? StorageService.getLaterWords({ includeAdded }) : [];
 
     // 1. 検索フィルター
     if (this.searchTerm && this.searchTerm.trim()) {
@@ -236,7 +242,8 @@ export class LaterWordsComponent {
     }
 
     if (countLabel) {
-      countLabel.textContent = `表示中: ${words.length}件 / 全360件`;
+      const totalTarget = (this.selectedStatus === 'added') ? StorageService.getPromotedLaterWords().length : (this.selectedStatus === 'unadded' ? StorageService.getLaterWords().length : StorageService.getLaterWords({ includeAdded: true }).length);
+      countLabel.textContent = `表示中: ${words.length}件 / 全${totalTarget}件`;
     }
 
     if (words.length === 0) {
@@ -378,13 +385,13 @@ export class LaterWordsComponent {
           if (typeof SoundEffects !== 'undefined' && SoundEffects.playSuccess) {
             SoundEffects.playSuccess();
           }
-          this.showToast(`「${targetWord ? targetWord.mongolian : '単語'}」を覚える単語に追加しました！全ゲームに出題されます。`);
+          this.showToast(`「${targetWord ? targetWord.mongolian : '単語'}」を覚える単語に追加しました！登録単語数に反映され、全ゲームに出題されます。`);
         } else {
           StorageService.removeWordFromActiveLearning(wordId);
           if (typeof SoundEffects !== 'undefined' && SoundEffects.playClick) {
             SoundEffects.playClick();
           }
-          this.showToast(`「${targetWord ? targetWord.mongolian : '単語'}」を出題対象から外しました。`);
+          this.showToast(`「${targetWord ? targetWord.mongolian : '単語'}」を出題対象から外し、「あとで覚える単語」に戻しました。`);
         }
 
         // バナーの統計カウントを即時更新
@@ -424,4 +431,8 @@ export class LaterWordsComponent {
       }
     }, 2800);
   }
+}
+
+if (typeof window !== 'undefined') {
+  window.LaterWordsComponent = LaterWordsComponent;
 }

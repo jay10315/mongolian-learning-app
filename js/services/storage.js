@@ -583,26 +583,46 @@ export class StorageService {
    * 2. 「覚える単語に追加」したあとで覚える単語
    * @param {Object} options { includeAll: boolean }
    */
+  /**
+   * 正式な学習対象単語を取得（教科書掲載単語 ＋ 「あとで覚える単語」から正式追加した単語 ＋ ファミリー追加語形）
+   * 「あとで覚える単語」に保管されているだけの単語は 100% 除外されます。
+   * @param {Object} options { includeAll: boolean }
+   */
   static getVocabulary(options = {}) {
     const all = this.getAllVocabulary();
     if (options && options.includeAll) {
       return all;
     }
+    // 教科書・練習ノート掲載単語、または「あとで覚える単語」から正式に追加登録された単語のみ
     return all.filter(item => item.textbookStatus === 'textbook' || item.isAddedToLearning);
   }
 
   /**
-   * 教科書・学習ノートに登場した単語のみ取得 (1,079語)
+   * 教科書・学習ノート掲載の基本単語のみ取得 (1,113語)
    */
   static getTextbookWords() {
     return this.getAllVocabulary().filter(item => item.textbookStatus === 'textbook');
   }
 
   /**
-   * 教科書・学習ノートに未登場の単語（あとで覚える単語）のみ取得 (360語)
+   * 「あとで覚える単語」（教材未登場の一時保管単語）を取得
+   * 正式追加された単語は「あとで覚える単語」から自動的に消えます。
+   * options.includeAdded が true の場合のみ追加済みも含めて全件返却します。
    */
-  static getLaterWords() {
-    return this.getAllVocabulary().filter(item => item.textbookStatus === 'later');
+  static getLaterWords(options = {}) {
+    const allLater = this.getAllVocabulary().filter(item => item.textbookStatus === 'later');
+    if (options && options.includeAdded) {
+      return allLater;
+    }
+    // 正式登録済みの単語は「あとで覚える単語」から削除（消える）
+    return allLater.filter(item => !item.isAddedToLearning);
+  }
+
+  /**
+   * 「あとで覚える単語」から正式な学習単語へ昇格（追加）された単語一覧を取得
+   */
+  static getPromotedLaterWords() {
+    return this.getAllVocabulary().filter(item => item.textbookStatus === 'later' && Boolean(item.isAddedToLearning));
   }
 
   /**
