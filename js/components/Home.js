@@ -1020,19 +1020,19 @@ export class HomeComponent {
       });
     });
 
-    // 忘却曲線復習ボタン
+    // 忘却曲線復習ボタン（該当単語を直接全問特訓開始）
     const srsBtn = container.querySelector('#btn-start-srs-review');
     if (srsBtn && dueWords.length > 0) {
       srsBtn.addEventListener('click', () => {
-        if (onNavigate) onNavigate('word_test');
+        if (onNavigate) onNavigate('word_test', { filter: 'srs_due', autoStart: true, count: 'all' });
       });
     }
 
-    // 高リスク復習ボタン
+    // 高リスク復習ボタン（高忘却リスク単語を直接全問特訓開始）
     const riskBtn = container.querySelector('#btn-start-high-risk-review');
     if (riskBtn && highRiskWords.length > 0) {
       riskBtn.addEventListener('click', () => {
-        if (onNavigate) onNavigate('word_test');
+        if (onNavigate) onNavigate('word_test', { filter: 'high_risk', autoStart: true, count: 'all' });
       });
     }
 

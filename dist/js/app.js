@@ -195,8 +195,8 @@ class App {
     CyrillicKeyboard.init();
 
     // 4. ナビゲーションバー初期化
-    Navbar.init(this.currentTab, (tab) => {
-      this.navigate(tab);
+    Navbar.init(this.currentTab, (tab, options = null) => {
+      this.navigate(tab, options);
     });
 
     // 5. 初期タブの描画
@@ -206,8 +206,9 @@ class App {
     this.registerServiceWorker();
   }
 
-  static navigate(tab) {
+  static navigate(tab, options = null) {
     this.currentTab = tab;
+    this.tabOptions = options;
     this.renderCurrentView();
   }
 
@@ -217,8 +218,8 @@ class App {
 
     mainContainer.innerHTML = '';
 
-    const onNavigate = (tab) => {
-      Navbar.setTab(tab);
+    const onNavigate = (tab, options = null) => {
+      Navbar.setTab(tab, options);
     };
 
     switch (this.currentTab) {
@@ -256,10 +257,10 @@ class App {
         WordGameComponent.render(mainContainer, onNavigate);
         break;
       case 'word_test':
-        WordTestComponent.render(mainContainer, onNavigate);
+        WordTestComponent.render(mainContainer, onNavigate, this.tabOptions);
         break;
       case 'japanese_test':
-        JapaneseTestComponent.render(mainContainer, onNavigate);
+        JapaneseTestComponent.render(mainContainer, onNavigate, this.tabOptions);
         break;
       case 'grammar_test':
         GrammarTestComponent.render(mainContainer, onNavigate);

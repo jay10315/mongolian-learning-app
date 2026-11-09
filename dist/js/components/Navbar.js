@@ -34,11 +34,11 @@ export class Navbar {
     });
   }
 
-  static setTab(tab) {
+  static setTab(tab, options = null) {
     this.currentTab = tab;
     this.render();
     if (this.onTabChange) {
-      this.onTabChange(tab);
+      this.onTabChange(tab, options);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

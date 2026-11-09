@@ -61,21 +61,45 @@ export class ReviewNotebookComponent {
       rawLookup: w
     }));
 
-    // 3. 忘却曲線で振り返るべき単語 (SRS復習期日)
-    const dueWords = StorageService.getDueReviewWords().map(w => ({
+    // 3. 忘却曲線で振り返るべき単語 (SRS復習期日 & 高忘却リスク単語)
+    const dueSet = new Set();
+    const rawDueWords = StorageService.getDueReviewWords();
+    const rawHighRiskWords = StorageService.getHighRiskWords();
+    const combinedSrsWords = [];
+
+    rawDueWords.forEach(w => {
+      dueSet.add(w.id);
+      combinedSrsWords.push({
+        ...w,
+        _label: '要復習(SRS期日)'
+      });
+    });
+
+    rawHighRiskWords.forEach(w => {
+      if (!dueSet.has(w.id)) {
+        dueSet.add(w.id);
+        combinedSrsWords.push({
+          ...w,
+          _label: '忘却リスク高'
+        });
+      }
+    });
+
+    const dueWords = combinedSrsWords.map(w => ({
       id: `due_${w.id}`,
+      srsWordId: w.id,
       sourceType: 'due_review',
       type: 'due_review',
       category: '要復習(SRS)',
-      sourceLabel: '要復習(SRS)',
-      question: `【要復習】${w.japanese}`,
+      sourceLabel: w._label || '要復習(SRS)',
+      question: `【${w._label || '要復習'}】${w.japanese}`,
       correctAnswer: w.dictForm || w.mongolian,
       userAnswer: '',
-      explanation: `${w.mongolian} = ${w.japanese}（SRSレベル: ${w.srsLevel || 0} / 保持率: ${w.retention || 0}%）`,
+      explanation: `${w.mongolian} = ${w.japanese}（SRSレベル: ${w.srsLevel || 0} / 忘却リスク: ${w.forgettingRisk || 0}%）`,
       wrongCount: w.wrongCount || 1,
-      lastWrongDate: w.nextReviewDate || new Date().toISOString(),
+      lastWrongDate: w.lastReviewed || new Date().toISOString(),
       resolved: false,
-      srsWordId: w.id
+      retention: w.retention
     }));
 
     return { mistakes, lookedUp, dueWords, all: [...mistakes, ...lookedUp, ...dueWords] };
@@ -878,8 +902,17 @@ export class ReviewNotebookComponent {
     } else {
       const nextBtn = this.container.querySelector('#btn-next-review-item');
       if (nextBtn) {
-        nextBtn.focus();
-        nextBtn.addEventListener('click', () => {
+        let allowEnterNext = false;
+        setTimeout(() => {
+          allowEnterNext = true;
+          try { nextBtn.focus(); } catch (_) {}
+        }, 350);
+
+        nextBtn.addEventListener('click', (e) => {
+          if (!allowEnterNext) {
+            e.preventDefault();
+            return;
+          }
           scrollToQuizTop(this.container);
           if (this.state.testIndex + 1 < this.state.testList.length) {
             this.loadReviewQuestion(this.state.testIndex + 1);
@@ -888,6 +921,15 @@ export class ReviewNotebookComponent {
             this.renderReviewResult();
           }
         });
+
+        const keyHandler = (e) => {
+          if (e.key === 'Enter') {
+            if (!allowEnterNext) return;
+            window.removeEventListener('keydown', keyHandler);
+            nextBtn.click();
+          }
+        };
+        window.addEventListener('keydown', keyHandler);
       }
     }
   }

@@ -1,7 +1,7 @@
 // 単語・文法・翻訳 統合バトルゲーム コンポーネント（独立したゲームコーナー）
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
-import { SoundEffects, shuffleArray, getWordGrammarDetails, isWordAnswerMatch, SPECIAL_CYRILLIC_BAR, isCyrillic, isPronunciationCautionWord, scrollToQuizTop } from '../utils/helpers.js';
+import { SoundEffects, shuffleArray, getWordGrammarDetails, isWordAnswerMatch, SPECIAL_CYRILLIC_BAR, isCyrillic, isPronunciationCautionWord, scrollToQuizTop, renderGrammarExplanationHTML, renderChoiceExplanationsHTML } from '../utils/helpers.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
 export class WordGameComponent {
@@ -1350,19 +1350,40 @@ export class WordGameComponent {
             </div>
           `}
 
-          <!-- 不正解時の即時フィードバックバナー -->
-          ${this.state.hasAnswered && !this.state.isCorrect ? `
-            <div class="p-4 bg-rose-50 border border-rose-200 rounded-2xl animate-fade-in flex items-center justify-between gap-3 text-xs">
-              <div class="space-y-0.5">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-black text-rose-800">❌ 正解:</span>
-                  <span class="font-black text-rose-950 text-base ${genre !== 'ja_meaning' ? 'cyrillic-text' : ''}">${this.getCorrectAnswerDisplay(genre, q, details)}</span>
-                </div>
-                ${this.getWrongExplanationHtml(genre, q, details)}
+          <!-- 回答後フィードバック・解説カード（正解・不正解問わず全問必ず完全表示） -->
+          ${this.state.hasAnswered ? `
+            <div class="p-4 sm:p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50/95 border-emerald-300 text-emerald-950' : 'bg-rose-50/95 border-rose-300 text-rose-950'} shadow-md space-y-3 animate-fade-in text-left">
+              <div class="flex items-center justify-between gap-2 border-b ${this.state.isCorrect ? 'border-emerald-200' : 'border-rose-200'} pb-2">
+                <span class="text-base sm:text-lg font-black flex items-center gap-1.5">
+                  <span>${this.state.isCorrect ? '⭕ 正解！ амжилттай!' : '❌ 不正解・要復習'}</span>
+                </span>
+                <button type="button" id="btn-next-question-fast" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black rounded-xl shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1 shrink-0">
+                  <span>次の問題へ (Enter)</span>
+                  <span>→</span>
+                </button>
               </div>
-              <button type="button" id="btn-next-question-fast" class="px-4 py-2.5 bg-rose-600 text-white font-black rounded-xl shrink-0 shadow-2xs hover:bg-rose-700 transition-all">
-                次へ →
-              </button>
+
+              ${genre === 'grammar' ? `
+                <div class="text-xs space-y-1.5 bg-white/90 p-3 rounded-xl border border-slate-200">
+                  <div class="font-bold text-slate-800">問題: ${q.question}</div>
+                  <div class="text-emerald-800 font-extrabold text-sm cyrillic-text">正解: ${q.answer}</div>
+                  ${q.explanation ? `<div class="text-slate-600 mt-1">💡 ${q.explanation}</div>` : ''}
+                </div>
+              ` : renderGrammarExplanationHTML({
+                correctAnswer: this.getCorrectAnswerDisplay(genre, q, details),
+                userAnswer: this.state.lastUserAnswer || '',
+                isCorrect: this.state.isCorrect,
+                item: q,
+                pronunciation: q.pronunciation,
+                grammarExplanation: q.note || q.hint || q.explanation,
+                isVerbQuestion: details ? details.isVerb : false
+              })}
+
+              <!-- 4択の場合：選択肢全解説 -->
+              ${(typeof renderChoiceExplanationsHTML === 'function' && this.state.choices && this.state.choices.length > 0) ? renderChoiceExplanationsHTML(this.state.choices, {
+                expectedAnswer: this.getCorrectAnswerDisplay(genre, q, details),
+                userAnswer: this.state.lastUserAnswer || ''
+              }) : ''}
             </div>
           ` : ''}
 
@@ -1756,12 +1777,31 @@ export class WordGameComponent {
       }
     }
 
-    // 即時次へボタン（不正解時）
+    // 次の問題へボタン（正解・不正解問わず全問解説確認後に進む）
     const nextFastBtn = this.container.querySelector('#btn-next-question-fast');
     if (nextFastBtn) {
-      nextFastBtn.addEventListener('click', () => {
+      let allowGameNext = false;
+      setTimeout(() => {
+        allowGameNext = true;
+        try { nextFastBtn.focus(); } catch (_) {}
+      }, 350);
+
+      nextFastBtn.addEventListener('click', (e) => {
+        if (!allowGameNext) {
+          e.preventDefault();
+          return;
+        }
         this.advanceToNextQuestion();
       });
+
+      const gameEnterHandler = (e) => {
+        if (e.key === 'Enter') {
+          if (!allowGameNext) return;
+          window.removeEventListener('keydown', gameEnterHandler);
+          nextFastBtn.click();
+        }
+      };
+      window.addEventListener('keydown', gameEnterHandler);
     }
   }
 
@@ -1961,14 +2001,8 @@ export class WordGameComponent {
         }
       } catch (_) {}
 
+      this.state.lastUserAnswer = userText || correctDisplay;
       this.renderPlaying();
-
-      // 正解時はテンポよく自動送り (0.65秒)
-      setTimeout(() => {
-        if (this.state.view === 'playing') {
-          this.advanceToNextQuestion();
-        }
-      }, 650);
 
     } else {
       // 不正解
@@ -2045,14 +2079,8 @@ export class WordGameComponent {
         return;
       }
 
+      this.state.lastUserAnswer = userText || '';
       this.renderPlaying();
-
-      // 不正解時はユーザーが正解を確認できるよう待機 (2.0秒)
-      setTimeout(() => {
-        if (this.state.view === 'playing' && this.state.hasAnswered) {
-          this.advanceToNextQuestion();
-        }
-      }, 2000);
     }
   }
 

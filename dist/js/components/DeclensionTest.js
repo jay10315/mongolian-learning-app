@@ -464,13 +464,23 @@ export class DeclensionTestComponent {
     } else {
       const nextBtn = this.container.querySelector('#btn-next-declension');
       if (nextBtn) {
-        nextBtn.focus();
-        nextBtn.addEventListener('click', () => {
+        let allowEnterNext = false;
+        setTimeout(() => {
+          allowEnterNext = true;
+          try { nextBtn.focus(); } catch (_) {}
+        }, 350);
+
+        nextBtn.addEventListener('click', (e) => {
+          if (!allowEnterNext) {
+            e.preventDefault();
+            return;
+          }
           this.goNext();
         });
 
         const keyHandler = (e) => {
           if (e.key === 'Enter') {
+            if (!allowEnterNext) return;
             window.removeEventListener('keydown', keyHandler);
             this.goNext();
           }

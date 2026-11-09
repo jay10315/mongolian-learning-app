@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR, isPronunciationCautionWord, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant, scrollToQuizTop } from '../utils/helpers.js';
+import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, renderChoiceExplanationsHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR, isPronunciationCautionWord, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant, scrollToQuizTop } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
@@ -27,9 +27,18 @@ export class WordTestComponent {
     results: [] // 各問の結果
   };
 
-  static render(container, onNavigate) {
+  static render(container, onNavigate, options = null) {
     this.container = container;
     this.onNavigate = onNavigate;
+
+    if (options && options.filter) {
+      this.state.settings.filter = options.filter;
+      if (options.count) this.state.settings.count = options.count;
+      if (options.autoStart) {
+        this.startTest();
+        return;
+      }
+    }
 
     if (this.state.view === 'settings') {
       this.renderSettings();
@@ -225,7 +234,12 @@ export class WordTestComponent {
       if (this.state.settings.filter === 'srs_due') {
         list = list.filter(v => v.srsLevel > 0 && v.isDue);
       } else if (this.state.settings.filter === 'high_risk') {
-        list = list.filter(v => v.srsLevel > 0 && v.forgettingRisk >= 60);
+        let highRisk = StorageService.getHighRiskWords();
+        if (highRisk.length === 0) {
+          highRisk = [...StorageService.getVocabulary()].filter(v => (v.wrongCount || 0) > 0 || (v.retention !== undefined && v.retention < 80)).slice(0, 20);
+        }
+        const highRiskIds = new Set(highRisk.map(w => w.id));
+        list = list.filter(v => highRiskIds.has(v.id) || (v.srsLevel > 0 && v.forgettingRisk >= 60));
       } else if (this.state.settings.filter === 'mistakes_only') {
         const mistakeList = StorageService.getActiveMistakes();
         const mistakeKeys = new Set();
@@ -419,7 +433,7 @@ export class WordTestComponent {
               <div class="grid grid-cols-1 gap-2">
                 ${this.state.choices.map((choice, i) => `
                   <button type="button" class="btn-choice text-left p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40 text-slate-800 font-semibold text-sm transition-all active:scale-98 flex items-center justify-between" data-choice-id="${choice.id}">
-                    <span><span class="inline-block w-6 text-slate-400 font-normal">${i + 1}.</span> ${choice.japanese}</span>
+                    <span><span class="inline-block w-6 text-slate-400 font-normal">${i + 1}.</span> ${(this.state.settings.mode === 'choice_4' && this.state.settings.choiceDirection === 'ja_to_mn') ? (choice.dictForm || choice.mongolian) : choice.japanese}</span>
                     <span class="text-xs text-slate-400">選択</span>
                   </button>
                 `).join('')}
@@ -574,7 +588,8 @@ export class WordTestComponent {
           btn.addEventListener('click', () => {
             const chosenId = btn.getAttribute('data-choice-id');
             const chosen = this.state.choices.find(c => c.id === chosenId);
-            this.submitAnswer(chosen.japanese, chosen.id === this.state.currentQuestion.id);
+            const chosenText = (this.state.settings.choiceDirection === 'ja_to_mn') ? (chosen.dictForm || chosen.mongolian) : chosen.japanese;
+            this.submitAnswer(chosenText, chosen.id === this.state.currentQuestion.id);
           });
         });
       } else {
@@ -610,17 +625,26 @@ export class WordTestComponent {
         });
       }
     } else {
-      // 回答後: 次の問題へ
+      // 回答後: 次の問題へ（回答直後のEnterキーバブリングによる誤スキップを確実に防止）
       const nextBtn = this.container.querySelector('#btn-next-question');
       if (nextBtn) {
-        nextBtn.focus();
-        nextBtn.addEventListener('click', () => {
+        let allowEnterNext = false;
+        setTimeout(() => {
+          allowEnterNext = true;
+          try { nextBtn.focus(); } catch (_) {}
+        }, 350);
+
+        nextBtn.addEventListener('click', (e) => {
+          if (!allowEnterNext) {
+            e.preventDefault();
+            return;
+          }
           this.goNext();
         });
 
-        // Enterキーで次へ
         const keyHandler = (e) => {
           if (e.key === 'Enter') {
+            if (!allowEnterNext) return;
             window.removeEventListener('keydown', keyHandler);
             this.goNext();
           }

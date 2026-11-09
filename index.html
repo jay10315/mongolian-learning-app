@@ -118632,11 +118632,11 @@ class Navbar {
     });
   }
 
-  static setTab(tab) {
+  static setTab(tab, options = null) {
     this.currentTab = tab;
     this.render();
     if (this.onTabChange) {
-      this.onTabChange(tab);
+      this.onTabChange(tab, options);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -120519,19 +120519,19 @@ class HomeComponent {
       });
     });
 
-    // 忘却曲線復習ボタン
+    // 忘却曲線復習ボタン（該当単語を直接全問特訓開始）
     const srsBtn = container.querySelector('#btn-start-srs-review');
     if (srsBtn && dueWords.length > 0) {
       srsBtn.addEventListener('click', () => {
-        if (onNavigate) onNavigate('word_test');
+        if (onNavigate) onNavigate('word_test', { filter: 'srs_due', autoStart: true, count: 'all' });
       });
     }
 
-    // 高リスク復習ボタン
+    // 高リスク復習ボタン（高忘却リスク単語を直接全問特訓開始）
     const riskBtn = container.querySelector('#btn-start-high-risk-review');
     if (riskBtn && highRiskWords.length > 0) {
       riskBtn.addEventListener('click', () => {
-        if (onNavigate) onNavigate('word_test');
+        if (onNavigate) onNavigate('word_test', { filter: 'high_risk', autoStart: true, count: 'all' });
       });
     }
 
@@ -121956,19 +121956,40 @@ class WordGameComponent {
             </div>
           `}
 
-          <!-- 不正解時の即時フィードバックバナー -->
-          ${this.state.hasAnswered && !this.state.isCorrect ? `
-            <div class="p-4 bg-rose-50 border border-rose-200 rounded-2xl animate-fade-in flex items-center justify-between gap-3 text-xs">
-              <div class="space-y-0.5">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-black text-rose-800">❌ 正解:</span>
-                  <span class="font-black text-rose-950 text-base ${genre !== 'ja_meaning' ? 'cyrillic-text' : ''}">${this.getCorrectAnswerDisplay(genre, q, details)}</span>
-                </div>
-                ${this.getWrongExplanationHtml(genre, q, details)}
+          <!-- 回答後フィードバック・解説カード（正解・不正解問わず全問必ず完全表示） -->
+          ${this.state.hasAnswered ? `
+            <div class="p-4 sm:p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50/95 border-emerald-300 text-emerald-950' : 'bg-rose-50/95 border-rose-300 text-rose-950'} shadow-md space-y-3 animate-fade-in text-left">
+              <div class="flex items-center justify-between gap-2 border-b ${this.state.isCorrect ? 'border-emerald-200' : 'border-rose-200'} pb-2">
+                <span class="text-base sm:text-lg font-black flex items-center gap-1.5">
+                  <span>${this.state.isCorrect ? '⭕ 正解！ амжилттай!' : '❌ 不正解・要復習'}</span>
+                </span>
+                <button type="button" id="btn-next-question-fast" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black rounded-xl shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1 shrink-0">
+                  <span>次の問題へ (Enter)</span>
+                  <span>→</span>
+                </button>
               </div>
-              <button type="button" id="btn-next-question-fast" class="px-4 py-2.5 bg-rose-600 text-white font-black rounded-xl shrink-0 shadow-2xs hover:bg-rose-700 transition-all">
-                次へ →
-              </button>
+
+              ${genre === 'grammar' ? `
+                <div class="text-xs space-y-1.5 bg-white/90 p-3 rounded-xl border border-slate-200">
+                  <div class="font-bold text-slate-800">問題: ${q.question}</div>
+                  <div class="text-emerald-800 font-extrabold text-sm cyrillic-text">正解: ${q.answer}</div>
+                  ${q.explanation ? `<div class="text-slate-600 mt-1">💡 ${q.explanation}</div>` : ''}
+                </div>
+              ` : renderGrammarExplanationHTML({
+                correctAnswer: this.getCorrectAnswerDisplay(genre, q, details),
+                userAnswer: this.state.lastUserAnswer || '',
+                isCorrect: this.state.isCorrect,
+                item: q,
+                pronunciation: q.pronunciation,
+                grammarExplanation: q.note || q.hint || q.explanation,
+                isVerbQuestion: details ? details.isVerb : false
+              })}
+
+              <!-- 4択の場合：選択肢全解説 -->
+              ${(typeof renderChoiceExplanationsHTML === 'function' && this.state.choices && this.state.choices.length > 0) ? renderChoiceExplanationsHTML(this.state.choices, {
+                expectedAnswer: this.getCorrectAnswerDisplay(genre, q, details),
+                userAnswer: this.state.lastUserAnswer || ''
+              }) : ''}
             </div>
           ` : ''}
 
@@ -122362,12 +122383,31 @@ class WordGameComponent {
       }
     }
 
-    // 即時次へボタン（不正解時）
+    // 次の問題へボタン（正解・不正解問わず全問解説確認後に進む）
     const nextFastBtn = this.container.querySelector('#btn-next-question-fast');
     if (nextFastBtn) {
-      nextFastBtn.addEventListener('click', () => {
+      let allowGameNext = false;
+      setTimeout(() => {
+        allowGameNext = true;
+        try { nextFastBtn.focus(); } catch (_) {}
+      }, 350);
+
+      nextFastBtn.addEventListener('click', (e) => {
+        if (!allowGameNext) {
+          e.preventDefault();
+          return;
+        }
         this.advanceToNextQuestion();
       });
+
+      const gameEnterHandler = (e) => {
+        if (e.key === 'Enter') {
+          if (!allowGameNext) return;
+          window.removeEventListener('keydown', gameEnterHandler);
+          nextFastBtn.click();
+        }
+      };
+      window.addEventListener('keydown', gameEnterHandler);
     }
   }
 
@@ -122567,14 +122607,8 @@ class WordGameComponent {
         }
       } catch (_) {}
 
+      this.state.lastUserAnswer = userText || correctDisplay;
       this.renderPlaying();
-
-      // 正解時はテンポよく自動送り (0.65秒)
-      setTimeout(() => {
-        if (this.state.view === 'playing') {
-          this.advanceToNextQuestion();
-        }
-      }, 650);
 
     } else {
       // 不正解
@@ -122651,14 +122685,8 @@ class WordGameComponent {
         return;
       }
 
+      this.state.lastUserAnswer = userText || '';
       this.renderPlaying();
-
-      // 不正解時はユーザーが正解を確認できるよう待機 (2.0秒)
-      setTimeout(() => {
-        if (this.state.view === 'playing' && this.state.hasAnswered) {
-          this.advanceToNextQuestion();
-        }
-      }, 2000);
     }
   }
 
@@ -123200,9 +123228,18 @@ class WordTestComponent {
     results: [] // 各問の結果
   };
 
-  static render(container, onNavigate) {
+  static render(container, onNavigate, options = null) {
     this.container = container;
     this.onNavigate = onNavigate;
+
+    if (options && options.filter) {
+      this.state.settings.filter = options.filter;
+      if (options.count) this.state.settings.count = options.count;
+      if (options.autoStart) {
+        this.startTest();
+        return;
+      }
+    }
 
     if (this.state.view === 'settings') {
       this.renderSettings();
@@ -123398,7 +123435,12 @@ class WordTestComponent {
       if (this.state.settings.filter === 'srs_due') {
         list = list.filter(v => v.srsLevel > 0 && v.isDue);
       } else if (this.state.settings.filter === 'high_risk') {
-        list = list.filter(v => v.srsLevel > 0 && v.forgettingRisk >= 60);
+        let highRisk = StorageService.getHighRiskWords();
+        if (highRisk.length === 0) {
+          highRisk = [...StorageService.getVocabulary()].filter(v => (v.wrongCount || 0) > 0 || (v.retention !== undefined && v.retention < 80)).slice(0, 20);
+        }
+        const highRiskIds = new Set(highRisk.map(w => w.id));
+        list = list.filter(v => highRiskIds.has(v.id) || (v.srsLevel > 0 && v.forgettingRisk >= 60));
       } else if (this.state.settings.filter === 'mistakes_only') {
         const mistakeList = StorageService.getActiveMistakes();
         const mistakeKeys = new Set();
@@ -123592,7 +123634,7 @@ class WordTestComponent {
               <div class="grid grid-cols-1 gap-2">
                 ${this.state.choices.map((choice, i) => `
                   <button type="button" class="btn-choice text-left p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40 text-slate-800 font-semibold text-sm transition-all active:scale-98 flex items-center justify-between" data-choice-id="${choice.id}">
-                    <span><span class="inline-block w-6 text-slate-400 font-normal">${i + 1}.</span> ${choice.japanese}</span>
+                    <span><span class="inline-block w-6 text-slate-400 font-normal">${i + 1}.</span> ${(this.state.settings.mode === 'choice_4' && this.state.settings.choiceDirection === 'ja_to_mn') ? (choice.dictForm || choice.mongolian) : choice.japanese}</span>
                     <span class="text-xs text-slate-400">選択</span>
                   </button>
                 `).join('')}
@@ -123747,7 +123789,8 @@ class WordTestComponent {
           btn.addEventListener('click', () => {
             const chosenId = btn.getAttribute('data-choice-id');
             const chosen = this.state.choices.find(c => c.id === chosenId);
-            this.submitAnswer(chosen.japanese, chosen.id === this.state.currentQuestion.id);
+            const chosenText = (this.state.settings.choiceDirection === 'ja_to_mn') ? (chosen.dictForm || chosen.mongolian) : chosen.japanese;
+            this.submitAnswer(chosenText, chosen.id === this.state.currentQuestion.id);
           });
         });
       } else {
@@ -123783,17 +123826,26 @@ class WordTestComponent {
         });
       }
     } else {
-      // 回答後: 次の問題へ
+      // 回答後: 次の問題へ（回答直後のEnterキーバブリングによる誤スキップを確実に防止）
       const nextBtn = this.container.querySelector('#btn-next-question');
       if (nextBtn) {
-        nextBtn.focus();
-        nextBtn.addEventListener('click', () => {
+        let allowEnterNext = false;
+        setTimeout(() => {
+          allowEnterNext = true;
+          try { nextBtn.focus(); } catch (_) {}
+        }, 350);
+
+        nextBtn.addEventListener('click', (e) => {
+          if (!allowEnterNext) {
+            e.preventDefault();
+            return;
+          }
           this.goNext();
         });
 
-        // Enterキーで次へ
         const keyHandler = (e) => {
           if (e.key === 'Enter') {
+            if (!allowEnterNext) return;
             window.removeEventListener('keydown', keyHandler);
             this.goNext();
           }
@@ -124099,9 +124151,18 @@ class JapaneseTestComponent {
     results: []
   };
 
-  static render(container, onNavigate) {
+  static render(container, onNavigate, options = null) {
     this.container = container;
     this.onNavigate = onNavigate;
+
+    if (options && options.filter) {
+      this.state.settings.filter = options.filter;
+      if (options.count) this.state.settings.count = options.count;
+      if (options.autoStart) {
+        this.startTest();
+        return;
+      }
+    }
 
     if (this.state.view === 'settings') {
       this.renderSettings();
@@ -124570,13 +124631,23 @@ class JapaneseTestComponent {
     } else {
       const nextBtn = this.container.querySelector('#btn-next-ja-question');
       if (nextBtn) {
-        nextBtn.focus();
-        nextBtn.addEventListener('click', () => {
+        let allowEnterNext = false;
+        setTimeout(() => {
+          allowEnterNext = true;
+          try { nextBtn.focus(); } catch (_) {}
+        }, 350);
+
+        nextBtn.addEventListener('click', (e) => {
+          if (!allowEnterNext) {
+            e.preventDefault();
+            return;
+          }
           this.goNext();
         });
 
         const keyHandler = (e) => {
           if (e.key === 'Enter') {
+            if (!allowEnterNext) return;
             window.removeEventListener('keydown', keyHandler);
             this.goNext();
           }
@@ -125360,16 +125431,26 @@ class GrammarTestComponent {
         }
       }
     } else {
-      // 回答後
+      // 回答後（Enterキー誤爆スキップ防止）
       const nextBtn = this.container.querySelector('#btn-next-grammar');
       if (nextBtn) {
-        nextBtn.focus();
-        nextBtn.addEventListener('click', () => {
+        let allowEnterNext = false;
+        setTimeout(() => {
+          allowEnterNext = true;
+          try { nextBtn.focus(); } catch (_) {}
+        }, 350);
+
+        nextBtn.addEventListener('click', (e) => {
+          if (!allowEnterNext) {
+            e.preventDefault();
+            return;
+          }
           this.goNext();
         });
 
         const keyHandler = (e) => {
           if (e.key === 'Enter') {
+            if (!allowEnterNext) return;
             window.removeEventListener('keydown', keyHandler);
             this.goNext();
           }
@@ -126102,13 +126183,23 @@ class DeclensionTestComponent {
     } else {
       const nextBtn = this.container.querySelector('#btn-next-declension');
       if (nextBtn) {
-        nextBtn.focus();
-        nextBtn.addEventListener('click', () => {
+        let allowEnterNext = false;
+        setTimeout(() => {
+          allowEnterNext = true;
+          try { nextBtn.focus(); } catch (_) {}
+        }, 350);
+
+        nextBtn.addEventListener('click', (e) => {
+          if (!allowEnterNext) {
+            e.preventDefault();
+            return;
+          }
           this.goNext();
         });
 
         const keyHandler = (e) => {
           if (e.key === 'Enter') {
+            if (!allowEnterNext) return;
             window.removeEventListener('keydown', keyHandler);
             this.goNext();
           }
@@ -142364,21 +142455,45 @@ class ReviewNotebookComponent {
       rawLookup: w
     }));
 
-    // 3. 忘却曲線で振り返るべき単語 (SRS復習期日)
-    const dueWords = StorageService.getDueReviewWords().map(w => ({
+    // 3. 忘却曲線で振り返るべき単語 (SRS復習期日 & 高忘却リスク単語)
+    const dueSet = new Set();
+    const rawDueWords = StorageService.getDueReviewWords();
+    const rawHighRiskWords = StorageService.getHighRiskWords();
+    const combinedSrsWords = [];
+
+    rawDueWords.forEach(w => {
+      dueSet.add(w.id);
+      combinedSrsWords.push({
+        ...w,
+        _label: '要復習(SRS期日)'
+      });
+    });
+
+    rawHighRiskWords.forEach(w => {
+      if (!dueSet.has(w.id)) {
+        dueSet.add(w.id);
+        combinedSrsWords.push({
+          ...w,
+          _label: '忘却リスク高'
+        });
+      }
+    });
+
+    const dueWords = combinedSrsWords.map(w => ({
       id: `due_${w.id}`,
+      srsWordId: w.id,
       sourceType: 'due_review',
       type: 'due_review',
       category: '要復習(SRS)',
-      sourceLabel: '要復習(SRS)',
-      question: `【要復習】${w.japanese}`,
+      sourceLabel: w._label || '要復習(SRS)',
+      question: `【${w._label || '要復習'}】${w.japanese}`,
       correctAnswer: w.dictForm || w.mongolian,
       userAnswer: '',
-      explanation: `${w.mongolian} = ${w.japanese}（SRSレベル: ${w.srsLevel || 0} / 保持率: ${w.retention || 0}%）`,
+      explanation: `${w.mongolian} = ${w.japanese}（SRSレベル: ${w.srsLevel || 0} / 忘却リスク: ${w.forgettingRisk || 0}%）`,
       wrongCount: w.wrongCount || 1,
-      lastWrongDate: w.nextReviewDate || new Date().toISOString(),
+      lastWrongDate: w.lastReviewed || new Date().toISOString(),
       resolved: false,
-      srsWordId: w.id
+      retention: w.retention
     }));
 
     return { mistakes, lookedUp, dueWords, all: [...mistakes, ...lookedUp, ...dueWords] };
@@ -143181,8 +143296,17 @@ class ReviewNotebookComponent {
     } else {
       const nextBtn = this.container.querySelector('#btn-next-review-item');
       if (nextBtn) {
-        nextBtn.focus();
-        nextBtn.addEventListener('click', () => {
+        let allowEnterNext = false;
+        setTimeout(() => {
+          allowEnterNext = true;
+          try { nextBtn.focus(); } catch (_) {}
+        }, 350);
+
+        nextBtn.addEventListener('click', (e) => {
+          if (!allowEnterNext) {
+            e.preventDefault();
+            return;
+          }
           scrollToQuizTop(this.container);
           if (this.state.testIndex + 1 < this.state.testList.length) {
             this.loadReviewQuestion(this.state.testIndex + 1);
@@ -143191,6 +143315,15 @@ class ReviewNotebookComponent {
             this.renderReviewResult();
           }
         });
+
+        const keyHandler = (e) => {
+          if (e.key === 'Enter') {
+            if (!allowEnterNext) return;
+            window.removeEventListener('keydown', keyHandler);
+            nextBtn.click();
+          }
+        };
+        window.addEventListener('keydown', keyHandler);
       }
     }
   }
@@ -145792,8 +145925,8 @@ class App {
     CyrillicKeyboard.init();
 
     // 4. ナビゲーションバー初期化
-    Navbar.init(this.currentTab, (tab) => {
-      this.navigate(tab);
+    Navbar.init(this.currentTab, (tab, options = null) => {
+      this.navigate(tab, options);
     });
 
     // 5. 初期タブの描画
@@ -145803,8 +145936,9 @@ class App {
     this.registerServiceWorker();
   }
 
-  static navigate(tab) {
+  static navigate(tab, options = null) {
     this.currentTab = tab;
+    this.tabOptions = options;
     this.renderCurrentView();
   }
 
@@ -145814,8 +145948,8 @@ class App {
 
     mainContainer.innerHTML = '';
 
-    const onNavigate = (tab) => {
-      Navbar.setTab(tab);
+    const onNavigate = (tab, options = null) => {
+      Navbar.setTab(tab, options);
     };
 
     switch (this.currentTab) {
@@ -145853,10 +145987,10 @@ class App {
         WordGameComponent.render(mainContainer, onNavigate);
         break;
       case 'word_test':
-        WordTestComponent.render(mainContainer, onNavigate);
+        WordTestComponent.render(mainContainer, onNavigate, this.tabOptions);
         break;
       case 'japanese_test':
-        JapaneseTestComponent.render(mainContainer, onNavigate);
+        JapaneseTestComponent.render(mainContainer, onNavigate, this.tabOptions);
         break;
       case 'grammar_test':
         GrammarTestComponent.render(mainContainer, onNavigate);

@@ -1,7 +1,7 @@
 // 日本語訳専用テストコンポーネント（モンゴル語 → 日本語 記述・4択テスト）
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
-import { isWordAnswerMatch, getWordGrammarDetails, renderGrammarExplanationHTML, shuffleArray, SoundEffects, isPronunciationCautionWord, scrollToQuizTop } from '../utils/helpers.js';
+import { isWordAnswerMatch, getWordGrammarDetails, renderGrammarExplanationHTML, renderChoiceExplanationsHTML, shuffleArray, SoundEffects, isPronunciationCautionWord, scrollToQuizTop } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
@@ -25,9 +25,18 @@ export class JapaneseTestComponent {
     results: []
   };
 
-  static render(container, onNavigate) {
+  static render(container, onNavigate, options = null) {
     this.container = container;
     this.onNavigate = onNavigate;
+
+    if (options && options.filter) {
+      this.state.settings.filter = options.filter;
+      if (options.count) this.state.settings.count = options.count;
+      if (options.autoStart) {
+        this.startTest();
+        return;
+      }
+    }
 
     if (this.state.view === 'settings') {
       this.renderSettings();
@@ -496,13 +505,23 @@ export class JapaneseTestComponent {
     } else {
       const nextBtn = this.container.querySelector('#btn-next-ja-question');
       if (nextBtn) {
-        nextBtn.focus();
-        nextBtn.addEventListener('click', () => {
+        let allowEnterNext = false;
+        setTimeout(() => {
+          allowEnterNext = true;
+          try { nextBtn.focus(); } catch (_) {}
+        }, 350);
+
+        nextBtn.addEventListener('click', (e) => {
+          if (!allowEnterNext) {
+            e.preventDefault();
+            return;
+          }
           this.goNext();
         });
 
         const keyHandler = (e) => {
           if (e.key === 'Enter') {
+            if (!allowEnterNext) return;
             window.removeEventListener('keydown', keyHandler);
             this.goNext();
           }
