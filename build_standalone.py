@@ -121,7 +121,7 @@ html_template = f"""<!DOCTYPE html>
         var d = document.createElement('div');
         d.id = 'mobile-debug-alert';
         d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#fee2e2;color:#991b1b;padding:10px 14px;font-size:12px;z-index:999999;border-top:2px solid #ef4444;font-family:sans-serif;word-break:break-all;display:flex;align-items:center;justify-content:space-between;box-shadow:0 -4px 12px rgba(0,0,0,0.15);';
-        d.innerHTML = '<span style="flex:1;margin-right:8px;"><strong>⚠️ エラー検知:</strong> ' + String(msg).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span><button onclick="this.parentElement.remove()" style="background:#ef4444;color:white;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11px;font-weight:bold;white-space:nowrap;">✕ 閉じる</button>';
+        d.innerHTML = '<span style="flex:1;margin-right:8px;"><strong>⚠️ エラー検知:</strong> ' + String(msg).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span><button onclick="if(window.caches){{caches.keys().then(function(k){{return Promise.all(k.map(function(n){{return caches.delete(n);}}));}}).then(function(){{location.reload(true);}});}}else{{location.reload(true);}}" style="background:#059669;color:white;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11px;font-weight:bold;margin-right:6px;white-space:nowrap;">🔄 最新版に更新</button><button onclick="this.parentElement.remove()" style="background:#ef4444;color:white;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11px;font-weight:bold;white-space:nowrap;">✕ 閉じる</button>';
         document.body.appendChild(d);
       }}
     }});
@@ -134,9 +134,17 @@ html_template = f"""<!DOCTYPE html>
         window.location.hostname === '127.0.0.1'
       );
       if (isSecureEnv && 'serviceWorker' in navigator) {{
+        var refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', function() {{
+          if (!refreshing) {{
+            refreshing = true;
+            window.location.reload();
+          }}
+        }});
         window.addEventListener('load', function() {{
           navigator.serviceWorker.register('./sw.js').then(function(reg) {{
             console.log('[PWA] ServiceWorker registered:', reg.scope);
+            try {{ reg.update(); }} catch (_) {{}}
           }}).catch(function(err) {{
             console.warn('[PWA] ServiceWorker registration warning:', err);
           }});

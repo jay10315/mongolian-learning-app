@@ -113,11 +113,11 @@ tests_passed += 1
 # Test 10: Service Worker cache is v11
 with open('sw.js', 'r', encoding='utf-8') as f:
     sw_text = f.read()
-assert 'mongol-app-cache-v15' in sw_text
+assert 'mongol-app-cache-v16' in sw_text
 with open('dist/sw.js', 'r', encoding='utf-8') as f:
     dsw_text = f.read()
-assert 'mongol-app-cache-v15' in dsw_text
-print("Test 10 PASS: Service Worker cache bumped to v15.")
+assert 'mongol-app-cache-v16' in dsw_text
+print("Test 10 PASS: Service Worker cache bumped to v16.")
 tests_passed += 1
 
 print(f"\n==========================================")

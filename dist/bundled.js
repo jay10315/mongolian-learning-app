@@ -116012,9 +116012,9 @@ class LaterWordsComponent {
                   <option value="retaining" ${this.selectedStatus === 'retaining' ? 'selected' : ''}>定着中 (Lv3-5)</option>
                   <option value="mastered" ${this.selectedStatus === 'mastered' ? 'selected' : ''}>習得済 (Lv6+)</option>
                 ` : `
-                  <option value="all" ${this.selectedStatus === 'all' ? 'selected' : ''}>状態: すべて</option>
-                  <option value="unadded" ${this.selectedStatus === 'unadded' ? 'selected' : ''}>未追加のみ</option>
-                  <option value="added" ${this.selectedStatus === 'added' ? 'selected' : ''}>追加済みのみ</option>
+                  <option value="all" ${this.selectedStatus === 'all' ? 'selected' : ''}>分類: すべて</option>
+                  <option value="unlisted" ${this.selectedStatus === 'unlisted' ? 'selected' : ''}>教材未登場のみ</option>
+                  <option value="demoted" ${this.selectedStatus === 'demoted' ? 'selected' : ''}>今覚えるから移動のみ</option>
                 `}
               </select>
             </div>
@@ -116122,8 +116122,8 @@ class LaterWordsComponent {
     if (isActiveMode) {
       words = StorageService.getActiveWords ? StorageService.getActiveWords() : StorageService.getVocabulary();
     } else {
-      const includeAdded = (this.selectedStatus === 'all' || this.selectedStatus === 'added');
-      words = StorageService.getLaterWords ? StorageService.getLaterWords({ includeAdded }) : [];
+      // あとで覚える単語は「今覚える単語」に追加されたらこの一覧からは即座に消去（完全分離）
+      words = StorageService.getLaterWords ? StorageService.getLaterWords() : [];
     }
 
     // 1. 検索フィルター
@@ -116159,8 +116159,9 @@ class LaterWordsComponent {
         else if (this.selectedStatus === 'retaining') words = words.filter(w => (w.srsLevel || 0) >= 3 && (w.srsLevel || 0) <= 5);
         else if (this.selectedStatus === 'mastered') words = words.filter(w => (w.srsLevel || 0) >= 6);
       } else {
-        if (this.selectedStatus === 'added') words = words.filter(w => w.isAddedToLearning);
-        else if (this.selectedStatus === 'unadded') words = words.filter(w => !w.isAddedToLearning);
+        if (this.selectedStatus === 'demoted') words = words.filter(w => w.isDemotedToLater);
+        else if (this.selectedStatus === 'unlisted') words = words.filter(w => !w.isDemotedToLater && w.textbookStatus === 'later');
+        else if (this.selectedStatus === 'unadded') words = words.filter(w => !w.isActiveLearning);
       }
     }
 
@@ -116181,8 +116182,8 @@ class LaterWordsComponent {
 
     if (countLabel) {
       const totalTarget = isActiveMode 
-        ? StorageService.getActiveWords().length 
-        : (this.selectedStatus === 'added' ? StorageService.getPromotedLaterWords().length : (this.selectedStatus === 'unadded' ? StorageService.getLaterWords().length : StorageService.getLaterWords({ includeAdded: true }).length));
+        ? (StorageService.getActiveWords ? StorageService.getActiveWords().length : 0) 
+        : (StorageService.getLaterWords ? StorageService.getLaterWords().length : 0);
       countLabel.textContent = `表示中: ${words.length}件 / 全${totalTarget}件`;
     }
 
@@ -116307,24 +116308,14 @@ class LaterWordsComponent {
                 <span>⏳</span>
                 <span>後で覚える単語に移動</span>
               </button>
-            ` : (isAdded ? `
-              <!-- 追加済み状態 -->
-              <div class="flex items-center gap-2">
-                <button type="button" class="btn-toggle-add flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer" data-id="${w.id}" data-action="remove">
-                  <span>✓</span>
-                  <span>追加済み（ゲーム出題中）</span>
-                </button>
-                <button type="button" class="btn-toggle-add py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800 font-bold text-xs transition-all cursor-pointer" data-id="${w.id}" data-action="remove" title="ゲーム出題から除外">
-                  <span>✕ 削除</span>
-                </button>
-              </div>
             ` : `
-              <!-- 覚える単語に追加 -->
+              <!-- 覚える単語に追加（押すと今覚える単語へ移動し、この一覧からは即座に消去） -->
               <button type="button" class="btn-toggle-add w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-98 cursor-pointer" data-id="${w.id}" data-action="add">
                 <span>＋</span>
                 <span>覚える単語に追加</span>
               </button>
-            `)}
+              <!-- 追加済み（ゲーム出題中）の場合は「今覚える単語」へ即座に移動します。移動後は「今覚える単語」からいつでも✕ 削除・後で覚えるへ戻せます -->
+            `}
           </div>
 
         </div>
