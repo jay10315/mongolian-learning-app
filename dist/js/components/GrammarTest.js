@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, renderChoiceExplanationsHTML, shuffleArray, SoundEffects } from '../utils/helpers.js';
+import { isFuzzyMatch, renderChoiceExplanationsHTML, shuffleArray, SoundEffects, scrollToQuizTop } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
@@ -185,6 +185,7 @@ export class GrammarTestComponent {
   static loadQuiz(index) {
     this.state.currentIndex = index;
     const q = this.state.quizzes[index];
+    scrollToQuizTop(this.container);
     this.state.currentQuiz = q;
     this.state.userAnswer = '';
     this.state.hasAnswered = false;
@@ -565,6 +566,8 @@ export class GrammarTestComponent {
 
     if (isCorrect) {
       SoundEffects.playCorrect();
+      // 正解時に間違いノートの文法問題を克服済みにする（間違えた単語・問題から消去）
+      StorageService.resolveMistakeByQuestion(q.question, q.answer);
     } else {
       SoundEffects.playWrong();
       StorageService.recordMistake({
@@ -593,6 +596,7 @@ export class GrammarTestComponent {
   }
 
   static goNext() {
+    scrollToQuizTop(this.container);
     if (this.state.currentIndex + 1 < this.state.quizzes.length) {
       this.loadQuiz(this.state.currentIndex + 1);
     } else {

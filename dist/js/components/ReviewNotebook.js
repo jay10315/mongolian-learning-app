@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR } from '../utils/helpers.js';
+import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, scrollToQuizTop } from '../utils/helpers.js';
 
 export class ReviewNotebookComponent {
   static state = {
@@ -205,10 +205,17 @@ export class ReviewNotebookComponent {
             `).join('')}
           </div>
 
-          <label class="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer select-none shrink-0">
-            <input type="checkbox" id="check-show-resolved" ${this.state.showResolved ? 'checked' : ''} class="rounded text-emerald-600 focus:ring-0">
-            <span>克服済みも表示</span>
-          </label>
+          <div class="flex items-center gap-2 shrink-0">
+            <label class="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer select-none">
+              <input type="checkbox" id="check-show-resolved" ${this.state.showResolved ? 'checked' : ''} class="rounded text-emerald-600 focus:ring-0">
+              <span>克服済みも表示</span>
+            </label>
+            ${totalResolved > 0 ? `
+              <button type="button" id="btn-clear-resolved" class="text-[11px] px-2.5 py-1 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-600 font-semibold cursor-pointer transition-all flex items-center gap-1">
+                <span>🗑️</span> 覚えた項目を一括整理
+              </button>
+            ` : ''}
+          </div>
         </div>
 
         <!-- 復習ノート一覧カード -->
@@ -253,7 +260,7 @@ export class ReviewNotebookComponent {
                     <button type="button" class="btn-toggle-resolve text-[11px] px-2 py-0.5 rounded border ${
                       m.resolved ? 'bg-slate-100 text-slate-600 border-slate-300' : 'bg-emerald-50 text-emerald-700 border-emerald-300 font-bold'
                     }" data-id="${m.id}" data-source="${m.sourceType || 'mistake'}" data-srs-id="${m.srsWordId || ''}" data-resolved="${m.resolved}">
-                      ${m.resolved ? '未克服に戻す' : '✓ 克服済みにする'}
+                      ${m.resolved ? '未克服に戻す' : '✓ 覚えた（間違えた単語から消す）'}
                     </button>
                     <button type="button" class="btn-delete-mistake text-slate-300 hover:text-rose-500 text-xs px-1 cursor-pointer" data-id="${m.id}" data-source="${m.sourceType || 'mistake'}" title="削除">
                       ✕
@@ -332,6 +339,16 @@ export class ReviewNotebookComponent {
       checkResolved.addEventListener('change', (e) => {
         this.state.showResolved = e.target.checked;
         this.renderNotebook();
+      });
+    }
+
+    const clearResolvedBtn = this.container.querySelector('#btn-clear-resolved');
+    if (clearResolvedBtn) {
+      clearResolvedBtn.addEventListener('click', () => {
+        if (confirm('覚えた（克服済み）項目を一覧から完全に整理・消去しますか？\n（未克服の間違えた問題はそのまま残ります）')) {
+          StorageService.clearResolvedMistakes();
+          this.renderNotebook();
+        }
       });
     }
 
@@ -660,6 +677,7 @@ export class ReviewNotebookComponent {
     this.state.hasAnswered = false;
     this.state.isCorrect = false;
     this.renderReviewTesting();
+    scrollToQuizTop(this.container);
   }
 
   static renderReviewTesting() {
@@ -862,6 +880,7 @@ export class ReviewNotebookComponent {
       if (nextBtn) {
         nextBtn.focus();
         nextBtn.addEventListener('click', () => {
+          scrollToQuizTop(this.container);
           if (this.state.testIndex + 1 < this.state.testList.length) {
             this.loadReviewQuestion(this.state.testIndex + 1);
           } else {
@@ -961,7 +980,11 @@ export class ReviewNotebookComponent {
       // 対応する単語のSRS進捗も向上（マスター・得意化）
       if (matchedWord) {
         StorageService.recordWordAnswer(matchedWord.id, true);
+        StorageService.resolveMistakesForWord(matchedWord.id, matchedWord);
+      } else if (item.wordId) {
+        StorageService.resolveMistakesForWord(item.wordId);
       }
+      StorageService.resolveMistakeByQuestion(item.question, item.correctAnswer);
     } else {
       SoundEffects.playWrong();
       StorageService.recordMistake({

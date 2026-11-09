@@ -5073,3 +5073,35 @@ export function getSynonymExpressionsCardHTML(keyWord) {
     </div>
   `;
 }
+
+/**
+ * 問題切り替え時に解きやすい位置へ画面を自動スクロール・最適配置するヘルパー
+ * @param {HTMLElement|string|null} targetElement 対象コンテナまたはセレクタ
+ */
+export function scrollToQuizTop(targetElement = null) {
+  try {
+    if (typeof window === 'undefined') return;
+    const scrollFn = () => {
+      let el = targetElement;
+      if (typeof el === 'string') el = document.querySelector(el);
+      if (!el) el = document.getElementById('main-content') || document.querySelector('main');
+      if (el && el.getBoundingClientRect) {
+        const rect = el.getBoundingClientRect();
+        const currentScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        // ナビバーやヘッダーの少し下（約12pxマージン）に問題カードの先頭を美しく合わせる
+        const targetY = Math.max(0, Math.floor(currentScrollY + rect.top - 12));
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+    scrollFn();
+    // DOMレンダリング後の確実な追従スクロール（スマホ・タブレットの仮想キーボードや再描画にも即時対応）
+    setTimeout(scrollFn, 20);
+  } catch (_) {
+    try { window.scrollTo(0, 0); } catch (_) {}
+  }
+}
+if (typeof window !== 'undefined') {
+  window.scrollToQuizTop = scrollToQuizTop;
+}

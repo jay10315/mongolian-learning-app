@@ -3,7 +3,7 @@ import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
-import { SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, isListeningAnswerMatch } from '../utils/helpers.js';
+import { SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, isListeningAnswerMatch, scrollToQuizTop } from '../utils/helpers.js';
 
 export class ListeningTestComponent {
   static container = null;
@@ -330,6 +330,7 @@ export class ListeningTestComponent {
   static loadQuiz(index) {
     this.state.currentIndex = index;
     const q = this.state.quizzes[index];
+    scrollToQuizTop(this.container);
     this.state.currentQuiz = q;
     this.state.hasAnswered = false;
     this.state.userAnswer = '';
@@ -753,6 +754,8 @@ export class ListeningTestComponent {
 
     if (isCorrect) {
       SoundEffects.playCorrect();
+      // 正解時に間違いノートの問題を克服済みにする
+      StorageService.resolveMistakeByQuestion(q.sentence || q.japanese, q.answer);
     } else {
       SoundEffects.playWrong();
       StorageService.recordMistake({
@@ -781,6 +784,7 @@ export class ListeningTestComponent {
 
   static goNext() {
     SpeechService.stop();
+    scrollToQuizTop(this.container);
     if (this.state.currentIndex + 1 < this.state.quizzes.length) {
       this.loadQuiz(this.state.currentIndex + 1);
     } else {

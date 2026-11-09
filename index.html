@@ -5790,6 +5790,38 @@ function getSynonymExpressionsCardHTML(keyWord) {
   `;
 }
 
+/**
+ * 問題切り替え時に解きやすい位置へ画面を自動スクロール・最適配置するヘルパー
+ * @param {HTMLElement|string|null} targetElement 対象コンテナまたはセレクタ
+ */
+function scrollToQuizTop(targetElement = null) {
+  try {
+    if (typeof window === 'undefined') return;
+    const scrollFn = () => {
+      let el = targetElement;
+      if (typeof el === 'string') el = document.querySelector(el);
+      if (!el) el = document.getElementById('main-content') || document.querySelector('main');
+      if (el && el.getBoundingClientRect) {
+        const rect = el.getBoundingClientRect();
+        const currentScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        // ナビバーやヘッダーの少し下（約12pxマージン）に問題カードの先頭を美しく合わせる
+        const targetY = Math.max(0, Math.floor(currentScrollY + rect.top - 12));
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+    scrollFn();
+    // DOMレンダリング後の確実な追従スクロール（スマホ・タブレットの仮想キーボードや再描画にも即時対応）
+    setTimeout(scrollFn, 20);
+  } catch (_) {
+    try { window.scrollTo(0, 0); } catch (_) {}
+  }
+}
+if (typeof window !== 'undefined') {
+  window.scrollToQuizTop = scrollToQuizTop;
+}
+
 
 // === js/utils/qrcode.js ===
 // QR Code Generator in pure JavaScript (Kazuhiko Arase QR Code engine, MIT License)
@@ -111008,7 +111040,13 @@ class StorageService {
   static recordWordAnswer(wordId, isCorrect, difficulty = 'good') {
     const currentProg = this.getWordProgress(wordId);
     const updated = SrsService.processAnswer(currentProg, isCorrect, difficulty);
-    return this.saveWordProgress(updated);
+    const saved = this.saveWordProgress(updated);
+
+    // 正解した場合: 「覚えた」と判定し、該当単語の間違いノート項目を自動で克服済みにする（間違えた単語から消去）
+    if (isCorrect) {
+      this.resolveMistakesForWord(wordId);
+    }
+    return saved;
   }
 
   // --- 単語マスターデータ（SRS進捗をマージして提供） ---
@@ -111752,10 +111790,12 @@ class StorageService {
       list[existingIdx].lastWrongDate = new Date().toISOString();
       list[existingIdx].userAnswer = mistake.userAnswer;
       list[existingIdx].resolved = false;
+      if (mistake.wordId) list[existingIdx].wordId = mistake.wordId;
       itemToSync = list[existingIdx];
     } else {
       itemToSync = {
         id: `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        wordId: mistake.wordId || null,
         ...sanitizedMistake,
         wrongCount: 1,
         lastWrongDate: new Date().toISOString(),
@@ -111775,9 +111815,128 @@ class StorageService {
     const idx = list.findIndex(m => m.id === id);
     if (idx !== -1) {
       list[idx].resolved = isResolved;
+      list[idx].resolvedAt = isResolved ? new Date().toISOString() : null;
+      if (isResolved) {
+        list[idx].consecutiveCorrect = (list[idx].consecutiveCorrect || 0) + 1;
+      }
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
       SyncService.enqueueChange('RECORD_MISTAKE', list[idx]);
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated', { detail: { id, isResolved } }));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+        }
+      } catch (_) {}
     }
+  }
+
+  /**
+   * 正解した単語に対して「覚えた」と判定し、該当する間違いノートの記録を克服済みにする（間違えた単語リストから即座に消去）
+   * @param {string} wordId 単語ID
+   * @param {Object|null} wordObj 単語オブジェクト
+   * @param {boolean} isResolved trueで克服済み
+   */
+  static resolveMistakesForWord(wordId, wordObj = null, isResolved = true) {
+    if (!wordId && !wordObj) return 0;
+    const list = this.getMistakes();
+    if (!list || list.length === 0) return 0;
+
+    let targetObj = wordObj;
+    if (!targetObj && wordId) {
+      try {
+        targetObj = this.getAllVocabulary().find(v => v.id === wordId);
+      } catch (_) {}
+    }
+
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+    const wMn = clean(targetObj?.mongolian);
+    const wDf = clean(targetObj?.dictForm);
+    const wRoot = clean(targetObj?.root);
+    const wJa = clean(targetObj?.japanese);
+
+    let resolvedCount = 0;
+    list.forEach(m => {
+      if (m.resolved === isResolved) return;
+
+      const mWordId = m.wordId || '';
+      const mAns = clean(m.correctAnswer);
+      const mQ = clean(m.question);
+
+      const isMatch = (wordId && mWordId && wordId === mWordId) ||
+        (wMn && (mAns === wMn || mAns.includes(wMn) || mQ.includes(wMn))) ||
+        (wDf && (mAns === wDf || mAns.includes(wDf) || mQ.includes(wDf))) ||
+        (wRoot && mAns === wRoot) ||
+        (wJa && (mAns === wJa || mQ.includes(wJa)));
+
+      if (isMatch) {
+        m.resolved = isResolved;
+        m.resolvedAt = isResolved ? new Date().toISOString() : null;
+        if (isResolved) {
+          m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
+        }
+        resolvedCount++;
+        SyncService.enqueueChange('RECORD_MISTAKE', m);
+      }
+    });
+
+    if (resolvedCount > 0) {
+      localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+        }
+      } catch (_) {}
+    }
+    return resolvedCount;
+  }
+
+  /**
+   * 文法・格変化・その他の問題で正解した際、問題文または正解から間違いを克服済みにする（覚えたと判定）
+   */
+  static resolveMistakeByQuestion(questionText, correctAnswer = '', isResolved = true) {
+    if (!questionText && !correctAnswer) return 0;
+    const list = this.getMistakes();
+    if (!list || list.length === 0) return 0;
+
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+    const cQ = clean(questionText);
+    const cAns = clean(correctAnswer);
+
+    let resolvedCount = 0;
+    list.forEach(m => {
+      if (m.resolved === isResolved) return;
+      const mQ = clean(m.question);
+      const mAns = clean(m.correctAnswer);
+
+      const isMatch = (cQ && (mQ === cQ || mQ.includes(cQ) || cQ.includes(mQ))) &&
+        (!cAns || mAns === cAns || mAns.includes(cAns) || cAns.includes(mAns));
+
+      if (isMatch) {
+        m.resolved = isResolved;
+        m.resolvedAt = isResolved ? new Date().toISOString() : null;
+        if (isResolved) {
+          m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
+        }
+        resolvedCount++;
+        SyncService.enqueueChange('RECORD_MISTAKE', m);
+      }
+    });
+
+    if (resolvedCount > 0) {
+      localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+        }
+      } catch (_) {}
+    }
+    return resolvedCount;
+  }
+
+  static getActiveMistakes() {
+    return this.getMistakes().filter(m => !m.resolved);
   }
 
   static removeMistake(id) {
@@ -121312,6 +121471,7 @@ class WordGameComponent {
       this.state.questionsPool = shuffleArray([...this.state.questionsPool]);
       this.state.currentQuestionIndex = 0;
     }
+    scrollToQuizTop(this.container);
 
     const q = this.state.questionsPool[this.state.currentQuestionIndex];
     this.state.currentQuestion = q;
@@ -122397,6 +122557,16 @@ class WordGameComponent {
         choices: this.state.choices ? [...this.state.choices] : null
       });
 
+      // 正解時に該当単語・問題を「覚えた」と判定して間違いリストから消去
+      try {
+        if (genre === 'grammar') {
+          StorageService.resolveMistakeByQuestion(q.question, correctDisplay);
+        } else {
+          if (q.id) StorageService.recordWordAnswer(q.id, true);
+          StorageService.resolveMistakesForWord(q.id, q);
+        }
+      } catch (_) {}
+
       this.renderPlaying();
 
       // 正解時はテンポよく自動送り (0.65秒)
@@ -122454,6 +122624,7 @@ class WordGameComponent {
         } else {
           const d = getWordGrammarDetails(q);
           StorageService.recordMistake({
+            wordId: q.id || null,
             question: `【単語ゲーム】${d.dictForm || q.mongolian} の意味`,
             userAnswer: userText || '(選択肢の誤答)',
             correctAnswer: correctDisplay,
@@ -123229,9 +123400,19 @@ class WordTestComponent {
       } else if (this.state.settings.filter === 'high_risk') {
         list = list.filter(v => v.srsLevel > 0 && v.forgettingRisk >= 60);
       } else if (this.state.settings.filter === 'mistakes_only') {
-        const mistakeList = StorageService.getMistakes().filter(m => !m.resolved);
-        const mistakeWords = new Set(mistakeList.map(m => m.correctAnswer.toLowerCase()));
-        list = list.filter(v => mistakeWords.has(v.mongolian.toLowerCase()) || mistakeWords.has(v.japanese));
+        const mistakeList = StorageService.getActiveMistakes();
+        const mistakeKeys = new Set();
+        mistakeList.forEach(m => {
+          if (m.wordId) mistakeKeys.add(m.wordId);
+          if (m.correctAnswer) mistakeKeys.add(m.correctAnswer.toLowerCase().trim());
+          if (m.question) mistakeKeys.add(m.question.toLowerCase().trim());
+        });
+        list = list.filter(v => 
+          (v.id && mistakeKeys.has(v.id)) ||
+          mistakeKeys.has(v.mongolian.toLowerCase().trim()) ||
+          mistakeKeys.has((v.dictForm || '').toLowerCase().trim()) ||
+          mistakeKeys.has(v.japanese)
+        );
       } else if (this.state.settings.filter === 'unlearned') {
         list = list.filter(v => v.srsLevel === 0);
       } else if (this.state.settings.filter === 'priority_top') {
@@ -123287,6 +123468,7 @@ class WordTestComponent {
     }
 
     this.renderTesting();
+    scrollToQuizTop(this.container);
   }
 
   // --- 3. テスト実行画面 ---
@@ -123650,6 +123832,8 @@ class WordTestComponent {
     // 効果音
     if (isCorrect) {
       SoundEffects.playCorrect();
+      // 正解時は該当単語の間違いノート項目を即座に克服済みにし、「間違えた単語」リストから自動消去
+      StorageService.resolveMistakesForWord(q.id, q);
     } else {
       SoundEffects.playWrong();
       // 間違いノートに自動記録（問題文に答えを漏洩させない）
@@ -123667,6 +123851,7 @@ class WordTestComponent {
       }
 
       StorageService.recordMistake({
+        wordId: q.id,
         question: mistakeQuestion,
         userAnswer: userAnswer || '(未入力)',
         correctAnswer: expectedCorrectAnswer,
@@ -123696,6 +123881,7 @@ class WordTestComponent {
   }
 
   static goNext() {
+    scrollToQuizTop(this.container);
     if (this.state.currentIndex + 1 < this.state.questions.length) {
       this.loadQuestion(this.state.currentIndex + 1);
     } else {
@@ -124061,9 +124247,19 @@ class JapaneseTestComponent {
     } else if (this.state.settings.filter === 'high_risk') {
       list = list.filter(v => v.srsLevel > 0 && v.forgettingRisk >= 60);
     } else if (this.state.settings.filter === 'mistakes_only') {
-      const mistakeList = StorageService.getMistakes().filter(m => !m.resolved);
-      const mistakeWords = new Set(mistakeList.map(m => m.correctAnswer.toLowerCase()));
-      list = list.filter(v => mistakeWords.has(v.mongolian.toLowerCase()) || mistakeWords.has(v.japanese) || (v.root && mistakeWords.has(v.root.toLowerCase())));
+      const mistakeList = StorageService.getActiveMistakes();
+      const mistakeKeys = new Set();
+      mistakeList.forEach(m => {
+        if (m.wordId) mistakeKeys.add(m.wordId);
+        if (m.correctAnswer) mistakeKeys.add(m.correctAnswer.toLowerCase().trim());
+        if (m.question) mistakeKeys.add(m.question.toLowerCase().trim());
+      });
+      list = list.filter(v => 
+        (v.id && mistakeKeys.has(v.id)) ||
+        mistakeKeys.has(v.mongolian.toLowerCase().trim()) ||
+        mistakeKeys.has((v.dictForm || '').toLowerCase().trim()) ||
+        mistakeKeys.has(v.japanese)
+      );
     } else if (this.state.settings.filter === 'verbs_only') {
       list = list.filter(v => v.isVerb || (v.pos && v.pos.includes('動詞')));
     } else if (this.state.settings.filter === 'nouns_only') {
@@ -124110,6 +124306,7 @@ class JapaneseTestComponent {
     }
 
     this.renderTesting();
+    scrollToQuizTop(this.container);
   }
 
   // --- 3. テスト実行画面 ---
@@ -124411,10 +124608,13 @@ class JapaneseTestComponent {
     // 効果音
     if (isCorrect) {
       SoundEffects.playCorrect();
+      // 正解時は該当単語の間違いノート項目を即座に克服済みにし、「間違えた単語」リストから自動消去
+      StorageService.resolveMistakesForWord(q.id, q);
     } else {
       SoundEffects.playWrong();
       // 間違いノートに記録
       StorageService.recordMistake({
+        wordId: q.id,
         question: `【日本語訳】${details.dictForm || q.mongolian} の意味`,
         userAnswer: userAnswer || '(未入力)',
         correctAnswer: q.japanese,
@@ -124444,6 +124644,7 @@ class JapaneseTestComponent {
   }
 
   static goNext() {
+    scrollToQuizTop(this.container);
     if (this.state.currentIndex + 1 < this.state.questions.length) {
       this.loadQuestion(this.state.currentIndex + 1);
     } else {
@@ -124813,6 +125014,7 @@ class GrammarTestComponent {
   static loadQuiz(index) {
     this.state.currentIndex = index;
     const q = this.state.quizzes[index];
+    scrollToQuizTop(this.container);
     this.state.currentQuiz = q;
     this.state.userAnswer = '';
     this.state.hasAnswered = false;
@@ -125193,6 +125395,8 @@ class GrammarTestComponent {
 
     if (isCorrect) {
       SoundEffects.playCorrect();
+      // 正解時に間違いノートの文法問題を克服済みにする（間違えた単語・問題から消去）
+      StorageService.resolveMistakeByQuestion(q.question, q.answer);
     } else {
       SoundEffects.playWrong();
       StorageService.recordMistake({
@@ -125221,6 +125425,7 @@ class GrammarTestComponent {
   }
 
   static goNext() {
+    scrollToQuizTop(this.container);
     if (this.state.currentIndex + 1 < this.state.quizzes.length) {
       this.loadQuiz(this.state.currentIndex + 1);
     } else {
@@ -125647,6 +125852,7 @@ class DeclensionTestComponent {
   static loadQuiz(index) {
     if (!this.state.quizzes || !this.state.quizzes.length) return;
     this.state.currentIndex = index;
+    scrollToQuizTop(this.container);
     const q = this.state.quizzes[index];
     this.state.currentQuiz = q;
     this.state.userAnswer = '';
@@ -125943,6 +126149,8 @@ class DeclensionTestComponent {
 
     if (isCorrect) {
       SoundEffects.playCorrect();
+      // 正解時に間違いノートの格変化・活用問題を克服済みにする（間違えた単語・問題から消去）
+      StorageService.resolveMistakeByQuestion(q.question, q.answer);
     } else {
       SoundEffects.playWrong();
       StorageService.recordMistake({
@@ -125971,6 +126179,7 @@ class DeclensionTestComponent {
   }
 
   static goNext() {
+    scrollToQuizTop(this.container);
     if (this.state.currentIndex + 1 < this.state.quizzes.length) {
       this.loadQuiz(this.state.currentIndex + 1);
     } else {
@@ -126514,6 +126723,7 @@ class ListeningTestComponent {
   static loadQuiz(index) {
     this.state.currentIndex = index;
     const q = this.state.quizzes[index];
+    scrollToQuizTop(this.container);
     this.state.currentQuiz = q;
     this.state.hasAnswered = false;
     this.state.userAnswer = '';
@@ -126937,6 +127147,8 @@ class ListeningTestComponent {
 
     if (isCorrect) {
       SoundEffects.playCorrect();
+      // 正解時に間違いノートの問題を克服済みにする
+      StorageService.resolveMistakeByQuestion(q.sentence || q.japanese, q.answer);
     } else {
       SoundEffects.playWrong();
       StorageService.recordMistake({
@@ -126965,6 +127177,7 @@ class ListeningTestComponent {
 
   static goNext() {
     SpeechService.stop();
+    scrollToQuizTop(this.container);
     if (this.state.currentIndex + 1 < this.state.quizzes.length) {
       this.loadQuiz(this.state.currentIndex + 1);
     } else {
@@ -137460,6 +137673,7 @@ class SuffixRuleDojoComponent {
 
     if (this.container) {
       this.renderTesting();
+      scrollToQuizTop(this.container);
     }
   }
 
@@ -137642,6 +137856,9 @@ class SuffixRuleDojoComponent {
 
     if (isCorrect) {
       SoundEffects.playCorrect();
+      const meaningSuffix = q.targetWordMeaning ? `（${q.targetWordMeaning}）` : '';
+      const qText = q.sentencePattern ? `【${q.categoryTitle}】${q.sentencePattern}` : `【${q.categoryTitle}】「${q.targetWord}${meaningSuffix}」に適切な語尾を接続した形`;
+      StorageService.resolveMistakeByQuestion(qText, q.answer);
       this.state.combo++;
       if (this.state.combo > this.state.maxCombo) {
         this.state.maxCombo = this.state.combo;
@@ -142291,10 +142508,17 @@ class ReviewNotebookComponent {
             `).join('')}
           </div>
 
-          <label class="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer select-none shrink-0">
-            <input type="checkbox" id="check-show-resolved" ${this.state.showResolved ? 'checked' : ''} class="rounded text-emerald-600 focus:ring-0">
-            <span>克服済みも表示</span>
-          </label>
+          <div class="flex items-center gap-2 shrink-0">
+            <label class="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer select-none">
+              <input type="checkbox" id="check-show-resolved" ${this.state.showResolved ? 'checked' : ''} class="rounded text-emerald-600 focus:ring-0">
+              <span>克服済みも表示</span>
+            </label>
+            ${totalResolved > 0 ? `
+              <button type="button" id="btn-clear-resolved" class="text-[11px] px-2.5 py-1 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-600 font-semibold cursor-pointer transition-all flex items-center gap-1">
+                <span>🗑️</span> 覚えた項目を一括整理
+              </button>
+            ` : ''}
+          </div>
         </div>
 
         <!-- 復習ノート一覧カード -->
@@ -142339,7 +142563,7 @@ class ReviewNotebookComponent {
                     <button type="button" class="btn-toggle-resolve text-[11px] px-2 py-0.5 rounded border ${
                       m.resolved ? 'bg-slate-100 text-slate-600 border-slate-300' : 'bg-emerald-50 text-emerald-700 border-emerald-300 font-bold'
                     }" data-id="${m.id}" data-source="${m.sourceType || 'mistake'}" data-srs-id="${m.srsWordId || ''}" data-resolved="${m.resolved}">
-                      ${m.resolved ? '未克服に戻す' : '✓ 克服済みにする'}
+                      ${m.resolved ? '未克服に戻す' : '✓ 覚えた（間違えた単語から消す）'}
                     </button>
                     <button type="button" class="btn-delete-mistake text-slate-300 hover:text-rose-500 text-xs px-1 cursor-pointer" data-id="${m.id}" data-source="${m.sourceType || 'mistake'}" title="削除">
                       ✕
@@ -142418,6 +142642,16 @@ class ReviewNotebookComponent {
       checkResolved.addEventListener('change', (e) => {
         this.state.showResolved = e.target.checked;
         this.renderNotebook();
+      });
+    }
+
+    const clearResolvedBtn = this.container.querySelector('#btn-clear-resolved');
+    if (clearResolvedBtn) {
+      clearResolvedBtn.addEventListener('click', () => {
+        if (confirm('覚えた（克服済み）項目を一覧から完全に整理・消去しますか？\n（未克服の間違えた問題はそのまま残ります）')) {
+          StorageService.clearResolvedMistakes();
+          this.renderNotebook();
+        }
       });
     }
 
@@ -142746,6 +142980,7 @@ class ReviewNotebookComponent {
     this.state.hasAnswered = false;
     this.state.isCorrect = false;
     this.renderReviewTesting();
+    scrollToQuizTop(this.container);
   }
 
   static renderReviewTesting() {
@@ -142948,6 +143183,7 @@ class ReviewNotebookComponent {
       if (nextBtn) {
         nextBtn.focus();
         nextBtn.addEventListener('click', () => {
+          scrollToQuizTop(this.container);
           if (this.state.testIndex + 1 < this.state.testList.length) {
             this.loadReviewQuestion(this.state.testIndex + 1);
           } else {
@@ -143047,7 +143283,11 @@ class ReviewNotebookComponent {
       // 対応する単語のSRS進捗も向上（マスター・得意化）
       if (matchedWord) {
         StorageService.recordWordAnswer(matchedWord.id, true);
+        StorageService.resolveMistakesForWord(matchedWord.id, matchedWord);
+      } else if (item.wordId) {
+        StorageService.resolveMistakesForWord(item.wordId);
       }
+      StorageService.resolveMistakeByQuestion(item.question, item.correctAnswer);
     } else {
       SoundEffects.playWrong();
       StorageService.recordMistake({

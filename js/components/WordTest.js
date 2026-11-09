@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR, isPronunciationCautionWord, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant } from '../utils/helpers.js';
+import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR, isPronunciationCautionWord, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant, scrollToQuizTop } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
@@ -227,9 +227,19 @@ export class WordTestComponent {
       } else if (this.state.settings.filter === 'high_risk') {
         list = list.filter(v => v.srsLevel > 0 && v.forgettingRisk >= 60);
       } else if (this.state.settings.filter === 'mistakes_only') {
-        const mistakeList = StorageService.getMistakes().filter(m => !m.resolved);
-        const mistakeWords = new Set(mistakeList.map(m => m.correctAnswer.toLowerCase()));
-        list = list.filter(v => mistakeWords.has(v.mongolian.toLowerCase()) || mistakeWords.has(v.japanese));
+        const mistakeList = StorageService.getActiveMistakes();
+        const mistakeKeys = new Set();
+        mistakeList.forEach(m => {
+          if (m.wordId) mistakeKeys.add(m.wordId);
+          if (m.correctAnswer) mistakeKeys.add(m.correctAnswer.toLowerCase().trim());
+          if (m.question) mistakeKeys.add(m.question.toLowerCase().trim());
+        });
+        list = list.filter(v => 
+          (v.id && mistakeKeys.has(v.id)) ||
+          mistakeKeys.has(v.mongolian.toLowerCase().trim()) ||
+          mistakeKeys.has((v.dictForm || '').toLowerCase().trim()) ||
+          mistakeKeys.has(v.japanese)
+        );
       } else if (this.state.settings.filter === 'unlearned') {
         list = list.filter(v => v.srsLevel === 0);
       } else if (this.state.settings.filter === 'priority_top') {
@@ -285,6 +295,7 @@ export class WordTestComponent {
     }
 
     this.renderTesting();
+    scrollToQuizTop(this.container);
   }
 
   // --- 3. テスト実行画面 ---
@@ -648,6 +659,8 @@ export class WordTestComponent {
     // 効果音
     if (isCorrect) {
       SoundEffects.playCorrect();
+      // 正解時は該当単語の間違いノート項目を即座に克服済みにし、「間違えた単語」リストから自動消去
+      StorageService.resolveMistakesForWord(q.id, q);
     } else {
       SoundEffects.playWrong();
       // 間違いノートに自動記録（問題文に答えを漏洩させない）
@@ -665,6 +678,7 @@ export class WordTestComponent {
       }
 
       StorageService.recordMistake({
+        wordId: q.id,
         question: mistakeQuestion,
         userAnswer: userAnswer || '(未入力)',
         correctAnswer: expectedCorrectAnswer,
@@ -694,6 +708,7 @@ export class WordTestComponent {
   }
 
   static goNext() {
+    scrollToQuizTop(this.container);
     if (this.state.currentIndex + 1 < this.state.questions.length) {
       this.loadQuestion(this.state.currentIndex + 1);
     } else {

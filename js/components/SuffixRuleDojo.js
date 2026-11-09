@@ -2,7 +2,7 @@
 // 与位格（-д/-т: г,р,сの法則）、疑問詞文末（бэ/вэ: н,м,в,лの法則）、Yes/No疑問（уу/үү）、対格、属格、否定詞
 import { suffixRuleCategories, suffixRuleQuizzes, suffixRuleData } from '../data/suffixRuleData.js';
 import { SpeechService } from '../services/speech.js';
-import { SoundEffects, shuffleArray } from '../utils/helpers.js';
+import { SoundEffects, shuffleArray, scrollToQuizTop } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { StorageService } from '../services/storage.js';
 
@@ -179,6 +179,7 @@ export class SuffixRuleDojoComponent {
 
     if (this.container) {
       this.renderTesting();
+      scrollToQuizTop(this.container);
     }
   }
 
@@ -361,6 +362,9 @@ export class SuffixRuleDojoComponent {
 
     if (isCorrect) {
       SoundEffects.playCorrect();
+      const meaningSuffix = q.targetWordMeaning ? `（${q.targetWordMeaning}）` : '';
+      const qText = q.sentencePattern ? `【${q.categoryTitle}】${q.sentencePattern}` : `【${q.categoryTitle}】「${q.targetWord}${meaningSuffix}」に適切な語尾を接続した形`;
+      StorageService.resolveMistakeByQuestion(qText, q.answer);
       this.state.combo++;
       if (this.state.combo > this.state.maxCombo) {
         this.state.maxCombo = this.state.combo;

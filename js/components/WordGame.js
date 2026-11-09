@@ -1,7 +1,7 @@
 // 単語・文法・翻訳 統合バトルゲーム コンポーネント（独立したゲームコーナー）
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
-import { SoundEffects, shuffleArray, getWordGrammarDetails, isWordAnswerMatch, SPECIAL_CYRILLIC_BAR, isCyrillic, isPronunciationCautionWord } from '../utils/helpers.js';
+import { SoundEffects, shuffleArray, getWordGrammarDetails, isWordAnswerMatch, SPECIAL_CYRILLIC_BAR, isCyrillic, isPronunciationCautionWord, scrollToQuizTop } from '../utils/helpers.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
 export class WordGameComponent {
@@ -865,6 +865,7 @@ export class WordGameComponent {
       this.state.questionsPool = shuffleArray([...this.state.questionsPool]);
       this.state.currentQuestionIndex = 0;
     }
+    scrollToQuizTop(this.container);
 
     const q = this.state.questionsPool[this.state.currentQuestionIndex];
     this.state.currentQuestion = q;
@@ -1950,6 +1951,16 @@ export class WordGameComponent {
         choices: this.state.choices ? [...this.state.choices] : null
       });
 
+      // 正解時に該当単語・問題を「覚えた」と判定して間違いリストから消去
+      try {
+        if (genre === 'grammar') {
+          StorageService.resolveMistakeByQuestion(q.question, correctDisplay);
+        } else {
+          if (q.id) StorageService.recordWordAnswer(q.id, true);
+          StorageService.resolveMistakesForWord(q.id, q);
+        }
+      } catch (_) {}
+
       this.renderPlaying();
 
       // 正解時はテンポよく自動送り (0.65秒)
@@ -2007,6 +2018,7 @@ export class WordGameComponent {
         } else {
           const d = getWordGrammarDetails(q);
           StorageService.recordMistake({
+            wordId: q.id || null,
             question: `【単語ゲーム】${d.dictForm || q.mongolian} の意味`,
             userAnswer: userText || '(選択肢の誤答)',
             correctAnswer: correctDisplay,

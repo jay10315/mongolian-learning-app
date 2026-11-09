@@ -389,7 +389,13 @@ export class StorageService {
   static recordWordAnswer(wordId, isCorrect, difficulty = 'good') {
     const currentProg = this.getWordProgress(wordId);
     const updated = SrsService.processAnswer(currentProg, isCorrect, difficulty);
-    return this.saveWordProgress(updated);
+    const saved = this.saveWordProgress(updated);
+
+    // 正解した場合: 「覚えた」と判定し、該当単語の間違いノート項目を自動で克服済みにする（間違えた単語から消去）
+    if (isCorrect) {
+      this.resolveMistakesForWord(wordId);
+    }
+    return saved;
   }
 
   // --- 単語マスターデータ（SRS進捗をマージして提供） ---
@@ -1133,10 +1139,12 @@ export class StorageService {
       list[existingIdx].lastWrongDate = new Date().toISOString();
       list[existingIdx].userAnswer = mistake.userAnswer;
       list[existingIdx].resolved = false;
+      if (mistake.wordId) list[existingIdx].wordId = mistake.wordId;
       itemToSync = list[existingIdx];
     } else {
       itemToSync = {
         id: `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        wordId: mistake.wordId || null,
         ...sanitizedMistake,
         wrongCount: 1,
         lastWrongDate: new Date().toISOString(),
@@ -1156,9 +1164,128 @@ export class StorageService {
     const idx = list.findIndex(m => m.id === id);
     if (idx !== -1) {
       list[idx].resolved = isResolved;
+      list[idx].resolvedAt = isResolved ? new Date().toISOString() : null;
+      if (isResolved) {
+        list[idx].consecutiveCorrect = (list[idx].consecutiveCorrect || 0) + 1;
+      }
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
       SyncService.enqueueChange('RECORD_MISTAKE', list[idx]);
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated', { detail: { id, isResolved } }));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+        }
+      } catch (_) {}
     }
+  }
+
+  /**
+   * 正解した単語に対して「覚えた」と判定し、該当する間違いノートの記録を克服済みにする（間違えた単語リストから即座に消去）
+   * @param {string} wordId 単語ID
+   * @param {Object|null} wordObj 単語オブジェクト
+   * @param {boolean} isResolved trueで克服済み
+   */
+  static resolveMistakesForWord(wordId, wordObj = null, isResolved = true) {
+    if (!wordId && !wordObj) return 0;
+    const list = this.getMistakes();
+    if (!list || list.length === 0) return 0;
+
+    let targetObj = wordObj;
+    if (!targetObj && wordId) {
+      try {
+        targetObj = this.getAllVocabulary().find(v => v.id === wordId);
+      } catch (_) {}
+    }
+
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+    const wMn = clean(targetObj?.mongolian);
+    const wDf = clean(targetObj?.dictForm);
+    const wRoot = clean(targetObj?.root);
+    const wJa = clean(targetObj?.japanese);
+
+    let resolvedCount = 0;
+    list.forEach(m => {
+      if (m.resolved === isResolved) return;
+
+      const mWordId = m.wordId || '';
+      const mAns = clean(m.correctAnswer);
+      const mQ = clean(m.question);
+
+      const isMatch = (wordId && mWordId && wordId === mWordId) ||
+        (wMn && (mAns === wMn || mAns.includes(wMn) || mQ.includes(wMn))) ||
+        (wDf && (mAns === wDf || mAns.includes(wDf) || mQ.includes(wDf))) ||
+        (wRoot && mAns === wRoot) ||
+        (wJa && (mAns === wJa || mQ.includes(wJa)));
+
+      if (isMatch) {
+        m.resolved = isResolved;
+        m.resolvedAt = isResolved ? new Date().toISOString() : null;
+        if (isResolved) {
+          m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
+        }
+        resolvedCount++;
+        SyncService.enqueueChange('RECORD_MISTAKE', m);
+      }
+    });
+
+    if (resolvedCount > 0) {
+      localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+        }
+      } catch (_) {}
+    }
+    return resolvedCount;
+  }
+
+  /**
+   * 文法・格変化・その他の問題で正解した際、問題文または正解から間違いを克服済みにする（覚えたと判定）
+   */
+  static resolveMistakeByQuestion(questionText, correctAnswer = '', isResolved = true) {
+    if (!questionText && !correctAnswer) return 0;
+    const list = this.getMistakes();
+    if (!list || list.length === 0) return 0;
+
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+    const cQ = clean(questionText);
+    const cAns = clean(correctAnswer);
+
+    let resolvedCount = 0;
+    list.forEach(m => {
+      if (m.resolved === isResolved) return;
+      const mQ = clean(m.question);
+      const mAns = clean(m.correctAnswer);
+
+      const isMatch = (cQ && (mQ === cQ || mQ.includes(cQ) || cQ.includes(mQ))) &&
+        (!cAns || mAns === cAns || mAns.includes(cAns) || cAns.includes(mAns));
+
+      if (isMatch) {
+        m.resolved = isResolved;
+        m.resolvedAt = isResolved ? new Date().toISOString() : null;
+        if (isResolved) {
+          m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
+        }
+        resolvedCount++;
+        SyncService.enqueueChange('RECORD_MISTAKE', m);
+      }
+    });
+
+    if (resolvedCount > 0) {
+      localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+        }
+      } catch (_) {}
+    }
+    return resolvedCount;
+  }
+
+  static getActiveMistakes() {
+    return this.getMistakes().filter(m => !m.resolved);
   }
 
   static removeMistake(id) {

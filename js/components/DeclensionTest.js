@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, renderChoiceExplanationsHTML, getWordGrammarDetails, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR } from '../utils/helpers.js';
+import { isFuzzyMatch, renderChoiceExplanationsHTML, getWordGrammarDetails, renderGrammarExplanationHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR, scrollToQuizTop } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
@@ -214,6 +214,7 @@ export class DeclensionTestComponent {
   static loadQuiz(index) {
     if (!this.state.quizzes || !this.state.quizzes.length) return;
     this.state.currentIndex = index;
+    scrollToQuizTop(this.container);
     const q = this.state.quizzes[index];
     this.state.currentQuiz = q;
     this.state.userAnswer = '';
@@ -510,6 +511,8 @@ export class DeclensionTestComponent {
 
     if (isCorrect) {
       SoundEffects.playCorrect();
+      // 正解時に間違いノートの格変化・活用問題を克服済みにする（間違えた単語・問題から消去）
+      StorageService.resolveMistakeByQuestion(q.question, q.answer);
     } else {
       SoundEffects.playWrong();
       StorageService.recordMistake({
@@ -538,6 +541,7 @@ export class DeclensionTestComponent {
   }
 
   static goNext() {
+    scrollToQuizTop(this.container);
     if (this.state.currentIndex + 1 < this.state.quizzes.length) {
       this.loadQuiz(this.state.currentIndex + 1);
     } else {
