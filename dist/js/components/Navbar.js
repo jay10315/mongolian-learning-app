@@ -54,6 +54,7 @@ export class Navbar {
     const tabs = [
       { id: 'home', label: 'ホーム', icon: '🏠' },
       { id: 'genre_master', label: 'ジャンル別単語', icon: '🏷️' },
+      { id: 'word_family', label: '単語ファミリー', icon: '🌳' },
       { id: 'later_words', label: 'あとで覚える単語', icon: '⏳' },
       { id: 'exercise_notebook', label: '練習ノート', icon: '📓' },
       { id: 'word_game', label: '単語ゲーム', icon: '🎮' },

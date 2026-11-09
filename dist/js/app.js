@@ -51,6 +51,20 @@ class App {
 
         // 2. クエリパラメータ (?sync_token=... / ?login_token=... / ?token=...) の検知
         const urlParams = new URLSearchParams(window.location.search);
+        // C2. auto_sync クエリパラメータ検知（QRコード読取後の即時自動同期）
+        if (urlParams.get('auto_sync') === '1') {
+          console.log('[App] Detected auto_sync=1. Triggering instant bidirectional sync...');
+          if (typeof SyncService !== 'undefined' && SyncService.triggerSync) {
+            SyncService.triggerSync().then(() => {
+              if (typeof AuthService !== 'undefined' && AuthService.showLoginSuccessToast) {
+                AuthService.showLoginSuccessToast('✅ クラウドから全学習データを同期しました！');
+              }
+            }).catch(console.warn);
+          }
+          try {
+            window.history.replaceState(null, '', window.location.origin + window.location.pathname);
+          } catch (_) {}
+        }
         if (!syncInput) {
           syncInput = urlParams.get('sync_token') ||
                       urlParams.get('login_token') ||

@@ -1,5 +1,6 @@
 // 教科書・学習ノート照合による単語分類マスターデータ
 // 自動生成: JICA教科書・練習問題集・文法ハンドブック・学習ノートの全5教材と完全照合済み
+// 語根・活用形・派生形ルール適用版（同じ語根の活用形が教材に登場している場合も「教材登場単語」として分類）
 export const TEXTBOOK_CLASSIFICATION_DATA = {
   "v_1_1": {
     "status": "textbook",
@@ -2793,11 +2794,15 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "буух"
   },
   "v_gen_73": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "学習ノート（メモ）",
+      "教科書（PDF）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 学習ノート（メモ）, 教科書（PDF） に関連語・活用形（活用形 'буцаж', 語幹 'буц'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "буц",
     "dictForm": "буцах"
@@ -3105,11 +3110,16 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "гарах"
   },
   "v_gen_96": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "学習ノート（メモ）",
+      "教科書（PDF）",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 学習ノート（メモ）, 教科書（PDF）, 練習問題集（問題集テキスト） に関連語・活用形（活用形 'зураарай', 活用形 'зураач', 活用形 'зурж'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "зур",
     "dictForm": "гарын үсэг зурах"
@@ -4173,11 +4183,14 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "зураг авах"
   },
   "v_gen_180": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 練習問題集（問題集テキスト） に関連語・活用形（活用形 'авхуулж', 語幹 'авхуул'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "авхуул",
     "dictForm": "зураг авахуулах"
@@ -4516,11 +4529,15 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "кино"
   },
   "v_gen_206": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "教科書（PDF）",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 教科書（PDF）, 練習問題集（問題集テキスト） に関連語・活用形（格変化/複数 'кинотеатрт'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "",
     "dictForm": "кино театр"
@@ -10487,11 +10504,14 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "насанд хүрэх"
   },
   "v_note_6": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "学習ノート（メモ）, 練習問題集（問題集テキスト） に関連語・活用形（活用形 'сонгино', 活用形 'сонгодог', 活用形 'сонгож'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "сонго",
     "dictForm": "сонгох"
@@ -10519,11 +10539,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "ургуулах"
   },
   "v_note_9": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（語幹 'нис'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "нис",
     "dictForm": "нисэх"
@@ -10539,11 +10561,15 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "нойр хүрэх"
   },
   "v_note_11": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "学習ノート（メモ）",
+      "教科書（PDF）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 学習ノート（メモ）, 教科書（PDF） に関連語・活用形（活用形 'буцаж', 語幹 'буцаа'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "буцаа",
     "dictForm": "буцаах"
@@ -10571,21 +10597,25 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "өнжүүлэх"
   },
   "v_note_14": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（語幹 'төөр'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "төөр",
     "dictForm": "төөрөх"
   },
   "v_note_15": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（語幹 'эргэлз'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "эргэлз",
     "dictForm": "эргэлзэх"
@@ -10613,31 +10643,37 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "эмнэлэгт хэвтэх"
   },
   "v_note_18": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（語幹 'таргал'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "таргал",
     "dictForm": "таргалах"
   },
   "v_note_19": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（語幹 'тур'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "тур",
     "dictForm": "турах"
   },
   "v_note_20": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（語幹 'үерх'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "үерх",
     "dictForm": "үерхэх"
@@ -11830,11 +11866,15 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "сургалтын танхим"
   },
   "v_note_119": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "学習ノート（メモ）",
+      "教科書（PDF）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 学習ノート（メモ）, 教科書（PDF） に関連語・活用形（語幹 'завгүй'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "завгүй",
     "dictForm": "завгүй болох"
@@ -12139,11 +12179,14 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "байлаа"
   },
   "v_note_146": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "学習ノート（メモ）, 練習問題集（問題集テキスト） に関連語・活用形（活用形 'тэмдэглэв', 活用形 'тэмдэглэдэг', 活用形 'тэмдэглэж'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "тэмдэглэх",
     "dictForm": "тэмдэглэх"
@@ -12161,11 +12204,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "тэмдэг"
   },
   "v_note_148": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（語幹 'бичлэг'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "бичлэг",
     "dictForm": "бичлэг хийх"
@@ -12278,11 +12323,17 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "гоё"
   },
   "v_note_159": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "学習ノート（メモ）",
+      "教科書（PDF）",
+      "文法ハンドブック",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 学習ノート（メモ）, 教科書（PDF）, 文法ハンドブック, 練習問題集（問題集テキスト） に関連語・活用形（語幹 'авч'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "авч",
     "dictForm": "авч явсан"
@@ -12389,11 +12440,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "сүнд мордох"
   },
   "v_note_169": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "文法ハンドブック"
+    ],
+    "appearanceDesc": "文法ハンドブック に関連語・活用形（語幹 'алим'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "алим",
     "dictForm": "алим түүх"
@@ -12441,11 +12494,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "хөмсөг"
   },
   "v_genre_803": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（格変化/複数 'нүдийн'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "нүд",
     "dictForm": "нүд"
@@ -12782,11 +12837,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "танхим"
   },
   "v_genre_834": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（格変化 'хаалгаа'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "хаалга",
     "dictForm": "хаалга"
@@ -12948,11 +13005,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "үүргэвч"
   },
   "v_genre_849": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "練習問題集（問題集テキスト） に関連語・活用形（格変化/複数 'календарьт'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "календарь",
     "dictForm": "календарь"
@@ -14011,11 +14070,14 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "крант"
   },
   "v_genre_947": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "学習ノート（メモ）, 練習問題集（問題集テキスト） に関連語・活用形（格変化/複数 'ваннд'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "ванн",
     "dictForm": "ванн"
@@ -14477,21 +14539,25 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "зүг чиг"
   },
   "v_genre_993": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（格変化/複数 'дээшээ'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "дээш",
     "dictForm": "дээш"
   },
   "v_genre_994": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（格変化/複数 'доошоо'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "доош",
     "dictForm": "доош"
@@ -14562,11 +14628,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "ашиг"
   },
   "v_note_176": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "練習問題集（問題集テキスト） に関連語・活用形（活用形 'ашиглаж'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "ашиг",
     "dictForm": "ашиглах"
@@ -16048,21 +16116,32 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "хоёрдугаар"
   },
   "v_gen_numbers_21": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "学習ノート（メモ）",
+      "教科書（PDF）",
+      "文法ハンドブック",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 学習ノート（メモ）, 教科書（PDF）, 文法ハンドブック, 練習問題集（問題集テキスト） に関連語・活用形（格変化/複数 'хоёулаа'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "хоёул",
     "dictForm": "хоёул"
   },
   "v_gen_numbers_22": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "教科書（PDF）",
+      "文法ハンドブック",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 教科書（PDF）, 文法ハンドブック, 練習問題集（問題集テキスト） に関連語・活用形（格変化/複数 'гурвуулаа'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "гурвуул",
     "dictForm": "гурвуул"
@@ -16263,11 +16342,15 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "зочид буудал"
   },
   "v_gen_places_15": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "教科書（PDF）",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 教科書（PDF）, 練習問題集（問題集テキスト） に関連語・活用形（格変化/複数 'кинотеатрт'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "кино театр",
     "dictForm": "кино театр"
@@ -16385,11 +16468,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "эдгээр"
   },
   "v_gen_demonstratives_4": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（格変化/複数 'тэдгээрээс'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "тэдгээр",
     "dictForm": "тэдгээр"
@@ -17231,11 +17316,14 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "дуулах"
   },
   "v_gen_music_14": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "教科書（PDF）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 教科書（PDF） に関連語・活用形（語幹 'хөгжимд'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "хөгжимдөх",
     "dictForm": "хөгжимдөх"
@@ -18067,11 +18155,13 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "бодох"
   },
   "v_req_eval_1": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）"
+    ],
+    "appearanceDesc": "学習ノート（メモ） に関連語・活用形（格変化/複数 'итгэлтэй'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "итгэ-",
     "dictForm": "итгэл"
@@ -18268,11 +18358,16 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "тоох"
   },
   "v_req_act_7": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "学習ノート（メモ）",
+      "教科書（PDF）",
+      "文法ハンドブック"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 学習ノート（メモ）, 教科書（PDF）, 文法ハンドブック に関連語・活用形（語幹 'тоо'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "тоо-",
     "dictForm": "тоох"
@@ -18308,21 +18403,31 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "үзэх"
   },
   "v_req_act_12": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "学習ノート（メモ）",
+      "教科書（PDF）",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 学習ノート（メモ）, 教科書（PDF）, 練習問題集（問題集テキスト） に関連語・活用形（活用形 'хичээе', 活用形 'хичээлээ', 語幹 'хичэ'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "хичээ-",
     "dictForm": "хичээх"
   },
   "v_req_act_13": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "JICA教科書（教科書テキスト）",
+      "学習ノート（メモ）",
+      "教科書（PDF）",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "JICA教科書（教科書テキスト）, 学習ノート（メモ）, 教科書（PDF）, 練習問題集（問題集テキスト） に関連語・活用形（活用形 'хичээе', 活用形 'хичээлээ'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": true,
     "stem": "хичээ-",
     "dictForm": "хичээх"
@@ -18491,11 +18596,14 @@ export const TEXTBOOK_CLASSIFICATION_DATA = {
     "dictForm": "гэмт хэрэг судлал"
   },
   "vocab_core_tul": {
-    "status": "later",
-    "statusLabel": "あとで覚える単語",
-    "appearanceSources": [],
-    "appearanceDesc": "全教材：未登場",
-    "reason": "教科書・練習問題集・文法ハンドブック・学習ノートの全教材に未掲載（辞書形での登場実績なし）",
+    "status": "textbook",
+    "statusLabel": "学習済み教材の単語",
+    "appearanceSources": [
+      "学習ノート（メモ）",
+      "練習問題集（問題集テキスト）"
+    ],
+    "appearanceDesc": "学習ノート（メモ）, 練習問題集（問題集テキスト） に関連語・活用形（格変化/複数 'тулд'）が登場",
+    "reason": "教材内に同じ語根を持つ活用形・派生形・関連語が登場",
     "isVerb": false,
     "stem": "",
     "dictForm": "тул"

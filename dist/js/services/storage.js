@@ -1,3 +1,4 @@
+import { WORD_FAMILIES_DATA } from '../data/wordFamiliesData.js';
 import { TEXTBOOK_CLASSIFICATION_DATA } from '../data/textbookClassificationData.js';
 const DEPRECATED_DUPLICATE_ID_MAP = {
   'v_genre_965': 'v_genre_964', // ананас -> хан боргоцой
@@ -477,6 +478,43 @@ export class StorageService {
         if (seen.has(item.id)) return false;
         seen.add(item.id);
         return true;
+      });
+    }
+
+    // 単語ファミリーから追加された語形を語彙リストに統合（全ゲーム連携）
+    const addedFamilyIds = this.getAddedFamilyIds ? this.getAddedFamilyIds() : [];
+    const addedFamilyFormIds = this.getAddedFamilyFormIds ? this.getAddedFamilyFormIds() : [];
+    if (typeof WORD_FAMILIES_DATA !== 'undefined' && (addedFamilyIds.length > 0 || addedFamilyFormIds.length > 0)) {
+      const existingIds = new Set(baseList.map(v => v.id));
+      const existingMn = new Set(baseList.map(v => (v.mongolian || '').toLowerCase().trim()));
+      
+      WORD_FAMILIES_DATA.forEach(fam => {
+        const isFamAdded = addedFamilyIds.includes(fam.familyId);
+        fam.forms.forEach(form => {
+          const isFormAdded = isFamAdded || addedFamilyFormIds.includes(form.formId);
+          if (isFormAdded && !existingIds.has(form.formId) && !existingMn.has(form.mongolian.toLowerCase().trim())) {
+            const formItem = {
+              id: form.formId,
+              mongolian: form.mongolian,
+              japanese: form.japanese,
+              pos: fam.pos,
+              root: fam.stem,
+              dictForm: fam.lemma,
+              stem: fam.stem,
+              explanation: `${form.role}。${form.ruleDesc}`,
+              example: `${form.exampleMn}（${form.exampleJa}）`,
+              examples: [{ mn: form.exampleMn, ja: form.exampleJa }],
+              textbookStatus: 'textbook',
+              textbookStatusLabel: '教科書掲載ファミリー語形',
+              isAddedToLearning: true,
+              isFamilyForm: true,
+              familyId: fam.familyId
+            };
+            baseList.push(formItem);
+            existingIds.add(form.formId);
+            existingMn.add(form.mongolian.toLowerCase().trim());
+          }
+        });
       });
     }
 
@@ -1380,6 +1418,240 @@ export class StorageService {
       `"${(v.note || '').replace(/"/g, '""')}"`
     ]);
     return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  }
+
+
+  // =========================================================================
+  // 単語ファミリー完全習得・活用形マスター機能 (Word Family Mastery System)
+  // =========================================================================
+
+  /**
+   * 単語ファミリーの進捗データ（各語形の学習回数・正解数・完全習得状態）を取得
+   */
+  static getWordFamilyProgress() {
+    try {
+      const data = localStorage.getItem('mongol_app_word_family_progress_v1');
+      return data ? JSON.parse(data) : {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  static saveWordFamilyProgress(progress) {
+    this.setItem('mongol_app_word_family_progress_v1', progress || {});
+  }
+
+  /**
+   * 単語ファミリー全体を一括追加したID一覧を取得
+   */
+  static getAddedFamilyIds() {
+    try {
+      const data = localStorage.getItem('mongol_app_added_family_ids_v1');
+      return data ? JSON.parse(data) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /**
+   * 個別に学習対象へ追加した語形ID一覧を取得
+   */
+  static getAddedFamilyFormIds() {
+    try {
+      const data = localStorage.getItem('mongol_app_added_family_form_ids_v1');
+      return data ? JSON.parse(data) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  static addFamilyToLearning(familyId) {
+    if (!familyId) return false;
+    const list = this.getAddedFamilyIds();
+    if (!list.includes(familyId)) {
+      list.push(familyId);
+      this.setItem('mongol_app_added_family_ids_v1', list);
+      return true;
+    }
+    return false;
+  }
+
+  static removeFamilyFromLearning(familyId) {
+    if (!familyId) return false;
+    let list = this.getAddedFamilyIds();
+    if (list.includes(familyId)) {
+      list = list.filter(id => id !== familyId);
+      this.setItem('mongol_app_added_family_ids_v1', list);
+      return true;
+    }
+    return false;
+  }
+
+  static isFamilyAdded(familyId) {
+    const list = this.getAddedFamilyIds();
+    return list.includes(familyId);
+  }
+
+  static addFormToLearning(formId) {
+    if (!formId) return false;
+    const list = this.getAddedFamilyFormIds();
+    if (!list.includes(formId)) {
+      list.push(formId);
+      this.setItem('mongol_app_added_family_form_ids_v1', list);
+      return true;
+    }
+    return false;
+  }
+
+  static removeFormFromLearning(formId) {
+    if (!formId) return false;
+    let list = this.getAddedFamilyFormIds();
+    if (list.includes(formId)) {
+      list = list.filter(id => id !== formId);
+      this.setItem('mongol_app_added_family_form_ids_v1', list);
+      return true;
+    }
+    return false;
+  }
+
+  static isFormAdded(formId) {
+    const list = this.getAddedFamilyFormIds();
+    return list.includes(formId);
+  }
+
+  /**
+   * 単語ファミリーテストの回答結果を記録し、習熟度を更新
+   */
+  static recordFamilyQuizResult(familyId, formId, isCorrect) {
+    if (!formId) return;
+    const progress = this.getWordFamilyProgress();
+    const cur = progress[formId] || {
+      studyCount: 0,
+      correctCount: 0,
+      wrongCount: 0,
+      accuracy: 0,
+      mastered: false,
+      lastLearnedAt: null
+    };
+
+    cur.studyCount = (cur.studyCount || 0) + 1;
+    if (isCorrect) {
+      cur.correctCount = (cur.correctCount || 0) + 1;
+    } else {
+      cur.wrongCount = (cur.wrongCount || 0) + 1;
+    }
+    cur.accuracy = Math.round((cur.correctCount / cur.studyCount) * 100);
+    cur.lastLearnedAt = new Date().toISOString();
+
+    // 習得基準: 2回以上正解 かつ 正解率80%以上
+    cur.mastered = (cur.correctCount >= 2 && cur.accuracy >= 80);
+
+    progress[formId] = cur;
+    this.saveWordFamilyProgress(progress);
+    return cur;
+  }
+
+  /**
+   * 特定ファミリーの完全習得ステータスと各語形進捗を計算
+   */
+  static getFamilyMasteryStatus(familyId) {
+    const family = (typeof WORD_FAMILIES_DATA !== 'undefined' ? WORD_FAMILIES_DATA : []).find(f => f.familyId === familyId);
+    if (!family) return { mastered: false, progressPercent: 0, masteredCount: 0, totalCount: 0 };
+
+    const progress = this.getWordFamilyProgress();
+    const coreForms = family.forms.filter(f => f.isCore !== false);
+    const totalCore = coreForms.length;
+    let masteredCore = 0;
+
+    family.forms.forEach(form => {
+      const p = progress[form.formId];
+      if (p && p.mastered && form.isCore !== false) {
+        masteredCore += 1;
+      }
+    });
+
+    const isMastered = totalCore > 0 && masteredCore === totalCore;
+    const progressPercent = totalCore > 0 ? Math.round((masteredCore / totalCore) * 100) : 0;
+
+    return {
+      mastered: isMastered,
+      progressPercent,
+      masteredCount: masteredCore,
+      totalCount: totalCore
+    };
+  }
+
+  /**
+   * 全単語ファミリー（習熟度と追加状態をマージした完全オブジェクト）を取得
+   */
+  static getAllWordFamilies() {
+    const rawFamilies = (typeof WORD_FAMILIES_DATA !== 'undefined' ? WORD_FAMILIES_DATA : []);
+    const progress = this.getWordFamilyProgress();
+    const addedFamilyIds = this.getAddedFamilyIds();
+    const addedFormIds = this.getAddedFamilyFormIds();
+
+    return rawFamilies.map(fam => {
+      const mastery = this.getFamilyMasteryStatus(fam.familyId);
+      const isFamilyAdded = addedFamilyIds.includes(fam.familyId);
+
+      const enrichedForms = fam.forms.map(form => {
+        const formProg = progress[form.formId] || {
+          studyCount: 0,
+          correctCount: 0,
+          wrongCount: 0,
+          accuracy: 0,
+          mastered: false,
+          lastLearnedAt: null
+        };
+        const isFormAdded = addedFormIds.includes(form.formId) || isFamilyAdded;
+
+        return {
+          ...form,
+          progress: formProg,
+          isAdded: isFormAdded
+        };
+      });
+
+      return {
+        ...fam,
+        mastered: mastery.mastered,
+        masteryPercent: mastery.progressPercent,
+        masteredCoreCount: mastery.masteredCount,
+        totalCoreCount: mastery.totalCount,
+        isAdded: isFamilyAdded,
+        forms: enrichedForms
+      };
+    });
+  }
+
+  /**
+   * 単語ファミリー全体の集計サマリー（ダッシュボード用）を取得
+   */
+  static getWordFamilySummary() {
+    const families = this.getAllWordFamilies();
+    const totalFamilies = families.length;
+    const masteredFamilies = families.filter(f => f.mastered).length;
+
+    let totalForms = 0;
+    let masteredForms = 0;
+    let studiedForms = 0;
+
+    families.forEach(f => {
+      f.forms.forEach(form => {
+        totalForms += 1;
+        if (form.progress && form.progress.mastered) masteredForms += 1;
+        if (form.progress && form.progress.studyCount > 0) studiedForms += 1;
+      });
+    });
+
+    return {
+      totalFamilies,
+      masteredFamilies,
+      totalForms,
+      masteredForms,
+      studiedForms,
+      overallMasteryPercent: totalForms > 0 ? Math.round((masteredForms / totalForms) * 100) : 0
+    };
   }
 
   // --- 汎用 Key-Value ストレージアクセサ (JSON対応 & 安全フォールバック) ---

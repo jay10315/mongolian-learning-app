@@ -40,8 +40,9 @@ class TestLaterWordsFeature(unittest.TestCase):
         textbook_items = [v for v in data.values() if v.get("status") == "textbook"]
         later_items = [v for v in data.values() if v.get("status") == "later"]
 
-        self.assertEqual(len(textbook_items), 1079, "Textbook items must be 1079")
-        self.assertEqual(len(later_items), 360, "Later items must be 360")
+        # In request 10, rule updated to include dictionary forms when inflections/roots appear in materials (1079 -> 1113)
+        self.assertEqual(len(textbook_items), 1113, "Textbook items must be 1113 after inflection rule update")
+        self.assertEqual(len(later_items), 326, "Later items must be 326 after inflection rule update")
 
         # Verify properties of a later item
         sample_later = later_items[0]

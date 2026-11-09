@@ -788,7 +788,7 @@ export class ReviewNotebookComponent {
                       `;
                     })()}
 
-                    ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer, { userAnswer: this.state.userAnswer }) : ''}
+                    ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer, { userAnswer: this.state.userAnswer || item.userAnswer }) : ''}
                   </div>
                 `;
               })()}

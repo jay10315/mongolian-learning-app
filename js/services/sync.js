@@ -239,14 +239,14 @@ export class SyncService {
     this.updateStatus('syncing');
 
     try {
-      // 1. 保留中キューの送信
+      // 1. まずクラウドの最新データを取得してローカルにマージ（高いXPや進捗を優先保護）
+      await this.pullFromCloud(config, activeUser);
+
+      // 2. 保留中キューの送信
       await this.flushQueue(config, activeUser);
 
-      // 2. ローカル既存データ（間違えた問題・進捗・アカウント）のクラウド一括プッシュ
+      // 3. マージ後の最新データをクラウドへプッシュ（最高ステータスをクラウドに同期）
       await this.pushAllLocalDataToCloud(config, activeUser);
-
-      // 3. クラウドからの最新データ取得・マージ
-      await this.pullFromCloud(config, activeUser);
 
       const now = new Date().toISOString();
       this.state.lastSyncTime = now;
@@ -522,6 +522,27 @@ export class SyncService {
           // 日別学習目標・進捗の復元
           if (snap.dailyStats && typeof snap.dailyStats === 'object') {
             localStorage.setItem('mongol_app_daily_stats_v1', JSON.stringify(snap.dailyStats));
+          }
+
+          // 単語ファミリー進捗・追加語形の同期マージ
+          if (snap.wordFamilyProgress && typeof snap.wordFamilyProgress === 'object') {
+            const curFam = JSON.parse(localStorage.getItem('mongol_app_word_family_progress_v1') || '{}');
+            for (const [formId, formProg] of Object.entries(snap.wordFamilyProgress)) {
+              if (!curFam[formId] || (formProg.studyCount || 0) > (curFam[formId].studyCount || 0) || formProg.mastered) {
+                curFam[formId] = formProg;
+              }
+            }
+            localStorage.setItem('mongol_app_word_family_progress_v1', JSON.stringify(curFam));
+          }
+          if (Array.isArray(snap.addedFamilyIds)) {
+            const curIds = JSON.parse(localStorage.getItem('mongol_app_added_family_ids_v1') || '[]');
+            const mergedIds = Array.from(new Set([...curIds, ...snap.addedFamilyIds]));
+            localStorage.setItem('mongol_app_added_family_ids_v1', JSON.stringify(mergedIds));
+          }
+          if (Array.isArray(snap.addedFamilyFormIds)) {
+            const curFormIds = JSON.parse(localStorage.getItem('mongol_app_added_family_form_ids_v1') || '[]');
+            const mergedFormIds = Array.from(new Set([...curFormIds, ...snap.addedFamilyFormIds]));
+            localStorage.setItem('mongol_app_added_family_form_ids_v1', JSON.stringify(mergedFormIds));
           }
 
           // あとで覚える単語（ゲーム追加単語）のクラウド同期マージ
