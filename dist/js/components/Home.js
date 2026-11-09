@@ -301,15 +301,18 @@ export class HomeComponent {
 
           <!-- 主要指標カード（正式登録単語数と「あとで覚える単語」を完全に分離） -->
           <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3 pt-2">
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
+            <div class="p-3 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl flex flex-col justify-between cursor-pointer transition-all group shadow-2xs" id="home-card-active-words" data-target="active_words" title="タップして「今覚える単語」画面へ">
               <div>
-                <div class="text-[11px] text-slate-500 font-bold">正式な登録単語数</div>
+                <div class="text-[11px] text-slate-500 font-bold flex items-center justify-between">
+                  <span>正式な登録単語数</span>
+                  <span class="text-[10px] text-slate-400 group-hover:translate-x-0.5 transition-transform">→</span>
+                </div>
                 <div class="text-base sm:text-lg font-black text-slate-900 mt-0.5">${totalWords} <span class="text-xs font-normal text-slate-400">語</span></div>
               </div>
-              <div class="text-[10px] text-emerald-600 font-bold mt-1">✓ 全ゲーム出題対象</div>
+              <div class="text-[10px] text-emerald-600 font-bold mt-1">✓ 全ゲーム出題対象（タップで一覧）</div>
             </div>
 
-            <div class="p-3 bg-amber-50/80 hover:bg-amber-100/70 border border-amber-200 rounded-xl flex flex-col justify-between cursor-pointer transition-all group shadow-2xs" id="home-card-later-words" title="タップして「あとで覚える単語」画面へ">
+            <div class="p-3 bg-amber-50/80 hover:bg-amber-100/70 border border-amber-200 rounded-xl flex flex-col justify-between cursor-pointer transition-all group shadow-2xs" id="home-card-later-words" data-target="later_words" title="タップして「あとで覚える単語」画面へ">
               <div>
                 <div class="text-[11px] text-amber-900 font-bold flex items-center justify-between">
                   <span>あとで覚える単語</span>

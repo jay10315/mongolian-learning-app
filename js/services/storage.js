@@ -404,42 +404,94 @@ export class StorageService {
     }
   }
 
-  static addWordToActiveLearning(wordId) {
+  // --- 今覚える単語から「後で覚える」へ退避（移動）された単語IDリスト ---
+  static getDemotedToLaterWordIds() {
+    try {
+      const data = localStorage.getItem('mongol_app_demoted_to_later_words_v1');
+      return data ? JSON.parse(data) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /**
+   * 単語を「あとで覚える単語」へワンタップ移動（全出題から除外・一時保管）
+   */
+  static moveWordToLater(wordId) {
     if (!wordId) return false;
-    const list = this.getAddedLaterWordIds();
-    if (!list.includes(wordId)) {
-      list.push(wordId);
-      this.setItem('mongol_app_added_later_words_v1', list);
+    let added = this.getAddedLaterWordIds();
+    let demoted = this.getDemotedToLaterWordIds();
+    let changed = false;
+
+    if (added.includes(wordId)) {
+      added = added.filter(id => id !== wordId);
+      this.setItem('mongol_app_added_later_words_v1', added);
+      changed = true;
+    }
+
+    if (!demoted.includes(wordId)) {
+      demoted.push(wordId);
+      this.setItem('mongol_app_demoted_to_later_words_v1', demoted);
+      changed = true;
+    }
+
+    if (changed) {
+      if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
+        SyncService.notifyDataChanged();
+      }
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_added_words_updated', { detail: { wordId, action: 'demote' } }));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+        }
+      } catch (_) {}
+    }
+    return true;
+  }
+
+  /**
+   * 単語を「今覚える単語」へワンタップ移動・追加（全出題対象化）
+   */
+  static moveWordToActive(wordId) {
+    if (!wordId) return false;
+    let added = this.getAddedLaterWordIds();
+    let demoted = this.getDemotedToLaterWordIds();
+    let changed = false;
+
+    if (demoted.includes(wordId)) {
+      demoted = demoted.filter(id => id !== wordId);
+      this.setItem('mongol_app_demoted_to_later_words_v1', demoted);
+      changed = true;
+    }
+
+    const classData = (typeof TEXTBOOK_CLASSIFICATION_DATA !== 'undefined' && TEXTBOOK_CLASSIFICATION_DATA[wordId]) || null;
+    const isOriginallyLater = classData && classData.status === 'later';
+    if (isOriginallyLater && !added.includes(wordId)) {
+      added.push(wordId);
+      this.setItem('mongol_app_added_later_words_v1', added);
+      changed = true;
+    }
+
+    if (changed) {
       if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
         SyncService.notifyDataChanged();
       }
       try {
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('mongol_app_added_words_updated', { detail: { wordId, action: 'add' } }));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
         }
       } catch (_) {}
-      return true;
     }
-    return false;
+    return true;
+  }
+
+  static addWordToActiveLearning(wordId) {
+    return this.moveWordToActive(wordId);
   }
 
   static removeWordFromActiveLearning(wordId) {
-    if (!wordId) return false;
-    let list = this.getAddedLaterWordIds();
-    if (list.includes(wordId)) {
-      list = list.filter(id => id !== wordId);
-      this.setItem('mongol_app_added_later_words_v1', list);
-      if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
-        SyncService.notifyDataChanged();
-      }
-      try {
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('mongol_app_added_words_updated', { detail: { wordId, action: 'remove' } }));
-        }
-      } catch (_) {}
-      return true;
-    }
-    return false;
+    return this.moveWordToLater(wordId);
   }
 
   static isWordAddedToActiveLearning(wordId) {
@@ -520,6 +572,7 @@ export class StorageService {
 
     const progressMap = this.getAllWordProgress();
     const addedSet = new Set(this.getAddedLaterWordIds());
+    const demotedSet = new Set(this.getDemotedToLaterWordIds());
 
     // initialVocabulary の最新解説・成り立ち・格支配情報を常にマージ
     const initMap = {};
@@ -549,6 +602,8 @@ export class StorageService {
       };
 
       const isAdded = addedSet.has(item.id);
+      const isDemoted = demotedSet.has(item.id);
+      const isActiveLearning = (classData.status === 'textbook' ? !isDemoted : (isAdded && !isDemoted));
 
       return {
         ...mergedItem,
@@ -558,6 +613,8 @@ export class StorageService {
         appearanceDesc: classData.appearanceDesc || '全教材：未登場',
         laterReason: classData.reason || '',
         isAddedToLearning: isAdded,
+        isDemotedToLater: isDemoted,
+        isActiveLearning: isActiveLearning,
         stem: classData.stem || item.root || '',
         dictForm: classData.dictForm || item.dictForm || item.mongolian || '',
         srsLevel: prog.srsLevel || 0,
@@ -593,29 +650,38 @@ export class StorageService {
     if (options && options.includeAll) {
       return all;
     }
-    // 教科書・練習ノート掲載単語、または「あとで覚える単語」から正式に追加登録された単語のみ
-    return all.filter(item => item.textbookStatus === 'textbook' || item.isAddedToLearning);
+    // 今覚える単語（教科書掲載単語、または「あとで覚える単語」から正式に追加登録され、後で覚えるへ退避されていない単語）
+    // item.textbookStatus === 'textbook' || item.isAddedToLearning (退避分を除く)
+    return all.filter(item => item.isActiveLearning);
   }
 
   /**
-   * 教科書・学習ノート掲載の基本単語のみ取得 (1,113語)
+   * 「今覚える単語」（現在全ゲーム・テストの出題対象になっている単語リスト）を取得
+   */
+  static getActiveWords() {
+    return this.getVocabulary();
+  }
+
+  /**
+   * 教科書・学習ノート掲載の基本単語のみ取得
    */
   static getTextbookWords() {
     return this.getAllVocabulary().filter(item => item.textbookStatus === 'textbook');
   }
 
   /**
-   * 「あとで覚える単語」（教材未登場の一時保管単語）を取得
+   * 「あとで覚える単語」（教材未登場の一時保管単語、および後で覚えるへ退避された単語）を取得
    * 正式追加された単語は「あとで覚える単語」から自動的に消えます。
    * options.includeAdded が true の場合のみ追加済みも含めて全件返却します。
    */
   static getLaterWords(options = {}) {
-    const allLater = this.getAllVocabulary().filter(item => item.textbookStatus === 'later');
+    const all = this.getAllVocabulary();
+    const allLater = all.filter(item => item.textbookStatus === 'later');
     if (options && options.includeAdded) {
-      return allLater;
+      return all.filter(item => item.textbookStatus === 'later' || item.isDemotedToLater);
     }
     // 正式登録済みの単語は「あとで覚える単語」から削除（消える）
-    return allLater.filter(item => !item.isAddedToLearning);
+    return all.filter(item => !item.isActiveLearning); // return allLater.filter(item => !item.isAddedToLearning);
   }
 
   /**

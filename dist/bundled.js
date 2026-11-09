@@ -109304,6 +109304,13 @@ class SyncService {
             localStorage.setItem('mongol_app_added_later_words_v1', JSON.stringify(mergedAdded));
           }
 
+          // 後で覚える単語へ移動（退避）した単語のクラウド同期マージ
+          if (Array.isArray(snap.demotedToLaterWords) && snap.demotedToLaterWords.length > 0) {
+            const currentDemoted = JSON.parse(localStorage.getItem('mongol_app_demoted_to_later_words_v1') || '[]');
+            const mergedDemoted = Array.from(new Set([...currentDemoted, ...snap.demotedToLaterWords]));
+            localStorage.setItem('mongol_app_demoted_to_later_words_v1', JSON.stringify(mergedDemoted));
+          }
+
           try {
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
@@ -109452,7 +109459,8 @@ class SyncService {
           mascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
           penguinMascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
           history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]'),
-          addedLaterWords: JSON.parse(localStorage.getItem('mongol_app_added_later_words_v1') || '[]')
+          addedLaterWords: JSON.parse(localStorage.getItem('mongol_app_added_later_words_v1') || '[]'),
+          demotedToLaterWords: JSON.parse(localStorage.getItem('mongol_app_demoted_to_later_words_v1') || '[]')
         }
       };
       await fetch(`${url}/rest/v1/user_sync_snapshot`, {
@@ -109945,42 +109953,94 @@ class StorageService {
     }
   }
 
-  static addWordToActiveLearning(wordId) {
+  // --- 今覚える単語から「後で覚える」へ退避（移動）された単語IDリスト ---
+  static getDemotedToLaterWordIds() {
+    try {
+      const data = localStorage.getItem('mongol_app_demoted_to_later_words_v1');
+      return data ? JSON.parse(data) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /**
+   * 単語を「あとで覚える単語」へワンタップ移動（全出題から除外・一時保管）
+   */
+  static moveWordToLater(wordId) {
     if (!wordId) return false;
-    const list = this.getAddedLaterWordIds();
-    if (!list.includes(wordId)) {
-      list.push(wordId);
-      this.setItem('mongol_app_added_later_words_v1', list);
+    let added = this.getAddedLaterWordIds();
+    let demoted = this.getDemotedToLaterWordIds();
+    let changed = false;
+
+    if (added.includes(wordId)) {
+      added = added.filter(id => id !== wordId);
+      this.setItem('mongol_app_added_later_words_v1', added);
+      changed = true;
+    }
+
+    if (!demoted.includes(wordId)) {
+      demoted.push(wordId);
+      this.setItem('mongol_app_demoted_to_later_words_v1', demoted);
+      changed = true;
+    }
+
+    if (changed) {
+      if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
+        SyncService.notifyDataChanged();
+      }
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_added_words_updated', { detail: { wordId, action: 'demote' } }));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+        }
+      } catch (_) {}
+    }
+    return true;
+  }
+
+  /**
+   * 単語を「今覚える単語」へワンタップ移動・追加（全出題対象化）
+   */
+  static moveWordToActive(wordId) {
+    if (!wordId) return false;
+    let added = this.getAddedLaterWordIds();
+    let demoted = this.getDemotedToLaterWordIds();
+    let changed = false;
+
+    if (demoted.includes(wordId)) {
+      demoted = demoted.filter(id => id !== wordId);
+      this.setItem('mongol_app_demoted_to_later_words_v1', demoted);
+      changed = true;
+    }
+
+    const classData = (typeof TEXTBOOK_CLASSIFICATION_DATA !== 'undefined' && TEXTBOOK_CLASSIFICATION_DATA[wordId]) || null;
+    const isOriginallyLater = classData && classData.status === 'later';
+    if (isOriginallyLater && !added.includes(wordId)) {
+      added.push(wordId);
+      this.setItem('mongol_app_added_later_words_v1', added);
+      changed = true;
+    }
+
+    if (changed) {
       if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
         SyncService.notifyDataChanged();
       }
       try {
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('mongol_app_added_words_updated', { detail: { wordId, action: 'add' } }));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
         }
       } catch (_) {}
-      return true;
     }
-    return false;
+    return true;
+  }
+
+  static addWordToActiveLearning(wordId) {
+    return this.moveWordToActive(wordId);
   }
 
   static removeWordFromActiveLearning(wordId) {
-    if (!wordId) return false;
-    let list = this.getAddedLaterWordIds();
-    if (list.includes(wordId)) {
-      list = list.filter(id => id !== wordId);
-      this.setItem('mongol_app_added_later_words_v1', list);
-      if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
-        SyncService.notifyDataChanged();
-      }
-      try {
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('mongol_app_added_words_updated', { detail: { wordId, action: 'remove' } }));
-        }
-      } catch (_) {}
-      return true;
-    }
-    return false;
+    return this.moveWordToLater(wordId);
   }
 
   static isWordAddedToActiveLearning(wordId) {
@@ -110061,6 +110121,7 @@ class StorageService {
 
     const progressMap = this.getAllWordProgress();
     const addedSet = new Set(this.getAddedLaterWordIds());
+    const demotedSet = new Set(this.getDemotedToLaterWordIds());
 
     // initialVocabulary の最新解説・成り立ち・格支配情報を常にマージ
     const initMap = {};
@@ -110090,6 +110151,8 @@ class StorageService {
       };
 
       const isAdded = addedSet.has(item.id);
+      const isDemoted = demotedSet.has(item.id);
+      const isActiveLearning = (classData.status === 'textbook' ? !isDemoted : (isAdded && !isDemoted));
 
       return {
         ...mergedItem,
@@ -110099,6 +110162,8 @@ class StorageService {
         appearanceDesc: classData.appearanceDesc || '全教材：未登場',
         laterReason: classData.reason || '',
         isAddedToLearning: isAdded,
+        isDemotedToLater: isDemoted,
+        isActiveLearning: isActiveLearning,
         stem: classData.stem || item.root || '',
         dictForm: classData.dictForm || item.dictForm || item.mongolian || '',
         srsLevel: prog.srsLevel || 0,
@@ -110134,29 +110199,38 @@ class StorageService {
     if (options && options.includeAll) {
       return all;
     }
-    // 教科書・練習ノート掲載単語、または「あとで覚える単語」から正式に追加登録された単語のみ
-    return all.filter(item => item.textbookStatus === 'textbook' || item.isAddedToLearning);
+    // 今覚える単語（教科書掲載単語、または「あとで覚える単語」から正式に追加登録され、後で覚えるへ退避されていない単語）
+    // item.textbookStatus === 'textbook' || item.isAddedToLearning (退避分を除く)
+    return all.filter(item => item.isActiveLearning);
   }
 
   /**
-   * 教科書・学習ノート掲載の基本単語のみ取得 (1,113語)
+   * 「今覚える単語」（現在全ゲーム・テストの出題対象になっている単語リスト）を取得
+   */
+  static getActiveWords() {
+    return this.getVocabulary();
+  }
+
+  /**
+   * 教科書・学習ノート掲載の基本単語のみ取得
    */
   static getTextbookWords() {
     return this.getAllVocabulary().filter(item => item.textbookStatus === 'textbook');
   }
 
   /**
-   * 「あとで覚える単語」（教材未登場の一時保管単語）を取得
+   * 「あとで覚える単語」（教材未登場の一時保管単語、および後で覚えるへ退避された単語）を取得
    * 正式追加された単語は「あとで覚える単語」から自動的に消えます。
    * options.includeAdded が true の場合のみ追加済みも含めて全件返却します。
    */
   static getLaterWords(options = {}) {
-    const allLater = this.getAllVocabulary().filter(item => item.textbookStatus === 'later');
+    const all = this.getAllVocabulary();
+    const allLater = all.filter(item => item.textbookStatus === 'later');
     if (options && options.includeAdded) {
-      return allLater;
+      return all.filter(item => item.textbookStatus === 'later' || item.isDemotedToLater);
     }
     // 正式登録済みの単語は「あとで覚える単語」から削除（消える）
-    return allLater.filter(item => !item.isAddedToLearning);
+    return all.filter(item => !item.isActiveLearning); // return allLater.filter(item => !item.isAddedToLearning);
   }
 
   /**
@@ -115771,50 +115845,92 @@ class ThemeModal {
 
 
 // === js/components/LaterWords.js ===
-// あとで覚える単語専用コンポーネント
-// 教科書・学習ノートに未掲載の語彙を分類・管理・ワンタップでゲーム・テストに追加/削除
+// 今覚える単語 ＆ あとで覚える単語 総合管理コンポーネント
+// 今覚える単語の一覧表示・ワンタップで後で覚えるへ移動、および後で覚える単語からワンタップで今覚えるへ追加
 
 
 
 
 class LaterWordsComponent {
+  static currentMode = 'later'; // 'active' (今覚える単語) | 'later' (あとで覚える単語)
   static searchTerm = '';
   static selectedPos = 'all';
-  static selectedStatus = 'unadded'; // 'all' | 'unadded' | 'added'
-  static sortOrder = 'default';  // 'default' | 'ja_asc' | 'mn_asc' | 'pos' | 'status'
+  static selectedStatus = 'all'; // 'all' | 'unlearned' | 'learning' | 'retaining' | 'mastered' (active) / 'unadded' | 'added' (later)
+  static sortOrder = 'default';  // 'default' | 'ja_asc' | 'mn_asc' | 'pos' | 'srs'
 
-  static render(container, onNavigate) {
+  static render(container, onNavigate, options = {}) {
     if (!container) return;
 
-    // includeAdded: true で全件取得して統計計算
-    const allLaterWordsTotal = StorageService.getLaterWords ? StorageService.getLaterWords({ includeAdded: true }) : [];
-    const unaddedLaterWords = StorageService.getLaterWords ? StorageService.getLaterWords() : [];
+    if (options && options.mode) {
+      this.currentMode = options.mode;
+    }
+
+    const activeWords = StorageService.getActiveWords ? StorageService.getActiveWords() : StorageService.getVocabulary();
+    const laterWords = StorageService.getLaterWords ? StorageService.getLaterWords() : [];
     const textbookWords = StorageService.getTextbookWords ? StorageService.getTextbookWords() : [];
     const promotedWords = StorageService.getPromotedLaterWords ? StorageService.getPromotedLaterWords() : [];
-    const addedCount = promotedWords.length;
-    const unaddedCount = unaddedLaterWords.length;
-    const formalLearningCount = StorageService.getVocabulary ? StorageService.getVocabulary().length : (textbookWords.length + addedCount);
+    const demotedIds = StorageService.getDemotedToLaterWordIds ? StorageService.getDemotedToLaterWordIds() : [];
+
+    const activeCount = activeWords.length;
+    const laterCount = laterWords.length;
+    const promotedCount = promotedWords.length;
+    const textbookCount = textbookWords.length;
+
+    const isActiveMode = (this.currentMode === 'active');
 
     container.innerHTML = `
-      <div class="animate-fade-in space-y-6 max-w-5xl mx-auto px-4 py-4 sm:py-6">
+      <div class="animate-fade-in space-y-5 max-w-5xl mx-auto px-4 py-4 sm:py-6">
         
+        <!-- モード切替タブ（今覚える単語 ↔ あとで覚える単語） -->
+        <div class="flex items-center justify-center p-1.5 bg-slate-200/80 dark:bg-slate-800 rounded-2xl max-w-lg mx-auto shadow-inner">
+          <button type="button" id="tab-mode-active" class="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            isActiveMode 
+              ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 shadow-sm' 
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }">
+            <span class="text-base">📚</span>
+            <span>今覚える単語</span>
+            <span class="text-[11px] py-0.5 px-2 rounded-full font-bold ${
+              isActiveMode ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : 'bg-slate-300/60 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+            }">${activeCount}語</span>
+          </button>
+          
+          <button type="button" id="tab-mode-later" class="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            !isActiveMode 
+              ? 'bg-white dark:bg-slate-900 text-amber-700 dark:text-amber-400 shadow-sm' 
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }">
+            <span class="text-base">⏳</span>
+            <span>あとで覚える単語</span>
+            <span class="text-[11px] py-0.5 px-2 rounded-full font-bold ${
+              !isActiveMode ? 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300' : 'bg-slate-300/60 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+            }">${laterCount}語</span>
+          </button>
+        </div>
+
         <!-- ヘッダーバナー -->
-        <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 rounded-3xl p-5 sm:p-7 text-white shadow-lg relative overflow-hidden">
+        <div class="rounded-3xl p-5 sm:p-7 text-white shadow-lg relative overflow-hidden transition-all ${
+          isActiveMode
+            ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700'
+            : 'bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700'
+        }">
           <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
 
           <div class="relative z-10 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <div class="flex items-center gap-3">
-                <span class="text-3xl sm:text-4xl">⏳</span>
+                <span class="text-3xl sm:text-4xl">${isActiveMode ? '📚' : '⏳'}</span>
                 <div>
                   <h2 class="text-xl sm:text-2xl font-black tracking-wide leading-tight flex items-center gap-2">
-                    あとで覚える単語
+                    ${isActiveMode ? '今覚える単語' : 'あとで覚える単語'}
                     <span class="text-[11px] font-bold bg-white/20 text-white px-2.5 py-0.5 rounded-full border border-white/30">
-                      教材未登場の語彙
+                      ${isActiveMode ? '正式な登録単語数（全ゲーム出題中）' : '教材未登場の一時保管'}
                     </span>
                   </h2>
-                  <p class="text-xs sm:text-sm text-amber-100 mt-0.5">
-                    教科書・練習問題集・文法ハンドブック・学習ノートと照合し、辞書形での登場実績が確認されなかった単語を分類
+                  <p class="text-xs sm:text-sm text-white/90 mt-0.5">
+                    ${isActiveMode 
+                      ? '現在アプリの単語ゲーム・単語テスト・日本語訳テスト・シャドーイング・忘却曲線に出題されている単語です。' 
+                      : '教科書・練習問題集・文法ハンドブック・学習ノートと照合し、将来学習するための一時保管単語です。'}
                   </p>
                 </div>
               </div>
@@ -115829,33 +115945,37 @@ class LaterWordsComponent {
             <!-- 統計バッジ -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
               <div class="bg-black/20 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15">
-                <div class="text-[10px] text-amber-200 font-bold">📚 正式な登録単語数</div>
-                <div class="text-lg font-black mt-0.5 text-white" id="stat-formal-count">${formalLearningCount}<span class="text-xs font-normal ml-0.5">語</span></div>
+                <div class="text-[10px] text-white/80 font-bold">📚 正式な登録単語数</div>
+                <div class="text-lg font-black mt-0.5 text-white" id="stat-formal-count">${activeCount}<span class="text-xs font-normal ml-0.5">語</span></div>
                 <div class="text-[10px] text-emerald-300 font-semibold">全ゲーム・テスト出題</div>
               </div>
 
               <div class="bg-black/20 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15">
-                <div class="text-[10px] text-amber-200 font-bold">⏳ あとで覚える単語</div>
-                <div class="text-lg font-black mt-0.5 text-white" id="stat-unadded-count">${unaddedCount}<span class="text-xs font-normal ml-0.5">語</span></div>
+                <div class="text-[10px] text-white/80 font-bold">⏳ あとで覚える単語</div>
+                <div class="text-lg font-black mt-0.5 text-white" id="stat-unadded-count">${laterCount}<span class="text-xs font-normal ml-0.5">語</span></div>
                 <div class="text-[10px] text-amber-200 opacity-90">一時保管（出題除外）</div>
               </div>
 
               <div class="bg-black/20 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15">
-                <div class="text-[10px] text-amber-200 font-bold">🎯 ゲームに追加済み</div>
-                <div class="text-lg font-black mt-0.5 text-emerald-300" id="stat-added-count">${addedCount}<span class="text-xs font-normal ml-0.5">語</span></div>
-                <div class="text-[10px] text-amber-100 opacity-90">あとで覚えるから昇格</div>
+                <div class="text-[10px] text-white/80 font-bold">🎯 ゲームに追加済み</div>
+                <div class="text-lg font-black mt-0.5 text-emerald-300" id="stat-added-count">${promotedCount}<span class="text-xs font-normal ml-0.5">語</span></div>
+                <div class="text-[10px] text-white/90">あとで覚えるから昇格</div>
               </div>
 
               <div class="bg-black/20 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15">
-                <div class="text-[10px] text-amber-200 font-bold">📖 教科書掲載基本語</div>
-                <div class="text-lg font-black mt-0.5 text-white">${textbookWords.length}<span class="text-xs font-normal ml-0.5">語</span></div>
-                <div class="text-[10px] text-amber-100 opacity-80">教材で確認済み</div>
+                <div class="text-[10px] text-white/80 font-bold">📖 教科書掲載基本語</div>
+                <div class="text-lg font-black mt-0.5 text-white">${textbookCount}<span class="text-xs font-normal ml-0.5">語</span></div>
+                <div class="text-[10px] text-white/80">教材で確認済み</div>
               </div>
             </div>
 
             <!-- 説明ガイド -->
-            <div class="text-[11px] sm:text-xs bg-amber-900/40 rounded-xl p-2.5 border border-amber-400/30 text-amber-100 leading-relaxed">
-              💡 各単語の<strong>「＋ 覚える単語に追加」</strong>を押すと、単語ゲーム・単語テスト・日本語訳テスト・リスニング・読解・タイピングなど<strong>すべての既存ゲームの出題対象に即座に追加</strong>されます。追加後は何度でも削除・再追加できます。
+            <div class="text-[11px] sm:text-xs rounded-xl p-2.5 border text-white/95 leading-relaxed ${
+              isActiveMode ? 'bg-emerald-900/40 border-emerald-400/30' : 'bg-amber-900/40 border-amber-400/30'
+            }">
+              ${isActiveMode 
+                ? '💡 各単語の<strong>「⏳ 後で覚える単語に移動」</strong>を押すと、ワンタップで出題対象から外して「あとで覚える単語」へ移動できます。いつでも再追加できます。' 
+                : '💡 各単語の<strong>「＋ 覚える単語に追加」</strong>を押すと、ワンタップで<strong>すべての既存ゲーム・テストの出題対象に追加</strong>されます。追加後は何度でも削除・再追加できます。'}
             </div>
           </div>
         </div>
@@ -115867,12 +115987,12 @@ class LaterWordsComponent {
             <!-- 検索窓 -->
             <div class="sm:col-span-5 relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
-              <input type="text" id="input-search-later" placeholder="モンゴル語・日本語で検索..." value="${this.searchTerm}" class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-hidden focus:border-amber-500 text-slate-800 dark:text-slate-100 font-medium">
+              <input type="text" id="input-search-later" placeholder="モンゴル語・日本語で検索..." value="${this.searchTerm}" class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-hidden focus:border-emerald-500 text-slate-800 dark:text-slate-100 font-medium">
             </div>
 
             <!-- 品詞フィルター -->
             <div class="sm:col-span-3">
-              <select id="select-pos-later" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-hidden focus:border-amber-500 text-slate-800 dark:text-slate-100 font-bold">
+              <select id="select-pos-later" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-hidden focus:border-emerald-500 text-slate-800 dark:text-slate-100 font-bold">
                 <option value="all">品詞: すべて</option>
                 <option value="verb" ${this.selectedPos === 'verb' ? 'selected' : ''}>動詞のみ</option>
                 <option value="noun" ${this.selectedPos === 'noun' ? 'selected' : ''}>名詞のみ</option>
@@ -115882,23 +116002,36 @@ class LaterWordsComponent {
               </select>
             </div>
 
-            <!-- 追加状態フィルター -->
+            <!-- 状態フィルター -->
             <div class="sm:col-span-2">
-              <select id="select-status-later" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-hidden focus:border-amber-500 text-slate-800 dark:text-slate-100 font-bold">
-                <option value="all">状態: すべて</option>
-                <option value="unadded" ${this.selectedStatus === 'unadded' ? 'selected' : ''}>未追加のみ</option>
-                <option value="added" ${this.selectedStatus === 'added' ? 'selected' : ''}>追加済みのみ</option>
+              <select id="select-status-later" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-hidden focus:border-emerald-500 text-slate-800 dark:text-slate-100 font-bold">
+                ${isActiveMode ? `
+                  <option value="all" ${this.selectedStatus === 'all' ? 'selected' : ''}>習熟度: すべて</option>
+                  <option value="unlearned" ${this.selectedStatus === 'unlearned' ? 'selected' : ''}>未学習 (Lv0)</option>
+                  <option value="learning" ${this.selectedStatus === 'learning' ? 'selected' : ''}>初見 (Lv1-2)</option>
+                  <option value="retaining" ${this.selectedStatus === 'retaining' ? 'selected' : ''}>定着中 (Lv3-5)</option>
+                  <option value="mastered" ${this.selectedStatus === 'mastered' ? 'selected' : ''}>習得済 (Lv6+)</option>
+                ` : `
+                  <option value="all" ${this.selectedStatus === 'all' ? 'selected' : ''}>状態: すべて</option>
+                  <option value="unadded" ${this.selectedStatus === 'unadded' ? 'selected' : ''}>未追加のみ</option>
+                  <option value="added" ${this.selectedStatus === 'added' ? 'selected' : ''}>追加済みのみ</option>
+                `}
               </select>
             </div>
 
             <!-- 並び替え -->
             <div class="sm:col-span-2">
-              <select id="select-sort-later" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-hidden focus:border-amber-500 text-slate-800 dark:text-slate-100 font-bold">
+              <select id="select-sort-later" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-hidden focus:border-emerald-500 text-slate-800 dark:text-slate-100 font-bold">
                 <option value="default" ${this.sortOrder === 'default' ? 'selected' : ''}>並び順: 標準</option>
                 <option value="ja_asc" ${this.sortOrder === 'ja_asc' ? 'selected' : ''}>日本語（五十音）</option>
                 <option value="mn_asc" ${this.sortOrder === 'mn_asc' ? 'selected' : ''}>モンゴル語（ABC）</option>
                 <option value="pos" ${this.sortOrder === 'pos' ? 'selected' : ''}>品詞順</option>
-                <option value="status" ${this.sortOrder === 'status' ? 'selected' : ''}>追加済み優先</option>
+                ${isActiveMode ? `
+                  <option value="srs" ${this.sortOrder === 'srs' ? 'selected' : ''}>習熟度順</option>
+                  <option value="risk" ${this.sortOrder === 'risk' ? 'selected' : ''}>忘却リスク順</option>
+                ` : `
+                  <option value="status" ${this.sortOrder === 'status' ? 'selected' : ''}>追加済み優先</option>
+                `}
               </select>
             </div>
 
@@ -115907,7 +116040,7 @@ class LaterWordsComponent {
           <!-- 件数表示 -->
           <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800">
             <span id="label-filtered-count">表示中: 読み込み中...</span>
-            <span class="text-[11px]">※追加した単語は自動で全端末にクラウド同期されます</span>
+            <span class="text-[11px]">※ボタンを1回タップするだけで即座に分類が移動します</span>
           </div>
         </div>
 
@@ -115920,6 +116053,24 @@ class LaterWordsComponent {
     `;
 
     // イベントバインド
+    const tabActiveBtn = container.querySelector('#tab-mode-active');
+    if (tabActiveBtn) {
+      tabActiveBtn.addEventListener('click', () => {
+        this.currentMode = 'active';
+        this.selectedStatus = 'all';
+        this.render(container, onNavigate);
+      });
+    }
+
+    const tabLaterBtn = container.querySelector('#tab-mode-later');
+    if (tabLaterBtn) {
+      tabLaterBtn.addEventListener('click', () => {
+        this.currentMode = 'later';
+        this.selectedStatus = 'all';
+        this.render(container, onNavigate);
+      });
+    }
+
     const backBtn = container.querySelector('#btn-back-home');
     if (backBtn && onNavigate) {
       backBtn.addEventListener('click', () => onNavigate('home'));
@@ -115965,9 +116116,15 @@ class LaterWordsComponent {
     const countLabel = container.querySelector('#label-filtered-count');
     if (!listContainer) return;
 
-    // 「すべて」または「追加済みのみ」選択時は追加済みも含めて取得
-    const includeAdded = (this.selectedStatus === 'all' || this.selectedStatus === 'added');
-    let words = StorageService.getLaterWords ? StorageService.getLaterWords({ includeAdded }) : [];
+    const isActiveMode = (this.currentMode === 'active');
+    let words = [];
+
+    if (isActiveMode) {
+      words = StorageService.getActiveWords ? StorageService.getActiveWords() : StorageService.getVocabulary();
+    } else {
+      const includeAdded = (this.selectedStatus === 'all' || this.selectedStatus === 'added');
+      words = StorageService.getLaterWords ? StorageService.getLaterWords({ includeAdded }) : [];
+    }
 
     // 1. 検索フィルター
     if (this.searchTerm && this.searchTerm.trim()) {
@@ -115994,12 +116151,16 @@ class LaterWordsComponent {
       });
     }
 
-    // 3. 追加状態フィルター
+    // 3. 状態フィルター
     if (this.selectedStatus !== 'all') {
-      if (this.selectedStatus === 'added') {
-        words = words.filter(w => w.isAddedToLearning);
-      } else if (this.selectedStatus === 'unadded') {
-        words = words.filter(w => !w.isAddedToLearning);
+      if (isActiveMode) {
+        if (this.selectedStatus === 'unlearned') words = words.filter(w => (w.srsLevel || 0) === 0);
+        else if (this.selectedStatus === 'learning') words = words.filter(w => (w.srsLevel || 0) >= 1 && (w.srsLevel || 0) <= 2);
+        else if (this.selectedStatus === 'retaining') words = words.filter(w => (w.srsLevel || 0) >= 3 && (w.srsLevel || 0) <= 5);
+        else if (this.selectedStatus === 'mastered') words = words.filter(w => (w.srsLevel || 0) >= 6);
+      } else {
+        if (this.selectedStatus === 'added') words = words.filter(w => w.isAddedToLearning);
+        else if (this.selectedStatus === 'unadded') words = words.filter(w => !w.isAddedToLearning);
       }
     }
 
@@ -116012,10 +116173,16 @@ class LaterWordsComponent {
       words.sort((a, b) => (a.pos || '').localeCompare(b.pos || ''));
     } else if (this.sortOrder === 'status') {
       words.sort((a, b) => (b.isAddedToLearning ? 1 : 0) - (a.isAddedToLearning ? 1 : 0));
+    } else if (this.sortOrder === 'srs') {
+      words.sort((a, b) => (b.srsLevel || 0) - (a.srsLevel || 0));
+    } else if (this.sortOrder === 'risk') {
+      words.sort((a, b) => (b.forgettingRisk || 0) - (a.forgettingRisk || 0));
     }
 
     if (countLabel) {
-      const totalTarget = (this.selectedStatus === 'added') ? StorageService.getPromotedLaterWords().length : (this.selectedStatus === 'unadded' ? StorageService.getLaterWords().length : StorageService.getLaterWords({ includeAdded: true }).length);
+      const totalTarget = isActiveMode 
+        ? StorageService.getActiveWords().length 
+        : (this.selectedStatus === 'added' ? StorageService.getPromotedLaterWords().length : (this.selectedStatus === 'unadded' ? StorageService.getLaterWords().length : StorageService.getLaterWords({ includeAdded: true }).length));
       countLabel.textContent = `表示中: ${words.length}件 / 全${totalTarget}件`;
     }
 
@@ -116031,29 +116198,33 @@ class LaterWordsComponent {
 
     listContainer.className = 'grid grid-cols-1 md:grid-cols-2 gap-3.5';
     listContainer.innerHTML = words.map(w => {
-      const isAdded = Boolean(w.isAddedToLearning);
       const isVerb = Boolean(w.isVerb || (w.pos && w.pos.includes('動詞')));
+      const isAdded = Boolean(w.isAddedToLearning);
+      const isDemoted = Boolean(w.isDemotedToLater);
+      const srsLevel = w.srsLevel || 0;
 
       return `
         <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border transition-all ${
-          isAdded 
-            ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/20 shadow-xs' 
-            : 'border-slate-200 dark:border-slate-800 hover:border-amber-300 shadow-2xs'
+          isActiveMode
+            ? 'border-slate-200 dark:border-slate-800 hover:border-emerald-300 shadow-2xs'
+            : (isAdded 
+                ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/20 shadow-xs' 
+                : 'border-slate-200 dark:border-slate-800 hover:border-amber-300 shadow-2xs')
         } flex flex-col justify-between space-y-3">
           
           <div class="space-y-2">
-            <!-- 単語ヘッダー: モンゴル語 ＆ 発音ボタン ＆ 品詞バッジ -->
+            <!-- 単語ヘッダー: モンゴル語 ＆ 発音ボタン ＆ バッジ群 -->
             <div class="flex items-start justify-between gap-2">
               <div class="flex items-center gap-2">
                 <span class="cyrillic-text font-black text-lg sm:text-xl text-slate-900 dark:text-white leading-tight">
                   ${w.mongolian}
                 </span>
-                <button type="button" class="btn-play-audio text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 p-1 rounded-lg transition-colors cursor-pointer text-base" data-word="${w.mongolian}" title="音声を聴く">
+                <button type="button" class="btn-play-audio text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 p-1 rounded-lg transition-colors cursor-pointer text-base" data-word="${w.mongolian}" title="音声を聴く">
                   🔊
                 </button>
               </div>
 
-              <div class="flex items-center gap-1.5 shrink-0">
+              <div class="flex flex-wrap items-center justify-end gap-1.5 shrink-0">
                 <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${
                   isVerb ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-200' :
                   (w.pos && w.pos.includes('形容詞')) ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200' :
@@ -116062,11 +116233,20 @@ class LaterWordsComponent {
                   ${w.pos || '単語'}
                 </span>
 
-                ${isAdded ? `
+                ${isActiveMode ? `
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-black ${
+                    srsLevel >= 6 ? 'bg-purple-100 text-purple-800 border border-purple-200' :
+                    srsLevel >= 3 ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
+                    srsLevel >= 1 ? 'bg-amber-100 text-amber-800 border border-amber-200' :
+                    'bg-slate-100 text-slate-600'
+                  }">
+                    Lv.${srsLevel} ${w.masteryLabel || '未学習'}
+                  </span>
+                ` : (isAdded ? `
                   <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
                     <span>✓</span><span>出題中</span>
                   </span>
-                ` : ''}
+                ` : '')}
               </div>
             </div>
 
@@ -116094,25 +116274,41 @@ class LaterWordsComponent {
               </div>
             ` : ''}
 
-            <!-- 理由 ＆ 教材確認状況カード -->
-            <div class="bg-amber-50/60 dark:bg-amber-950/30 rounded-xl p-2.5 border border-amber-200/80 dark:border-amber-900/50 text-[11px] space-y-1.5">
-              <div class="flex items-center gap-1 font-bold text-amber-900 dark:text-amber-200">
-                <span>⚠️</span>
-                <span>未掲載理由:</span>
+            <!-- 例文（あれば表示） -->
+            ${w.exampleMn ? `
+              <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-2 text-xs space-y-0.5 border border-slate-100 dark:border-slate-800">
+                <div class="cyrillic-text text-slate-700 dark:text-slate-300 font-semibold text-[11px]">${w.exampleMn}</div>
+                <div class="text-slate-500 dark:text-slate-400 text-[10px]">${w.exampleJa || ''}</div>
               </div>
-              <p class="text-amber-800 dark:text-amber-300/90 leading-tight">
-                ${w.laterReason || '教科書・練習問題集・学習ノートに未掲載（辞書形での登場実績なし）'}
-              </p>
-              <div class="pt-1 border-t border-amber-200/60 dark:border-amber-900/40 text-[10px] text-amber-900/80 dark:text-amber-300/70 flex items-center gap-1">
-                <span class="font-bold">確認状況:</span>
-                <span>全5教材 照合済み（未登場）</span>
+            ` : ''}
+
+            <!-- 未掲載理由（あとで覚える単語の場合） -->
+            ${!isActiveMode ? `
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 bg-amber-50/60 dark:bg-amber-950/30 p-2 rounded-xl border border-amber-100 dark:border-amber-900/40">
+                <span class="text-slate-400 font-bold">未掲載理由:</span>
+                <span class="text-amber-800 dark:text-amber-300 font-medium ml-1">${w.laterReason || '全教材：未登場（一時保管）'}</span>
               </div>
+            ` : ''}
+
+            <!-- 登場教材・確認状況 -->
+            <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-2 border border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+              <span class="text-slate-400">確認状況:</span>
+              <span class="font-bold ${w.textbookStatus === 'textbook' ? 'text-emerald-700 dark:text-emerald-400' : 'text-amber-700 dark:text-amber-400'}">
+                ${w.textbookStatus === 'textbook' ? '📖 教科書・学習ノート・Eラーニング登場' : '⏳ 教材未掲載（一時保管）'}
+              </span>
             </div>
           </div>
 
           <!-- アクションボタンエリア -->
           <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
-            ${isAdded ? `
+            ${isActiveMode ? `
+              <!-- 今覚える単語 → 後で覚える単語へワンタップ移動 -->
+              <button type="button" class="btn-move-to-later w-full py-2.5 px-3 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 dark:hover:bg-amber-900/70 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-200 font-black text-xs transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-98 cursor-pointer" data-id="${w.id}">
+                <span>⏳</span>
+                <span>後で覚える単語に移動</span>
+              </button>
+            ` : (isAdded ? `
+              <!-- 追加済み状態 -->
               <div class="flex items-center gap-2">
                 <button type="button" class="btn-toggle-add flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer" data-id="${w.id}" data-action="remove">
                   <span>✓</span>
@@ -116123,11 +116319,12 @@ class LaterWordsComponent {
                 </button>
               </div>
             ` : `
+              <!-- 覚える単語に追加 -->
               <button type="button" class="btn-toggle-add w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-98 cursor-pointer" data-id="${w.id}" data-action="add">
                 <span>＋</span>
                 <span>覚える単語に追加</span>
               </button>
-            `}
+            `)}
           </div>
 
         </div>
@@ -116145,7 +116342,25 @@ class LaterWordsComponent {
       });
     });
 
-    // 追加・削除ボタンのイベント
+    // 「後で覚える単語に移動」ボタンのイベント
+    listContainer.querySelectorAll('.btn-move-to-later').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wordId = btn.dataset.id;
+        const targetWord = words.find(w => w.id === wordId) || StorageService.getAllVocabulary().find(w => w.id === wordId);
+
+        StorageService.moveWordToLater(wordId);
+        if (typeof SoundEffects !== 'undefined' && SoundEffects.playClick) {
+          SoundEffects.playClick();
+        }
+        this.showToast(`「${targetWord ? targetWord.mongolian : '単語'}」を後で覚える単語に移動しました（全ゲーム・出題から除外）`);
+
+        this.updateHeaderStats(container);
+        this.renderList(container);
+      });
+    });
+
+    // 「覚える単語に追加」/「削除」ボタンのイベント
     listContainer.querySelectorAll('.btn-toggle-add').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -116154,20 +116369,19 @@ class LaterWordsComponent {
         const targetWord = words.find(w => w.id === wordId) || StorageService.getAllVocabulary().find(w => w.id === wordId);
 
         if (action === 'add') {
-          StorageService.addWordToActiveLearning(wordId);
+          StorageService.moveWordToActive(wordId);
           if (typeof SoundEffects !== 'undefined' && SoundEffects.playSuccess) {
             SoundEffects.playSuccess();
           }
-          this.showToast(`「${targetWord ? targetWord.mongolian : '単語'}」を覚える単語に追加しました！登録単語数に反映され、全ゲームに出題されます。`);
+          this.showToast(`「${targetWord ? targetWord.mongolian : '単語'}」を覚える単語に追加しました！全ゲーム・テストに出題されます。`);
         } else {
-          StorageService.removeWordFromActiveLearning(wordId);
+          StorageService.moveWordToLater(wordId);
           if (typeof SoundEffects !== 'undefined' && SoundEffects.playClick) {
             SoundEffects.playClick();
           }
           this.showToast(`「${targetWord ? targetWord.mongolian : '単語'}」を出題対象から外し、「あとで覚える単語」に戻しました。`);
         }
 
-        // バナーの統計カウントを即時更新
         this.updateHeaderStats(container);
         this.renderList(container);
       });
@@ -116175,16 +116389,28 @@ class LaterWordsComponent {
   }
 
   static updateHeaderStats(container) {
-    const allLater = StorageService.getLaterWords();
-    const textbook = StorageService.getTextbookWords();
-    const addedCount = allLater.filter(w => w.isAddedToLearning).length;
-    const activeTestCount = textbook.length + addedCount;
+    const activeWords = StorageService.getActiveWords ? StorageService.getActiveWords() : StorageService.getVocabulary();
+    const laterWords = StorageService.getLaterWords ? StorageService.getLaterWords() : [];
+    const promotedWords = StorageService.getPromotedLaterWords ? StorageService.getPromotedLaterWords() : [];
+
+    const activeCount = activeWords.length;
+    const laterCount = laterWords.length;
+    const promotedCount = promotedWords.length;
+
+    const statFormal = container.querySelector('#stat-formal-count');
+    if (statFormal) statFormal.innerHTML = `${activeCount}<span class="text-xs font-normal ml-0.5">語</span>`;
+
+    const statUnadded = container.querySelector('#stat-unadded-count');
+    if (statUnadded) statUnadded.innerHTML = `${laterCount}<span class="text-xs font-normal ml-0.5">語</span>`;
 
     const statAdded = container.querySelector('#stat-added-count');
-    if (statAdded) statAdded.innerHTML = `${addedCount}<span class="text-xs font-normal ml-0.5">語</span>`;
+    if (statAdded) statAdded.innerHTML = `${promotedCount}<span class="text-xs font-normal ml-0.5">語</span>`;
 
-    const statTotal = container.querySelector('#stat-total-test-count');
-    if (statTotal) statTotal.innerHTML = `${activeTestCount}<span class="text-xs font-normal ml-0.5">語</span>`;
+    const tabActiveBadge = container.querySelector('#tab-mode-active span:last-child');
+    if (tabActiveBadge) tabActiveBadge.textContent = `${activeCount}語`;
+
+    const tabLaterBadge = container.querySelector('#tab-mode-later span:last-child');
+    if (tabLaterBadge) tabLaterBadge.textContent = `${laterCount}語`;
   }
 
   static showToast(message) {
@@ -117206,8 +117432,9 @@ class Navbar {
     const tabs = [
       { id: 'home', label: 'ホーム', icon: '🏠' },
       { id: 'genre_master', label: 'ジャンル別単語', icon: '🏷️' },
-      { id: 'word_family', label: '単語ファミリー', icon: '🌳' },
+      { id: 'active_words', label: '今覚える単語', icon: '📚' },
       { id: 'later_words', label: 'あとで覚える単語', icon: '⏳' },
+      { id: 'word_family', label: '単語ファミリー', icon: '🌳' },
       { id: 'exercise_notebook', label: '練習ノート', icon: '📓' },
       { id: 'word_game', label: '単語ゲーム', icon: '🎮' },
       { id: 'word_test', label: '単語テスト', icon: '📝' },
@@ -118353,15 +118580,18 @@ class HomeComponent {
 
           <!-- 主要指標カード（正式登録単語数と「あとで覚える単語」を完全に分離） -->
           <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3 pt-2">
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
+            <div class="p-3 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl flex flex-col justify-between cursor-pointer transition-all group shadow-2xs" id="home-card-active-words" data-target="active_words" title="タップして「今覚える単語」画面へ">
               <div>
-                <div class="text-[11px] text-slate-500 font-bold">正式な登録単語数</div>
+                <div class="text-[11px] text-slate-500 font-bold flex items-center justify-between">
+                  <span>正式な登録単語数</span>
+                  <span class="text-[10px] text-slate-400 group-hover:translate-x-0.5 transition-transform">→</span>
+                </div>
                 <div class="text-base sm:text-lg font-black text-slate-900 mt-0.5">${totalWords} <span class="text-xs font-normal text-slate-400">語</span></div>
               </div>
-              <div class="text-[10px] text-emerald-600 font-bold mt-1">✓ 全ゲーム出題対象</div>
+              <div class="text-[10px] text-emerald-600 font-bold mt-1">✓ 全ゲーム出題対象（タップで一覧）</div>
             </div>
 
-            <div class="p-3 bg-amber-50/80 hover:bg-amber-100/70 border border-amber-200 rounded-xl flex flex-col justify-between cursor-pointer transition-all group shadow-2xs" id="home-card-later-words" title="タップして「あとで覚える単語」画面へ">
+            <div class="p-3 bg-amber-50/80 hover:bg-amber-100/70 border border-amber-200 rounded-xl flex flex-col justify-between cursor-pointer transition-all group shadow-2xs" id="home-card-later-words" data-target="later_words" title="タップして「あとで覚える単語」画面へ">
               <div>
                 <div class="text-[11px] text-amber-900 font-bold flex items-center justify-between">
                   <span>あとで覚える単語</span>
@@ -144291,14 +144521,27 @@ class App {
       case 'genre_master':
         GenreWordMasterComponent.render(mainContainer, onNavigate);
         break;
+      case 'active_words':
+        {
+          const Comp = (typeof LaterWordsComponent !== 'undefined' && LaterWordsComponent) ||
+                       (typeof window !== 'undefined' && window.LaterWordsComponent);
+          if (Comp && typeof Comp.render === 'function') {
+            Comp.render(mainContainer, onNavigate, { mode: 'active' });
+          } else {
+            console.error('[App] LaterWordsComponent is not defined');
+            mainContainer.innerHTML = '<div class="p-8 text-center text-red-500 font-bold">コンポーネント読み込みエラーが発生しました。再読み込みしてください。</div>';
+          }
+        }
+        break;
       case 'later_words':
         {
           const Comp = (typeof LaterWordsComponent !== 'undefined' && LaterWordsComponent) ||
                        (typeof window !== 'undefined' && window.LaterWordsComponent);
           if (Comp && typeof Comp.render === 'function') {
-            Comp.render(mainContainer, onNavigate);
+            Comp.render(mainContainer, onNavigate, { mode: 'later' });
           } else {
-            console.error('[App] LaterWordsComponent is not defined on render');
+            console.error('[App] LaterWordsComponent is not defined');
+            mainContainer.innerHTML = '<div class="p-8 text-center text-red-500 font-bold">コンポーネント読み込みエラーが発生しました。再読み込みしてください。</div>';
           }
         }
         break;

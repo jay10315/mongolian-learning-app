@@ -225,14 +225,27 @@ class App {
       case 'genre_master':
         GenreWordMasterComponent.render(mainContainer, onNavigate);
         break;
+      case 'active_words':
+        {
+          const Comp = (typeof LaterWordsComponent !== 'undefined' && LaterWordsComponent) ||
+                       (typeof window !== 'undefined' && window.LaterWordsComponent);
+          if (Comp && typeof Comp.render === 'function') {
+            Comp.render(mainContainer, onNavigate, { mode: 'active' });
+          } else {
+            console.error('[App] LaterWordsComponent is not defined');
+            mainContainer.innerHTML = '<div class="p-8 text-center text-red-500 font-bold">コンポーネント読み込みエラーが発生しました。再読み込みしてください。</div>';
+          }
+        }
+        break;
       case 'later_words':
         {
           const Comp = (typeof LaterWordsComponent !== 'undefined' && LaterWordsComponent) ||
                        (typeof window !== 'undefined' && window.LaterWordsComponent);
           if (Comp && typeof Comp.render === 'function') {
-            Comp.render(mainContainer, onNavigate);
+            Comp.render(mainContainer, onNavigate, { mode: 'later' });
           } else {
-            console.error('[App] LaterWordsComponent is not defined on render');
+            console.error('[App] LaterWordsComponent is not defined');
+            mainContainer.innerHTML = '<div class="p-8 text-center text-red-500 font-bold">コンポーネント読み込みエラーが発生しました。再読み込みしてください。</div>';
           }
         }
         break;

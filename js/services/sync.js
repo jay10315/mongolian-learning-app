@@ -552,6 +552,13 @@ export class SyncService {
             localStorage.setItem('mongol_app_added_later_words_v1', JSON.stringify(mergedAdded));
           }
 
+          // 後で覚える単語へ移動（退避）した単語のクラウド同期マージ
+          if (Array.isArray(snap.demotedToLaterWords) && snap.demotedToLaterWords.length > 0) {
+            const currentDemoted = JSON.parse(localStorage.getItem('mongol_app_demoted_to_later_words_v1') || '[]');
+            const mergedDemoted = Array.from(new Set([...currentDemoted, ...snap.demotedToLaterWords]));
+            localStorage.setItem('mongol_app_demoted_to_later_words_v1', JSON.stringify(mergedDemoted));
+          }
+
           try {
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
@@ -700,7 +707,8 @@ export class SyncService {
           mascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
           penguinMascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
           history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]'),
-          addedLaterWords: JSON.parse(localStorage.getItem('mongol_app_added_later_words_v1') || '[]')
+          addedLaterWords: JSON.parse(localStorage.getItem('mongol_app_added_later_words_v1') || '[]'),
+          demotedToLaterWords: JSON.parse(localStorage.getItem('mongol_app_demoted_to_later_words_v1') || '[]')
         }
       };
       await fetch(`${url}/rest/v1/user_sync_snapshot`, {

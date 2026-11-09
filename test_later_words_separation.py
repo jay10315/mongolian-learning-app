@@ -90,11 +90,11 @@ tests_passed += 1
 # Test 8: Verify Service Worker cache v12
 with open('sw.js', 'r', encoding='utf-8') as f:
     sw_text = f.read()
-assert 'mongol-app-cache-v14' in sw_text
+assert 'mongol-app-cache-v15' in sw_text
 with open('dist/sw.js', 'r', encoding='utf-8') as f:
     dsw_text = f.read()
-assert 'mongol-app-cache-v14' in dsw_text
-print("Test 8 PASS: sw.js and dist/sw.js cache bumped to v14.")
+assert 'mongol-app-cache-v15' in dsw_text
+print("Test 8 PASS: sw.js and dist/sw.js cache bumped to v15.")
 tests_passed += 1
 
 # Test 9: Run previous regression test suite
