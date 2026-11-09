@@ -1,3 +1,4 @@
+import { LaterWordsComponent } from './components/LaterWords.js';
 // メインアプリケーションコントローラー
 import { StorageService } from './services/storage.js';
 import { AuthService } from './services/auth.js';
@@ -208,6 +209,9 @@ class App {
     switch (this.currentTab) {
       case 'genre_master':
         GenreWordMasterComponent.render(mainContainer, onNavigate);
+        break;
+      case 'later_words':
+        LaterWordsComponent.render(mainContainer, onNavigate);
         break;
       case 'home':
         HomeComponent.render(mainContainer, onNavigate);

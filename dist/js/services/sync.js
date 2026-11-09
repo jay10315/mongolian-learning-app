@@ -524,6 +524,13 @@ export class SyncService {
             localStorage.setItem('mongol_app_daily_stats_v1', JSON.stringify(snap.dailyStats));
           }
 
+          // あとで覚える単語（ゲーム追加単語）のクラウド同期マージ
+          if (Array.isArray(snap.addedLaterWords) && snap.addedLaterWords.length > 0) {
+            const currentAdded = JSON.parse(localStorage.getItem('mongol_app_added_later_words_v1') || '[]');
+            const mergedAdded = Array.from(new Set([...currentAdded, ...snap.addedLaterWords]));
+            localStorage.setItem('mongol_app_added_later_words_v1', JSON.stringify(mergedAdded));
+          }
+
           try {
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
@@ -671,7 +678,8 @@ export class SyncService {
           dailyStats: JSON.parse(localStorage.getItem('mongol_app_daily_stats_v1') || '{}'),
           mascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
           penguinMascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
-          history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]')
+          history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]'),
+          addedLaterWords: JSON.parse(localStorage.getItem('mongol_app_added_later_words_v1') || '[]')
         }
       };
       await fetch(`${url}/rest/v1/user_sync_snapshot`, {

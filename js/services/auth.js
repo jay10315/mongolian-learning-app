@@ -452,6 +452,7 @@ export class AuthService {
         wordProgress: localStorage.getItem('mongol_app_word_progress_v1'),
         lookedUpWords: localStorage.getItem('mongol_app_looked_up_words_v1'),
         history: localStorage.getItem('mongol_app_history_v1'),
+        addedLaterWords: localStorage.getItem('mongol_app_added_later_words_v1'),
         dailyStats: localStorage.getItem('mongol_app_daily_stats_v1'),
         settings: localStorage.getItem('mongol_app_settings_v1'),
         customTyping: localStorage.getItem('mongol_app_custom_typing_sentences_v1'),
@@ -832,6 +833,15 @@ export class AuthService {
           const h = typeof sRaw.history === 'string' ? JSON.parse(sRaw.history) : sRaw.history;
           if (Array.isArray(h)) localStorage.setItem('mongol_app_history_v1', JSON.stringify(h));
         }
+        if (sRaw.addedLaterWords || payload.addedLaterWords) {
+          const rawA = sRaw.addedLaterWords || payload.addedLaterWords;
+          const a = typeof rawA === 'string' ? JSON.parse(rawA) : rawA;
+          if (Array.isArray(a)) {
+            const curA = JSON.parse(localStorage.getItem('mongol_app_added_later_words_v1') || '[]');
+            const mergedA = Array.from(new Set([...curA, ...a]));
+            localStorage.setItem('mongol_app_added_later_words_v1', JSON.stringify(mergedA));
+          }
+        }
       } catch (_) {}
 
       // 8. 同梱されたSupabase設定があれば適用
@@ -897,6 +907,7 @@ export class AuthService {
         wordProgress: localStorage.getItem('mongol_app_word_progress_v1'),
         lookedUpWords: localStorage.getItem('mongol_app_looked_up_words_v1'),
         history: localStorage.getItem('mongol_app_history_v1'),
+        addedLaterWords: localStorage.getItem('mongol_app_added_later_words_v1'),
         dailyStats: localStorage.getItem('mongol_app_daily_stats_v1'),
         settings: localStorage.getItem('mongol_app_settings_v1'),
         customTyping: localStorage.getItem('mongol_app_custom_typing_sentences_v1'),

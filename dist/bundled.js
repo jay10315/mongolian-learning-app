@@ -80928,6 +80928,7 @@ class AuthService {
         wordProgress: localStorage.getItem('mongol_app_word_progress_v1'),
         lookedUpWords: localStorage.getItem('mongol_app_looked_up_words_v1'),
         history: localStorage.getItem('mongol_app_history_v1'),
+        addedLaterWords: localStorage.getItem('mongol_app_added_later_words_v1'),
         dailyStats: localStorage.getItem('mongol_app_daily_stats_v1'),
         settings: localStorage.getItem('mongol_app_settings_v1'),
         customTyping: localStorage.getItem('mongol_app_custom_typing_sentences_v1'),
@@ -81308,6 +81309,15 @@ class AuthService {
           const h = typeof sRaw.history === 'string' ? JSON.parse(sRaw.history) : sRaw.history;
           if (Array.isArray(h)) localStorage.setItem('mongol_app_history_v1', JSON.stringify(h));
         }
+        if (sRaw.addedLaterWords || payload.addedLaterWords) {
+          const rawA = sRaw.addedLaterWords || payload.addedLaterWords;
+          const a = typeof rawA === 'string' ? JSON.parse(rawA) : rawA;
+          if (Array.isArray(a)) {
+            const curA = JSON.parse(localStorage.getItem('mongol_app_added_later_words_v1') || '[]');
+            const mergedA = Array.from(new Set([...curA, ...a]));
+            localStorage.setItem('mongol_app_added_later_words_v1', JSON.stringify(mergedA));
+          }
+        }
       } catch (_) {}
 
       // 8. 同梱されたSupabase設定があれば適用
@@ -81373,6 +81383,7 @@ class AuthService {
         wordProgress: localStorage.getItem('mongol_app_word_progress_v1'),
         lookedUpWords: localStorage.getItem('mongol_app_looked_up_words_v1'),
         history: localStorage.getItem('mongol_app_history_v1'),
+        addedLaterWords: localStorage.getItem('mongol_app_added_later_words_v1'),
         dailyStats: localStorage.getItem('mongol_app_daily_stats_v1'),
         settings: localStorage.getItem('mongol_app_settings_v1'),
         customTyping: localStorage.getItem('mongol_app_custom_typing_sentences_v1'),
@@ -82124,6 +82135,13 @@ class SyncService {
             localStorage.setItem('mongol_app_daily_stats_v1', JSON.stringify(snap.dailyStats));
           }
 
+          // あとで覚える単語（ゲーム追加単語）のクラウド同期マージ
+          if (Array.isArray(snap.addedLaterWords) && snap.addedLaterWords.length > 0) {
+            const currentAdded = JSON.parse(localStorage.getItem('mongol_app_added_later_words_v1') || '[]');
+            const mergedAdded = Array.from(new Set([...currentAdded, ...snap.addedLaterWords]));
+            localStorage.setItem('mongol_app_added_later_words_v1', JSON.stringify(mergedAdded));
+          }
+
           try {
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
@@ -82271,7 +82289,8 @@ class SyncService {
           dailyStats: JSON.parse(localStorage.getItem('mongol_app_daily_stats_v1') || '{}'),
           mascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
           penguinMascot: JSON.parse(localStorage.getItem('mongol_app_penguin_mascot_v1') || '{}'),
-          history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]')
+          history: JSON.parse(localStorage.getItem('mongol_app_history_v1') || '[]'),
+          addedLaterWords: JSON.parse(localStorage.getItem('mongol_app_added_later_words_v1') || '[]')
         }
       };
       await fetch(`${url}/rest/v1/user_sync_snapshot`, {
@@ -82358,6 +82377,7 @@ class SyncService {
 
 
 // === js/services/storage.js ===
+
 const DEPRECATED_DUPLICATE_ID_MAP = {
   'v_genre_965': 'v_genre_964', // ананас -> хан боргоцой
   'v_genre_979': 'v_genre_978', // огурцы -> өргөст хэмх
@@ -82752,7 +82772,63 @@ class StorageService {
 
   // --- 単語マスターデータ（SRS進捗をマージして提供） ---
 
-  static getVocabulary() {
+  // --- あとで覚える単語の個別追加管理（ゲーム・テスト連携） ---
+  static getAddedLaterWordIds() {
+    try {
+      const data = localStorage.getItem('mongol_app_added_later_words_v1');
+      return data ? JSON.parse(data) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  static addWordToActiveLearning(wordId) {
+    if (!wordId) return false;
+    const list = this.getAddedLaterWordIds();
+    if (!list.includes(wordId)) {
+      list.push(wordId);
+      this.setItem('mongol_app_added_later_words_v1', list);
+      if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
+        SyncService.notifyDataChanged();
+      }
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_added_words_updated', { detail: { wordId, action: 'add' } }));
+        }
+      } catch (_) {}
+      return true;
+    }
+    return false;
+  }
+
+  static removeWordFromActiveLearning(wordId) {
+    if (!wordId) return false;
+    let list = this.getAddedLaterWordIds();
+    if (list.includes(wordId)) {
+      list = list.filter(id => id !== wordId);
+      this.setItem('mongol_app_added_later_words_v1', list);
+      if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
+        SyncService.notifyDataChanged();
+      }
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_added_words_updated', { detail: { wordId, action: 'remove' } }));
+        }
+      } catch (_) {}
+      return true;
+    }
+    return false;
+  }
+
+  static isWordAddedToActiveLearning(wordId) {
+    const list = this.getAddedLaterWordIds();
+    return list.includes(wordId);
+  }
+
+  /**
+   * 全1439単語（教科書登場単語＋あとで覚える単語）をメタデータ付きで取得
+   */
+  static getAllVocabulary() {
     let baseList = [];
     try {
       const data = localStorage.getItem(STORAGE_KEYS.VOCABULARY);
@@ -82784,6 +82860,7 @@ class StorageService {
     }
 
     const progressMap = this.getAllWordProgress();
+    const addedSet = new Set(this.getAddedLaterWordIds());
 
     // initialVocabulary の最新解説・成り立ち・格支配情報を常にマージ
     const initMap = {};
@@ -82793,7 +82870,7 @@ class StorageService {
       }
     }
 
-    // 各単語に現在のSRS進捗と保持率メタデータを付与
+    // 各単語に教材照合分類、動詞語幹、辞書形、現在のSRS進捗と保持率メタデータを付与
     return baseList.map(item => {
       const freshMeta = initMap[item.id] || {};
       const mergedItem = { ...item, ...freshMeta };
@@ -82801,8 +82878,29 @@ class StorageService {
       const retentionData = SrsService.calculateRetention(prog);
       const masteryMeta = SrsService.getMasteryMeta(prog.srsLevel);
 
+      const classData = (typeof TEXTBOOK_CLASSIFICATION_DATA !== 'undefined' && TEXTBOOK_CLASSIFICATION_DATA[item.id]) || {
+        status: 'textbook',
+        statusLabel: '学習済み教材の単語',
+        appearanceSources: ['教科書'],
+        appearanceDesc: '教科書に登場',
+        reason: '',
+        isVerb: Boolean(item.isVerb || (item.pos && item.pos.includes('動詞'))),
+        stem: item.root || '',
+        dictForm: item.dictForm || item.mongolian || ''
+      };
+
+      const isAdded = addedSet.has(item.id);
+
       return {
         ...mergedItem,
+        textbookStatus: classData.status,
+        textbookStatusLabel: classData.statusLabel,
+        appearanceSources: classData.appearanceSources || [],
+        appearanceDesc: classData.appearanceDesc || '全教材：未登場',
+        laterReason: classData.reason || '',
+        isAddedToLearning: isAdded,
+        stem: classData.stem || item.root || '',
+        dictForm: classData.dictForm || item.dictForm || item.mongolian || '',
         srsLevel: prog.srsLevel || 0,
         intervalDays: prog.intervalDays || 0,
         nextReviewDate: prog.nextReviewDate || null,
@@ -82818,6 +82916,34 @@ class StorageService {
         masteryBadge: masteryMeta.badge
       };
     });
+  }
+
+  /**
+   * 既存ゲーム・テストの出題対象単語リストを取得
+   * 1. 学習済み教材の単語（教科書・学習ノートに登場した単語）
+   * 2. 「覚える単語に追加」したあとで覚える単語
+   * @param {Object} options { includeAll: boolean }
+   */
+  static getVocabulary(options = {}) {
+    const all = this.getAllVocabulary();
+    if (options && options.includeAll) {
+      return all;
+    }
+    return all.filter(item => item.textbookStatus === 'textbook' || item.isAddedToLearning);
+  }
+
+  /**
+   * 教科書・学習ノートに登場した単語のみ取得 (1,079語)
+   */
+  static getTextbookWords() {
+    return this.getAllVocabulary().filter(item => item.textbookStatus === 'textbook');
+  }
+
+  /**
+   * 教科書・学習ノートに未登場の単語（あとで覚える単語）のみ取得 (360語)
+   */
+  static getLaterWords() {
+    return this.getAllVocabulary().filter(item => item.textbookStatus === 'later');
   }
 
   /**
@@ -88241,6 +88367,7 @@ class Navbar {
     const tabs = [
       { id: 'home', label: 'ホーム', icon: '🏠' },
       { id: 'genre_master', label: 'ジャンル別単語', icon: '🏷️' },
+      { id: 'later_words', label: 'あとで覚える単語', icon: '⏳' },
       { id: 'exercise_notebook', label: '練習ノート', icon: '📓' },
       { id: 'word_game', label: '単語ゲーム', icon: '🎮' },
       { id: 'word_test', label: '単語テスト', icon: '📝' },
@@ -115061,6 +115188,7 @@ class ReferenceGuideComponent {
 
 
 // === js/app.js ===
+
 // メインアプリケーションコントローラー
 
 
@@ -115271,6 +115399,9 @@ class App {
     switch (this.currentTab) {
       case 'genre_master':
         GenreWordMasterComponent.render(mainContainer, onNavigate);
+        break;
+      case 'later_words':
+        LaterWordsComponent.render(mainContainer, onNavigate);
         break;
       case 'home':
         HomeComponent.render(mainContainer, onNavigate);
