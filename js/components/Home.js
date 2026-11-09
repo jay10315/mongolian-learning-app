@@ -187,7 +187,7 @@ export class HomeComponent {
                   </span>
                 </div>
                 <p class="text-xs text-slate-500 leading-relaxed">
-                  ${dueWords.length > 0 ? '今日復習すべき単語があります。適切なタイミングで解くことで長期記憶に移行します。' : '本日の期日単語はありません。記憶は良好に維持されています。'}
+                  ${dueWords.length > 0 ? '今日復習すべき単語があります。一度間違えた単語も忘却曲線に自動組み込みされ、優先復習されます。' : '本日の期日単語はありません。記憶は良好に維持されています。'}
                 </p>
               </div>
               <button type="button" id="btn-start-srs-review" class="mt-3 w-full py-2.5 ${dueWords.length > 0 ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-bold rounded-lg text-xs transition-all active:scale-98" ${dueWords.length === 0 ? 'disabled' : ''}>
@@ -207,7 +207,7 @@ export class HomeComponent {
                   </span>
                 </div>
                 <p class="text-xs text-slate-500 leading-relaxed">
-                  ${highRiskWords.length > 0 ? '記憶保持率が60%未満に低下している単語です。忘れる前に再復習しましょう。' : '高リスクな単語はありません。'}
+                  ${highRiskWords.length > 0 ? '記憶減衰中の単語および一度間違えた要注意単語です。忘れる前に高頻度で優先復習しましょう。' : '高リスクな単語はありません。'}
                 </p>
               </div>
               <button type="button" id="btn-start-high-risk-review" class="mt-3 w-full py-2.5 ${highRiskWords.length > 0 ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-xs' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-bold rounded-lg text-xs transition-all active:scale-98" ${highRiskWords.length === 0 ? 'disabled' : ''}>

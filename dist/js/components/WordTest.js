@@ -266,7 +266,10 @@ export class WordTestComponent {
       return;
     }
 
-    list = shuffleArray(list);
+    // 一度間違えた単語を忘却曲線の高頻度出題として優先配置
+    const mistakeItems = list.filter(v => Boolean((v.wrongCount && v.wrongCount > 0) || v.hasMistake));
+    const normalItems = list.filter(v => !Boolean((v.wrongCount && v.wrongCount > 0) || v.hasMistake));
+    list = [...shuffleArray(mistakeItems), ...shuffleArray(normalItems)];
 
     const count = this.state.settings.count === 'all' ? list.length : Math.min(this.state.settings.count, list.length);
     GamificationService.resetSessionCombo();

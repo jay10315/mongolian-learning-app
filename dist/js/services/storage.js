@@ -391,9 +391,11 @@ export class StorageService {
     const updated = SrsService.processAnswer(currentProg, isCorrect, difficulty);
     const saved = this.saveWordProgress(updated);
 
-    // 正解した場合: 「覚えた」と判定し、該当単語の間違いノート項目を自動で克服済みにする（間違えた単語から消去）
+    // 3回正解できたら自動で「覚えた（克服）」判定にし、間違えた単語リストから除外
     if (isCorrect) {
-      this.resolveMistakesForWord(wordId);
+      this.resolveMistakesForWord(wordId, null, true);
+    } else {
+      this.resolveMistakesForWord(wordId, null, false);
     }
     return saved;
   }
@@ -708,7 +710,10 @@ export class StorageService {
    * 忘却リスクが高い単語リスト（保持率40%未満 / 忘却リスク60%以上）
    */
   static getHighRiskWords() {
-    return this.getVocabulary().filter(v => v.srsLevel > 0 && v.forgettingRisk >= 60);
+    return this.getVocabulary().filter(v => 
+      (v.srsLevel > 0 && v.forgettingRisk >= 60) || 
+      (v.wrongCount > 0 && v.srsLevel < 6)
+    );
   }
 
   static saveVocabulary(items) {
@@ -1139,6 +1144,7 @@ export class StorageService {
       list[existingIdx].lastWrongDate = new Date().toISOString();
       list[existingIdx].userAnswer = mistake.userAnswer;
       list[existingIdx].resolved = false;
+      list[existingIdx].consecutiveCorrect = 0; // 再度間違えたら連続正解数をリセット
       if (mistake.wordId) list[existingIdx].wordId = mistake.wordId;
       itemToSync = list[existingIdx];
     } else {
@@ -1147,6 +1153,7 @@ export class StorageService {
         wordId: mistake.wordId || null,
         ...sanitizedMistake,
         wrongCount: 1,
+        consecutiveCorrect: 0,
         lastWrongDate: new Date().toISOString(),
         resolved: false
       };
@@ -1165,9 +1172,7 @@ export class StorageService {
     if (idx !== -1) {
       list[idx].resolved = isResolved;
       list[idx].resolvedAt = isResolved ? new Date().toISOString() : null;
-      if (isResolved) {
-        list[idx].consecutiveCorrect = (list[idx].consecutiveCorrect || 0) + 1;
-      }
+      list[idx].consecutiveCorrect = isResolved ? 3 : 0;
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
       SyncService.enqueueChange('RECORD_MISTAKE', list[idx]);
       try {
@@ -1185,7 +1190,7 @@ export class StorageService {
    * @param {Object|null} wordObj 単語オブジェクト
    * @param {boolean} isResolved trueで克服済み
    */
-  static resolveMistakesForWord(wordId, wordObj = null, isResolved = true) {
+  static resolveMistakesForWord(wordId, wordObj = null, isCorrectAnswer = true) {
     if (!wordId && !wordObj) return 0;
     const list = this.getMistakes();
     if (!list || list.length === 0) return 0;
@@ -1203,10 +1208,8 @@ export class StorageService {
     const wRoot = clean(targetObj?.root);
     const wJa = clean(targetObj?.japanese);
 
-    let resolvedCount = 0;
+    let changedCount = 0;
     list.forEach(m => {
-      if (m.resolved === isResolved) return;
-
       const mWordId = m.wordId || '';
       const mAns = clean(m.correctAnswer);
       const mQ = clean(m.question);
@@ -1218,17 +1221,26 @@ export class StorageService {
         (wJa && (mAns === wJa || mQ.includes(wJa)));
 
       if (isMatch) {
-        m.resolved = isResolved;
-        m.resolvedAt = isResolved ? new Date().toISOString() : null;
-        if (isResolved) {
+        if (isCorrectAnswer) {
           m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
+          // 3回正解できたら自動で「覚えた（克服）」判定にし、間違えた単語リストから除外
+          if (m.consecutiveCorrect >= 3) {
+            m.resolved = true;
+            m.resolvedAt = new Date().toISOString();
+          } else {
+            m.resolved = false;
+          }
+        } else {
+          m.consecutiveCorrect = 0;
+          m.resolved = false;
+          m.lastWrongDate = new Date().toISOString();
         }
-        resolvedCount++;
+        changedCount++;
         SyncService.enqueueChange('RECORD_MISTAKE', m);
       }
     });
 
-    if (resolvedCount > 0) {
+    if (changedCount > 0) {
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
       try {
         if (typeof window !== 'undefined') {
@@ -1237,13 +1249,13 @@ export class StorageService {
         }
       } catch (_) {}
     }
-    return resolvedCount;
+    return changedCount;
   }
 
   /**
    * 文法・格変化・その他の問題で正解した際、問題文または正解から間違いを克服済みにする（覚えたと判定）
    */
-  static resolveMistakeByQuestion(questionText, correctAnswer = '', isResolved = true) {
+  static resolveMistakeByQuestion(questionText, correctAnswer = '', isCorrectAnswer = true) {
     if (!questionText && !correctAnswer) return 0;
     const list = this.getMistakes();
     if (!list || list.length === 0) return 0;
@@ -1252,9 +1264,8 @@ export class StorageService {
     const cQ = clean(questionText);
     const cAns = clean(correctAnswer);
 
-    let resolvedCount = 0;
+    let changedCount = 0;
     list.forEach(m => {
-      if (m.resolved === isResolved) return;
       const mQ = clean(m.question);
       const mAns = clean(m.correctAnswer);
 
@@ -1262,17 +1273,25 @@ export class StorageService {
         (!cAns || mAns === cAns || mAns.includes(cAns) || cAns.includes(mAns));
 
       if (isMatch) {
-        m.resolved = isResolved;
-        m.resolvedAt = isResolved ? new Date().toISOString() : null;
-        if (isResolved) {
+        if (isCorrectAnswer) {
           m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
+          if (m.consecutiveCorrect >= 3) {
+            m.resolved = true;
+            m.resolvedAt = new Date().toISOString();
+          } else {
+            m.resolved = false;
+          }
+        } else {
+          m.consecutiveCorrect = 0;
+          m.resolved = false;
+          m.lastWrongDate = new Date().toISOString();
         }
-        resolvedCount++;
+        changedCount++;
         SyncService.enqueueChange('RECORD_MISTAKE', m);
       }
     });
 
-    if (resolvedCount > 0) {
+    if (changedCount > 0) {
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
       try {
         if (typeof window !== 'undefined') {
@@ -1281,7 +1300,7 @@ export class StorageService {
         }
       } catch (_) {}
     }
-    return resolvedCount;
+    return changedCount;
   }
 
   static getActiveMistakes() {

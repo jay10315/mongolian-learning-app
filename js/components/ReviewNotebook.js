@@ -274,10 +274,23 @@ export class ReviewNotebookComponent {
             return `
               <div class="bg-white rounded-xl p-4 border ${m.resolved ? 'border-emerald-200 bg-emerald-50/20' : (m.sourceType === 'looked_up' ? 'border-amber-200' : (m.sourceType === 'due_review' ? 'border-sky-200' : 'border-rose-200'))} shadow-2xs space-y-2">
                 <div class="flex justify-between items-start gap-2">
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 flex-wrap">
                     <span class="text-xs font-bold px-2 py-0.5 rounded-full ${statusBadge}">
                       ${statusLabel}
                     </span>
+                    ${!m.resolved ? `
+                      <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                        (m.consecutiveCorrect || 0) >= 2 ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+                        (m.consecutiveCorrect || 0) === 1 ? 'bg-sky-100 text-sky-900 border border-sky-300' :
+                        'bg-slate-100 text-slate-600'
+                      }">
+                        🎯 3回正解で克服: ${m.consecutiveCorrect || 0}/3回 ${m.consecutiveCorrect ? '✨' : ''}
+                      </span>
+                    ` : `
+                      <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        🎉 3回正解達成（克服済み）
+                      </span>
+                    `}
                     <span class="text-[11px] text-slate-400">${m.sourceLabel || m.category || m.type}</span>
                   </div>
                   <div class="flex items-center gap-1.5">

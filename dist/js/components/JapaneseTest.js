@@ -208,7 +208,10 @@ export class JapaneseTestComponent {
       return;
     }
 
-    list = shuffleArray(list);
+    // 一度間違えた単語を忘却曲線の高頻度出題として優先配置
+    const mistakeItems = list.filter(v => Boolean((v.wrongCount && v.wrongCount > 0) || v.hasMistake));
+    const normalItems = list.filter(v => !Boolean((v.wrongCount && v.wrongCount > 0) || v.hasMistake));
+    list = [...shuffleArray(mistakeItems), ...shuffleArray(normalItems)];
     GamificationService.resetSessionCombo();
     this.state.sessionScore = 0;
     this.state.sessionXp = 0;

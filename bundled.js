@@ -107900,7 +107900,7 @@ class SrsService {
    */
   static calculateRetention(prog) {
     if (!prog || !prog.lastLearnedAt || prog.srsLevel === 0) {
-      return { retention: 0, forgettingRisk: 100, isDue: true };
+      return { retention: 0, forgettingRisk: 100, isDue: true, hasMistake: false };
     }
 
     const last = new Date(prog.lastLearnedAt).getTime();
@@ -107908,15 +107908,23 @@ class SrsService {
     const diffDays = Math.max(0, (now - last) / (1000 * 60 * 60 * 24));
     const interval = Math.max(1, prog.intervalDays || 1);
 
-    // 安定度 S に基づく保持率 R
-    const r = Math.exp(-diffDays / (interval * 1.15));
+    // 一度でも間違えたことのある単語は忘却曲線に組み込み、減衰速度を速めて頻出復習化
+    const hasMistake = Boolean((prog.wrongCount && prog.wrongCount > 0) || prog.hasEverBeenMistaken);
+    const decayMultiplier = hasMistake ? 0.60 : 1.15;
+
+    // 安定度 S に基づく保持率 R（一度間違えた単語は早く忘却リスクが上昇する）
+    const r = Math.exp(-diffDays / (interval * decayMultiplier));
     const retention = Math.max(0, Math.min(100, Math.round(r * 100)));
     const forgettingRisk = Math.max(0, Math.min(100, 100 - retention));
 
     const today = this.getTodayString();
-    const isDue = Boolean(prog.nextReviewDate && prog.nextReviewDate <= today);
+    // 一度間違えた単語は1日経過しているか高リスク（40%以上）の場合、優先的に復習期日として判定
+    const isDue = Boolean(
+      (prog.nextReviewDate && prog.nextReviewDate <= today) ||
+      (hasMistake && diffDays >= 1 && prog.srsLevel < 6)
+    );
 
-    return { retention, forgettingRisk, isDue, diffDays: Math.round(diffDays) };
+    return { retention, forgettingRisk, isDue, diffDays: Math.round(diffDays), hasMistake };
   }
 
   /**
@@ -107936,6 +107944,7 @@ class SrsService {
 
     if (isCorrect) {
       prog.correctCount += 1;
+      prog.consecutiveCorrect = (prog.consecutiveCorrect || 0) + 1;
 
       // 初回学習
       if (prog.srsLevel === 0) {
@@ -107950,7 +107959,11 @@ class SrsService {
         if (difficulty === 'easy') multiplier = 2.6;
         if (difficulty === 'hard') multiplier = 1.4;
 
-        if (prog.srsLevel < this.INTERVALS.length) {
+        // 一度間違えた単語は、完全に定着するまで短いインターバルで頻繁に出題
+        if (prog.hasEverBeenMistaken || prog.wrongCount > 0) {
+          const mistakeIntervals = [0, 1, 2, 3, 5, 8, 14, 21, 30];
+          prog.intervalDays = mistakeIntervals[Math.min(prog.srsLevel, mistakeIntervals.length - 1)];
+        } else if (prog.srsLevel < this.INTERVALS.length) {
           prog.intervalDays = this.INTERVALS[prog.srsLevel];
         } else {
           prog.intervalDays = Math.round((prog.intervalDays || 60) * multiplier);
@@ -107959,9 +107972,11 @@ class SrsService {
 
       prog.nextReviewDate = this.addDays(today, prog.intervalDays);
     } else {
-      // 不正解の場合
+      // 不正解の場合（一度間違えた単語フラグをONにし、忘却曲線の高頻度復習対象へ）
       prog.wrongCount += 1;
-      // レベル低下（これまでの学習歴を全滅させず半分に戻す）
+      prog.hasEverBeenMistaken = true;
+      prog.consecutiveCorrect = 0;
+      // レベル低下
       prog.srsLevel = Math.max(1, Math.floor(prog.srsLevel / 2));
       prog.intervalDays = 1; // 明日または直後に即時再復習
       prog.nextReviewDate = today; // 今日〜明日の復習対象
@@ -110327,9 +110342,11 @@ class StorageService {
     const updated = SrsService.processAnswer(currentProg, isCorrect, difficulty);
     const saved = this.saveWordProgress(updated);
 
-    // 正解した場合: 「覚えた」と判定し、該当単語の間違いノート項目を自動で克服済みにする（間違えた単語から消去）
+    // 3回正解できたら自動で「覚えた（克服）」判定にし、間違えた単語リストから除外
     if (isCorrect) {
-      this.resolveMistakesForWord(wordId);
+      this.resolveMistakesForWord(wordId, null, true);
+    } else {
+      this.resolveMistakesForWord(wordId, null, false);
     }
     return saved;
   }
@@ -110644,7 +110661,10 @@ class StorageService {
    * 忘却リスクが高い単語リスト（保持率40%未満 / 忘却リスク60%以上）
    */
   static getHighRiskWords() {
-    return this.getVocabulary().filter(v => v.srsLevel > 0 && v.forgettingRisk >= 60);
+    return this.getVocabulary().filter(v => 
+      (v.srsLevel > 0 && v.forgettingRisk >= 60) || 
+      (v.wrongCount > 0 && v.srsLevel < 6)
+    );
   }
 
   static saveVocabulary(items) {
@@ -111075,6 +111095,7 @@ class StorageService {
       list[existingIdx].lastWrongDate = new Date().toISOString();
       list[existingIdx].userAnswer = mistake.userAnswer;
       list[existingIdx].resolved = false;
+      list[existingIdx].consecutiveCorrect = 0; // 再度間違えたら連続正解数をリセット
       if (mistake.wordId) list[existingIdx].wordId = mistake.wordId;
       itemToSync = list[existingIdx];
     } else {
@@ -111083,6 +111104,7 @@ class StorageService {
         wordId: mistake.wordId || null,
         ...sanitizedMistake,
         wrongCount: 1,
+        consecutiveCorrect: 0,
         lastWrongDate: new Date().toISOString(),
         resolved: false
       };
@@ -111101,9 +111123,7 @@ class StorageService {
     if (idx !== -1) {
       list[idx].resolved = isResolved;
       list[idx].resolvedAt = isResolved ? new Date().toISOString() : null;
-      if (isResolved) {
-        list[idx].consecutiveCorrect = (list[idx].consecutiveCorrect || 0) + 1;
-      }
+      list[idx].consecutiveCorrect = isResolved ? 3 : 0;
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
       SyncService.enqueueChange('RECORD_MISTAKE', list[idx]);
       try {
@@ -111121,7 +111141,7 @@ class StorageService {
    * @param {Object|null} wordObj 単語オブジェクト
    * @param {boolean} isResolved trueで克服済み
    */
-  static resolveMistakesForWord(wordId, wordObj = null, isResolved = true) {
+  static resolveMistakesForWord(wordId, wordObj = null, isCorrectAnswer = true) {
     if (!wordId && !wordObj) return 0;
     const list = this.getMistakes();
     if (!list || list.length === 0) return 0;
@@ -111139,10 +111159,8 @@ class StorageService {
     const wRoot = clean(targetObj?.root);
     const wJa = clean(targetObj?.japanese);
 
-    let resolvedCount = 0;
+    let changedCount = 0;
     list.forEach(m => {
-      if (m.resolved === isResolved) return;
-
       const mWordId = m.wordId || '';
       const mAns = clean(m.correctAnswer);
       const mQ = clean(m.question);
@@ -111154,17 +111172,26 @@ class StorageService {
         (wJa && (mAns === wJa || mQ.includes(wJa)));
 
       if (isMatch) {
-        m.resolved = isResolved;
-        m.resolvedAt = isResolved ? new Date().toISOString() : null;
-        if (isResolved) {
+        if (isCorrectAnswer) {
           m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
+          // 3回正解できたら自動で「覚えた（克服）」判定にし、間違えた単語リストから除外
+          if (m.consecutiveCorrect >= 3) {
+            m.resolved = true;
+            m.resolvedAt = new Date().toISOString();
+          } else {
+            m.resolved = false;
+          }
+        } else {
+          m.consecutiveCorrect = 0;
+          m.resolved = false;
+          m.lastWrongDate = new Date().toISOString();
         }
-        resolvedCount++;
+        changedCount++;
         SyncService.enqueueChange('RECORD_MISTAKE', m);
       }
     });
 
-    if (resolvedCount > 0) {
+    if (changedCount > 0) {
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
       try {
         if (typeof window !== 'undefined') {
@@ -111173,13 +111200,13 @@ class StorageService {
         }
       } catch (_) {}
     }
-    return resolvedCount;
+    return changedCount;
   }
 
   /**
    * 文法・格変化・その他の問題で正解した際、問題文または正解から間違いを克服済みにする（覚えたと判定）
    */
-  static resolveMistakeByQuestion(questionText, correctAnswer = '', isResolved = true) {
+  static resolveMistakeByQuestion(questionText, correctAnswer = '', isCorrectAnswer = true) {
     if (!questionText && !correctAnswer) return 0;
     const list = this.getMistakes();
     if (!list || list.length === 0) return 0;
@@ -111188,9 +111215,8 @@ class StorageService {
     const cQ = clean(questionText);
     const cAns = clean(correctAnswer);
 
-    let resolvedCount = 0;
+    let changedCount = 0;
     list.forEach(m => {
-      if (m.resolved === isResolved) return;
       const mQ = clean(m.question);
       const mAns = clean(m.correctAnswer);
 
@@ -111198,17 +111224,25 @@ class StorageService {
         (!cAns || mAns === cAns || mAns.includes(cAns) || cAns.includes(mAns));
 
       if (isMatch) {
-        m.resolved = isResolved;
-        m.resolvedAt = isResolved ? new Date().toISOString() : null;
-        if (isResolved) {
+        if (isCorrectAnswer) {
           m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
+          if (m.consecutiveCorrect >= 3) {
+            m.resolved = true;
+            m.resolvedAt = new Date().toISOString();
+          } else {
+            m.resolved = false;
+          }
+        } else {
+          m.consecutiveCorrect = 0;
+          m.resolved = false;
+          m.lastWrongDate = new Date().toISOString();
         }
-        resolvedCount++;
+        changedCount++;
         SyncService.enqueueChange('RECORD_MISTAKE', m);
       }
     });
 
-    if (resolvedCount > 0) {
+    if (changedCount > 0) {
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
       try {
         if (typeof window !== 'undefined') {
@@ -111217,7 +111251,7 @@ class StorageService {
         }
       } catch (_) {}
     }
-    return resolvedCount;
+    return changedCount;
   }
 
   static getActiveMistakes() {
@@ -118971,7 +119005,7 @@ class HomeComponent {
                   </span>
                 </div>
                 <p class="text-xs text-slate-500 leading-relaxed">
-                  ${dueWords.length > 0 ? '今日復習すべき単語があります。適切なタイミングで解くことで長期記憶に移行します。' : '本日の期日単語はありません。記憶は良好に維持されています。'}
+                  ${dueWords.length > 0 ? '今日復習すべき単語があります。一度間違えた単語も忘却曲線に自動組み込みされ、優先復習されます。' : '本日の期日単語はありません。記憶は良好に維持されています。'}
                 </p>
               </div>
               <button type="button" id="btn-start-srs-review" class="mt-3 w-full py-2.5 ${dueWords.length > 0 ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-bold rounded-lg text-xs transition-all active:scale-98" ${dueWords.length === 0 ? 'disabled' : ''}>
@@ -118991,7 +119025,7 @@ class HomeComponent {
                   </span>
                 </div>
                 <p class="text-xs text-slate-500 leading-relaxed">
-                  ${highRiskWords.length > 0 ? '記憶保持率が60%未満に低下している単語です。忘れる前に再復習しましょう。' : '高リスクな単語はありません。'}
+                  ${highRiskWords.length > 0 ? '記憶減衰中の単語および一度間違えた要注意単語です。忘れる前に高頻度で優先復習しましょう。' : '高リスクな単語はありません。'}
                 </p>
               </div>
               <button type="button" id="btn-start-high-risk-review" class="mt-3 w-full py-2.5 ${highRiskWords.length > 0 ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-xs' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-bold rounded-lg text-xs transition-all active:scale-98" ${highRiskWords.length === 0 ? 'disabled' : ''}>
@@ -120597,7 +120631,10 @@ class WordGameComponent {
       pool = [...jaPool, ...mnPool, ...visPool, ...grPool];
     }
 
-    this.state.questionsPool = shuffleArray(pool);
+    // 一度間違えた単語（wrongCount > 0 または hasMistake）を忘却曲線に基づき出題プールで優先頻出化
+    const mistakePool = pool.filter(item => Boolean((item.wrongCount && item.wrongCount > 0) || item.hasMistake));
+    const normalPool = pool.filter(item => !Boolean((item.wrongCount && item.wrongCount > 0) || item.hasMistake));
+    this.state.questionsPool = [...shuffleArray(mistakePool), ...shuffleArray(normalPool)];
     this.state.currentQuestionIndex = 0;
     this.state.score = 0;
     this.state.combo = 0;
@@ -122752,7 +122789,10 @@ class WordTestComponent {
       return;
     }
 
-    list = shuffleArray(list);
+    // 一度間違えた単語を忘却曲線の高頻度出題として優先配置
+    const mistakeItems = list.filter(v => Boolean((v.wrongCount && v.wrongCount > 0) || v.hasMistake));
+    const normalItems = list.filter(v => !Boolean((v.wrongCount && v.wrongCount > 0) || v.hasMistake));
+    list = [...shuffleArray(mistakeItems), ...shuffleArray(normalItems)];
 
     const count = this.state.settings.count === 'all' ? list.length : Math.min(this.state.settings.count, list.length);
     GamificationService.resetSessionCombo();
@@ -123619,7 +123659,10 @@ class JapaneseTestComponent {
       return;
     }
 
-    list = shuffleArray(list);
+    // 一度間違えた単語を忘却曲線の高頻度出題として優先配置
+    const mistakeItems = list.filter(v => Boolean((v.wrongCount && v.wrongCount > 0) || v.hasMistake));
+    const normalItems = list.filter(v => !Boolean((v.wrongCount && v.wrongCount > 0) || v.hasMistake));
+    list = [...shuffleArray(mistakeItems), ...shuffleArray(normalItems)];
     GamificationService.resetSessionCombo();
     this.state.sessionScore = 0;
     this.state.sessionXp = 0;
@@ -141953,10 +141996,23 @@ class ReviewNotebookComponent {
             return `
               <div class="bg-white rounded-xl p-4 border ${m.resolved ? 'border-emerald-200 bg-emerald-50/20' : (m.sourceType === 'looked_up' ? 'border-amber-200' : (m.sourceType === 'due_review' ? 'border-sky-200' : 'border-rose-200'))} shadow-2xs space-y-2">
                 <div class="flex justify-between items-start gap-2">
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 flex-wrap">
                     <span class="text-xs font-bold px-2 py-0.5 rounded-full ${statusBadge}">
                       ${statusLabel}
                     </span>
+                    ${!m.resolved ? `
+                      <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                        (m.consecutiveCorrect || 0) >= 2 ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+                        (m.consecutiveCorrect || 0) === 1 ? 'bg-sky-100 text-sky-900 border border-sky-300' :
+                        'bg-slate-100 text-slate-600'
+                      }">
+                        🎯 3回正解で克服: ${m.consecutiveCorrect || 0}/3回 ${m.consecutiveCorrect ? '✨' : ''}
+                      </span>
+                    ` : `
+                      <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        🎉 3回正解達成（克服済み）
+                      </span>
+                    `}
                     <span class="text-[11px] text-slate-400">${m.sourceLabel || m.category || m.type}</span>
                   </div>
                   <div class="flex items-center gap-1.5">

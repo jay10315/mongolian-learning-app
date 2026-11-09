@@ -706,7 +706,10 @@ export class WordGameComponent {
       pool = [...jaPool, ...mnPool, ...visPool, ...grPool];
     }
 
-    this.state.questionsPool = shuffleArray(pool);
+    // 一度間違えた単語（wrongCount > 0 または hasMistake）を忘却曲線に基づき出題プールで優先頻出化
+    const mistakePool = pool.filter(item => Boolean((item.wrongCount && item.wrongCount > 0) || item.hasMistake));
+    const normalPool = pool.filter(item => !Boolean((item.wrongCount && item.wrongCount > 0) || item.hasMistake));
+    this.state.questionsPool = [...shuffleArray(mistakePool), ...shuffleArray(normalPool)];
     this.state.currentQuestionIndex = 0;
     this.state.score = 0;
     this.state.combo = 0;

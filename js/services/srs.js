@@ -64,7 +64,7 @@ export class SrsService {
    */
   static calculateRetention(prog) {
     if (!prog || !prog.lastLearnedAt || prog.srsLevel === 0) {
-      return { retention: 0, forgettingRisk: 100, isDue: true };
+      return { retention: 0, forgettingRisk: 100, isDue: true, hasMistake: false };
     }
 
     const last = new Date(prog.lastLearnedAt).getTime();
@@ -72,15 +72,23 @@ export class SrsService {
     const diffDays = Math.max(0, (now - last) / (1000 * 60 * 60 * 24));
     const interval = Math.max(1, prog.intervalDays || 1);
 
-    // 安定度 S に基づく保持率 R
-    const r = Math.exp(-diffDays / (interval * 1.15));
+    // 一度でも間違えたことのある単語は忘却曲線に組み込み、減衰速度を速めて頻出復習化
+    const hasMistake = Boolean((prog.wrongCount && prog.wrongCount > 0) || prog.hasEverBeenMistaken);
+    const decayMultiplier = hasMistake ? 0.60 : 1.15;
+
+    // 安定度 S に基づく保持率 R（一度間違えた単語は早く忘却リスクが上昇する）
+    const r = Math.exp(-diffDays / (interval * decayMultiplier));
     const retention = Math.max(0, Math.min(100, Math.round(r * 100)));
     const forgettingRisk = Math.max(0, Math.min(100, 100 - retention));
 
     const today = this.getTodayString();
-    const isDue = Boolean(prog.nextReviewDate && prog.nextReviewDate <= today);
+    // 一度間違えた単語は1日経過しているか高リスク（40%以上）の場合、優先的に復習期日として判定
+    const isDue = Boolean(
+      (prog.nextReviewDate && prog.nextReviewDate <= today) ||
+      (hasMistake && diffDays >= 1 && prog.srsLevel < 6)
+    );
 
-    return { retention, forgettingRisk, isDue, diffDays: Math.round(diffDays) };
+    return { retention, forgettingRisk, isDue, diffDays: Math.round(diffDays), hasMistake };
   }
 
   /**
@@ -100,6 +108,7 @@ export class SrsService {
 
     if (isCorrect) {
       prog.correctCount += 1;
+      prog.consecutiveCorrect = (prog.consecutiveCorrect || 0) + 1;
 
       // 初回学習
       if (prog.srsLevel === 0) {
@@ -114,7 +123,11 @@ export class SrsService {
         if (difficulty === 'easy') multiplier = 2.6;
         if (difficulty === 'hard') multiplier = 1.4;
 
-        if (prog.srsLevel < this.INTERVALS.length) {
+        // 一度間違えた単語は、完全に定着するまで短いインターバルで頻繁に出題
+        if (prog.hasEverBeenMistaken || prog.wrongCount > 0) {
+          const mistakeIntervals = [0, 1, 2, 3, 5, 8, 14, 21, 30];
+          prog.intervalDays = mistakeIntervals[Math.min(prog.srsLevel, mistakeIntervals.length - 1)];
+        } else if (prog.srsLevel < this.INTERVALS.length) {
           prog.intervalDays = this.INTERVALS[prog.srsLevel];
         } else {
           prog.intervalDays = Math.round((prog.intervalDays || 60) * multiplier);
@@ -123,9 +136,11 @@ export class SrsService {
 
       prog.nextReviewDate = this.addDays(today, prog.intervalDays);
     } else {
-      // 不正解の場合
+      // 不正解の場合（一度間違えた単語フラグをONにし、忘却曲線の高頻度復習対象へ）
       prog.wrongCount += 1;
-      // レベル低下（これまでの学習歴を全滅させず半分に戻す）
+      prog.hasEverBeenMistaken = true;
+      prog.consecutiveCorrect = 0;
+      // レベル低下
       prog.srsLevel = Math.max(1, Math.floor(prog.srsLevel / 2));
       prog.intervalDays = 1; // 明日または直後に即時再復習
       prog.nextReviewDate = today; // 今日〜明日の復習対象
