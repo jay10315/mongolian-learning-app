@@ -317,7 +317,7 @@ export class SyncService {
             explanation: m.explanation || '',
             wrong_count: m.wrongCount || 1,
             last_wrong_date: m.lastWrongDate || new Date().toISOString(),
-            resolved: Boolean(m.resolved),
+            resolved: Boolean(m.resolved || ((m.consecutiveCorrect || 0) >= 3)),
             updated_at: new Date().toISOString()
           };
 
@@ -428,15 +428,24 @@ export class SyncService {
               type: r.type,
               category: r.category,
               explanation: r.explanation,
-              wrongCount: r.wrong_count,
-              lastWrongDate: r.last_wrong_date,
-              resolved: r.resolved
+              wrongCount: r.wrong_count || 1,
+              lastWrongDate: r.last_wrong_date || r.created_at,
+              resolved: Boolean(r.resolved)
             };
             if (idx !== -1) {
-              // 間違い回数は大きい方を維持
-              cloudItem.wrongCount = Math.max(cloudItem.wrongCount, localMistakes[idx].wrongCount || 1);
-              localMistakes[idx] = cloudItem;
+              const localItem = localMistakes[idx];
+              cloudItem.wrongCount = Math.max(cloudItem.wrongCount, localItem.wrongCount || 1);
+              // ローカルの連続正解数・克服状態を保護（クラウドからの上書きリセットを防止）
+              cloudItem.consecutiveCorrect = localItem.consecutiveCorrect !== undefined 
+                ? localItem.consecutiveCorrect 
+                : (cloudItem.resolved ? 3 : 0);
+              cloudItem.resolved = Boolean(cloudItem.resolved || localItem.resolved || (cloudItem.consecutiveCorrect >= 3));
+              if (localItem.resolvedAt && !cloudItem.resolvedAt) {
+                cloudItem.resolvedAt = localItem.resolvedAt;
+              }
+              localMistakes[idx] = { ...localItem, ...cloudItem };
             } else {
+              cloudItem.consecutiveCorrect = cloudItem.resolved ? 3 : 0;
               localMistakes.push(cloudItem);
             }
           });
@@ -480,8 +489,20 @@ export class SyncService {
           if (Array.isArray(snap.mistakes) && snap.mistakes.length > 0) {
             const currentMistakes = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
             snap.mistakes.forEach(m => {
-              const exists = currentMistakes.some(x => x.id === m.id || (x.question === m.question && x.correctAnswer === m.correctAnswer));
-              if (!exists) currentMistakes.push(m);
+              const idx = currentMistakes.findIndex(x => x.id === m.id || (x.question === m.question && x.correctAnswer === m.correctAnswer));
+              if (idx === -1) {
+                currentMistakes.push(m);
+              } else {
+                const local = currentMistakes[idx];
+                const isResolved = Boolean(local.resolved || m.resolved || ((local.consecutiveCorrect || 0) >= 3) || ((m.consecutiveCorrect || 0) >= 3));
+                const consecutive = Math.max(local.consecutiveCorrect || 0, m.consecutiveCorrect || 0);
+                currentMistakes[idx] = {
+                  ...m,
+                  ...local,
+                  consecutiveCorrect: isResolved ? Math.max(consecutive, 3) : consecutive,
+                  resolved: isResolved
+                };
+              }
             });
             localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(currentMistakes));
           }
@@ -622,7 +643,7 @@ export class SyncService {
             explanation: m.explanation || '',
             wrong_count: m.wrongCount || 1,
             last_wrong_date: m.lastWrongDate || new Date().toISOString(),
-            resolved: Boolean(m.resolved),
+            resolved: Boolean(m.resolved || ((m.consecutiveCorrect || 0) >= 3)),
             updated_at: new Date().toISOString()
           }));
           await fetch(`${url}/rest/v1/user_mistakes`, {

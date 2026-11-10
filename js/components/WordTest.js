@@ -686,8 +686,11 @@ export class WordTestComponent {
     // 効果音
     if (isCorrect) {
       SoundEffects.playCorrect();
-      // 正解時は該当単語の間違いノート項目を即座に克服済みにし、「間違えた単語」リストから自動消去
-      StorageService.resolveMistakesForWord(q.id, q);
+      // 正解時は該当単語の間違いノート項目を即座に克服カウント（3回正解で克服）、間違えた単語リストから自動消去
+      StorageService.resolveMistakesForWord(q.id, q, true);
+      if (q.japanese) {
+        StorageService.resolveMistakeByQuestion(q.japanese, q.mongolian || details.dictForm || expectedCorrectAnswer, true);
+      }
     } else {
       SoundEffects.playWrong();
       // 間違いノートに自動記録（問題文に答えを漏洩させない）

@@ -109472,7 +109472,7 @@ class SyncService {
             explanation: m.explanation || '',
             wrong_count: m.wrongCount || 1,
             last_wrong_date: m.lastWrongDate || new Date().toISOString(),
-            resolved: Boolean(m.resolved),
+            resolved: Boolean(m.resolved || ((m.consecutiveCorrect || 0) >= 3)),
             updated_at: new Date().toISOString()
           };
 
@@ -109583,15 +109583,24 @@ class SyncService {
               type: r.type,
               category: r.category,
               explanation: r.explanation,
-              wrongCount: r.wrong_count,
-              lastWrongDate: r.last_wrong_date,
-              resolved: r.resolved
+              wrongCount: r.wrong_count || 1,
+              lastWrongDate: r.last_wrong_date || r.created_at,
+              resolved: Boolean(r.resolved)
             };
             if (idx !== -1) {
-              // 間違い回数は大きい方を維持
-              cloudItem.wrongCount = Math.max(cloudItem.wrongCount, localMistakes[idx].wrongCount || 1);
-              localMistakes[idx] = cloudItem;
+              const localItem = localMistakes[idx];
+              cloudItem.wrongCount = Math.max(cloudItem.wrongCount, localItem.wrongCount || 1);
+              // ローカルの連続正解数・克服状態を保護（クラウドからの上書きリセットを防止）
+              cloudItem.consecutiveCorrect = localItem.consecutiveCorrect !== undefined 
+                ? localItem.consecutiveCorrect 
+                : (cloudItem.resolved ? 3 : 0);
+              cloudItem.resolved = Boolean(cloudItem.resolved || localItem.resolved || (cloudItem.consecutiveCorrect >= 3));
+              if (localItem.resolvedAt && !cloudItem.resolvedAt) {
+                cloudItem.resolvedAt = localItem.resolvedAt;
+              }
+              localMistakes[idx] = { ...localItem, ...cloudItem };
             } else {
+              cloudItem.consecutiveCorrect = cloudItem.resolved ? 3 : 0;
               localMistakes.push(cloudItem);
             }
           });
@@ -109635,8 +109644,20 @@ class SyncService {
           if (Array.isArray(snap.mistakes) && snap.mistakes.length > 0) {
             const currentMistakes = JSON.parse(localStorage.getItem('mongol_app_mistakes_v1') || '[]');
             snap.mistakes.forEach(m => {
-              const exists = currentMistakes.some(x => x.id === m.id || (x.question === m.question && x.correctAnswer === m.correctAnswer));
-              if (!exists) currentMistakes.push(m);
+              const idx = currentMistakes.findIndex(x => x.id === m.id || (x.question === m.question && x.correctAnswer === m.correctAnswer));
+              if (idx === -1) {
+                currentMistakes.push(m);
+              } else {
+                const local = currentMistakes[idx];
+                const isResolved = Boolean(local.resolved || m.resolved || ((local.consecutiveCorrect || 0) >= 3) || ((m.consecutiveCorrect || 0) >= 3));
+                const consecutive = Math.max(local.consecutiveCorrect || 0, m.consecutiveCorrect || 0);
+                currentMistakes[idx] = {
+                  ...m,
+                  ...local,
+                  consecutiveCorrect: isResolved ? Math.max(consecutive, 3) : consecutive,
+                  resolved: isResolved
+                };
+              }
             });
             localStorage.setItem('mongol_app_mistakes_v1', JSON.stringify(currentMistakes));
           }
@@ -109777,7 +109798,7 @@ class SyncService {
             explanation: m.explanation || '',
             wrong_count: m.wrongCount || 1,
             last_wrong_date: m.lastWrongDate || new Date().toISOString(),
-            resolved: Boolean(m.resolved),
+            resolved: Boolean(m.resolved || ((m.consecutiveCorrect || 0) >= 3)),
             updated_at: new Date().toISOString()
           }));
           await fetch(`${url}/rest/v1/user_mistakes`, {
@@ -111093,6 +111114,13 @@ class StorageService {
           m.consecutiveCorrect = m.resolved ? 3 : 0;
           mutated = true;
         }
+        // 3回正解に達している、もしくは resolved が true なら整合性を保つ
+        if ((m.consecutiveCorrect >= 3 || m.resolved) && !m.resolved) {
+          m.resolved = true;
+          m.consecutiveCorrect = Math.max(m.consecutiveCorrect || 0, 3);
+          m.resolvedAt = m.resolvedAt || new Date().toISOString();
+          mutated = true;
+        }
       });
       if (mutated) {
         localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
@@ -111118,6 +111146,9 @@ class StorageService {
     let itemToSync = null;
 
     if (existingIdx !== -1) {
+      if (!list[existingIdx].id) {
+        list[existingIdx].id = `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+      }
       list[existingIdx].wrongCount = (list[existingIdx].wrongCount || 1) + 1;
       list[existingIdx].lastWrongDate = new Date().toISOString();
       list[existingIdx].userAnswer = mistake.userAnswer;
@@ -111144,22 +111175,48 @@ class StorageService {
     return itemToSync;
   }
 
-  static markMistakeResolved(id, isResolved = true) {
+  static markMistakeResolved(id, isResolved = true, extra = {}) {
     const list = this.getMistakes();
-    const idx = list.findIndex(m => m.id === id);
-    if (idx !== -1) {
-      list[idx].resolved = isResolved;
-      list[idx].resolvedAt = isResolved ? new Date().toISOString() : null;
-      list[idx].consecutiveCorrect = isResolved ? 3 : 0;
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+    const cQ = clean(extra?.question);
+    const cAns = clean(extra?.correctAnswer);
+    const wordId = extra?.wordId;
+
+    let targetIdx = -1;
+    if (id) {
+      targetIdx = list.findIndex(m => m.id === id);
+    }
+    if (targetIdx === -1 && cQ && cAns) {
+      targetIdx = list.findIndex(m => clean(m.question) === cQ && clean(m.correctAnswer) === cAns);
+    }
+    if (targetIdx === -1 && wordId) {
+      targetIdx = list.findIndex(m => m.wordId === wordId);
+    }
+    if (targetIdx === -1 && cAns) {
+      targetIdx = list.findIndex(m => clean(m.correctAnswer) === cAns);
+    }
+    if (targetIdx === -1 && cQ) {
+      targetIdx = list.findIndex(m => {
+        const mq = clean(m.question);
+        return mq === cQ || mq.includes(cQ) || cQ.includes(mq);
+      });
+    }
+
+    if (targetIdx !== -1) {
+      list[targetIdx].resolved = isResolved;
+      list[targetIdx].resolvedAt = isResolved ? new Date().toISOString() : null;
+      list[targetIdx].consecutiveCorrect = isResolved ? 3 : 0;
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
-      SyncService.enqueueChange('RECORD_MISTAKE', list[idx]);
+      SyncService.enqueueChange('RECORD_MISTAKE', list[targetIdx]);
       try {
         if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated', { detail: { id, isResolved } }));
+          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated', { detail: { id: list[targetIdx].id, isResolved } }));
           window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
         }
       } catch (_) {}
+      return list[targetIdx];
     }
+    return null;
   }
 
   /**
@@ -111366,9 +111423,29 @@ class StorageService {
     return this.getMistakes().filter(m => !m.resolved);
   }
 
-  static removeMistake(id) {
-    const list = this.getMistakes().filter(m => m.id !== id);
+  static removeMistake(id, extra = {}) {
+    let list = this.getMistakes();
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+    const cQ = clean(extra?.question);
+    const cAns = clean(extra?.correctAnswer);
+    const wordId = extra?.wordId;
+
+    if (id) {
+      list = list.filter(m => m.id !== id);
+    } else if (cQ && cAns) {
+      list = list.filter(m => !(clean(m.question) === cQ && clean(m.correctAnswer) === cAns));
+    } else if (wordId) {
+      list = list.filter(m => m.wordId !== wordId);
+    } else if (cAns) {
+      list = list.filter(m => clean(m.correctAnswer) !== cAns);
+    }
     localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
+    try {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+        window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+      }
+    } catch (_) {}
   }
 
   static clearResolvedMistakes() {
@@ -123317,8 +123394,11 @@ class WordTestComponent {
     // 効果音
     if (isCorrect) {
       SoundEffects.playCorrect();
-      // 正解時は該当単語の間違いノート項目を即座に克服済みにし、「間違えた単語」リストから自動消去
-      StorageService.resolveMistakesForWord(q.id, q);
+      // 正解時は該当単語の間違いノート項目を即座に克服カウント（3回正解で克服）、間違えた単語リストから自動消去
+      StorageService.resolveMistakesForWord(q.id, q, true);
+      if (q.japanese) {
+        StorageService.resolveMistakeByQuestion(q.japanese, q.mongolian || details.dictForm || expectedCorrectAnswer, true);
+      }
     } else {
       SoundEffects.playWrong();
       // 間違いノートに自動記録（問題文に答えを漏洩させない）
@@ -124131,8 +124211,11 @@ class JapaneseTestComponent {
     // 効果音
     if (isCorrect) {
       SoundEffects.playCorrect();
-      // 正解時は該当単語の間違いノート項目を即座に克服済みにし、「間違えた単語」リストから自動消去
-      StorageService.resolveMistakesForWord(q.id, q);
+      // 正解時は該当単語の間違いノート項目を即座に克服カウント（3回正解で克服）、間違えた単語リストから自動消去
+      StorageService.resolveMistakesForWord(q.id, q, true);
+      if (q.japanese) {
+        StorageService.resolveMistakeByQuestion(q.japanese, q.mongolian || details.dictForm, true);
+      }
     } else {
       SoundEffects.playWrong();
       // 間違いノートに記録
@@ -142200,10 +142283,10 @@ class ReviewNotebookComponent {
                   <div class="flex items-center gap-1.5">
                     <button type="button" class="btn-toggle-resolve text-[11px] px-2 py-0.5 rounded border ${
                       m.resolved ? 'bg-slate-100 text-slate-600 border-slate-300' : 'bg-emerald-50 text-emerald-700 border-emerald-300 font-bold'
-                    }" data-id="${m.id}" data-source="${m.sourceType || 'mistake'}" data-srs-id="${m.srsWordId || ''}" data-resolved="${m.resolved}">
+                    }" data-id="${m.id || ''}" data-source="${m.sourceType || 'mistake'}" data-srs-id="${m.srsWordId || ''}" data-question="${encodeURIComponent(m.question || '')}" data-answer="${encodeURIComponent(m.correctAnswer || '')}" data-word-id="${m.wordId || ''}" data-resolved="${m.resolved}">
                       ${m.resolved ? '未克服に戻す' : '✓ 覚えた（間違えた単語から消す）'}
                     </button>
-                    <button type="button" class="btn-delete-mistake text-slate-300 hover:text-rose-500 text-xs px-1 cursor-pointer" data-id="${m.id}" data-source="${m.sourceType || 'mistake'}" title="削除">
+                    <button type="button" class="btn-delete-mistake text-slate-300 hover:text-rose-500 text-xs px-1 cursor-pointer" data-id="${m.id || ''}" data-source="${m.sourceType || 'mistake'}" data-question="${encodeURIComponent(m.question || '')}" data-answer="${encodeURIComponent(m.correctAnswer || '')}" data-word-id="${m.wordId || ''}" title="削除">
                       ✕
                     </button>
                   </div>
@@ -142295,17 +142378,26 @@ class ReviewNotebookComponent {
 
     // 克服トグル
     this.container.querySelectorAll('.btn-toggle-resolve').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const id = btn.getAttribute('data-id');
         const sourceType = btn.getAttribute('data-source');
         const srsId = btn.getAttribute('data-srs-id');
         const currentResolved = btn.getAttribute('data-resolved') === 'true';
+        const qRaw = decodeURIComponent(btn.getAttribute('data-question') || '');
+        const aRaw = decodeURIComponent(btn.getAttribute('data-answer') || '');
+        const wId = btn.getAttribute('data-word-id') || '';
+
         if (sourceType === 'looked_up') {
-          StorageService.markLookedUpWordResolved(id.replace(/^lookup_/, ''), !currentResolved);
+          StorageService.markLookedUpWordResolved((id || '').replace(/^lookup_/, '') || aRaw, !currentResolved);
         } else if (sourceType === 'due_review') {
           if (srsId) StorageService.recordWordAnswer(srsId, !currentResolved, 'good');
         } else {
-          StorageService.markMistakeResolved(id, !currentResolved);
+          StorageService.markMistakeResolved(id, !currentResolved, {
+            question: qRaw,
+            correctAnswer: aRaw,
+            wordId: wId
+          });
         }
         this.renderNotebook();
       });
@@ -142313,18 +142405,27 @@ class ReviewNotebookComponent {
 
     // 削除
     this.container.querySelectorAll('.btn-delete-mistake').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const id = btn.getAttribute('data-id');
         const sourceType = btn.getAttribute('data-source');
+        const qRaw = decodeURIComponent(btn.getAttribute('data-question') || '');
+        const aRaw = decodeURIComponent(btn.getAttribute('data-answer') || '');
+        const wId = btn.getAttribute('data-word-id') || '';
+
         if (confirm('この記録を削除しますか？')) {
           if (sourceType === 'looked_up') {
-            StorageService.deleteLookedUpWord(id.replace(/^lookup_/, ''));
+            StorageService.deleteLookedUpWord((id || '').replace(/^lookup_/, '') || aRaw);
           } else if (sourceType === 'due_review') {
             // SRS復習は完了扱いにして先送り
             const srsId = btn.getAttribute('data-srs-id');
             if (srsId) StorageService.recordWordAnswer(srsId, true, 'easy');
           } else {
-            StorageService.removeMistake(id);
+            StorageService.removeMistake(id, {
+              question: qRaw,
+              correctAnswer: aRaw,
+              wordId: wId
+            });
           }
           this.renderNotebook();
         }

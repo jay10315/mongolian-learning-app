@@ -306,10 +306,10 @@ export class ReviewNotebookComponent {
                   <div class="flex items-center gap-1.5">
                     <button type="button" class="btn-toggle-resolve text-[11px] px-2 py-0.5 rounded border ${
                       m.resolved ? 'bg-slate-100 text-slate-600 border-slate-300' : 'bg-emerald-50 text-emerald-700 border-emerald-300 font-bold'
-                    }" data-id="${m.id}" data-source="${m.sourceType || 'mistake'}" data-srs-id="${m.srsWordId || ''}" data-resolved="${m.resolved}">
+                    }" data-id="${m.id || ''}" data-source="${m.sourceType || 'mistake'}" data-srs-id="${m.srsWordId || ''}" data-question="${encodeURIComponent(m.question || '')}" data-answer="${encodeURIComponent(m.correctAnswer || '')}" data-word-id="${m.wordId || ''}" data-resolved="${m.resolved}">
                       ${m.resolved ? '未克服に戻す' : '✓ 覚えた（間違えた単語から消す）'}
                     </button>
-                    <button type="button" class="btn-delete-mistake text-slate-300 hover:text-rose-500 text-xs px-1 cursor-pointer" data-id="${m.id}" data-source="${m.sourceType || 'mistake'}" title="削除">
+                    <button type="button" class="btn-delete-mistake text-slate-300 hover:text-rose-500 text-xs px-1 cursor-pointer" data-id="${m.id || ''}" data-source="${m.sourceType || 'mistake'}" data-question="${encodeURIComponent(m.question || '')}" data-answer="${encodeURIComponent(m.correctAnswer || '')}" data-word-id="${m.wordId || ''}" title="削除">
                       ✕
                     </button>
                   </div>
@@ -401,17 +401,26 @@ export class ReviewNotebookComponent {
 
     // 克服トグル
     this.container.querySelectorAll('.btn-toggle-resolve').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const id = btn.getAttribute('data-id');
         const sourceType = btn.getAttribute('data-source');
         const srsId = btn.getAttribute('data-srs-id');
         const currentResolved = btn.getAttribute('data-resolved') === 'true';
+        const qRaw = decodeURIComponent(btn.getAttribute('data-question') || '');
+        const aRaw = decodeURIComponent(btn.getAttribute('data-answer') || '');
+        const wId = btn.getAttribute('data-word-id') || '';
+
         if (sourceType === 'looked_up') {
-          StorageService.markLookedUpWordResolved(id.replace(/^lookup_/, ''), !currentResolved);
+          StorageService.markLookedUpWordResolved((id || '').replace(/^lookup_/, '') || aRaw, !currentResolved);
         } else if (sourceType === 'due_review') {
           if (srsId) StorageService.recordWordAnswer(srsId, !currentResolved, 'good');
         } else {
-          StorageService.markMistakeResolved(id, !currentResolved);
+          StorageService.markMistakeResolved(id, !currentResolved, {
+            question: qRaw,
+            correctAnswer: aRaw,
+            wordId: wId
+          });
         }
         this.renderNotebook();
       });
@@ -419,18 +428,27 @@ export class ReviewNotebookComponent {
 
     // 削除
     this.container.querySelectorAll('.btn-delete-mistake').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const id = btn.getAttribute('data-id');
         const sourceType = btn.getAttribute('data-source');
+        const qRaw = decodeURIComponent(btn.getAttribute('data-question') || '');
+        const aRaw = decodeURIComponent(btn.getAttribute('data-answer') || '');
+        const wId = btn.getAttribute('data-word-id') || '';
+
         if (confirm('この記録を削除しますか？')) {
           if (sourceType === 'looked_up') {
-            StorageService.deleteLookedUpWord(id.replace(/^lookup_/, ''));
+            StorageService.deleteLookedUpWord((id || '').replace(/^lookup_/, '') || aRaw);
           } else if (sourceType === 'due_review') {
             // SRS復習は完了扱いにして先送り
             const srsId = btn.getAttribute('data-srs-id');
             if (srsId) StorageService.recordWordAnswer(srsId, true, 'easy');
           } else {
-            StorageService.removeMistake(id);
+            StorageService.removeMistake(id, {
+              question: qRaw,
+              correctAnswer: aRaw,
+              wordId: wId
+            });
           }
           this.renderNotebook();
         }

@@ -1141,6 +1141,13 @@ export class StorageService {
           m.consecutiveCorrect = m.resolved ? 3 : 0;
           mutated = true;
         }
+        // 3回正解に達している、もしくは resolved が true なら整合性を保つ
+        if ((m.consecutiveCorrect >= 3 || m.resolved) && !m.resolved) {
+          m.resolved = true;
+          m.consecutiveCorrect = Math.max(m.consecutiveCorrect || 0, 3);
+          m.resolvedAt = m.resolvedAt || new Date().toISOString();
+          mutated = true;
+        }
       });
       if (mutated) {
         localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
@@ -1166,6 +1173,9 @@ export class StorageService {
     let itemToSync = null;
 
     if (existingIdx !== -1) {
+      if (!list[existingIdx].id) {
+        list[existingIdx].id = `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+      }
       list[existingIdx].wrongCount = (list[existingIdx].wrongCount || 1) + 1;
       list[existingIdx].lastWrongDate = new Date().toISOString();
       list[existingIdx].userAnswer = mistake.userAnswer;
@@ -1192,22 +1202,48 @@ export class StorageService {
     return itemToSync;
   }
 
-  static markMistakeResolved(id, isResolved = true) {
+  static markMistakeResolved(id, isResolved = true, extra = {}) {
     const list = this.getMistakes();
-    const idx = list.findIndex(m => m.id === id);
-    if (idx !== -1) {
-      list[idx].resolved = isResolved;
-      list[idx].resolvedAt = isResolved ? new Date().toISOString() : null;
-      list[idx].consecutiveCorrect = isResolved ? 3 : 0;
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+    const cQ = clean(extra?.question);
+    const cAns = clean(extra?.correctAnswer);
+    const wordId = extra?.wordId;
+
+    let targetIdx = -1;
+    if (id) {
+      targetIdx = list.findIndex(m => m.id === id);
+    }
+    if (targetIdx === -1 && cQ && cAns) {
+      targetIdx = list.findIndex(m => clean(m.question) === cQ && clean(m.correctAnswer) === cAns);
+    }
+    if (targetIdx === -1 && wordId) {
+      targetIdx = list.findIndex(m => m.wordId === wordId);
+    }
+    if (targetIdx === -1 && cAns) {
+      targetIdx = list.findIndex(m => clean(m.correctAnswer) === cAns);
+    }
+    if (targetIdx === -1 && cQ) {
+      targetIdx = list.findIndex(m => {
+        const mq = clean(m.question);
+        return mq === cQ || mq.includes(cQ) || cQ.includes(mq);
+      });
+    }
+
+    if (targetIdx !== -1) {
+      list[targetIdx].resolved = isResolved;
+      list[targetIdx].resolvedAt = isResolved ? new Date().toISOString() : null;
+      list[targetIdx].consecutiveCorrect = isResolved ? 3 : 0;
       localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
-      SyncService.enqueueChange('RECORD_MISTAKE', list[idx]);
+      SyncService.enqueueChange('RECORD_MISTAKE', list[targetIdx]);
       try {
         if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated', { detail: { id, isResolved } }));
+          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated', { detail: { id: list[targetIdx].id, isResolved } }));
           window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
         }
       } catch (_) {}
+      return list[targetIdx];
     }
+    return null;
   }
 
   /**
@@ -1414,9 +1450,29 @@ export class StorageService {
     return this.getMistakes().filter(m => !m.resolved);
   }
 
-  static removeMistake(id) {
-    const list = this.getMistakes().filter(m => m.id !== id);
+  static removeMistake(id, extra = {}) {
+    let list = this.getMistakes();
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+    const cQ = clean(extra?.question);
+    const cAns = clean(extra?.correctAnswer);
+    const wordId = extra?.wordId;
+
+    if (id) {
+      list = list.filter(m => m.id !== id);
+    } else if (cQ && cAns) {
+      list = list.filter(m => !(clean(m.question) === cQ && clean(m.correctAnswer) === cAns));
+    } else if (wordId) {
+      list = list.filter(m => m.wordId !== wordId);
+    } else if (cAns) {
+      list = list.filter(m => clean(m.correctAnswer) !== cAns);
+    }
     localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
+    try {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+        window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+      }
+    } catch (_) {}
   }
 
   static clearResolvedMistakes() {
