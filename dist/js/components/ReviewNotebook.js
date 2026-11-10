@@ -17,7 +17,8 @@ export class ReviewNotebookComponent {
     hasAnswered: false,
     isCorrect: false,
     testResults: [],
-    resultFilter: 'all'
+    resultFilter: 'all',
+    hasRecordedHistory: false
   };
 
   static render(container, onNavigate) {
@@ -448,6 +449,7 @@ export class ReviewNotebookComponent {
         this.state.testIndex = 0;
         this.state.testResults = [];
         this.state.resultFilter = 'all';
+        this.state.hasRecordedHistory = false;
         this.state.testingMode = true;
         this.state.testView = 'question';
         this.loadReviewQuestion(0);
@@ -776,9 +778,36 @@ export class ReviewNotebookComponent {
         ` : `
           <div class="animate-fade-in space-y-4">
             <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50 dark:bg-rose-950/50 border-rose-300 dark:border-rose-900/60 text-rose-950 dark:text-rose-100'} shadow-sm">
-              <div class="text-2xl font-black mb-3">
-                ${this.state.isCorrect ? '🎉 見事克服！正解です！' : '❌ まだ克服できていません'}
+              <div class="text-2xl font-black mb-2">
+                ${this.state.isCorrect ? ((item.consecutiveCorrect || 0) >= 3 ? '🎉 3回正解達成！見事克服！' : '🎉 正解です！') : '❌ まだ克服できていません'}
               </div>
+
+              <!-- 3回正解克服プログレスの明示（正解数カウントのフィードバック） -->
+              ${(item.sourceType === 'mistake' || !item.sourceType) ? `
+                <div class="my-3 p-3 rounded-xl border ${
+                  this.state.isCorrect 
+                    ? ((item.consecutiveCorrect || 0) >= 3 
+                        ? 'bg-emerald-100 dark:bg-emerald-900/60 border-emerald-400 text-emerald-950 dark:text-emerald-100' 
+                        : 'bg-amber-50 dark:bg-amber-950/50 border-amber-300 dark:border-amber-700 text-amber-950 dark:text-amber-100')
+                    : 'bg-rose-100/60 dark:bg-rose-900/40 border-rose-300 text-rose-900 dark:text-rose-200'
+                } flex items-center justify-between flex-wrap gap-2 shadow-2xs">
+                  <div class="flex items-center gap-2">
+                    <span class="text-lg">${this.state.isCorrect ? ((item.consecutiveCorrect || 0) >= 3 ? '🏆' : '🎯') : '⚠️'}</span>
+                    <span class="text-xs sm:text-sm font-black">
+                      ${this.state.isCorrect 
+                        ? ((item.consecutiveCorrect || 0) >= 3 
+                            ? '🎉 3回正解を達成！間違えた単語リストから克服・除外されました！' 
+                            : `正解カウント加算: 3回中【${item.consecutiveCorrect || 1}回】正解中！（あと${3 - (item.consecutiveCorrect || 1)}回正解で克服達成）`)
+                        : '不正解のため、3回正解カウントはリセット（0/3回）されました'}
+                    </span>
+                  </div>
+                  <div class="text-xs font-bold px-2.5 py-1 rounded-full ${
+                    (item.consecutiveCorrect || 0) >= 3 ? 'bg-emerald-600 text-white' : 'bg-white/80 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200'
+                  }">
+                    進捗: ${item.consecutiveCorrect || 0}/3回
+                  </div>
+                </div>
+              ` : ''}
 
               ${(() => {
                 const currentParsed = (typeof parsed !== 'undefined' && parsed) ? parsed : this.parseReviewItem(item);
@@ -1022,26 +1051,49 @@ export class ReviewNotebookComponent {
 
     if (isCorrect) {
       SoundEffects.playCorrect();
-      // 正解したら克服済みにマーク（履歴は保持され、未克服リストから外れる）
+      
+      let updatedMistake = null;
       if (item.sourceType === 'looked_up') {
         const lookupKey = item.rawLookup?.id || item.rawLookup?.dictForm || item.correctAnswer;
         StorageService.markLookedUpWordResolved(lookupKey, true);
       } else if (item.sourceType === 'due_review') {
         if (item.srsWordId) StorageService.recordWordAnswer(item.srsWordId, true, 'good');
       } else {
-        StorageService.markMistakeResolved(item.id, true);
+        // 間違い問題（🔥 間違いタブなど）：3回正解ルールを適用して正解数カウントアップ
+        updatedMistake = StorageService.recordMistakeAnswer(item, true);
+        if (updatedMistake) {
+          item.consecutiveCorrect = updatedMistake.consecutiveCorrect;
+          item.resolved = updatedMistake.resolved;
+        }
       }
 
       // 対応する単語のSRS進捗も向上（マスター・得意化）
       if (matchedWord) {
         StorageService.recordWordAnswer(matchedWord.id, true);
-        StorageService.resolveMistakesForWord(matchedWord.id, matchedWord);
+        StorageService.resolveMistakesForWord(matchedWord.id, matchedWord, true);
       } else if (item.wordId) {
-        StorageService.resolveMistakesForWord(item.wordId);
+        StorageService.resolveMistakesForWord(item.wordId, null, true);
       }
-      StorageService.resolveMistakeByQuestion(item.question, item.correctAnswer);
+      StorageService.resolveMistakeByQuestion(item.question, item.correctAnswer, true);
+
+      // 最新の consecutiveCorrect を item に反映（画面表示・進捗同期）
+      if (!updatedMistake && (item.sourceType === 'mistake' || !item.sourceType)) {
+        const currentMistakes = StorageService.getMistakes();
+        const found = currentMistakes.find(m => m.id === item.id);
+        if (found) {
+          item.consecutiveCorrect = found.consecutiveCorrect;
+          item.resolved = found.resolved;
+        }
+      }
     } else {
       SoundEffects.playWrong();
+      if (item.sourceType === 'mistake' || !item.sourceType) {
+        const updated = StorageService.recordMistakeAnswer(item, false);
+        if (updated) {
+          item.consecutiveCorrect = 0;
+          item.resolved = false;
+        }
+      }
       StorageService.recordMistake({
         ...item,
         userAnswer: val
@@ -1058,6 +1110,18 @@ export class ReviewNotebookComponent {
     const wrong = total - correct;
     const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
     const currentFilter = this.state.resultFilter || 'all';
+
+    // 学習履歴・累計正解数に記録（ホーム画面の「累計正解率 (X/Y)」や日別統計に確実に反映）
+    if (!this.state.hasRecordedHistory && total > 0) {
+      this.state.hasRecordedHistory = true;
+      StorageService.recordHistory({
+        type: 'review_notebook',
+        category: '復習特訓（間違いノート）',
+        total: total,
+        correct: correct,
+        score: percent
+      });
+    }
 
     const filteredResults = this.state.testResults.filter(r => {
       if (currentFilter === 'correct') return r.isCorrect;
@@ -1171,6 +1235,7 @@ export class ReviewNotebookComponent {
         this.state.testIndex = 0;
         this.state.testResults = [];
         this.state.resultFilter = 'all';
+        this.state.hasRecordedHistory = false;
         this.state.testingMode = true;
         this.state.testView = 'question';
         this.loadReviewQuestion(0);

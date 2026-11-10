@@ -1185,6 +1185,65 @@ export class StorageService {
   }
 
   /**
+   * 間違い問題の回答結果を記録し、3回正解ルールを適用する
+   * @param {string|Object} mistakeOrId 間違いIDまたは間違いオブジェクト
+   * @param {boolean} isCorrect 正解かどうか
+   * @returns {Object|null} 更新された間違いオブジェクト
+   */
+  static recordMistakeAnswer(mistakeOrId, isCorrect) {
+    const list = this.getMistakes();
+    if (!list || list.length === 0) return null;
+
+    const id = typeof mistakeOrId === 'string' ? mistakeOrId : (mistakeOrId?.id);
+    const qText = typeof mistakeOrId === 'object' ? mistakeOrId?.question : '';
+    const ansText = typeof mistakeOrId === 'object' ? mistakeOrId?.correctAnswer : '';
+    const wordId = typeof mistakeOrId === 'object' ? mistakeOrId?.wordId : '';
+
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+    const cQ = clean(qText);
+    const cAns = clean(ansText);
+
+    let targetIdx = -1;
+    if (id) {
+      targetIdx = list.findIndex(m => m.id === id);
+    }
+    if (targetIdx === -1 && cQ && cAns) {
+      targetIdx = list.findIndex(m => clean(m.question) === cQ && clean(m.correctAnswer) === cAns);
+    }
+    if (targetIdx === -1 && wordId) {
+      targetIdx = list.findIndex(m => m.wordId === wordId);
+    }
+
+    if (targetIdx !== -1) {
+      const m = list[targetIdx];
+      if (isCorrect) {
+        m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
+        if (m.consecutiveCorrect >= 3) {
+          m.resolved = true;
+          m.resolvedAt = new Date().toISOString();
+        } else {
+          m.resolved = false;
+        }
+      } else {
+        m.consecutiveCorrect = 0;
+        m.resolved = false;
+        m.wrongCount = (m.wrongCount || 1) + 1;
+        m.lastWrongDate = new Date().toISOString();
+      }
+      localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
+      SyncService.enqueueChange('RECORD_MISTAKE', m);
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated', { detail: { id: m.id, isCorrect, resolved: m.resolved, consecutiveCorrect: m.consecutiveCorrect } }));
+          window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+        }
+      } catch (_) {}
+      return m;
+    }
+    return null;
+  }
+
+  /**
    * 正解した単語に対して「覚えた」と判定し、該当する間違いノートの記録を克服済みにする（間違えた単語リストから即座に消去）
    * @param {string} wordId 単語ID
    * @param {Object|null} wordObj 単語オブジェクト
@@ -1214,7 +1273,7 @@ export class StorageService {
       const mAns = clean(m.correctAnswer);
       const mQ = clean(m.question);
 
-      const isMatch = (wordId && mWordId && wordId === mWordId) ||
+      const isMatch = (wordId && (m.id === wordId || (mWordId && wordId === mWordId))) ||
         (wMn && (mAns === wMn || mAns.includes(wMn) || mQ.includes(wMn))) ||
         (wDf && (mAns === wDf || mAns.includes(wDf) || mQ.includes(wDf))) ||
         (wRoot && mAns === wRoot) ||
