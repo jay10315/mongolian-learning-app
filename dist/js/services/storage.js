@@ -116,11 +116,11 @@ export class StorageService {
       localStorage.setItem(STORAGE_KEYS.WORD_PROGRESS, JSON.stringify({}));
     }
 
-    // 既存の間違いノートと調べた単語の文字化け完全サニタイズ（カタカナ混入・ヒント漏れの永久排除）
+    // 既存の間違いノートと調べた単語の文字化け完全サニタイズ（カタカナ混入・ヒント漏れの永久排除）および重複単語の自動整理
     try {
       const rawMistakes = localStorage.getItem(STORAGE_KEYS.MISTAKES);
       if (rawMistakes) {
-        const mistakes = JSON.parse(rawMistakes);
+        let mistakes = JSON.parse(rawMistakes);
         if (Array.isArray(mistakes)) {
           let changed = false;
           const cleaned = mistakes.map(m => {
@@ -135,8 +135,9 @@ export class StorageService {
             }
             return m;
           });
-          if (changed) {
-            localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(cleaned));
+          const deduplicated = this.deduplicateMistakes(cleaned);
+          if (deduplicated.length !== mistakes.length || changed) {
+            localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(deduplicated));
           }
         }
       }
@@ -1127,11 +1128,153 @@ export class StorageService {
   }
 
   // --- 間違いノート（永続化・アカウント同期対応） ---
+
+  /**
+   * 間違い項目の同一単語判定用キーを生成
+   * （出題形式の違い、空白、括弧、隠れ-нの違いを吸収して同一単語を1つに特定）
+   */
+  static getMistakeCanonicalKey(item) {
+    if (!item) return '';
+
+    // キリル文字（モンゴル語）の抽出・正規化
+    const extractCyrillic = (str) => {
+      if (!str) return '';
+      let s = str.toString().toLowerCase();
+      s = s.replace(/[\(（][нН][\)）]/g, '');
+      s = s.replace(/[\(（][^\)）]*[\)）]/g, '');
+      return s.replace(/[^\u0400-\u04FF]/g, '');
+    };
+
+    // 日本語の抽出・正規化
+    const extractJapanese = (str) => {
+      if (!str) return '';
+      let s = str.toString();
+      s = s.replace(/【[^】]*】/g, '');
+      s = s.replace(/の意味$/g, '');
+      s = s.replace(/[\(（][^\)）]*[\)）]/g, '');
+      return s.replace(/[^\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/g, '');
+    };
+
+    const cyAns = extractCyrillic(item.correctAnswer);
+    const cyQ = extractCyrillic(item.question);
+    const cyrillic = cyAns || cyQ;
+
+    const jaQ = extractJapanese(item.question);
+    const jaAns = extractJapanese(item.correctAnswer);
+    const japanese = jaQ || jaAns;
+
+    // 単語IDがある場合
+    if (item.wordId) {
+      if (cyrillic) return `w_${cyrillic}`;
+      return `wid_${item.wordId}`;
+    }
+
+    // キリル文字と日本語の組み合わせ、またはキリル文字単独
+    if (cyrillic && japanese) {
+      return `pair_${cyrillic}_${japanese}`;
+    } else if (cyrillic) {
+      return `cy_${cyrillic}`;
+    } else if (japanese) {
+      return `ja_${japanese}`;
+    }
+
+    const rawClean = (s) => (s || '').toString().toLowerCase().replace(/[\s.,!?:;«»"'\-]/g, '');
+    return `raw_${rawClean(item.question)}_${rawClean(item.correctAnswer)}`;
+  }
+
+  /**
+   * 間違いリスト内の重複（同一単語の複数記録）を自動統合・整理する
+   * @param {Array} list 間違いリスト
+   * @returns {Array} 重複排除・統合済みの間違いリスト
+   */
+  static deduplicateMistakes(list) {
+    if (!Array.isArray(list) || list.length === 0) return [];
+
+    const groups = new Map();
+    list.forEach(item => {
+      if (!item) return;
+      const key = this.getMistakeCanonicalKey(item);
+      if (!groups.has(key)) {
+        groups.set(key, []);
+      }
+      groups.get(key).push(item);
+    });
+
+    const result = [];
+    groups.forEach((items) => {
+      if (items.length === 1) {
+        result.push(items[0]);
+        return;
+      }
+
+      // 複数ある場合は最新のものをベースにして統合
+      items.sort((a, b) => new Date(b.lastWrongDate || b.created_at || 0) - new Date(a.lastWrongDate || a.created_at || 0));
+      const base = { ...items[0] };
+
+      // 誤答回数: 重複している各項目の最大値、または合計（上限50）を反映
+      const maxWrong = Math.max(...items.map(it => it.wrongCount || 1));
+      const sumWrong = items.reduce((acc, it) => acc + (it.wrongCount || 1), 0);
+      base.wrongCount = Math.max(maxWrong, Math.min(sumWrong, 50));
+
+      // 連続正解数: 最大値を反映
+      const maxConsecutive = Math.max(...items.map(it => it.consecutiveCorrect || 0));
+      base.consecutiveCorrect = maxConsecutive;
+
+      // 克服フラグ: いずれかが克服済み、または連続正解3回以上なら克服済み
+      const anyResolved = items.some(it => Boolean(it.resolved));
+      base.resolved = Boolean(anyResolved || (base.consecutiveCorrect >= 3));
+      if (base.resolved) {
+        base.consecutiveCorrect = Math.max(base.consecutiveCorrect, 3);
+        base.resolvedAt = base.resolvedAt || items.find(it => it.resolvedAt)?.resolvedAt || new Date().toISOString();
+      }
+
+      // wordId: 持っているものがあれば補完
+      if (!base.wordId) {
+        const itemWithWordId = items.find(it => it.wordId);
+        if (itemWithWordId) base.wordId = itemWithWordId.wordId;
+      }
+
+      // explanation: より詳しい解説を採用
+      const bestExp = items.map(it => it.explanation || '').sort((a, b) => b.length - a.length)[0];
+      if (bestExp) base.explanation = bestExp;
+
+      result.push(base);
+    });
+
+    // 最新の間違い日時順で並び替え
+    result.sort((a, b) => new Date(b.lastWrongDate || b.created_at || 0) - new Date(a.lastWrongDate || a.created_at || 0));
+    return result;
+  }
+
+  /**
+   * 間違いリストの重複を即座に整理・統合して保存する
+   */
+  static deduplicateMistakesAndSave() {
+    const list = this.getMistakes();
+    const deduplicated = this.deduplicateMistakes(list);
+    localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(deduplicated));
+    try {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('mongol_app_mistakes_updated'));
+        window.dispatchEvent(new CustomEvent('mongol_app_storage_updated'));
+      }
+    } catch (_) {}
+    return deduplicated;
+  }
+
   static getMistakes() {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.MISTAKES);
-      const list = data ? JSON.parse(data) : [];
+      let list = data ? JSON.parse(data) : [];
       let mutated = false;
+
+      // 重複単語の自動整理・統合
+      const originalLen = list.length;
+      list = this.deduplicateMistakes(list);
+      if (list.length !== originalLen) {
+        mutated = true;
+      }
+
       list.forEach((m, idx) => {
         if (!m.id) {
           m.id = `m_${idx}_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
@@ -1168,8 +1311,14 @@ export class StorageService {
       userAnswer: cleanMongolianMojibake(mistake.userAnswer || ''),
       explanation: cleanMongolianMojibake(mistake.explanation || '')
     };
-    const list = this.getMistakes();
-    const existingIdx = list.findIndex(m => m.question === sanitizedMistake.question && m.correctAnswer === sanitizedMistake.correctAnswer);
+    let list = this.getMistakes();
+    const newKey = this.getMistakeCanonicalKey(sanitizedMistake);
+
+    // 完全一致だけでなく同一単語判定キーで既存の単語を検索し、同一単語の重複発生を防止
+    const existingIdx = list.findIndex(m => {
+      if (m.question === sanitizedMistake.question && m.correctAnswer === sanitizedMistake.correctAnswer) return true;
+      return this.getMistakeCanonicalKey(m) === newKey;
+    });
     let itemToSync = null;
 
     if (existingIdx !== -1) {
@@ -1182,6 +1331,9 @@ export class StorageService {
       list[existingIdx].resolved = false;
       list[existingIdx].consecutiveCorrect = 0; // 再度間違えたら連続正解数をリセット
       if (mistake.wordId) list[existingIdx].wordId = mistake.wordId;
+      if (sanitizedMistake.explanation && (!list[existingIdx].explanation || sanitizedMistake.explanation.length > list[existingIdx].explanation.length)) {
+        list[existingIdx].explanation = sanitizedMistake.explanation;
+      }
       itemToSync = list[existingIdx];
     } else {
       itemToSync = {
@@ -1195,6 +1347,7 @@ export class StorageService {
       };
       list.unshift(itemToSync);
     }
+    list = this.deduplicateMistakes(list);
     localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
 
     // クラウドキュー送信

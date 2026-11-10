@@ -239,11 +239,14 @@ export class ReviewNotebookComponent {
             `).join('')}
           </div>
 
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-2 shrink-0 flex-wrap">
             <label class="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer select-none">
               <input type="checkbox" id="check-show-resolved" ${this.state.showResolved ? 'checked' : ''} class="rounded text-emerald-600 focus:ring-0">
               <span>克服済みも表示</span>
             </label>
+            <button type="button" id="btn-dedupe-mistakes" class="text-[11px] px-2.5 py-1 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-600 font-semibold cursor-pointer transition-all flex items-center gap-1" title="同じ単語の複数記録を1つに統合">
+              <span>🧹</span> 重複を整理
+            </button>
             ${totalResolved > 0 ? `
               <button type="button" id="btn-clear-resolved" class="text-[11px] px-2.5 py-1 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-600 font-semibold cursor-pointer transition-all flex items-center gap-1">
                 <span>🗑️</span> 覚えた項目を一括整理
@@ -396,6 +399,21 @@ export class ReviewNotebookComponent {
           StorageService.clearResolvedMistakes();
           this.renderNotebook();
         }
+      });
+    }
+
+    const dedupeBtn = this.container.querySelector('#btn-dedupe-mistakes');
+    if (dedupeBtn) {
+      dedupeBtn.addEventListener('click', () => {
+        const before = StorageService.getMistakes().length;
+        StorageService.deduplicateMistakesAndSave();
+        const after = StorageService.getMistakes().length;
+        if (before > after) {
+          alert(`重複していた ${before - after} 件の単語を1つに整理・統合しました！`);
+        } else {
+          alert('重複している単語はありません。すべて綺麗に整理されています。');
+        }
+        this.renderNotebook();
       });
     }
 
