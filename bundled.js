@@ -123454,12 +123454,20 @@ class WordTestComponent {
             <span>正解率: ${percent}% (${correct}/${total}問)</span>
           </div>
 
-          <div class="flex gap-2">
-            <button type="button" id="btn-retry-test" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer">
-              もう一度解く
-            </button>
-            <button type="button" id="btn-result-home" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition-all cursor-pointer">
-              ホームへ戻る
+          <div class="space-y-2">
+            <div class="flex gap-2">
+              <button type="button" id="btn-retry-test" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <span>🔄</span>
+                <span>もう一度解く</span>
+              </button>
+              <button type="button" id="btn-change-test-settings" class="flex-1 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <span>⚙️</span>
+                <span>問題選択へ戻る</span>
+              </button>
+            </div>
+            <button type="button" id="btn-result-home" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-1">
+              <span>🏠</span>
+              <span>ホームへ戻る</span>
             </button>
           </div>
         </div>
@@ -123548,6 +123556,14 @@ class WordTestComponent {
     this.container.querySelector('#btn-retry-test').addEventListener('click', () => {
       this.startTest();
     });
+
+    const changeSettingsBtn = this.container.querySelector('#btn-change-test-settings');
+    if (changeSettingsBtn) {
+      changeSettingsBtn.addEventListener('click', () => {
+        this.state.view = 'settings';
+        this.renderSettings();
+      });
+    }
 
     this.container.querySelector('#btn-result-home').addEventListener('click', () => {
       if (this.onNavigate) this.onNavigate('home');
@@ -124231,12 +124247,20 @@ class JapaneseTestComponent {
             <span>正解率: ${percent}% (${correct}/${total}問)</span>
           </div>
 
-          <div class="flex gap-2">
-            <button type="button" id="btn-retry-ja-test" class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer">
-              もう一度解く
-            </button>
-            <button type="button" id="btn-ja-result-home" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition-all cursor-pointer">
-              ホームへ戻る
+          <div class="space-y-2">
+            <div class="flex gap-2">
+              <button type="button" id="btn-retry-ja-test" class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <span>🔄</span>
+                <span>もう一度解く</span>
+              </button>
+              <button type="button" id="btn-change-ja-settings" class="flex-1 py-3 bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-300 font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <span>⚙️</span>
+                <span>問題選択へ戻る</span>
+              </button>
+            </div>
+            <button type="button" id="btn-ja-result-home" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-1">
+              <span>🏠</span>
+              <span>ホームへ戻る</span>
             </button>
           </div>
         </div>
@@ -124325,6 +124349,14 @@ class JapaneseTestComponent {
     this.container.querySelector('#btn-retry-ja-test').addEventListener('click', () => {
       this.startTest();
     });
+
+    const changeJaSettingsBtn = this.container.querySelector('#btn-change-ja-settings');
+    if (changeJaSettingsBtn) {
+      changeJaSettingsBtn.addEventListener('click', () => {
+        this.state.view = 'settings';
+        this.renderSettings();
+      });
+    }
 
     this.container.querySelector('#btn-ja-result-home').addEventListener('click', () => {
       if (this.onNavigate) this.onNavigate('home');
@@ -125042,12 +125074,20 @@ class GrammarTestComponent {
             <span>正解率: ${percent}% (${correct}/${total}問)</span>
           </div>
 
-          <div class="flex gap-2">
-            <button type="button" id="btn-retry-grammar" class="flex-1 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer">
-              もう一度解く
-            </button>
-            <button type="button" id="btn-result-home" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition-all cursor-pointer">
-              ホームへ戻る
+          <div class="space-y-2">
+            <div class="flex gap-2">
+              <button type="button" id="btn-retry-grammar" class="flex-1 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <span>🔄</span>
+                <span>もう一度解く</span>
+              </button>
+              <button type="button" id="btn-change-grammar-settings" class="flex-1 py-3 bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-300 font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <span>⚙️</span>
+                <span>問題選択へ戻る</span>
+              </button>
+            </div>
+            <button type="button" id="btn-result-home" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-1">
+              <span>🏠</span>
+              <span>ホームへ戻る</span>
             </button>
           </div>
         </div>
@@ -125131,6 +125171,14 @@ class GrammarTestComponent {
     this.container.querySelector('#btn-retry-grammar').addEventListener('click', () => {
       this.startTest();
     });
+
+    const changeGrammarSettingsBtn = this.container.querySelector('#btn-change-grammar-settings');
+    if (changeGrammarSettingsBtn) {
+      changeGrammarSettingsBtn.addEventListener('click', () => {
+        this.state.view = 'settings';
+        this.renderSettings();
+      });
+    }
 
     const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-grammar');
     if (gotoMistakesBtn) {
@@ -125807,12 +125855,20 @@ class DeclensionTestComponent {
             <span>正解率: ${percent}% (${correct}/${total}問)</span>
           </div>
 
-          <div class="flex gap-2">
-            <button type="button" id="btn-retry-declension" class="flex-1 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer">
-              もう一度解く
-            </button>
-            <button type="button" id="btn-result-home" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition-all cursor-pointer">
-              ホームへ戻る
+          <div class="space-y-2">
+            <div class="flex gap-2">
+              <button type="button" id="btn-retry-declension" class="flex-1 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <span>🔄</span>
+                <span>もう一度解く</span>
+              </button>
+              <button type="button" id="btn-change-declension-settings" class="flex-1 py-3 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <span>⚙️</span>
+                <span>問題選択へ戻る</span>
+              </button>
+            </div>
+            <button type="button" id="btn-result-home" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-1">
+              <span>🏠</span>
+              <span>ホームへ戻る</span>
             </button>
           </div>
         </div>
@@ -125896,6 +125952,14 @@ class DeclensionTestComponent {
     this.container.querySelector('#btn-retry-declension').addEventListener('click', () => {
       this.startTest();
     });
+
+    const changeDeclensionSettingsBtn = this.container.querySelector('#btn-change-declension-settings');
+    if (changeDeclensionSettingsBtn) {
+      changeDeclensionSettingsBtn.addEventListener('click', () => {
+        this.state.view = 'settings';
+        this.renderSettings();
+      });
+    }
 
     const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-decl');
     if (gotoMistakesBtn) {

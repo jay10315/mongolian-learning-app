@@ -652,12 +652,20 @@ export class DeclensionTestComponent {
             <span>正解率: ${percent}% (${correct}/${total}問)</span>
           </div>
 
-          <div class="flex gap-2">
-            <button type="button" id="btn-retry-declension" class="flex-1 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer">
-              もう一度解く
-            </button>
-            <button type="button" id="btn-result-home" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition-all cursor-pointer">
-              ホームへ戻る
+          <div class="space-y-2">
+            <div class="flex gap-2">
+              <button type="button" id="btn-retry-declension" class="flex-1 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <span>🔄</span>
+                <span>もう一度解く</span>
+              </button>
+              <button type="button" id="btn-change-declension-settings" class="flex-1 py-3 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-bold rounded-xl text-xs sm:text-sm transition-all active:scale-98 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <span>⚙️</span>
+                <span>問題選択へ戻る</span>
+              </button>
+            </div>
+            <button type="button" id="btn-result-home" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-1">
+              <span>🏠</span>
+              <span>ホームへ戻る</span>
             </button>
           </div>
         </div>
@@ -741,6 +749,14 @@ export class DeclensionTestComponent {
     this.container.querySelector('#btn-retry-declension').addEventListener('click', () => {
       this.startTest();
     });
+
+    const changeDeclensionSettingsBtn = this.container.querySelector('#btn-change-declension-settings');
+    if (changeDeclensionSettingsBtn) {
+      changeDeclensionSettingsBtn.addEventListener('click', () => {
+        this.state.view = 'settings';
+        this.renderSettings();
+      });
+    }
 
     const gotoMistakesBtn = this.container.querySelector('#btn-goto-mistakes-from-decl');
     if (gotoMistakesBtn) {
