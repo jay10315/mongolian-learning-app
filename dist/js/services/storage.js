@@ -710,7 +710,18 @@ export class StorageService {
    * 忘却リスクが高い単語リスト（保持率40%未満 / 忘却リスク60%以上）
    */
   static getHighRiskWords() {
+    const mistakes = this.getMistakes();
+    const mistakenWordIds = new Set();
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+    const mistakenAnswers = new Set(mistakes.map(m => clean(m.correctAnswer)).filter(Boolean));
+    mistakes.forEach(m => {
+      if (m.wordId) mistakenWordIds.add(m.wordId);
+    });
+
     return this.getVocabulary().filter(v => 
+      mistakenWordIds.has(v.id) ||
+      mistakenAnswers.has(clean(v.mongolian)) ||
+      mistakenAnswers.has(clean(v.dictForm)) ||
       (v.srsLevel > 0 && v.forgettingRisk >= 60) || 
       (v.wrongCount > 0 && v.srsLevel < 6)
     );
@@ -1119,7 +1130,22 @@ export class StorageService {
   static getMistakes() {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.MISTAKES);
-      return data ? JSON.parse(data) : [];
+      const list = data ? JSON.parse(data) : [];
+      let mutated = false;
+      list.forEach((m, idx) => {
+        if (!m.id) {
+          m.id = `m_${idx}_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+          mutated = true;
+        }
+        if (m.consecutiveCorrect === undefined) {
+          m.consecutiveCorrect = m.resolved ? 3 : 0;
+          mutated = true;
+        }
+      });
+      if (mutated) {
+        localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
+      }
+      return list;
     } catch (e) {
       return [];
     }
@@ -1192,7 +1218,7 @@ export class StorageService {
    */
   static recordMistakeAnswer(mistakeOrId, isCorrect) {
     const list = this.getMistakes();
-    if (!list || list.length === 0) return null;
+    if (!list) return null;
 
     const id = typeof mistakeOrId === 'string' ? mistakeOrId : (mistakeOrId?.id);
     const qText = typeof mistakeOrId === 'object' ? mistakeOrId?.question : '';
@@ -1213,9 +1239,31 @@ export class StorageService {
     if (targetIdx === -1 && wordId) {
       targetIdx = list.findIndex(m => m.wordId === wordId);
     }
+    if (targetIdx === -1 && cAns) {
+      targetIdx = list.findIndex(m => clean(m.correctAnswer) === cAns);
+    }
+    if (targetIdx === -1 && cQ) {
+      targetIdx = list.findIndex(m => clean(m.question) === cQ);
+    }
 
+    let m = null;
     if (targetIdx !== -1) {
-      const m = list[targetIdx];
+      m = list[targetIdx];
+    } else if (typeof mistakeOrId === 'object' && mistakeOrId) {
+      m = {
+        id: id || `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        wordId: wordId || null,
+        question: qText || '',
+        correctAnswer: ansText || '',
+        consecutiveCorrect: 0,
+        wrongCount: 1,
+        resolved: false,
+        lastWrongDate: new Date().toISOString()
+      };
+      list.unshift(m);
+    }
+
+    if (m) {
       if (isCorrect) {
         m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
         if (m.consecutiveCorrect >= 3) {

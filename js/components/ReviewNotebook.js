@@ -5,6 +5,15 @@ import { CyrillicKeyboard } from './CyrillicKeyboard.js';
 import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, scrollToQuizTop } from '../utils/helpers.js';
 
 export class ReviewNotebookComponent {
+  static activeKeyHandler = null;
+
+  static cleanupKeyHandler() {
+    if (this.activeKeyHandler) {
+      window.removeEventListener('keydown', this.activeKeyHandler);
+      this.activeKeyHandler = null;
+    }
+  }
+
   static state = {
     filterType: 'all', // 'all' | 'word' | 'grammar' | 'declension' | 'flashcard'
     showResolved: false,
@@ -710,6 +719,7 @@ export class ReviewNotebookComponent {
   }
 
   static loadReviewQuestion(index) {
+    this.cleanupKeyHandler();
     this.state.testIndex = index;
     this.state.currentTestItem = this.state.testList[index];
     this.state.userAnswer = '';
@@ -771,15 +781,16 @@ export class ReviewNotebookComponent {
             <!-- PC標準モンゴル語キーボード＆特有文字パレット（キリル文字回答時） -->
             ${parsed.isCyrillicAnswer ? renderCyrillicInputAssistantHTML('input-review-answer', true) : ''}
 
-            <button type="button" id="btn-submit-review" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm">
+            <button type="button" id="btn-submit-review" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm cursor-pointer">
               回答する（Enter）
             </button>
           </div>
         ` : `
           <div class="animate-fade-in space-y-4">
             <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50 dark:bg-rose-950/50 border-rose-300 dark:border-rose-900/60 text-rose-950 dark:text-rose-100'} shadow-sm">
-              <div class="text-2xl font-black mb-2">
-                ${this.state.isCorrect ? ((item.consecutiveCorrect || 0) >= 3 ? '🎉 3回正解達成！見事克服！' : '🎉 正解です！') : '❌ まだ克服できていません'}
+              <div class="text-2xl font-black mb-2 flex items-center gap-2">
+                <span>${this.state.isCorrect ? '🎉' : '❌'}</span>
+                <span>${this.state.isCorrect ? ((item.consecutiveCorrect || 0) >= 3 ? '見事克服！マスター達成！' : '正解です！') : 'まだ克服できていません'}</span>
               </div>
 
               <!-- 3回正解克服プログレスの明示（正解数カウントのフィードバック） -->
@@ -792,16 +803,16 @@ export class ReviewNotebookComponent {
                     : 'bg-rose-100/60 dark:bg-rose-900/40 border-rose-300 text-rose-900 dark:text-rose-200'
                 } flex items-center justify-between flex-wrap gap-2 shadow-2xs">
                   <div class="flex items-center gap-2">
-                    <span class="text-lg">${this.state.isCorrect ? ((item.consecutiveCorrect || 0) >= 3 ? '🏆' : '🎯') : '⚠️'}</span>
+                    <span class="text-xl">${this.state.isCorrect ? ((item.consecutiveCorrect || 0) >= 3 ? '🏆' : '🎯') : '⚠️'}</span>
                     <span class="text-xs sm:text-sm font-black">
                       ${this.state.isCorrect 
                         ? ((item.consecutiveCorrect || 0) >= 3 
                             ? '🎉 3回正解を達成！間違えた単語リストから克服・除外されました！' 
-                            : `正解カウント加算: 3回中【${item.consecutiveCorrect || 1}回】正解中！（あと${3 - (item.consecutiveCorrect || 1)}回正解で克服達成）`)
+                            : `正解カウント加算！3回中【${item.consecutiveCorrect || 1}回】正解（あと${Math.max(0, 3 - (item.consecutiveCorrect || 1))}回正解で克服達成！）`)
                         : '不正解のため、3回正解カウントはリセット（0/3回）されました'}
                     </span>
                   </div>
-                  <div class="text-xs font-bold px-2.5 py-1 rounded-full ${
+                  <div class="text-xs font-bold px-3 py-1 rounded-full ${
                     (item.consecutiveCorrect || 0) >= 3 ? 'bg-emerald-600 text-white' : 'bg-white/80 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200'
                   }">
                     進捗: ${item.consecutiveCorrect || 0}/3回
@@ -809,12 +820,12 @@ export class ReviewNotebookComponent {
                 </div>
               ` : ''}
 
+              <!-- 詳しい解説カード（全問必ず展開） -->
               ${(() => {
                 const currentParsed = (typeof parsed !== 'undefined' && parsed) ? parsed : this.parseReviewItem(item);
                 const isExplicitNonWord = item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review';
                 const matchedWord = (!isExplicitNonWord && currentParsed) ? currentParsed.matchedWord : null;
 
-                // 単語情報がある場合：動詞・名詞・複合語問わず詳細解説＆成り立ちHTMLを完全展開
                 if (matchedWord) {
                   return renderGrammarExplanationHTML({
                     correctAnswer: item.correctAnswer,
@@ -826,16 +837,18 @@ export class ReviewNotebookComponent {
                   });
                 }
 
-                // マッチ単語がない場合のフォールバック（イラスト・成り立ち解析・語呂合わせ・ダークモード高コントラスト対応）
+                // マッチ単語がない場合のフォールバック（イラスト・成り立ち解析・語呂合わせ）
+                const meaning = item.japanese || (item.explanation ? item.explanation.split('=')[0].trim() : '');
                 const etymologyHTML = (typeof getWordEtymologyHTML === 'function')
-                  ? getWordEtymologyHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
+                  ? getWordEtymologyHTML({ mongolian: item.correctAnswer, japanese: meaning }, item.correctAnswer)
                   : '';
                 const mnemonicHTML = (typeof getWordMnemonicHTML === 'function')
-                  ? getWordMnemonicHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer)
+                  ? getWordMnemonicHTML({ mongolian: item.correctAnswer, japanese: meaning }, item.correctAnswer)
                   : '';
                 const illustrationHTML = (typeof getWordIllustrationHTML === 'function')
-                  ? getWordIllustrationHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, { size: 'md' })
+                  ? getWordIllustrationHTML({ mongolian: item.correctAnswer, japanese: meaning }, { size: 'md' })
                   : '';
+                const altSynNote = (typeof getWordSynonymNote === 'function') ? getWordSynonymNote(item.correctAnswer) : '';
 
                 return `
                   <div class="space-y-3 text-xs sm:text-sm">
@@ -844,9 +857,9 @@ export class ReviewNotebookComponent {
                       <div>
                         <div class="flex items-center gap-1.5 flex-wrap">
                           <span class="text-slate-500 dark:text-slate-400 font-bold">正解: </span>
-                          <span class="font-black text-lg cyrillic-text text-emerald-700 dark:text-emerald-400 correct-answer-text">${item.correctAnswer}${((typeof getWordSynonymNote === 'function' && getWordSynonymNote(item.correctAnswer)) ? ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">(${getWordSynonymNote(item.correctAnswer)})</span>` : '')}</span>
+                          <span class="font-black text-lg cyrillic-text text-emerald-700 dark:text-emerald-400 correct-answer-text">${item.correctAnswer}${altSynNote ? ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">(${altSynNote})</span>` : ''}</span>
                         </div>
-                        ${item.japanese ? `<div class="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5">${item.japanese}</div>` : ''}
+                        ${meaning ? `<div class="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5">${meaning}</div>` : ''}
                       </div>
                     </div>
 
@@ -857,29 +870,23 @@ export class ReviewNotebookComponent {
                       </div>
                     ` : ''}
 
+                    ${item.explanation ? `
+                      <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
+                        <div class="font-bold text-slate-900 dark:text-slate-100 mb-1">💡 解説:</div>
+                        <div>${item.explanation}</div>
+                      </div>
+                    ` : ''}
+
                     ${etymologyHTML}
                     ${mnemonicHTML}
-
-                    ${(() => {
-                      const syn = (typeof getWordSynonymNote === 'function') ? getWordSynonymNote(item.correctAnswer) : '';
-                      const exp = item.explanation || (item.japanese ? `${item.japanese} (辞書形: ${item.correctAnswer})` : '');
-                      if (!exp) return '';
-                      const displayExp = (syn && !exp.includes(syn)) ? `${exp} (別表現: ${syn})` : exp;
-                      return `
-                        <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
-                          💡 ${displayExp}
-                        </div>
-                      `;
-                    })()}
-
-                    ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML({ mongolian: item.correctAnswer, japanese: item.japanese }, item.correctAnswer, { userAnswer: this.state.userAnswer || item.userAnswer }) : ''}
+                    ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML({ mongolian: item.correctAnswer, japanese: meaning }, item.correctAnswer, { userAnswer: this.state.userAnswer || item.userAnswer }) : ''}
                   </div>
                 `;
               })()}
             </div>
 
-            <button type="button" id="btn-next-review-item" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm">
-              ${idx + 1 < total ? '次の復習問題へ →' : '復習テスト完了！'}
+            <button type="button" id="btn-next-review-item" class="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl shadow-md transition-all active:scale-98 text-sm cursor-pointer">
+              ${idx + 1 < total ? '次の復習問題へ → (Enter)' : '復習テスト完了！結果を見る'}
             </button>
           </div>
         `}
@@ -891,9 +898,12 @@ export class ReviewNotebookComponent {
   }
 
   static bindReviewTestingEvents() {
+    this.cleanupKeyHandler();
+
     const quitBtn = this.container.querySelector('#btn-quit-review-test');
     if (quitBtn) {
       quitBtn.addEventListener('click', () => {
+        this.cleanupKeyHandler();
         this.state.testingMode = false;
         this.renderNotebook();
       });
@@ -923,13 +933,15 @@ export class ReviewNotebookComponent {
         input.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') {
             e.preventDefault();
+            e.stopPropagation();
             this.checkReviewAnswer(input.value);
           }
         });
       }
 
       if (submitBtn) {
-        submitBtn.addEventListener('click', () => {
+        submitBtn.addEventListener('click', (e) => {
+          e.preventDefault();
           if (input) this.checkReviewAnswer(input.value);
         });
       }
@@ -947,14 +959,11 @@ export class ReviewNotebookComponent {
         let allowEnterNext = false;
         setTimeout(() => {
           allowEnterNext = true;
-          try { nextBtn.focus(); } catch (_) {}
-        }, 350);
+        }, 500);
 
         nextBtn.addEventListener('click', (e) => {
-          if (!allowEnterNext) {
-            e.preventDefault();
-            return;
-          }
+          e.preventDefault();
+          this.cleanupKeyHandler();
           scrollToQuizTop(this.container);
           if (this.state.testIndex + 1 < this.state.testList.length) {
             this.loadReviewQuestion(this.state.testIndex + 1);
@@ -964,14 +973,14 @@ export class ReviewNotebookComponent {
           }
         });
 
-        const keyHandler = (e) => {
+        this.activeKeyHandler = (e) => {
           if (e.key === 'Enter') {
             if (!allowEnterNext) return;
-            window.removeEventListener('keydown', keyHandler);
+            this.cleanupKeyHandler();
             nextBtn.click();
           }
         };
-        window.addEventListener('keydown', keyHandler);
+        window.addEventListener('keydown', this.activeKeyHandler);
       }
     }
   }
@@ -1057,7 +1066,12 @@ export class ReviewNotebookComponent {
         const lookupKey = item.rawLookup?.id || item.rawLookup?.dictForm || item.correctAnswer;
         StorageService.markLookedUpWordResolved(lookupKey, true);
       } else if (item.sourceType === 'due_review') {
-        if (item.srsWordId) StorageService.recordWordAnswer(item.srsWordId, true, 'good');
+        if (item.srsWordId) {
+          try {
+            const curProg = StorageService.getWordProgress(item.srsWordId);
+            StorageService.saveWordProgress(SrsService.processAnswer(curProg, true, 'good'));
+          } catch (_) {}
+        }
       } else {
         // 間違い問題（🔥 間違いタブなど）：3回正解ルールを適用して正解数カウントアップ
         updatedMistake = StorageService.recordMistakeAnswer(item, true);
@@ -1067,23 +1081,17 @@ export class ReviewNotebookComponent {
         }
       }
 
-      // 対応する単語のSRS進捗も向上（マスター・得意化）
-      if (matchedWord) {
-        StorageService.recordWordAnswer(matchedWord.id, true);
-        StorageService.resolveMistakesForWord(matchedWord.id, matchedWord, true);
-      } else if (item.wordId) {
-        StorageService.resolveMistakesForWord(item.wordId, null, true);
+      // 単語マスターのSRS進捗も向上（マスター・得意化）※重複カウントを防ぐため直接SRS保存
+      if (matchedWord && matchedWord.id) {
+        try {
+          const curProg = StorageService.getWordProgress(matchedWord.id);
+          StorageService.saveWordProgress(SrsService.processAnswer(curProg, true, 'good'));
+        } catch (_) {}
       }
-      StorageService.resolveMistakeByQuestion(item.question, item.correctAnswer, true);
 
-      // 最新の consecutiveCorrect を item に反映（画面表示・進捗同期）
-      if (!updatedMistake && (item.sourceType === 'mistake' || !item.sourceType)) {
-        const currentMistakes = StorageService.getMistakes();
-        const found = currentMistakes.find(m => m.id === item.id);
-        if (found) {
-          item.consecutiveCorrect = found.consecutiveCorrect;
-          item.resolved = found.resolved;
-        }
+      if (updatedMistake) {
+        item.consecutiveCorrect = updatedMistake.consecutiveCorrect;
+        item.resolved = updatedMistake.resolved;
       }
     } else {
       SoundEffects.playWrong();
@@ -1098,6 +1106,8 @@ export class ReviewNotebookComponent {
         ...item,
         userAnswer: val
       });
+      item.consecutiveCorrect = 0;
+      item.resolved = false;
     }
 
     this.renderReviewTesting();

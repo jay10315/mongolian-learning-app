@@ -4194,9 +4194,10 @@ export function renderGrammarExplanationHTML({
           <!-- 単語の成り立ち・構成カード（2語以上の複合語、派生語） -->
           ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(item, correctAnswer) : (derivation ? `<div class="text-slate-600 pt-1 border-t border-slate-100">💡 ${derivation}</div>` : '')}
 
-          ${(grammarExplanation || rule || note) && !(item && (item.etymologyBreakdown || item.derivation || '').includes(note)) ? `
-            <div class="text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 mt-1">
-              ${grammarExplanation || note || rule}
+          ${(grammarExplanation || rule || (note && !(item && (item.etymologyBreakdown || item.derivation || '').includes(note)))) ? `
+            <div class="text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 mt-2 leading-relaxed">
+              <div class="font-bold text-slate-800 dark:text-slate-100 text-xs mb-1">💡 解説・ポイント:</div>
+              <div>${grammarExplanation || note || rule}</div>
             </div>
           ` : ''}
         </div>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <div id="app-header"></div>
+  <main id="main-content"></main>
+  <div id="mobile-bottom-nav"></div>
+
+  <script>
+    function sendLog(data) {
+      navigator.sendBeacon('http://127.0.0.1:8899/log', JSON.stringify(data));
+    }
+    window.onerror = function(msg, url, line, col, err) {
+      sendLog({type: 'error', msg: msg, line: line, col: col, stack: err ? err.stack : null});
+    };
+    console.error = function() {
+      sendLog({type: 'console_error', args: Array.from(arguments)});
+    };
+  </script>
+  <script src="/bundled.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      try {
+        var testMistake = {
+          id: 'm_test_123',
+          wordId: 'v123',
+          question: '【単語】店、ショップ',
+          correctAnswer: 'дэлгүүр',
+          userAnswer: 'дэрэгүүл',
+          type: 'word',
+          category: '単語',
+          explanation: '店、ショップ = дэлгүүр',
+          wrongCount: 1,
+          consecutiveCorrect: 0,
+          resolved: false
+        };
+        localStorage.setItem('mongol_app_mistakes', JSON.stringify([testMistake]));
+        
+        var container = document.getElementById('main-content');
+        ReviewNotebookComponent.render(container, function() {});
+        
+        ReviewNotebookComponent.state.filterType = 'mistake';
+        ReviewNotebookComponent.render(container, function() {});
+
+        var startBtn = document.getElementById('btn-start-all-review');
+        if (startBtn) {
+          startBtn.click();
+        }
+
+        sendLog({
+          type: 'before_answer',
+          testItem: ReviewNotebookComponent.state.currentTestItem
+        });
+
+        // Answer correctly
+        ReviewNotebookComponent.checkReviewAnswer('дэлгүүр');
+
+        sendLog({
+          type: 'after_answer',
+          hasAnswered: ReviewNotebookComponent.state.hasAnswered,
+          isCorrect: ReviewNotebookComponent.state.isCorrect,
+          item: ReviewNotebookComponent.state.currentTestItem,
+          html: container.innerHTML
+        });
+
+      } catch (e) {
+        sendLog({type: 'exception', msg: e.message, stack: e.stack});
+      }
+    });
+  </script>
+</body>
+</html>

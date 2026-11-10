@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <div id="app-header"></div>
+  <main id="main-content"></main>
+  <div id="mobile-bottom-nav"></div>
+
+  <div id="log-output"></div>
+  <script>
+    window.testLogs = [];
+    window.onerror = function(msg, url, line, col, err) {
+      window.testLogs.push({type: 'error', msg: msg, line: line, col: col, stack: err ? err.stack : null});
+    };
+    console.error = function() {
+      window.testLogs.push({type: 'console_error', args: Array.from(arguments)});
+    };
+  </script>
+  <script src="bundled.js"></script>
+  <script>
+    try {
+      console.log('Testing ReviewNotebookComponent...');
+      // Setup some test data in localStorage
+      var testMistake = {
+        id: 'm_test_123',
+        wordId: 'v123',
+        question: '【単語】店、ショップ',
+        correctAnswer: 'дэлгүүр',
+        userAnswer: 'дэрэгүүл',
+        type: 'word',
+        category: '単語',
+        explanation: '店、ショップ = дэлгүүр',
+        wrongCount: 1,
+        consecutiveCorrect: 0,
+        resolved: false
+      };
+      localStorage.setItem('mongol_app_mistakes', JSON.stringify([testMistake]));
+      
+      var container = document.getElementById('main-content');
+      ReviewNotebookComponent.render(container, function() {});
+      
+      // Select mistake tab
+      ReviewNotebookComponent.state.filterType = 'mistake';
+      ReviewNotebookComponent.render(container, function() {});
+
+      // Click start all
+      var startBtn = document.getElementById('btn-start-all-review');
+      if (startBtn) {
+        startBtn.click();
+      } else {
+        window.testLogs.push({type: 'error', msg: 'btn-start-all-review not found'});
+      }
+
+      // Check current test item
+      window.testLogs.push({
+        type: 'info', 
+        step: 'after_start', 
+        item: ReviewNotebookComponent.state.currentTestItem,
+        testListLength: ReviewNotebookComponent.state.testList.length
+      });
+
+      // Submit answer
+      ReviewNotebookComponent.checkReviewAnswer('дэлгүүр');
+
+      window.testLogs.push({
+        type: 'info',
+        step: 'after_checkReviewAnswer',
+        hasAnswered: ReviewNotebookComponent.state.hasAnswered,
+        isCorrect: ReviewNotebookComponent.state.isCorrect,
+        item: ReviewNotebookComponent.state.currentTestItem,
+        htmlSnippet: container.innerHTML.substring(0, 1500)
+      });
+
+      // Check localStorage
+      var updatedMistakes = JSON.parse(localStorage.getItem('mongol_app_mistakes') || '[]');
+      window.testLogs.push({
+        type: 'info',
+        step: 'localStorage_check',
+        updatedMistakes: updatedMistakes
+      });
+
+    } catch (e) {
+      window.testLogs.push({type: 'caught_exception', msg: e.message, stack: e.stack});
+    }
+  </script>
+</body>
+</html>
