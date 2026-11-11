@@ -1207,6 +1207,14 @@ export class InterviewMasterComponent {
       });
     }
 
+    container.querySelectorAll('.btn-play-sub-question').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const text = btn.getAttribute('data-speech');
+        if (text) SpeechService.speak(text);
+      });
+    });
+
     // ステップタブ切り替え
     container.querySelectorAll('.step-tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {

@@ -1,5 +1,5 @@
 // Service Worker: 完全オフライン・圏外対応 PWA キャッシュ
-const CACHE_NAME = 'mongol-app-cache-v40';
+const CACHE_NAME = 'mongol-app-cache-v41';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
