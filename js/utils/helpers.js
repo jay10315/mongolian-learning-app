@@ -542,12 +542,27 @@ export function detectVowelHarmony(word) {
  */
 export function isVerb(word) {
   if (!word) return false;
-  if (word.isVerb === true) return true;
+
+  // 日常決まり文句・応答・挨拶・感動詞・表現ジャンルは動詞語幹テストから除外
+  const genre = (word.genreId || '').toLowerCase();
+  const cat = (word.category || '').toLowerCase();
   const pos = (word.pos || '').trim();
-  const root = (word.root || '').trim();
+  if (genre === 'useful_phrases' || cat === '挨拶' || cat === '応答' || pos.includes('感動詞') || pos.includes('挨拶') || pos.includes('表現')) {
+    return false;
+  }
+
+  // 活用形・定型句（例: Болно, байна など）で辞書形が -х で終わらないものは語幹テスト対象の動詞から除外
+  const m = (word.mongolian || word.baseWord || word.word || word.dictForm || '').trim().toLowerCase().replace(/[.,!?:;«»"'\s\(\)]/g, '');
+  const d = (word.dictForm || '').trim().toLowerCase().replace(/[.,!?:;«»"'\s\(\)]/g, '');
+  const endsWithKh = m.endsWith('х') || d.endsWith('х');
+  if (!endsWithKh) {
+    return false;
+  }
+
+  if (word.isVerb === true) return true;
   if (pos.includes('動詞')) return true;
   if (word.kind === 'verb' || (word.category && word.category.startsWith('verb'))) return true;
-  if (root && !['名詞', '名詞句', '代名詞', '数詞', '形容詞', '副詞', '助詞', '後置詞', '挨拶', '挨拶表現'].includes(pos)) {
+  if (word.root && !['名詞', '名詞句', '代名詞', '数詞', '形容詞', '副詞', '助詞', '後置詞', '挨拶', '挨拶表現', '感動詞', '表現'].includes(pos)) {
     return true;
   }
   return false;
@@ -913,6 +928,11 @@ export function isWordAnswerMatch(userAnswer, item, mode, options = {}) {
     if (dClean === 'баярлалаа' && (u === 'ихбаярлалаа' || u === 'талархлаа')) return true;
     if (dClean === 'сайнбайнауу' && (u === 'сайнуу' || u === 'сайнбайна')) return true;
     if (dClean === 'сайнуу' && (u === 'сайнбайнауу' || u === 'сайнбайна')) return true;
+
+    // 3. 応答・許可の日常表現（Болно / いいですよ、大丈夫です）
+    if (dClean === 'болно' || rawClean === 'болно') {
+      if (u === 'бол' || u === 'болох' || u === 'болноо' || u === 'болно') return true;
+    }
     if (dClean === 'баяртай' && (u === 'дараауулзъя' || u === 'маргаашуулзъя')) return true;
 
     // 3. モード間統一語彙・別表記（固有語 vs ロシア語借用語等）の相互正解判定

@@ -543,12 +543,27 @@ function detectVowelHarmony(word) {
  */
 function isVerb(word) {
   if (!word) return false;
-  if (word.isVerb === true) return true;
+
+  // 日常決まり文句・応答・挨拶・感動詞・表現ジャンルは動詞語幹テストから除外
+  const genre = (word.genreId || '').toLowerCase();
+  const cat = (word.category || '').toLowerCase();
   const pos = (word.pos || '').trim();
-  const root = (word.root || '').trim();
+  if (genre === 'useful_phrases' || cat === '挨拶' || cat === '応答' || pos.includes('感動詞') || pos.includes('挨拶') || pos.includes('表現')) {
+    return false;
+  }
+
+  // 活用形・定型句（例: Болно, байна など）で辞書形が -х で終わらないものは語幹テスト対象の動詞から除外
+  const m = (word.mongolian || word.baseWord || word.word || word.dictForm || '').trim().toLowerCase().replace(/[.,!?:;«»"'\s\(\)]/g, '');
+  const d = (word.dictForm || '').trim().toLowerCase().replace(/[.,!?:;«»"'\s\(\)]/g, '');
+  const endsWithKh = m.endsWith('х') || d.endsWith('х');
+  if (!endsWithKh) {
+    return false;
+  }
+
+  if (word.isVerb === true) return true;
   if (pos.includes('動詞')) return true;
   if (word.kind === 'verb' || (word.category && word.category.startsWith('verb'))) return true;
-  if (root && !['名詞', '名詞句', '代名詞', '数詞', '形容詞', '副詞', '助詞', '後置詞', '挨拶', '挨拶表現'].includes(pos)) {
+  if (word.root && !['名詞', '名詞句', '代名詞', '数詞', '形容詞', '副詞', '助詞', '後置詞', '挨拶', '挨拶表現', '感動詞', '表現'].includes(pos)) {
     return true;
   }
   return false;
@@ -914,6 +929,11 @@ function isWordAnswerMatch(userAnswer, item, mode, options = {}) {
     if (dClean === 'баярлалаа' && (u === 'ихбаярлалаа' || u === 'талархлаа')) return true;
     if (dClean === 'сайнбайнауу' && (u === 'сайнуу' || u === 'сайнбайна')) return true;
     if (dClean === 'сайнуу' && (u === 'сайнбайнауу' || u === 'сайнбайна')) return true;
+
+    // 3. 応答・許可の日常表現（Болно / いいですよ、大丈夫です）
+    if (dClean === 'болно' || rawClean === 'болно') {
+      if (u === 'бол' || u === 'болох' || u === 'болноо' || u === 'болно') return true;
+    }
     if (dClean === 'баяртай' && (u === 'дараауулзъя' || u === 'маргаашуулзъя')) return true;
 
     // 3. モード間統一語彙・別表記（固有語 vs ロシア語借用語等）の相互正解判定
@@ -8149,16 +8169,17 @@ const initialVocabulary = [
     "japanese": "〜してもよい（許可）",
     "pronunciation": "ボルノ",
     "root": "бол",
-    "pos": "動詞",
+    "pos": "助動詞・表現",
     "category": "依頼・許可",
     "priority": "★★★",
     "exampleMn": "Энд тамхи татаж болох уу? — Болно.",
     "exampleJa": "ここでタバコを吸ってもいいですか？ — いいですよ。",
-    "note": "動詞+ж болно。「許可」を表す（чадах「能力」との違い注意）。",
+    "note": "動詞+ж болно。「許可」を表す表現（動詞「болох」由来）。",
     "lesson": 13,
-    "isVerb": true,
+    "isVerb": false,
     "dictForm": "болно",
-    "derivation": "動詞「болно」の活用の土台となる語幹は「бол」です（男性母音語）。"
+    "acceptableAnswers": ["болно", "бол", "болох"],
+    "derivation": "動詞「болох」由来の許可表現（〜してもよい）。"
   },
   {
     "id": "v_13_2",
@@ -29659,16 +29680,17 @@ const initialVocabulary = [
     "mongolian": "Болно",
     "japanese": "いいですよ、大丈夫です、OK",
     "pronunciation": "ボルノ",
-    "root": "Болно",
-    "pos": "動詞",
+    "root": "бол",
+    "pos": "表現・応答",
     "category": "応答",
     "priority": "★★★",
     "exampleMn": "Би энд сууж болох уу? — Болно оо.",
     "exampleJa": "ここに座ってもいいですか？ — いいですよ。",
-    "note": "",
+    "note": "動詞「болох（なる・可能である）」の現在未来形由来の慣用表現",
     "isVerb": false,
     "dictForm": "Болно",
-    "derivation": "見出し語「Болно」",
+    "acceptableAnswers": ["Болно", "болно", "Болно оо", "болно оо", "бол", "болох"],
+    "derivation": "動詞「болох」の現在未来形由来の応答表現。日常会話では「いいですよ、大丈夫です、OK」の意味でそのまま用いられます。",
     "genreId": "useful_phrases",
     "genreName": "便利な言葉・日常決まり文句",
     "caseGovernment": "",
@@ -110240,6 +110262,14 @@ class StorageService {
               m.correctAnswer = 'дарс';
               m.acceptableAnswers = ['дарс', 'вино'];
               m.explanation = '正解: ワイン (辞書形: дарс (вино))';
+              updated = true;
+            }
+            if (correctAns.toLowerCase() === 'болно' || rawQ.includes('いいですよ') || rawQ.includes('大丈夫です')) {
+              m.correctAnswer = 'Болно';
+              m.acceptableAnswers = ['Болно', 'болно', 'Болно оо', 'болно оо', 'бол', 'болох'];
+              m.question = rawQ.replace(/【動詞語幹】|【語幹】/g, '【表現】').replace(/【動詞辞書形】/g, '【表現】');
+              m.category = '日常表現・応答';
+              m.explanation = '正解: いいですよ、大丈夫です、OK (モンゴル語: Болно)。動詞「болох」由来の日常会話の応答表現です。';
               updated = true;
             }
 

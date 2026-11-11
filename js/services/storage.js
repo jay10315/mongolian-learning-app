@@ -236,6 +236,14 @@ export class StorageService {
               m.explanation = '正解: ワイン (辞書形: дарс (вино))';
               updated = true;
             }
+            if (correctAns.toLowerCase() === 'болно' || rawQ.includes('いいですよ') || rawQ.includes('大丈夫です')) {
+              m.correctAnswer = 'Болно';
+              m.acceptableAnswers = ['Болно', 'болно', 'Болно оо', 'болно оо', 'бол', 'болох'];
+              m.question = rawQ.replace(/【動詞語幹】|【語幹】/g, '【表現】').replace(/【動詞辞書形】/g, '【表現】');
+              m.category = '日常表現・応答';
+              m.explanation = '正解: いいですよ、大丈夫です、OK (モンゴル語: Болно)。動詞「болох」由来の日常会話の応答表現です。';
+              updated = true;
+            }
 
             const hasParenNoise = rawQ.includes('モンゴル語教科書語彙') || (explanation && explanation.includes('モンゴル語教科書語彙')) || /第\d+課|JICA/.test(rawQ) || /第\d+課|JICA/.test(explanation) || /第\d+課|JICA/.test(m.category || '');
             const hasArrow = /⇄|⇆|↔|<->|->/.test(rawQ);
