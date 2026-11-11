@@ -940,17 +940,21 @@ export class InterviewMasterComponent {
     if (this.vocabScope === 'current') {
       list = interviewVocabulary.filter(w => (w.topicIds || []).includes(topic.id));
       if (!list || list.length === 0) {
-        list = (topic.vocabulary || []).map((v, i) => ({
-          id: `iv_fallback_${topic.id}_${i}`,
-          mongolian: v.mn,
-          dictForm: v.mn,
-          japanese: v.ja,
-          pos: v.pos || '単語',
-          pronunciation: v.pron || '',
-          topicIds: [topic.id],
-          exampleMn: topic.sentences[0] ? topic.sentences[0].mn : '',
-          exampleJa: topic.sentences[0] ? topic.sentences[0].ja : ''
-        }));
+        list = (topic.vocabulary || []).map((v, i) => {
+          const vLow = (v.mn || '').trim().toLowerCase();
+          const matchedS = (topic.sentences || []).find(s => s.mn && s.mn.toLowerCase().includes(vLow)) || topic.sentences[0] || {};
+          return {
+            id: `iv_fallback_${topic.id}_${i}`,
+            mongolian: v.mn,
+            dictForm: v.mn,
+            japanese: v.ja,
+            pos: v.pos || '単語',
+            pronunciation: v.pron || '',
+            topicIds: [topic.id],
+            exampleMn: matchedS.mn || '',
+            exampleJa: matchedS.ja || ''
+          };
+        });
       }
     } else {
       list = [...interviewVocabulary];
