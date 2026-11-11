@@ -128230,7 +128230,7 @@ class HomeComponent {
                   口述試験・スピーチ特訓
                 </h4>
                 <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                  1〜7の4分スピーチ（自己紹介・家族・草加市・二本松・ドルノド・休日・ЖАЙКА）＆ 8〜13の実践対話を「暗記して言えるようにする」特化ドリル！
+                  1〜7の4分スピーチ＆8〜13の実践対話、および<strong>【口頭試験で出てくる単語をすべて覚える】</strong>全出題単語テスト（タイピング／4択／全単語一覧）を完全収録！
                 </p>
               </div>
               <div class="mt-4 pt-3 border-t border-emerald-500/20 flex items-center justify-between text-xs font-bold text-emerald-700">
@@ -140965,6 +140965,30 @@ class InterviewMasterComponent {
   static vocabMistakes = [];
   static vocabActiveList = [];
 
+  // サブモード: 'speech' (13テーマ別演習) | 'all_vocab' (口頭試験で出てくる単語をすべて覚える)
+  static activeSubMode = 'speech';
+
+  // 「口頭試験で出てくる単語をすべて覚える」専用ステート
+  static allVocabState = {
+    status: 'setup', // 'setup' | 'testing' | 'result' | 'browse_list'
+    scope: 'all', // 'all' (全281語) | 'speech' (1-7 170語) | 'dialogue' (8-13 111語) | 'mistakes' | topicId
+    testType: 'typing', // 'typing' (キリル文字入力) | 'choice' (4択クイズ)
+    questionCount: 20, // 10 | 20 | 30 | 50 | 281
+    customCountInput: '',
+    order: 'shuffle', // 'shuffle' | 'ordered'
+    currentIndex: 0,
+    activeQuestions: [],
+    userInput: '',
+    hasAnswered: false,
+    isCorrect: false,
+    selectedChoice: null,
+    currentChoices: [],
+    showHint: false,
+    mistakes: [],
+    searchQuery: '',
+    filterPos: 'all'
+  };
+
   static render(container, onNavigate) {
     this.container = container;
     this.onNavigate = onNavigate;
@@ -140986,8 +141010,41 @@ class InterviewMasterComponent {
     const completedCount = Object.values(progressData).filter(v => v === 'mastered').length;
     const progressPercent = Math.round((completedCount / interviewTopics.length) * 100);
 
+    // 「口頭試験で出てくる単語をすべて覚える」専用サブモード表示
+    if (this.activeSubMode === 'all_vocab') {
+      container.innerHTML = `
+        <div class="max-w-4xl mx-auto px-4 py-6">
+          ${this.renderTopSubModeTabs()}
+          ${this.renderAllVocabContent()}
+        </div>
+      `;
+      this.attachEventListeners(topic);
+      return;
+    }
+
     container.innerHTML = `
       <div class="max-w-4xl mx-auto px-4 py-6">
+        ${this.renderTopSubModeTabs()}
+
+        <!-- 口頭試験単語すべて覚える 特訓バナー -->
+        <div class="bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-cyan-500/15 border-2 border-emerald-500/40 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl select-none">📝</span>
+            <div>
+              <div class="text-[11px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-wide">口頭試験専用 単語特訓</div>
+              <div class="text-sm sm:text-base font-black text-slate-900 dark:text-white">「口頭試験で出てくる単語をすべて覚える」モード</div>
+              <div class="text-xs text-slate-600 dark:text-slate-300">13テーマ全281語のみを徹底反復（タイピング／4択／全単語一覧）</div>
+            </div>
+          </div>
+          <button
+            type="button"
+            id="btn-goto-all-vocab-banner"
+            class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap active:scale-95">
+            <span>全単語テストを開始する</span>
+            <span>→</span>
+          </button>
+        </div>
+
         <!-- ヘッダー・進捗バー -->
         <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl mb-6 relative overflow-hidden">
           <div class="absolute -right-6 -bottom-6 text-8xl opacity-15 select-none pointer-events-none">🎙️</div>
@@ -142075,6 +142132,41 @@ class InterviewMasterComponent {
     const container = this.container;
     if (!container) return;
 
+    // トップサブモード切替タブ
+    const tabSpeech = container.querySelector('#tab-submode-speech');
+    if (tabSpeech) {
+      tabSpeech.addEventListener('click', () => {
+        if (this.activeSubMode !== 'speech') {
+          this.activeSubMode = 'speech';
+          this.render(container, this.onNavigate);
+        }
+      });
+    }
+
+    const tabVocab = container.querySelector('#tab-submode-vocab');
+    if (tabVocab) {
+      tabVocab.addEventListener('click', () => {
+        if (this.activeSubMode !== 'all_vocab') {
+          this.activeSubMode = 'all_vocab';
+          this.render(container, this.onNavigate);
+        }
+      });
+    }
+
+    const bannerVocabBtn = container.querySelector('#btn-goto-all-vocab-banner');
+    if (bannerVocabBtn) {
+      bannerVocabBtn.addEventListener('click', () => {
+        this.activeSubMode = 'all_vocab';
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    // 「口頭試験で出てくる単語をすべて覚える」モード時は専用イベントをバインドして早期リターン
+    if (this.activeSubMode === 'all_vocab') {
+      this.attachAllVocabEventListeners(container);
+      return;
+    }
+
     // テーマ選択ボタン
     container.querySelectorAll('.topic-select-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -142645,6 +142737,1185 @@ class InterviewMasterComponent {
     this.vocabShowHint = false;
     this.render(this.container, this.onNavigate);
   }
+
+  // =========================================================================
+  // 「口頭試験で出てくる単語をすべて覚える」専用機能・UI・ロジック
+  // =========================================================================
+
+  // トップ サブモード切替タブ（スピーチ演習 vs 口頭試験単語すべて覚える）
+  static renderTopSubModeTabs() {
+    return `
+      <div class="flex items-center justify-center p-1.5 bg-slate-200/80 dark:bg-slate-800 rounded-2xl mb-6 max-w-xl mx-auto shadow-inner">
+        <button
+          type="button"
+          id="tab-submode-speech"
+          class="flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${this.activeSubMode === 'speech' ? 'bg-white dark:bg-slate-700 text-emerald-800 dark:text-emerald-300 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
+          <span>🎙️</span>
+          <span>13テーマ演習 (スピーチ・対話)</span>
+        </button>
+        <button
+          type="button"
+          id="tab-submode-vocab"
+          class="flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${this.activeSubMode === 'all_vocab' ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
+          <span>📝</span>
+          <span>単語をすべて覚える</span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded-full font-black ${this.activeSubMode === 'all_vocab' ? 'bg-white/20 text-white' : 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200'}">281語</span>
+        </button>
+      </div>
+    `;
+  }
+
+  // 「口頭試験で出てくる単語をすべて覚える」メインコンテナ描画
+  static renderAllVocabContent() {
+    return `
+      <div class="space-y-6 animate-fade-in">
+        <!-- ヒーローヘッダー -->
+        <div class="bg-gradient-to-r from-emerald-700 via-teal-700 to-cyan-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 text-8xl opacity-15 select-none pointer-events-none">📝</div>
+          <div class="relative z-10">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs">
+                <span>✨</span> 口頭試験専用 完全単語マスター
+              </span>
+              <div class="flex items-center gap-2 text-xs text-white/90 font-medium">
+                <span>収録総単語数: 全 281 語</span>
+              </div>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
+              口頭試験で出てくる単語をすべて覚える
+            </h1>
+            <p class="text-xs sm:text-sm text-emerald-100 max-w-2xl leading-relaxed">
+              口頭試験（13テーマ・4分スピーチ＆実践対話）に出現するすべての単語・かつここに出てくる単語のみを完全網羅！キリル文字タイピングまたは4択クイズで、試験本番で即座に出てくる状態まで徹底特訓します。
+            </p>
+
+            <div class="grid grid-cols-3 gap-2 sm:gap-3 mt-4 max-w-md text-center">
+              <div class="bg-white/10 backdrop-blur-xs rounded-xl p-2.5 border border-white/15">
+                <div class="text-[10px] text-emerald-200">全出題単語</div>
+                <div class="text-base sm:text-lg font-black">281 語</div>
+              </div>
+              <div class="bg-white/10 backdrop-blur-xs rounded-xl p-2.5 border border-white/15">
+                <div class="text-[10px] text-emerald-200">スピーチ編 (1〜7)</div>
+                <div class="text-base sm:text-lg font-black">170 語</div>
+              </div>
+              <div class="bg-white/10 backdrop-blur-xs rounded-xl p-2.5 border border-white/15">
+                <div class="text-[10px] text-emerald-200">実践対話 (8〜13)</div>
+                <div class="text-base sm:text-lg font-black">111 語</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 状態に応じた画面切り替え -->
+        ${this.allVocabState.status === 'setup' ? this.renderAllVocabSetup() : ''}
+        ${this.allVocabState.status === 'testing' ? this.renderAllVocabTesting() : ''}
+        ${this.allVocabState.status === 'result' ? this.renderAllVocabResult() : ''}
+        ${this.allVocabState.status === 'browse_list' ? this.renderAllVocabBrowseList() : ''}
+      </div>
+    `;
+  }
+
+  // 1. 設定 & スタート画面
+  static renderAllVocabSetup() {
+    const s = this.allVocabState;
+    const allCount = interviewVocabulary.length;
+    const speechCount = interviewVocabulary.filter(w => (w.topicIds || []).some(tid => parseInt(tid.replace('topic_', ''), 10) <= 7)).length;
+    const dialogueCount = interviewVocabulary.filter(w => (w.topicIds || []).some(tid => parseInt(tid.replace('topic_', ''), 10) >= 8)).length;
+
+    // 間違い単語数の取得
+    let mistakeCount = 0;
+    try {
+      const mistakes = StorageService.getMistakes() || [];
+      const ivIds = new Set(interviewVocabulary.map(w => w.id));
+      const cleanMn = new Set(interviewVocabulary.map(w => (w.dictForm || w.mongolian || '').toLowerCase().replace(/[^а-яөүёa-z]/g, '')));
+      mistakeCount = mistakes.filter(m => {
+        if (m.wordId && ivIds.has(m.wordId)) return true;
+        const cAns = (m.correctAnswer || '').toLowerCase().replace(/[^а-яөүёa-z]/g, '');
+        return cleanMn.has(cAns);
+      }).length;
+    } catch (_) {}
+
+    return `
+      <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-md p-6 sm:p-8 space-y-6 animate-fade-in">
+        <div>
+          <h2 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <span>⚙️</span> テスト条件の設定
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            出題範囲・テスト形式（入力/4択）・問題数を選んでスタートしてください。
+          </p>
+        </div>
+
+        <!-- ① 出題範囲の選択 -->
+        <div>
+          <label class="block text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2.5">
+            ① 出題範囲を選択
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <button
+              type="button"
+              data-vocab-scope="all"
+              class="vocab-scope-btn p-3.5 rounded-2xl border-2 text-left transition-all cursor-pointer ${s.scope === 'all' ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-100 shadow-xs' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+              <div class="text-xs font-black flex items-center justify-between">
+                <span>🌟 全13テーマの全単語</span>
+                <span class="text-[10px] bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-0.5 rounded-full font-bold">推奨</span>
+              </div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">口頭試験の全${allCount}語を完全網羅</div>
+            </button>
+
+            <button
+              type="button"
+              data-vocab-scope="speech"
+              class="vocab-scope-btn p-3.5 rounded-2xl border-2 text-left transition-all cursor-pointer ${s.scope === 'speech' ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-100 shadow-xs' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+              <div class="text-xs font-black">🎙️ 4分スピーチ編</div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">テーマ1〜7の単語 (${speechCount}語)</div>
+            </button>
+
+            <button
+              type="button"
+              data-vocab-scope="dialogue"
+              class="vocab-scope-btn p-3.5 rounded-2xl border-2 text-left transition-all cursor-pointer ${s.scope === 'dialogue' ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-100 shadow-xs' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+              <div class="text-xs font-black">💬 実践対話編</div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">テーマ8〜13の単語 (${dialogueCount}語)</div>
+            </button>
+
+            <button
+              type="button"
+              data-vocab-scope="mistakes"
+              class="vocab-scope-btn p-3.5 rounded-2xl border-2 text-left transition-all cursor-pointer ${s.scope === 'mistakes' ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-100 shadow-xs' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+              <div class="text-xs font-black flex items-center justify-between">
+                <span>🔥 間違えた単語のみ</span>
+                <span class="text-[10px] bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200 px-2 py-0.5 rounded-full font-bold">${mistakeCount}件</span>
+              </div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">要復習リストから弱点克服</div>
+            </button>
+          </div>
+
+          <!-- テーマ個別絞り込みセレクト -->
+          <div class="mt-3 flex items-center gap-2">
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap">または特定テーマを指定:</span>
+            <select
+              id="select-vocab-single-topic"
+              class="text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 focus:outline-hidden focus:border-emerald-500">
+              <option value="">-- 指定なし（上記範囲に従う） --</option>
+              ${interviewTopics.map(t => {
+                const count = interviewVocabulary.filter(w => (w.topicIds || []).includes(t.id)).length;
+                const isSelected = s.scope === t.id;
+                return `<option value="${t.id}" ${isSelected ? 'selected' : ''}>${t.number}. ${t.titleJa} (${count}語)</option>`;
+              }).join('')}
+            </select>
+          </div>
+        </div>
+
+        <!-- ② テスト形式の選択 -->
+        <div>
+          <label class="block text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2.5">
+            ② テスト形式を選択
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              type="button"
+              data-vocab-type="typing"
+              class="vocab-type-btn p-4 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-start gap-3.5 ${s.testType === 'typing' ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-100 shadow-xs' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+              <span class="text-3xl">⌨️</span>
+              <div>
+                <div class="text-sm font-black flex items-center gap-1.5">
+                  <span>キリル文字入力（タイピング）</span>
+                  <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">完全暗記向き</span>
+                </div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  日本語の意味を見て正確にキリル文字を入力。特殊文字バー＆PCキーボード配列対応。
+                </div>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              data-vocab-type="choice"
+              class="vocab-type-btn p-4 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-start gap-3.5 ${s.testType === 'choice' ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-100 shadow-xs' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+              <span class="text-3xl">🔠</span>
+              <div>
+                <div class="text-sm font-black flex items-center gap-1.5">
+                  <span>4択クイズテスト</span>
+                  <span class="text-[10px] bg-teal-600 text-white px-2 py-0.5 rounded-full font-bold">スピード暗記向き</span>
+                </div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  4つの選択肢からサクサク解答。テンポよく何周も回して語彙を即答できるようにする。
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- ③ 出題数の選択（選択式 ＋ 自由入力） -->
+        <div>
+          <label class="block text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2.5">
+            ③ 何問解くか選択（または自由入力）
+          </label>
+          <div class="flex flex-wrap items-center gap-2">
+            ${[10, 20, 30, 50, allCount].map(num => {
+              const label = num === allCount ? `全問 (${allCount}語)` : `${num}問`;
+              const isSelected = !s.customCountInput && s.questionCount === num;
+              return `
+                <button
+                  type="button"
+                  data-vocab-count="${num}"
+                  class="vocab-count-btn px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer ${isSelected ? 'border-emerald-500 bg-emerald-500 text-white shadow-xs' : 'border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300'}">
+                  ${label}
+                </button>
+              `;
+            }).join('')}
+
+            <!-- 自由入力枠 -->
+            <div class="flex items-center gap-1.5 ml-1 bg-slate-50 dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600">
+              <span class="text-xs text-slate-600 dark:text-slate-400 font-bold">自由指定:</span>
+              <input
+                type="number"
+                id="all-vocab-custom-count-input"
+                min="1"
+                max="${allCount}"
+                placeholder="例: 15"
+                value="${s.customCountInput || ''}"
+                class="w-16 px-2 py-1 text-center text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-hidden focus:border-emerald-500" />
+              <span class="text-xs text-slate-600 dark:text-slate-400 font-bold">問解く</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 出題順 -->
+        <div>
+          <label class="block text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2.5">
+            ④ 出題順
+          </label>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              data-vocab-order="shuffle"
+              class="vocab-order-btn px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer ${s.order === 'shuffle' ? 'border-emerald-500 bg-emerald-500 text-white shadow-xs' : 'border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300'}">
+              🔀 ランダム（シャッフル）
+            </button>
+            <button
+              type="button"
+              data-vocab-order="ordered"
+              class="vocab-order-btn px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer ${s.order === 'ordered' ? 'border-emerald-500 bg-emerald-500 text-white shadow-xs' : 'border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300'}">
+              🔢 テーマ順（1→13）
+            </button>
+          </div>
+        </div>
+
+        <!-- アクションボタン -->
+        <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center gap-3">
+          <button
+            type="button"
+            id="btn-start-all-vocab-test"
+            class="w-full sm:flex-1 py-4 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 hover:from-emerald-700 hover:to-teal-800 text-white font-black text-base shadow-lg hover:shadow-xl active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span>🚀</span>
+            <span>「口頭試験で出てくる単語」テストを開始する</span>
+          </button>
+          <button
+            type="button"
+            id="btn-open-all-vocab-list"
+            class="w-full sm:w-auto px-5 py-4 rounded-2xl border-2 border-emerald-500/50 hover:bg-emerald-50 dark:hover:bg-slate-700 text-emerald-800 dark:text-emerald-300 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">
+            <span>📖</span>
+            <span>全281語の一覧・暗記カードを見る</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // 2. テスト出題中画面（タイピング または 4択）
+  static renderAllVocabTesting() {
+    const s = this.allVocabState;
+    const currentWord = s.activeQuestions[s.currentIndex];
+    if (!currentWord) return '';
+
+    const totalCount = s.activeQuestions.length;
+    const currentNum = s.currentIndex + 1;
+    const progressPercent = Math.round((currentNum / totalCount) * 100);
+
+    // テーマ名の解決
+    let topicName = '';
+    if (currentWord.topicIds && currentWord.topicIds[0]) {
+      const t = interviewTopics.find(it => it.id === currentWord.topicIds[0]);
+      if (t) topicName = `テーマ${t.number}: ${t.titleJa}`;
+    }
+
+    return `
+      <div class="space-y-5 animate-fade-in">
+        <!-- 上部コントロール＆進捗バー -->
+        <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-bold px-1">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-black">
+              単語 ${currentNum} / ${totalCount}
+            </span>
+            ${topicName ? `<span class="hidden sm:inline text-slate-400">${topicName}</span>` : ''}
+          </div>
+          <button
+            type="button"
+            id="btn-abort-all-vocab-test"
+            class="text-xs text-slate-400 hover:text-rose-600 font-bold flex items-center gap-1 cursor-pointer">
+            <span>✕ 中断して設定へ</span>
+          </button>
+        </div>
+
+        <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden -mt-2">
+          <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-2.5 rounded-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+        </div>
+
+        <!-- 問題カード -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-md p-6 sm:p-8 space-y-6 text-center">
+          <!-- バッジ -->
+          <div class="flex flex-wrap items-center justify-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
+              ${currentWord.pos || '単語'}
+            </span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-teal-50 dark:bg-teal-950/50 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-700">
+              口頭試験出題
+            </span>
+            ${currentWord.isVerb ? '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">動詞（辞書形 ~х）</span>' : ''}
+          </div>
+
+          <!-- お題日本語 -->
+          <div>
+            <div class="text-xs text-slate-400 font-semibold mb-1">
+              ${s.testType === 'typing' ? '日本語の意味に合うキリル文字を入力してください' : '日本語の意味に合うモンゴル語を選択してください'}
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+              ${currentWord.japanese}
+            </h2>
+          </div>
+
+          <!-- 例文ヒントトグル -->
+          <div>
+            <button
+              type="button"
+              id="btn-toggle-all-vocab-hint"
+              class="text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 font-medium inline-flex items-center gap-1 cursor-pointer bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
+              <span>💡 ${s.showHint ? 'ヒントを隠す ▲' : '例文ヒント・読み方を見る ▼'}</span>
+            </button>
+            ${s.showHint ? `
+              <div class="mt-3 p-3.5 rounded-2xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-left max-w-md mx-auto text-xs space-y-1.5 animate-fade-in">
+                ${currentWord.pronunciation ? `<div class="text-amber-900 dark:text-amber-200 font-bold">読み方: ${currentWord.pronunciation}</div>` : ''}
+                ${currentWord.exampleMn ? `<div class="text-slate-800 dark:text-slate-200 cyrillic-text font-bold">例文: ${currentWord.exampleMn}</div>` : ''}
+                ${currentWord.exampleJa ? `<div class="text-slate-600 dark:text-slate-400">訳: ${currentWord.exampleJa}</div>` : ''}
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- 解答エリア（未回答時） -->
+          ${!s.hasAnswered ? `
+            ${s.testType === 'typing' ? `
+              <!-- タイピング入力欄 -->
+              <div class="max-w-md mx-auto space-y-3 pt-2">
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="all-vocab-typing-input"
+                    class="w-full text-center text-lg sm:text-xl font-bold px-4 py-3.5 rounded-2xl border-2 border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:outline-hidden transition-all shadow-inner cyrillic-text bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+                    placeholder="キリル文字で入力..."
+                    value="${s.userInput || ''}"
+                    autocomplete="off"
+                    autofocus />
+                </div>
+
+                <!-- 特殊文字バー & 仮想キーボードアシスタント -->
+                <div class="flex justify-center">
+                  ${renderCyrillicInputAssistantHTML('all-vocab-typing-input')}
+                </div>
+
+                <button
+                  type="button"
+                  id="btn-submit-all-vocab-typing"
+                  class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md active:scale-98 transition-all cursor-pointer">
+                  回答する (Enter)
+                </button>
+              </div>
+            ` : `
+              <!-- 4択選択肢 -->
+              <div class="max-w-md mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                ${(s.currentChoices || []).map((ch, idx) => `
+                  <button
+                    type="button"
+                    data-choice-index="${idx}"
+                    class="btn-all-vocab-choice p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/30 text-left transition-all font-bold cursor-pointer flex items-center justify-between gap-2 shadow-xs group">
+                    <span class="text-base sm:text-lg cyrillic-text text-slate-800 dark:text-slate-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-300">
+                      ${ch.text}
+                    </span>
+                    <span class="text-xs px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500 font-mono">
+                      ${idx + 1}
+                    </span>
+                  </button>
+                `).join('')}
+              </div>
+            `}
+          ` : `
+            <!-- 回答後フィードバックカード -->
+            <div class="max-w-md mx-auto p-5 rounded-2xl border text-left space-y-3 animate-fade-in ${s.isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-700 text-rose-950 dark:text-rose-100'}">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-black flex items-center gap-1.5">
+                  <span>${s.isCorrect ? '🎉 正解！' : '❌ 不正解'}</span>
+                </span>
+                <button
+                  type="button"
+                  id="btn-speak-all-vocab-word"
+                  class="text-xs font-bold px-2.5 py-1 rounded-lg border bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center gap-1 cursor-pointer shadow-xs">
+                  <span>🔊 発音を聴く</span>
+                </button>
+              </div>
+
+              <div class="space-y-1">
+                <div class="text-xs text-slate-500 dark:text-slate-400">正解:</div>
+                <div class="text-xl sm:text-2xl font-black cyrillic-text text-emerald-800 dark:text-emerald-300">
+                  ${currentWord.dictForm || currentWord.mongolian}
+                  ${currentWord.pronunciation ? `<span class="text-xs font-normal text-slate-600 dark:text-slate-400 ml-2">[${currentWord.pronunciation}]</span>` : ''}
+                </div>
+              </div>
+
+              ${!s.isCorrect ? `
+                <div class="text-xs text-rose-700 dark:text-rose-300 pt-1 border-t border-rose-200 dark:border-rose-800">
+                  あなたの回答: <span class="line-through font-bold">${s.testType === 'typing' ? (s.userInput || '(未入力)') : ((s.currentChoices[s.selectedChoice] || {}).text || '(未選択)')}</span>
+                </div>
+                <div class="text-[11px] bg-rose-100 dark:bg-rose-900/60 text-rose-800 dark:text-rose-200 px-2.5 py-1 rounded-lg font-bold">
+                  ⚠️ 間違いノートに自動保存しました（ホームでまとめて再復習できます）
+                </div>
+              ` : ''}
+
+              ${currentWord.exampleMn ? `
+                <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700 text-xs space-y-0.5">
+                  <div class="font-bold cyrillic-text text-slate-700 dark:text-slate-300">例文: ${currentWord.exampleMn}</div>
+                  <div class="text-slate-500 dark:text-slate-400">${currentWord.exampleJa || ''}</div>
+                </div>
+              ` : ''}
+
+              <button
+                type="button"
+                id="btn-next-all-vocab-question"
+                class="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-3">
+                <span>次の単語へ (Enter) →</span>
+              </button>
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+  }
+
+  // 3. テスト完了結果画面
+  static renderAllVocabResult() {
+    const s = this.allVocabState;
+    const totalCount = s.activeQuestions.length;
+    const mistakeCount = (s.mistakes || []).length;
+    const correctCount = totalCount - mistakeCount;
+    const accuracy = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 100;
+
+    return `
+      <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl text-center space-y-6 animate-fade-in">
+        <div class="text-6xl mb-1 select-none">🎉🏆</div>
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black">口頭試験 出題単語テスト 完了！</h2>
+          <p class="text-xs sm:text-sm text-emerald-100 max-w-lg mx-auto leading-relaxed mt-1">
+            口頭試験に出現する重要単語 ${totalCount} 語の特訓を完走しました！
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-md mx-auto">
+          <div class="bg-white/15 backdrop-blur-xs rounded-2xl p-3.5 border border-white/20">
+            <div class="text-xs text-emerald-200 font-bold">出題数</div>
+            <div class="text-xl sm:text-2xl font-black">${totalCount} 問</div>
+          </div>
+          <div class="bg-white/15 backdrop-blur-xs rounded-2xl p-3.5 border border-white/20">
+            <div class="text-xs text-emerald-200 font-bold">正解数</div>
+            <div class="text-xl sm:text-2xl font-black text-emerald-300">${correctCount} 問</div>
+          </div>
+          <div class="col-span-2 sm:col-span-1 bg-white/15 backdrop-blur-xs rounded-2xl p-3.5 border border-white/20">
+            <div class="text-xs text-emerald-200 font-bold">正解率</div>
+            <div class="text-xl sm:text-2xl font-black">${accuracy}%</div>
+          </div>
+        </div>
+
+        <!-- 間違えた単語リスト -->
+        ${mistakeCount > 0 ? `
+          <div class="p-5 bg-white/95 dark:bg-slate-900/95 rounded-2xl border border-rose-300 text-left space-y-3 text-slate-800 dark:text-slate-200 max-w-xl mx-auto shadow-md">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-rose-700 dark:text-rose-400 flex items-center gap-1.5">
+                <span>🔥</span> 間違えた単語 (${mistakeCount}件)
+              </span>
+              <span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full">間違いノートに保存済</span>
+            </div>
+            <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
+              ${s.mistakes.map(m => `
+                <div class="p-3 rounded-xl bg-rose-50/80 dark:bg-slate-800/80 border border-rose-200 dark:border-rose-900 text-xs space-y-1">
+                  <div class="font-bold text-slate-700 dark:text-slate-300">🇯🇵 ${m.japanese}</div>
+                  <div class="text-emerald-700 dark:text-emerald-400 font-bold cyrillic-text">正解: ${m.mongolian} ${m.pronunciation ? `[${m.pronunciation}]` : ''}</div>
+                  ${m.userAnswer ? `<div class="text-rose-600 dark:text-rose-400 text-[11px]">あなたの回答: <span class="line-through">${m.userAnswer}</span></div>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : `
+          <div class="p-4 bg-white/15 rounded-2xl max-w-md mx-auto text-xs font-bold text-emerald-100">
+            🌟 全問パーフェクト！口頭試験の語彙力は完璧です！
+          </div>
+        `}
+
+        <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
+          <button
+            type="button"
+            id="btn-restart-all-vocab-same"
+            class="px-5 py-3 rounded-xl bg-white text-slate-900 font-black text-xs shadow-md hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+            🔄 もう一度同じ条件でテスト
+          </button>
+          ${mistakeCount > 0 ? `
+            <button
+              type="button"
+              id="btn-retry-all-vocab-mistakes"
+              class="px-5 py-3 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs shadow-md active:scale-95 transition-all cursor-pointer">
+              🔥 間違えた単語 (${mistakeCount}語) だけ再特訓
+            </button>
+          ` : ''}
+          <button
+            type="button"
+            id="btn-all-vocab-back-setup"
+            class="px-5 py-3 rounded-xl bg-emerald-800/80 hover:bg-emerald-900 text-white font-bold text-xs shadow-md active:scale-95 transition-all cursor-pointer">
+            ⚙️ 条件を変えてテスト
+          </button>
+          <button
+            type="button"
+            id="btn-all-vocab-back-speech"
+            class="px-5 py-3 rounded-xl bg-cyan-900/60 hover:bg-cyan-950 text-white font-bold text-xs border border-white/20 active:scale-95 transition-all cursor-pointer">
+            🎙️ 13テーマ演習へ戻る
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // 4. 全281語の一覧・暗記カード画面
+  static renderAllVocabBrowseList() {
+    const s = this.allVocabState;
+    let list = [...interviewVocabulary];
+
+    // スコープ絞り込み
+    if (s.scope === 'speech') {
+      list = list.filter(w => (w.topicIds || []).some(tid => parseInt(tid.replace('topic_', ''), 10) <= 7));
+    } else if (s.scope === 'dialogue') {
+      list = list.filter(w => (w.topicIds || []).some(tid => parseInt(tid.replace('topic_', ''), 10) >= 8));
+    } else if (s.scope && s.scope.startsWith('topic_')) {
+      list = list.filter(w => (w.topicIds || []).includes(s.scope));
+    }
+
+    // 品詞絞り込み
+    if (s.filterPos && s.filterPos !== 'all') {
+      list = list.filter(w => w.pos === s.filterPos);
+    }
+
+    // 検索語絞り込み
+    if (s.searchQuery && s.searchQuery.trim()) {
+      const q = s.searchQuery.trim().toLowerCase();
+      list = list.filter(w => 
+        (w.mongolian || '').toLowerCase().includes(q) ||
+        (w.dictForm || '').toLowerCase().includes(q) ||
+        (w.japanese || '').toLowerCase().includes(q) ||
+        (w.pronunciation || '').toLowerCase().includes(q)
+      );
+    }
+
+    return `
+      <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-md p-6 sm:p-8 space-y-6 animate-fade-in">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700 pb-4">
+          <div>
+            <h2 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <span>📖</span> 口頭試験 全出題単語一覧 (${list.length} / ${interviewVocabulary.length}語)
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              全281語の音声発音・意味・例文を一覧で確認して暗記できます。
+            </p>
+          </div>
+          <button
+            type="button"
+            id="btn-close-vocab-browse"
+            class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer self-start sm:self-auto">
+            ← テスト設定に戻る
+          </button>
+        </div>
+
+        <!-- 検索バー & 絞り込みタブ -->
+        <div class="space-y-3">
+          <div class="relative">
+            <input
+              type="text"
+              id="all-vocab-search-input"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-xs font-bold focus:outline-hidden focus:border-emerald-500 transition-all"
+              placeholder="🔍 キリル文字・日本語・読み方で瞬時に検索..."
+              value="${s.searchQuery || ''}" />
+          </div>
+
+          <!-- 品詞フィルター -->
+          <div class="flex flex-wrap items-center gap-1.5 text-xs">
+            <span class="text-slate-400 font-bold mr-1">品詞:</span>
+            ${['all', '動詞', '名詞', '形容詞', '副詞', '挨拶・間投詞'].map(pos => `
+              <button
+                type="button"
+                data-filter-pos="${pos}"
+                class="btn-filter-pos px-3 py-1 rounded-lg font-bold border transition-all cursor-pointer ${s.filterPos === pos ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs' : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600'}">
+                ${pos === 'all' ? 'すべて' : pos}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- 単語カードグリッド -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-1">
+          ${list.length > 0 ? list.map(w => `
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 hover:border-emerald-400 dark:hover:border-emerald-600 transition-all space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <div class="flex items-center gap-1.5 mb-1">
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+                      ${w.pos || '単語'}
+                    </span>
+                    ${w.isVerb ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">辞書形</span>' : ''}
+                  </div>
+                  <div class="text-lg font-black cyrillic-text text-slate-900 dark:text-white">
+                    ${w.dictForm || w.mongolian}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  data-speak-text="${w.dictForm || w.mongolian}"
+                  class="btn-speak-single-vocab p-2 rounded-xl bg-white dark:bg-slate-800 text-emerald-600 border border-slate-200 dark:border-slate-700 hover:bg-emerald-50 text-sm shadow-xs cursor-pointer">
+                  🔊
+                </button>
+              </div>
+
+              <div class="text-xs font-bold text-slate-700 dark:text-slate-300">
+                🇯🇵 ${w.japanese}
+                ${w.pronunciation ? `<span class="text-slate-400 dark:text-slate-500 font-normal ml-1">[${w.pronunciation}]</span>` : ''}
+              </div>
+
+              ${w.exampleMn ? `
+                <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700 text-[11px] space-y-0.5">
+                  <div class="font-bold cyrillic-text text-emerald-800 dark:text-emerald-400">例: ${w.exampleMn}</div>
+                  <div class="text-slate-500 dark:text-slate-400">${w.exampleJa || ''}</div>
+                </div>
+              ` : ''}
+            </div>
+          `).join('') : `
+            <div class="col-span-2 py-12 text-center text-slate-400 text-xs font-bold">
+              該当する単語が見つかりませんでした。
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+  }
+
+  // テストの開始処理
+  static startAllVocabTest() {
+    const s = this.allVocabState;
+    let pool = [...interviewVocabulary];
+
+    // スコープ絞り込み
+    if (s.scope === 'speech') {
+      pool = pool.filter(w => (w.topicIds || []).some(tid => parseInt(tid.replace('topic_', ''), 10) <= 7));
+    } else if (s.scope === 'dialogue') {
+      pool = pool.filter(w => (w.topicIds || []).some(tid => parseInt(tid.replace('topic_', ''), 10) >= 8));
+    } else if (s.scope === 'mistakes') {
+      try {
+        const mistakes = StorageService.getMistakes() || [];
+        const ivIds = new Set(interviewVocabulary.map(w => w.id));
+        const cleanMnMap = {};
+        interviewVocabulary.forEach(w => {
+          cleanMnMap[(w.dictForm || w.mongolian || '').toLowerCase().replace(/[^а-яөүёa-z]/g, '')] = w;
+        });
+        const matched = [];
+        mistakes.forEach(m => {
+          if (m.wordId && ivIds.has(m.wordId)) {
+            const w = interviewVocabulary.find(x => x.id === m.wordId);
+            if (w && !matched.some(x => x.id === w.id)) matched.push(w);
+          } else {
+            const cAns = (m.correctAnswer || '').toLowerCase().replace(/[^а-яөүёa-z]/g, '');
+            if (cleanMnMap[cAns] && !matched.some(x => x.id === cleanMnMap[cAns].id)) {
+              matched.push(cleanMnMap[cAns]);
+            }
+          }
+        });
+        pool = matched.length > 0 ? matched : [...interviewVocabulary];
+      } catch (_) {
+        pool = [...interviewVocabulary];
+      }
+    } else if (s.scope && s.scope.startsWith('topic_')) {
+      pool = pool.filter(w => (w.topicIds || []).includes(s.scope));
+    }
+
+    if (pool.length === 0) pool = [...interviewVocabulary];
+
+    // 出題数の決定（自由指定入力優先）
+    let count = s.questionCount || 20;
+    if (s.customCountInput) {
+      const parsed = parseInt(s.customCountInput, 10);
+      if (!isNaN(parsed) && parsed > 0) {
+        count = parsed;
+      }
+    }
+    count = Math.min(count, pool.length);
+
+    // 出題順
+    let questions = [...pool];
+    if (s.order === 'shuffle') {
+      questions = shuffleArray(questions);
+    }
+    questions = questions.slice(0, count);
+
+    s.activeQuestions = questions;
+    s.currentIndex = 0;
+    s.userInput = '';
+    s.hasAnswered = false;
+    s.isCorrect = false;
+    s.selectedChoice = null;
+    s.showHint = false;
+    s.mistakes = [];
+    s.status = 'testing';
+
+    // 最初の問題が4択なら選択肢を生成
+    if (s.testType === 'choice' && questions[0]) {
+      s.currentChoices = this.generateChoicesForWord(questions[0]);
+    }
+  }
+
+  // 4択選択肢の自動生成（同一品詞優先）
+  static generateChoicesForWord(targetWord) {
+    const correctText = targetWord.dictForm || targetWord.mongolian;
+    const samePosWords = interviewVocabulary.filter(w => 
+      (w.dictForm || w.mongolian) !== correctText &&
+      w.pos === targetWord.pos
+    );
+    const otherWords = interviewVocabulary.filter(w => 
+      (w.dictForm || w.mongolian) !== correctText &&
+      w.pos !== targetWord.pos
+    );
+
+    let distractors = shuffleArray([...samePosWords]).slice(0, 3);
+    if (distractors.length < 3) {
+      const extra = shuffleArray([...otherWords]).slice(0, 3 - distractors.length);
+      distractors = distractors.concat(extra);
+    }
+
+    const choices = [
+      { text: correctText, isCorrect: true, word: targetWord },
+      ...distractors.map(d => ({ text: d.dictForm || d.mongolian, isCorrect: false, word: d }))
+    ];
+    return shuffleArray(choices);
+  }
+
+  // タイピング回答判定
+  static handleAllVocabTypingSubmit() {
+    const s = this.allVocabState;
+    const currentWord = s.activeQuestions[s.currentIndex];
+    if (!currentWord || s.hasAnswered) return;
+
+    const userText = (s.userInput || '').trim();
+    const correctText = (currentWord.dictForm || currentWord.mongolian).trim();
+
+    const clean = (str) => (str || '').toLowerCase().replace(/[.,!?！？。、\s\-_'"]/g, '').trim();
+    const isCorrect = isFuzzyMatch(userText, correctText) || (clean(userText) === clean(correctText));
+
+    s.hasAnswered = true;
+    s.isCorrect = isCorrect;
+
+    if (isCorrect) {
+      try {
+        if (typeof SoundEffects !== 'undefined' && typeof SoundEffects.playCorrect === 'function') {
+          SoundEffects.playCorrect();
+        }
+      } catch (_) {}
+      try { SpeechService.speak(correctText); } catch (_) {}
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(10);
+      }
+    } else {
+      try {
+        if (typeof SoundEffects !== 'undefined' && typeof SoundEffects.playWrong === 'function') {
+          SoundEffects.playWrong();
+        }
+      } catch (_) {}
+      try {
+        StorageService.recordMistake({
+          wordId: currentWord.id || null,
+          question: `【口頭試験単語】${currentWord.japanese}`,
+          userAnswer: userText || '(未入力)',
+          correctAnswer: correctText,
+          type: 'word',
+          category: '口頭試験単語',
+          explanation: `正解: ${correctText} [${currentWord.pronunciation || ''}] = ${currentWord.japanese} (${currentWord.pos || '単語'})。${currentWord.exampleMn ? `例文: ${currentWord.exampleMn}` : ''}`
+        });
+      } catch (_) {}
+      s.mistakes.push({
+        id: currentWord.id,
+        japanese: currentWord.japanese,
+        mongolian: correctText,
+        pronunciation: currentWord.pronunciation,
+        userAnswer: userText || '(未入力)'
+      });
+    }
+
+    this.render(this.container, this.onNavigate);
+  }
+
+  // 4択回答判定
+  static handleAllVocabChoice(choiceIndex) {
+    const s = this.allVocabState;
+    const currentWord = s.activeQuestions[s.currentIndex];
+    if (!currentWord || s.hasAnswered) return;
+
+    const selected = s.currentChoices[choiceIndex];
+    if (!selected) return;
+
+    s.selectedChoice = choiceIndex;
+    s.hasAnswered = true;
+    s.isCorrect = selected.isCorrect;
+
+    const correctText = currentWord.dictForm || currentWord.mongolian;
+
+    if (selected.isCorrect) {
+      try {
+        if (typeof SoundEffects !== 'undefined' && typeof SoundEffects.playCorrect === 'function') {
+          SoundEffects.playCorrect();
+        }
+      } catch (_) {}
+      try { SpeechService.speak(correctText); } catch (_) {}
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(10);
+      }
+    } else {
+      try {
+        if (typeof SoundEffects !== 'undefined' && typeof SoundEffects.playWrong === 'function') {
+          SoundEffects.playWrong();
+        }
+      } catch (_) {}
+      try {
+        StorageService.recordMistake({
+          wordId: currentWord.id || null,
+          question: `【口頭試験単語】${currentWord.japanese}`,
+          userAnswer: selected.text,
+          correctAnswer: correctText,
+          type: 'word',
+          category: '口頭試験単語',
+          explanation: `正解: ${correctText} [${currentWord.pronunciation || ''}] = ${currentWord.japanese} (${currentWord.pos || '単語'})。${currentWord.exampleMn ? `例文: ${currentWord.exampleMn}` : ''}`
+        });
+      } catch (_) {}
+      s.mistakes.push({
+        id: currentWord.id,
+        japanese: currentWord.japanese,
+        mongolian: correctText,
+        pronunciation: currentWord.pronunciation,
+        userAnswer: selected.text
+      });
+    }
+
+    this.render(this.container, this.onNavigate);
+  }
+
+  // 次の問題へ
+  static handleAllVocabNext() {
+    const s = this.allVocabState;
+    s.currentIndex++;
+    s.userInput = '';
+    s.hasAnswered = false;
+    s.isCorrect = false;
+    s.selectedChoice = null;
+    s.showHint = false;
+
+    if (s.currentIndex >= s.activeQuestions.length) {
+      s.status = 'result';
+    } else {
+      const nextWord = s.activeQuestions[s.currentIndex];
+      if (s.testType === 'choice' && nextWord) {
+        s.currentChoices = this.generateChoicesForWord(nextWord);
+      }
+    }
+    this.render(this.container, this.onNavigate);
+  }
+
+  // 「口頭試験で出てくる単語をすべて覚える」専用イベントリスナーバインド
+  static attachAllVocabEventListeners(container) {
+    const s = this.allVocabState;
+
+    // スコープ選択ボタン
+    container.querySelectorAll('.vocab-scope-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sc = btn.getAttribute('data-vocab-scope');
+        if (sc) {
+          s.scope = sc;
+          this.render(container, this.onNavigate);
+        }
+      });
+    });
+
+    // 特定テーマセレクト
+    const topicSelect = container.querySelector('#select-vocab-single-topic');
+    if (topicSelect) {
+      topicSelect.addEventListener('change', (e) => {
+        if (e.target.value) {
+          s.scope = e.target.value;
+        } else {
+          s.scope = 'all';
+        }
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    // テスト形式切り替え
+    container.querySelectorAll('.vocab-type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const t = btn.getAttribute('data-vocab-type');
+        if (t) {
+          s.testType = t;
+          this.render(container, this.onNavigate);
+        }
+      });
+    });
+
+    // 問題数プリセット
+    container.querySelectorAll('.vocab-count-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const c = parseInt(btn.getAttribute('data-vocab-count'), 10);
+        if (!isNaN(c)) {
+          s.questionCount = c;
+          s.customCountInput = '';
+          this.render(container, this.onNavigate);
+        }
+      });
+    });
+
+    // 自由指定問題数入力
+    const customCountInput = container.querySelector('#all-vocab-custom-count-input');
+    if (customCountInput) {
+      customCountInput.addEventListener('input', (e) => {
+        s.customCountInput = e.target.value;
+      });
+    }
+
+    // 出題順ボタン
+    container.querySelectorAll('.vocab-order-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const o = btn.getAttribute('data-vocab-order');
+        if (o) {
+          s.order = o;
+          this.render(container, this.onNavigate);
+        }
+      });
+    });
+
+    // テスト開始ボタン
+    const startBtn = container.querySelector('#btn-start-all-vocab-test');
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        this.startAllVocabTest();
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    // 全単語一覧表示ボタン
+    const openListBtn = container.querySelector('#btn-open-all-vocab-list');
+    if (openListBtn) {
+      openListBtn.addEventListener('click', () => {
+        s.status = 'browse_list';
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    // 全単語一覧閉じるボタン
+    const closeBrowseBtn = container.querySelector('#btn-close-vocab-browse');
+    if (closeBrowseBtn) {
+      closeBrowseBtn.addEventListener('click', () => {
+        s.status = 'setup';
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    // 全単語一覧検索
+    const searchInput = container.querySelector('#all-vocab-search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        s.searchQuery = e.target.value;
+        this.render(container, this.onNavigate);
+        const refocused = container.querySelector('#all-vocab-search-input');
+        if (refocused) {
+          refocused.focus();
+          refocused.setSelectionRange(refocused.value.length, refocused.value.length);
+        }
+      });
+    }
+
+    // 全単語一覧品詞フィルター
+    container.querySelectorAll('.btn-filter-pos').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const p = btn.getAttribute('data-filter-pos');
+        if (p) {
+          s.filterPos = p;
+          this.render(container, this.onNavigate);
+        }
+      });
+    });
+
+    // 全単語一覧個別発音ボタン
+    container.querySelectorAll('.btn-speak-single-vocab').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const text = btn.getAttribute('data-speak-text');
+        if (text) SpeechService.speak(text);
+      });
+    });
+
+    // テスト中断ボタン
+    const abortBtn = container.querySelector('#btn-abort-all-vocab-test');
+    if (abortBtn) {
+      abortBtn.addEventListener('click', () => {
+        s.status = 'setup';
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    // ヒントトグル
+    const hintBtn = container.querySelector('#btn-toggle-all-vocab-hint');
+    if (hintBtn) {
+      hintBtn.addEventListener('click', () => {
+        s.showHint = !s.showHint;
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    // タイピング入力欄
+    const typingInput = container.querySelector('#all-vocab-typing-input');
+    if (typingInput) {
+      typingInput.addEventListener('input', (e) => {
+        s.userInput = e.target.value;
+      });
+      typingInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.handleAllVocabTypingSubmit();
+        }
+      });
+      bindCyrillicInputAssistant(container, 'all-vocab-typing-input');
+      setTimeout(() => typingInput.focus(), 50);
+    }
+
+    // タイピング送信ボタン
+    const submitTypingBtn = container.querySelector('#btn-submit-all-vocab-typing');
+    if (submitTypingBtn) {
+      submitTypingBtn.addEventListener('click', () => {
+        this.handleAllVocabTypingSubmit();
+      });
+    }
+
+    // 4択選択肢ボタン
+    container.querySelectorAll('.btn-all-vocab-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.getAttribute('data-choice-index'), 10);
+        if (!isNaN(idx)) {
+          this.handleAllVocabChoice(idx);
+        }
+      });
+    });
+
+    // 4択キーボードショートカット (1〜4)
+    if (s.status === 'testing' && s.testType === 'choice' && !s.hasAnswered) {
+      const choiceKeyHandler = (e) => {
+        const num = parseInt(e.key, 10);
+        if (num >= 1 && num <= 4) {
+          window.removeEventListener('keydown', choiceKeyHandler);
+          this.handleAllVocabChoice(num - 1);
+        }
+      };
+      window.addEventListener('keydown', choiceKeyHandler, { once: true });
+    }
+
+    // 単語発音ボタン
+    const speakWordBtn = container.querySelector('#btn-speak-all-vocab-word');
+    if (speakWordBtn) {
+      speakWordBtn.addEventListener('click', () => {
+        const cur = s.activeQuestions[s.currentIndex];
+        if (cur) SpeechService.speak(cur.dictForm || cur.mongolian);
+      });
+    }
+
+    // 次の問題へボタン
+    const nextBtn = container.querySelector('#btn-next-all-vocab-question');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        this.handleAllVocabNext();
+      });
+      const enterHandler = (e) => {
+        if (e.key === 'Enter') {
+          window.removeEventListener('keydown', enterHandler);
+          this.handleAllVocabNext();
+        }
+      };
+      window.addEventListener('keydown', enterHandler, { once: true });
+    }
+
+    // 結果画面：もう一度同じ条件で
+    const restartSameBtn = container.querySelector('#btn-restart-all-vocab-same');
+    if (restartSameBtn) {
+      restartSameBtn.addEventListener('click', () => {
+        this.startAllVocabTest();
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    // 結果画面：間違えた単語だけ再特訓
+    const retryMistakesBtn = container.querySelector('#btn-retry-all-vocab-mistakes');
+    if (retryMistakesBtn) {
+      retryMistakesBtn.addEventListener('click', () => {
+        if (s.mistakes && s.mistakes.length > 0) {
+          s.activeQuestions = shuffleArray(s.mistakes.map(m => {
+            const found = interviewVocabulary.find(w => w.id === m.id);
+            return found || {
+              id: m.id,
+              mongolian: m.mongolian,
+              dictForm: m.mongolian,
+              japanese: m.japanese,
+              pronunciation: m.pronunciation,
+              pos: '単語'
+            };
+          }));
+          s.currentIndex = 0;
+          s.userInput = '';
+          s.hasAnswered = false;
+          s.isCorrect = false;
+          s.selectedChoice = null;
+          s.showHint = false;
+          s.mistakes = [];
+          s.status = 'testing';
+          if (s.testType === 'choice' && s.activeQuestions[0]) {
+            s.currentChoices = this.generateChoicesForWord(s.activeQuestions[0]);
+          }
+          this.render(container, this.onNavigate);
+        }
+      });
+    }
+
+    // 結果画面：設定へ戻る
+    const backSetupBtn = container.querySelector('#btn-all-vocab-back-setup');
+    if (backSetupBtn) {
+      backSetupBtn.addEventListener('click', () => {
+        s.status = 'setup';
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    // 結果画面：スピーチ演習へ戻る
+    const backSpeechBtn = container.querySelector('#btn-all-vocab-back-speech');
+    if (backSpeechBtn) {
+      backSpeechBtn.addEventListener('click', () => {
+        this.activeSubMode = 'speech';
+        this.render(container, this.onNavigate);
+      });
+    }
+  }
+
 }
 
 if (typeof window !== 'undefined') {

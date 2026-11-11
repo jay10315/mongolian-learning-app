@@ -782,7 +782,7 @@ export class HomeComponent {
                   口述試験・スピーチ特訓
                 </h4>
                 <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                  1〜7の4分スピーチ（自己紹介・家族・草加市・二本松・ドルノド・休日・ЖАЙКА）＆ 8〜13の実践対話を「暗記して言えるようにする」特化ドリル！
+                  1〜7の4分スピーチ＆8〜13の実践対話、および<strong>【口頭試験で出てくる単語をすべて覚える】</strong>全出題単語テスト（タイピング／4択／全単語一覧）を完全収録！
                 </p>
               </div>
               <div class="mt-4 pt-3 border-t border-emerald-500/20 flex items-center justify-between text-xs font-bold text-emerald-700">
