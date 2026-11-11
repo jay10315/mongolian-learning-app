@@ -1184,6 +1184,33 @@ export class InterviewMasterComponent {
                 </div>
               ` : ''}
 
+              <!-- 詳しい解説 -->
+              ${currentWord.explanation ? `
+                <div class="p-3 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-emerald-200 dark:border-emerald-800 text-xs leading-relaxed space-y-1">
+                  <div class="font-black text-emerald-800 dark:text-emerald-300 flex items-center gap-1 text-[11px]">
+                    <span>💡</span> 詳しい解説・文法ポイント
+                  </div>
+                  <div class="text-slate-700 dark:text-slate-200">
+                    ${currentWord.explanation}
+                  </div>
+                </div>
+              ` : ''}
+
+              <!-- 実用例文 -->
+              ${currentWord.exampleMn ? `
+                <div class="p-3 rounded-xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs space-y-1">
+                  <div class="font-black text-amber-900 dark:text-amber-300 flex items-center gap-1 text-[11px]">
+                    <span>📝</span> 口頭試験での実用例文
+                  </div>
+                  <div class="font-bold cyrillic-text text-slate-800 dark:text-slate-100 text-sm">
+                    ${currentWord.exampleMn}
+                  </div>
+                  <div class="text-slate-600 dark:text-slate-400">
+                    ${currentWord.exampleJa || ''}
+                  </div>
+                </div>
+              ` : ''}
+
               <button
                 type="button"
                 id="btn-next-vocab-question"
@@ -2266,10 +2293,30 @@ export class InterviewMasterComponent {
                 </div>
               ` : ''}
 
+              <!-- 詳しい解説 -->
+              ${currentWord.explanation ? `
+                <div class="p-3.5 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-emerald-200 dark:border-emerald-700 text-xs leading-relaxed space-y-1">
+                  <div class="font-black text-emerald-800 dark:text-emerald-300 flex items-center gap-1 text-[11px]">
+                    <span>💡</span> 詳しい解説・文法ポイント
+                  </div>
+                  <div class="text-slate-700 dark:text-slate-200">
+                    ${currentWord.explanation}
+                  </div>
+                </div>
+              ` : ''}
+
+              <!-- 実用例文 -->
               ${currentWord.exampleMn ? `
-                <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700 text-xs space-y-0.5">
-                  <div class="font-bold cyrillic-text text-slate-700 dark:text-slate-300">例文: ${currentWord.exampleMn}</div>
-                  <div class="text-slate-500 dark:text-slate-400">${currentWord.exampleJa || ''}</div>
+                <div class="p-3.5 rounded-xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs space-y-1">
+                  <div class="font-black text-amber-900 dark:text-amber-300 flex items-center gap-1 text-[11px]">
+                    <span>📝</span> 口頭試験での実用例文
+                  </div>
+                  <div class="font-bold cyrillic-text text-slate-800 dark:text-slate-100 text-sm">
+                    ${currentWord.exampleMn}
+                  </div>
+                  <div class="text-slate-600 dark:text-slate-400">
+                    ${currentWord.exampleJa || ''}
+                  </div>
                 </div>
               ` : ''}
 

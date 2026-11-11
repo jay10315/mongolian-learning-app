@@ -5,7 +5,7 @@
 
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
-import { SoundEffects, isFuzzyMatch, scrollToQuizTop } from '../utils/helpers.js';
+import { SoundEffects, isFuzzyMatch, scrollToQuizTop, renderClickableWordsHTML, findWordInDictionary, showUniversalWordModal } from '../utils/helpers.js';
 import { MOCK_EXAM_STATIC_QUESTIONS, getMockExamQuestions } from '../data/mockExamData.js';
 
 export class MockExamComponent {
@@ -350,9 +350,9 @@ export class MockExamComponent {
             </button>
           </div>
 
-          <!-- 設問テキスト（大きく明瞭なキリル文字） -->
+          <!-- 設問テキスト（大きく明瞭なキリル文字・単語タップで和訳＆調べた単語帳に自動登録） -->
           <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white cyrillic-text leading-relaxed tracking-tight py-2">
-            ${q.question}
+            ${renderClickableWordsHTML(q.question, t => StorageService.isWordLookedUp(t))}
           </div>
 
           <div class="text-xs text-slate-400 font-medium mt-1">
@@ -429,13 +429,13 @@ export class MockExamComponent {
             <!-- 解説カード -->
             <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3 text-xs">
               
-              <!-- 設問の日本語訳 -->
-              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                <div class="text-[11px] font-black text-slate-500 mb-1 flex items-center gap-1">
-                  <span>🇯🇵</span> 設問の日本語の意味
+              <!-- 設問の日本語訳（きちんとした和訳を表示） -->
+              <div class="p-3.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-1 flex items-center gap-1">
+                  <span>🇯🇵</span> 設問の日本語の意味（和訳）
                 </div>
-                <div class="text-sm font-bold text-slate-800">
-                  ${q.question}
+                <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                  ${q.questionJa || q.question}
                 </div>
               </div>
 
@@ -444,7 +444,7 @@ export class MockExamComponent {
                 <div class="font-black text-slate-700 flex items-center gap-1 text-xs">
                   <span>💡</span> 正解の根拠・解説
                 </div>
-                <div class="p-3 rounded-xl bg-indigo-50/70 border border-indigo-100 text-indigo-950 text-xs sm:text-sm leading-relaxed">
+                <div class="p-3.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60 text-indigo-950 dark:text-indigo-200 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
                   ${q.explanation || '正解と各選択肢の違いをしっかり確認しましょう。'}
                 </div>
               </div>
@@ -466,6 +466,37 @@ export class MockExamComponent {
 
       </div>
     `;
+
+    // 単語タップで和訳モーダル表示 ＆ ホームの「調べた単語」に自動保存
+    this.container.querySelectorAll('.clickable-word').forEach(span => {
+      span.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const rawWord = span.getAttribute('data-word');
+        if (!rawWord) return;
+        const wordInfo = findWordInDictionary(rawWord);
+        try {
+          StorageService.saveLookedUpWord({
+            rawWord: wordInfo.rawWord || rawWord,
+            dictForm: wordInfo.dictForm,
+            ja: wordInfo.ja,
+            pos: wordInfo.pos,
+            pron: wordInfo.pron,
+            passageTitle: `4択模試: ${q.categoryLabel || '総合模試'}`
+          });
+        } catch (_) {}
+        try {
+          SpeechService.speak(wordInfo.dictForm || wordInfo.rawWord);
+        } catch (_) {}
+        showUniversalWordModal({
+          wordInfo,
+          passageTitle: `4択模試 (${q.categoryLabel || '総合模試'})`,
+          onNavigate: this.onNavigate,
+          onClose: () => {
+            this.renderQuestion();
+          }
+        });
+      });
+    });
 
     // イベントバインド
     const quitBtn = this.container.querySelector('#btn-quit-mock-test');
@@ -552,9 +583,10 @@ export class MockExamComponent {
       }
     } else {
       SoundEffects.playWrong();
-      // 間違いノートへ「4択選択肢 options」を保持したまま収納！
+      // 間違いノートへ「4択選択肢 options」と「和訳 questionJa」を保持したまま収納！
       StorageService.recordMistake({
         question: q.question,
+        questionJa: q.questionJa || '',
         options: q.options,
         correctAnswer: q.correctAnswer,
         userAnswer: choice,
@@ -673,7 +705,10 @@ export class MockExamComponent {
                     <span class="w-5 h-5 rounded-full ${r.isCorrect ? 'bg-emerald-600' : 'bg-rose-600'} text-white text-[10px] font-black flex items-center justify-center">
                       ${r.isCorrect ? '✓' : '✕'}
                     </span>
-                    <span class="font-bold text-slate-800 cyrillic-text">第 ${rIdx + 1} 問: ${r.question.question}</span>
+                    <div>
+                      <span class="font-bold text-slate-800 cyrillic-text">第 ${rIdx + 1} 問: ${r.question.question}</span>
+                      ${r.question.questionJa ? `<div class="text-[11px] text-slate-500 font-normal mt-0.5">🇯🇵 ${r.question.questionJa}</div>` : ''}
+                    </div>
                   </div>
                   <span class="text-[10px] px-2 py-0.5 rounded-full ${r.isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'} font-bold shrink-0">
                     ${r.isCorrect ? '正解' : '不正解'}
@@ -685,9 +720,14 @@ export class MockExamComponent {
                   <div>あなたの回答: <strong class="${r.isCorrect ? 'text-emerald-700' : 'text-rose-700'} font-bold">${r.userChoice}</strong></div>
                 </div>
 
-                <div class="p-2 bg-white rounded-lg border border-slate-200 text-[11px] text-slate-600 leading-relaxed">
+                <div class="p-2.5 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-[11px] text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-line">
                   ${r.question.explanation}
                 </div>
+                ${r.question.points ? `
+                  <div class="p-2 bg-amber-50 dark:bg-amber-950/40 rounded-lg border border-amber-200 dark:border-amber-800 text-[11px] text-amber-900 dark:text-amber-200">
+                    📌 ${r.question.points}
+                  </div>
+                ` : ''}
               </div>
             `).join('')}
           </div>

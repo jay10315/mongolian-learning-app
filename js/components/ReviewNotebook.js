@@ -645,11 +645,12 @@ export class ReviewNotebookComponent {
     if (is4ChoiceItem) {
       return {
         promptText: item.question || cleanRawQ,
+        questionJa: item.questionJa || '',
         displayPrefix: '【4択模試】',
         categoryLabel: item.category ? `【${item.category}】正しい選択肢を選んでください` : 'モンゴル語の設問に合う正しい選択肢を選んでください',
         isCyrillicAnswer: false,
         placeholder: '選択肢を選んでください',
-        subHint: item.explanation ? '💡 設問と4つの選択肢をよく読んで選んでください' : '',
+        subHint: item.questionJa ? `🇯🇵 和訳: ${item.questionJa}` : (item.explanation ? '💡 設問と4つの選択肢をよく読んで選んでください' : ''),
         matchedWord: null,
         details: null,
         isVerb: false,
