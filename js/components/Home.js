@@ -187,11 +187,11 @@ export class HomeComponent {
                   </span>
                 </div>
                 <p class="text-xs text-slate-500 leading-relaxed">
-                  ${dueWords.length > 0 ? '今日復習すべき単語があります。一度間違えた単語も忘却曲線に自動組み込みされ、優先復習されます。' : '本日の期日単語はありません。記憶は良好に維持されています。'}
+                  ${dueWords.length > 0 ? '今日復習すべき単語があります（2回正解で本日分クリア・24時間ごとに自動更新）。一度間違えた単語も忘却曲線に自動組み込みされ優先復習されます。' : '本日の忘却曲線復習タスクはすべて完了しました！🎉（24時間後に自動更新されます）'}
                 </p>
               </div>
               <button type="button" id="btn-start-srs-review" class="mt-3 w-full py-2.5 ${dueWords.length > 0 ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-bold rounded-lg text-xs transition-all active:scale-98" ${dueWords.length === 0 ? 'disabled' : ''}>
-                ${dueWords.length > 0 ? `復習を開始する (${dueWords.length}語) →` : '完了済み'}
+                ${dueWords.length > 0 ? `復習を開始する (${dueWords.length}語) →` : '✓ 本日分完了（24h更新）'}
               </button>
             </div>
 

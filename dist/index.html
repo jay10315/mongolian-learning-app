@@ -119088,7 +119088,7 @@ class StorageService {
     if (m) {
       if (isCorrect) {
         m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
-        if (m.consecutiveCorrect >= 3) {
+        if (m.consecutiveCorrect >= 2) {
           m.resolved = true;
           m.resolvedAt = new Date().toISOString();
         } else {
@@ -119153,7 +119153,7 @@ class StorageService {
         if (isCorrectAnswer) {
           m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
           // 3回正解できたら自動で「覚えた（克服）」判定にし、間違えた単語リストから除外
-          if (m.consecutiveCorrect >= 3) {
+          if (m.consecutiveCorrect >= 2) {
             m.resolved = true;
             m.resolvedAt = new Date().toISOString();
           } else {
@@ -119204,7 +119204,7 @@ class StorageService {
       if (isMatch) {
         if (isCorrectAnswer) {
           m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
-          if (m.consecutiveCorrect >= 3) {
+          if (m.consecutiveCorrect >= 2) {
             m.resolved = true;
             m.resolvedAt = new Date().toISOString();
           } else {
@@ -119868,6 +119868,112 @@ class StorageService {
 
 if (typeof window !== 'undefined') {
   window.StorageService = StorageService;
+
+  // ==========================================
+  // 日次24時間復習サイクル＆2回正解による本日分クリア管理
+  // ==========================================
+  static getDailyReviewState() {
+    try {
+      const now = Date.now();
+      const data = localStorage.getItem(STORAGE_KEYS.DAILY_DUE_REVIEW_CLEARED);
+      if (!data) {
+        const initial = { startedAt: now, counts: {}, clearedIds: [] };
+        localStorage.setItem(STORAGE_KEYS.DAILY_DUE_REVIEW_CLEARED, JSON.stringify(initial));
+        return initial;
+      }
+      const parsed = JSON.parse(data);
+      // 24時間（86,400,000ミリ秒）経過で自動リセット＆新サイクルの開始
+      if (!parsed.startedAt || (now - parsed.startedAt >= 24 * 60 * 60 * 1000)) {
+        const resetState = { startedAt: now, counts: {}, clearedIds: [] };
+        localStorage.setItem(STORAGE_KEYS.DAILY_DUE_REVIEW_CLEARED, JSON.stringify(resetState));
+        return resetState;
+      }
+      return {
+        startedAt: parsed.startedAt,
+        counts: parsed.counts || {},
+        clearedIds: Array.isArray(parsed.clearedIds) ? parsed.clearedIds : []
+      };
+    } catch (_) {
+      return { startedAt: Date.now(), counts: {}, clearedIds: [] };
+    }
+  }
+
+  static isWordClearedForToday(wordId, aliases = []) {
+    if (!wordId && (!aliases || aliases.length === 0)) return false;
+    const state = this.getDailyReviewState();
+    const clean = s => (s || '').toString().toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '');
+    const cleared = new Set(state.clearedIds || []);
+    if (wordId && cleared.has(wordId)) return true;
+    for (const a of aliases) {
+      const ca = clean(a);
+      if (ca && cleared.has(ca)) return true;
+    }
+    return false;
+  }
+
+  static getDailyReviewCorrectCount(wordId, aliases = []) {
+    const state = this.getDailyReviewState();
+    const clean = s => (s || '').toString().toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '');
+    if (wordId && state.counts[wordId] !== undefined) return state.counts[wordId];
+    for (const a of aliases) {
+      const ca = clean(a);
+      if (ca && state.counts[ca] !== undefined) return state.counts[ca];
+    }
+    return 0;
+  }
+
+  static recordDailyReviewAnswer(wordId, isCorrect, aliases = []) {
+    const state = this.getDailyReviewState();
+    const clean = s => (s || '').toString().toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '');
+    const keysToUpdate = [];
+    if (wordId) keysToUpdate.push(wordId);
+    for (const a of aliases) {
+      const ca = clean(a);
+      if (ca && !keysToUpdate.includes(ca)) keysToUpdate.push(ca);
+    }
+
+    let currentCount = 0;
+    for (const k of keysToUpdate) {
+      if (state.counts[k] !== undefined) {
+        currentCount = Math.max(currentCount, state.counts[k]);
+      }
+    }
+
+    if (isCorrect) {
+      currentCount += 1;
+    } else {
+      currentCount = 0;
+    }
+
+    for (const k of keysToUpdate) {
+      state.counts[k] = currentCount;
+    }
+
+    const isNowCleared = currentCount >= 2;
+    const clearedSet = new Set(state.clearedIds || []);
+    if (isNowCleared) {
+      for (const k of keysToUpdate) {
+        clearedSet.add(k);
+      }
+    } else {
+      for (const k of keysToUpdate) {
+        clearedSet.delete(k);
+      }
+    }
+    state.clearedIds = Array.from(clearedSet);
+
+    try {
+      localStorage.setItem(STORAGE_KEYS.DAILY_DUE_REVIEW_CLEARED, JSON.stringify(state));
+      SyncService.triggerSync();
+    } catch (_) {}
+
+    return {
+      count: currentCount,
+      isCleared: isNowCleared,
+      target: 2
+    };
+  }
+
 }
 
 
@@ -127003,11 +127109,11 @@ class HomeComponent {
                   </span>
                 </div>
                 <p class="text-xs text-slate-500 leading-relaxed">
-                  ${dueWords.length > 0 ? '今日復習すべき単語があります。一度間違えた単語も忘却曲線に自動組み込みされ、優先復習されます。' : '本日の期日単語はありません。記憶は良好に維持されています。'}
+                  ${dueWords.length > 0 ? '今日復習すべき単語があります（2回正解で本日分クリア・24時間ごとに自動更新）。一度間違えた単語も忘却曲線に自動組み込みされ優先復習されます。' : '本日の忘却曲線復習タスクはすべて完了しました！🎉（24時間後に自動更新されます）'}
                 </p>
               </div>
               <button type="button" id="btn-start-srs-review" class="mt-3 w-full py-2.5 ${dueWords.length > 0 ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-bold rounded-lg text-xs transition-all active:scale-98" ${dueWords.length === 0 ? 'disabled' : ''}>
-                ${dueWords.length > 0 ? `復習を開始する (${dueWords.length}語) →` : '完了済み'}
+                ${dueWords.length > 0 ? `復習を開始する (${dueWords.length}語) →` : '✓ 本日分完了（24h更新）'}
               </button>
             </div>
 
@@ -150521,15 +150627,17 @@ class ReviewNotebookComponent {
     const combinedSrsWords = [];
 
     rawDueWords.forEach(w => {
-      dueSet.add(w.id);
-      combinedSrsWords.push({
-        ...w,
-        _label: '要復習(SRS期日)'
-      });
+      if (!StorageService.isWordClearedForToday(w.id, [w.mongolian, w.dictForm])) {
+        dueSet.add(w.id);
+        combinedSrsWords.push({
+          ...w,
+          _label: '要復習(SRS期日)'
+        });
+      }
     });
 
     rawHighRiskWords.forEach(w => {
-      if (!dueSet.has(w.id)) {
+      if (!dueSet.has(w.id) && !StorageService.isWordClearedForToday(w.id, [w.mongolian, w.dictForm])) {
         dueSet.add(w.id);
         combinedSrsWords.push({
           ...w,
@@ -150737,15 +150845,15 @@ class ReviewNotebookComponent {
                     </span>
                     ${!m.resolved ? `
                       <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                        (m.consecutiveCorrect || 0) >= 2 ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+                        (m.consecutiveCorrect || 0) >= 2 ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' :
                         (m.consecutiveCorrect || 0) === 1 ? 'bg-sky-100 text-sky-900 border border-sky-300' :
                         'bg-slate-100 text-slate-600'
                       }">
-                        🎯 3回正解で克服: ${m.consecutiveCorrect || 0}/3回 ${m.consecutiveCorrect ? '✨' : ''}
+                        🎯 2回正解で克服: ${m.consecutiveCorrect || 0}/2回 ${m.consecutiveCorrect ? '✨' : ''}
                       </span>
                     ` : `
                       <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                        🎉 3回正解達成（克服済み）
+                        🎉 2回正解達成（克服済み）
                       </span>
                     `}
                     <span class="text-[11px] text-slate-400">${m.sourceLabel || m.category || m.type}</span>
@@ -150955,9 +151063,17 @@ class ReviewNotebookComponent {
 
     let rawQ = (item.question || '').trim();
     let correctAns = (item.correctAnswer || '').trim();
+    // 辞書形・語幹などの不要な括弧指示を除去
+    rawQ = rawQ.replace(/[（\(]\s*(辞書形|語幹)\s*[）\)]/g, '').trim();
+    correctAns = correctAns.replace(/[（\(]\s*(辞書形|語幹)\s*[）\)]/g, '').trim();
 
-    // ノイズ文字列「（モンゴル語教科書語彙）」「（JICA訓練所）」「【第X課」を除去
-    const cleanRawQ = rawQ.replace(/【第\d+課\s*/g, '【').replace(/[（\(]モンゴル語教科書語彙[）\)]/g, '').replace(/[（\(]JICA訓練所[）\)]/g, '').trim();
+    // ノイズ文字列やプレフィックス（【動詞辞書形】や【動詞語幹】など）を除去
+    const cleanRawQ = rawQ.replace(/【第\d+課\s*/g, '【')
+      .replace(/[（\(]モンゴル語教科書語彙[）\)]/g, '')
+      .replace(/[（\(]JICA訓練所[）\)]/g, '')
+      .replace(/【(動詞辞書形|動詞語幹|語幹|辞書形|イラスト動詞辞書形|イラスト動詞語幹)】/g, '')
+      .replace(/[（\(]\s*(辞書形|語幹)\s*[）\)]/g, '')
+      .trim();
     const cleanAns = correctAns.replace(/[（\(]モンゴル語教科書語彙[）\)]/g, '').replace(/[（\(]JICA訓練所[）\)]/g, '').trim();
 
     const cleanKey = (str) => (str || '').toLowerCase().replace(/[\(\)（）\s.,!?-]/g, '');
@@ -151029,27 +151145,28 @@ class ReviewNotebookComponent {
     }
 
     if (item && item.sourceType === 'due_review') {
-      const rawJa = (matchedWord ? matchedWord.japanese : cleanRawQ.replace(/^【(要復習|要復習\(SRS期日\)|忘却リスク高)】\s*/, '')).trim();
+      const rawJa = (matchedWord ? matchedWord.japanese : cleanRawQ.replace(/^【(要復習|要復習\(SRS期日\)|忘却リスク高|動詞辞書形|動詞語幹|語幹|辞書形|イラスト動詞辞書形|イラスト動詞語幹|単語)】\s*/, '')).replace(/[（\(]\s*(辞書形|語幹)\s*[）\)]/g, '').trim();
       const isVerbQ = isV;
       const verbForm = item._verbTargetForm || 'dict';
       let promptPrefix = '【要復習(SRS)】';
       let promptHolder = 'キリル文字で入力...';
       let hintText = '';
+      const cleanPromptJa = rawJa.replace(/[（\(]\s*(辞書形|語幹)\s*[）\)]/g, '').trim();
       if (isVerbQ) {
         if (verbForm === 'root') {
-          promptPrefix = '【動詞語幹】';
-          promptHolder = '動詞の語幹を入力...';
-          hintText = `【品詞: 動詞】語尾を除いた語幹を回答（辞書形: ${details?.dictForm || matchedWord?.dictForm || ''}）`;
+          promptPrefix = '【動詞】';
+          promptHolder = '動詞の語幹をキリル文字で入力...';
+          hintText = `【品詞: 動詞】活用の土台となる語幹を回答（辞書形: ${details?.dictForm || matchedWord?.dictForm || ''}）`;
         } else {
-          promptPrefix = '【動詞辞書形】';
-          promptHolder = '動詞の辞書形（〜х）を入力...';
+          promptPrefix = '【動詞】';
+          promptHolder = '動詞の辞書形（〜х）をキリル文字で入力...';
           hintText = '【品詞: 動詞】見出し語となる辞書形（語尾-хを含める）を回答';
         }
       }
       return {
-        promptText: rawJa,
-        displayPrefix: '【単語】',
-        categoryLabel: `復習期日到来（忘却曲線）${item.sourceLabel ? ' - ' + item.sourceLabel : ''}`,
+        promptText: cleanPromptJa,
+        displayPrefix: promptPrefix,
+        categoryLabel: `日本語に合うモンゴル語（キリル文字）を入力してください`,
         isCyrillicAnswer: true,
         placeholder: promptHolder,
         subHint: hintText,
@@ -151067,8 +151184,8 @@ class ReviewNotebookComponent {
     // 単語マスターとマッチした場合、常にクリーンな見出し情報から出題を構成（ただし明示的に文法・格変化・読解などの非単語問題の場合は問題文を優先）
     if (matchedWord && !isExplicitNonWord) {
       if (isCyrillicAns) {
-        displayPrefix = '【単語】';
-        promptText = matchedWord.japanese;
+        displayPrefix = isV ? '【動詞】' : '【単語】';
+        promptText = (matchedWord.japanese || '').replace(/[（\(]\s*(辞書形|語幹)\s*[）\)]/g, '').trim();
       } else {
         displayPrefix = '【日本語訳】';
         promptText = details.dictForm || matchedWord.mongolian;
@@ -151192,11 +151309,11 @@ class ReviewNotebookComponent {
           item._verbTargetForm = Math.random() < 0.5 ? 'dict' : 'root';
         }
         if (item._verbTargetForm === 'dict') {
-          categoryLabel = "日本語に合う動詞の【辞書形（〜х）】をキリル文字で入力してください";
+          categoryLabel = "日本語に合うモンゴル語（キリル文字）を入力してください";
           subHint = `【動詞】見出し語となる【辞書形（〜х）】を入力（例: ${details.dictForm}）`;
           placeholder = "動詞の辞書形（〜х）をキリル文字で入力...";
         } else {
-          categoryLabel = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
+          categoryLabel = "日本語に合うモンゴル語（キリル文字）を入力してください";
           subHint = `【動詞】活用の土台となる【語幹】を入力（例: ${details.dictForm} の語幹「${details.root}」、語尾-ахや括弧は不要）`;
           placeholder = "動詞の語幹をキリル文字で入力...";
         }
@@ -151306,32 +151423,36 @@ class ReviewNotebookComponent {
                 <span>${this.state.isCorrect ? ((item.consecutiveCorrect || 0) >= 3 ? '見事克服！マスター達成！' : '正解です！') : 'まだ克服できていません'}</span>
               </div>
 
-              <!-- 3回正解克服プログレスの明示（正解数カウントのフィードバック） -->
-              ${(item.sourceType === 'mistake' || !item.sourceType) ? `
+              <!-- 2回正解本日完了プログレスの明示（全復習モード共通・24時間更新） -->
+              ${(() => {
+                const currentCount = Math.max(item.dailyCorrectCount || 0, item.consecutiveCorrect || 0);
+                const isCleared = currentCount >= 2 || item.isClearedToday || item.resolved;
+                return `
                 <div class="my-3 p-3 rounded-xl border ${
                   this.state.isCorrect 
-                    ? ((item.consecutiveCorrect || 0) >= 3 
+                    ? (isCleared 
                         ? 'bg-emerald-100 dark:bg-emerald-900/60 border-emerald-400 text-emerald-950 dark:text-emerald-100' 
                         : 'bg-amber-50 dark:bg-amber-950/50 border-amber-300 dark:border-amber-700 text-amber-950 dark:text-amber-100')
                     : 'bg-rose-100/60 dark:bg-rose-900/40 border-rose-300 text-rose-900 dark:text-rose-200'
                 } flex items-center justify-between flex-wrap gap-2 shadow-2xs">
                   <div class="flex items-center gap-2">
-                    <span class="text-xl">${this.state.isCorrect ? ((item.consecutiveCorrect || 0) >= 3 ? '🏆' : '🎯') : '⚠️'}</span>
+                    <span class="text-xl">${this.state.isCorrect ? (isCleared ? '🎉' : '🎯') : '⚠️'}</span>
                     <span class="text-xs sm:text-sm font-black">
                       ${this.state.isCorrect 
-                        ? ((item.consecutiveCorrect || 0) >= 3 
-                            ? '🎉 3回正解を達成！間違えた単語リストから克服・除外されました！' 
-                            : `正解カウント加算！3回中【${item.consecutiveCorrect || 1}回】正解（あと${Math.max(0, 3 - (item.consecutiveCorrect || 1))}回正解で克服達成！）`)
-                        : '不正解のため、3回正解カウントはリセット（0/3回）されました'}
+                        ? (isCleared 
+                            ? '🎉 2回正解達成！今日の復習リストから完了しました（24時間後に更新）' 
+                            : `正解カウント加算！【1/2回】正解（あと1回正解で本日分完了！）`)
+                        : '不正解のため、2回正解カウントはリセット（0/2回）されました'}
                     </span>
                   </div>
                   <div class="text-xs font-bold px-3 py-1 rounded-full ${
-                    (item.consecutiveCorrect || 0) >= 3 ? 'bg-emerald-600 text-white' : 'bg-white/80 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200'
+                    isCleared ? 'bg-emerald-600 text-white' : 'bg-white/80 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200'
                   }">
-                    進捗: ${item.consecutiveCorrect || 0}/3回
+                    進捗: ${currentCount}/2回 ${isCleared ? '✓ 完了' : ''}
                   </div>
                 </div>
-              ` : ''}
+              `;
+              })()}
 
               <!-- 詳しい解説カード（全問必ず展開） -->
               ${(() => {
@@ -151617,6 +151738,15 @@ class ReviewNotebookComponent {
 
     const targetWordId = item.wordId || item.srsWordId || (matchedWord ? matchedWord.id : null);
 
+    // 24時間日次復習カウントの記録（忘却曲線・要復習ともに2回正解で本日分クリア）
+    const aliasList = [item.correctAnswer, matchedWord?.mongolian, matchedWord?.dictForm].filter(Boolean);
+    const dailyRes = StorageService.recordDailyReviewAnswer(targetWordId, isCorrect, aliasList);
+    item.dailyCorrectCount = dailyRes.count;
+    if (dailyRes.isCleared) {
+      item.resolved = true;
+      item.isClearedToday = true;
+    }
+
     if (isCorrect) {
       SoundEffects.playCorrect();
       
@@ -151631,7 +151761,7 @@ class ReviewNotebookComponent {
           } catch (_) {}
         }
       } else {
-        // 間違い問題（🔥 間違いタブなど）：3回正解ルールを適用して正解数カウントアップ
+        // 間違い問題（🔥 間違いタブなど）：2回正解ルールを適用して正解数カウントアップ
         updatedMistake = StorageService.recordMistakeAnswer(item, true);
         if (updatedMistake) {
           item.consecutiveCorrect = updatedMistake.consecutiveCorrect;
@@ -151646,6 +151776,9 @@ class ReviewNotebookComponent {
         } catch (_) {}
       }
 
+      if (dailyRes.isCleared) {
+        item.resolved = true;
+      }
       if (updatedMistake) {
         item.consecutiveCorrect = updatedMistake.consecutiveCorrect;
         item.resolved = updatedMistake.resolved;
@@ -151682,7 +151815,9 @@ class ReviewNotebookComponent {
         explanation: explText
       });
       item.consecutiveCorrect = 0;
+      item.dailyCorrectCount = 0;
       item.resolved = false;
+      item.isClearedToday = false;
     }
 
     this.renderReviewTesting();

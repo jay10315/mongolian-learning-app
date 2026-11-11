@@ -1471,7 +1471,7 @@ export class StorageService {
     if (m) {
       if (isCorrect) {
         m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
-        if (m.consecutiveCorrect >= 3) {
+        if (m.consecutiveCorrect >= 2) {
           m.resolved = true;
           m.resolvedAt = new Date().toISOString();
         } else {
@@ -1536,7 +1536,7 @@ export class StorageService {
         if (isCorrectAnswer) {
           m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
           // 3回正解できたら自動で「覚えた（克服）」判定にし、間違えた単語リストから除外
-          if (m.consecutiveCorrect >= 3) {
+          if (m.consecutiveCorrect >= 2) {
             m.resolved = true;
             m.resolvedAt = new Date().toISOString();
           } else {
@@ -1587,7 +1587,7 @@ export class StorageService {
       if (isMatch) {
         if (isCorrectAnswer) {
           m.consecutiveCorrect = (m.consecutiveCorrect || 0) + 1;
-          if (m.consecutiveCorrect >= 3) {
+          if (m.consecutiveCorrect >= 2) {
             m.resolved = true;
             m.resolvedAt = new Date().toISOString();
           } else {
@@ -2251,4 +2251,110 @@ export class StorageService {
 
 if (typeof window !== 'undefined') {
   window.StorageService = StorageService;
+
+  // ==========================================
+  // 日次24時間復習サイクル＆2回正解による本日分クリア管理
+  // ==========================================
+  static getDailyReviewState() {
+    try {
+      const now = Date.now();
+      const data = localStorage.getItem(STORAGE_KEYS.DAILY_DUE_REVIEW_CLEARED);
+      if (!data) {
+        const initial = { startedAt: now, counts: {}, clearedIds: [] };
+        localStorage.setItem(STORAGE_KEYS.DAILY_DUE_REVIEW_CLEARED, JSON.stringify(initial));
+        return initial;
+      }
+      const parsed = JSON.parse(data);
+      // 24時間（86,400,000ミリ秒）経過で自動リセット＆新サイクルの開始
+      if (!parsed.startedAt || (now - parsed.startedAt >= 24 * 60 * 60 * 1000)) {
+        const resetState = { startedAt: now, counts: {}, clearedIds: [] };
+        localStorage.setItem(STORAGE_KEYS.DAILY_DUE_REVIEW_CLEARED, JSON.stringify(resetState));
+        return resetState;
+      }
+      return {
+        startedAt: parsed.startedAt,
+        counts: parsed.counts || {},
+        clearedIds: Array.isArray(parsed.clearedIds) ? parsed.clearedIds : []
+      };
+    } catch (_) {
+      return { startedAt: Date.now(), counts: {}, clearedIds: [] };
+    }
+  }
+
+  static isWordClearedForToday(wordId, aliases = []) {
+    if (!wordId && (!aliases || aliases.length === 0)) return false;
+    const state = this.getDailyReviewState();
+    const clean = s => (s || '').toString().toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '');
+    const cleared = new Set(state.clearedIds || []);
+    if (wordId && cleared.has(wordId)) return true;
+    for (const a of aliases) {
+      const ca = clean(a);
+      if (ca && cleared.has(ca)) return true;
+    }
+    return false;
+  }
+
+  static getDailyReviewCorrectCount(wordId, aliases = []) {
+    const state = this.getDailyReviewState();
+    const clean = s => (s || '').toString().toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '');
+    if (wordId && state.counts[wordId] !== undefined) return state.counts[wordId];
+    for (const a of aliases) {
+      const ca = clean(a);
+      if (ca && state.counts[ca] !== undefined) return state.counts[ca];
+    }
+    return 0;
+  }
+
+  static recordDailyReviewAnswer(wordId, isCorrect, aliases = []) {
+    const state = this.getDailyReviewState();
+    const clean = s => (s || '').toString().toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '');
+    const keysToUpdate = [];
+    if (wordId) keysToUpdate.push(wordId);
+    for (const a of aliases) {
+      const ca = clean(a);
+      if (ca && !keysToUpdate.includes(ca)) keysToUpdate.push(ca);
+    }
+
+    let currentCount = 0;
+    for (const k of keysToUpdate) {
+      if (state.counts[k] !== undefined) {
+        currentCount = Math.max(currentCount, state.counts[k]);
+      }
+    }
+
+    if (isCorrect) {
+      currentCount += 1;
+    } else {
+      currentCount = 0;
+    }
+
+    for (const k of keysToUpdate) {
+      state.counts[k] = currentCount;
+    }
+
+    const isNowCleared = currentCount >= 2;
+    const clearedSet = new Set(state.clearedIds || []);
+    if (isNowCleared) {
+      for (const k of keysToUpdate) {
+        clearedSet.add(k);
+      }
+    } else {
+      for (const k of keysToUpdate) {
+        clearedSet.delete(k);
+      }
+    }
+    state.clearedIds = Array.from(clearedSet);
+
+    try {
+      localStorage.setItem(STORAGE_KEYS.DAILY_DUE_REVIEW_CLEARED, JSON.stringify(state));
+      SyncService.triggerSync();
+    } catch (_) {}
+
+    return {
+      count: currentCount,
+      isCleared: isNowCleared,
+      target: 2
+    };
+  }
+
 }
