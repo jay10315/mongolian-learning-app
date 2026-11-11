@@ -368,11 +368,11 @@ export class WordTestComponent {
       if (isV) {
         if (verbForm === 'dict') {
           questionPrompt = "動詞の【辞書形】の意味（日本語）を入力してください";
-          questionMain = `${details.dictForm}（辞書形）`;
+          questionMain = details.dictForm;
           subHint = "【品詞: 動詞（辞書形）】";
         } else {
           questionPrompt = "動詞の【語幹】の意味（日本語）を入力してください";
-          questionMain = `${details.root}-（語幹）`;
+          questionMain = `${details.root}-`;
           subHint = `【品詞: 動詞（語幹）】活用の土台（辞書形: ${details.dictForm}）`;
         }
       } else {

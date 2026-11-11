@@ -304,9 +304,9 @@ export class JapaneseTestComponent {
             ${isV ? (verbForm === 'dict' ? '動詞の【辞書形（〜х）】を見て【日本語訳（意味）】を答えてください' : '動詞の【語幹】を見て【日本語訳（意味）】を答えてください') : 'モンゴル語を見て【日本語訳（意味）】を答えてください'}
           </div>
 
-          <!-- モンゴル語メイン表記（動詞の場合は同じ大きさでカッコ書き明記） -->
+          <!-- モンゴル語メイン表記 -->
           <div class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight cyrillic-text pt-1">
-            ${isV ? (verbForm === 'root' ? `${details.root}-（語幹）` : `${details.dictForm}（辞書形）`) : (details.dictForm || q.mongolian)}
+            ${isV ? (verbForm === 'root' ? `${details.root}-` : details.dictForm) : (details.dictForm || q.mongolian)}
           </div>
 
           <!-- 品詞 ＆ 語幹ヒント（タップで展開） -->
