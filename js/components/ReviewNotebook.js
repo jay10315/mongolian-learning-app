@@ -604,8 +604,9 @@ export class ReviewNotebookComponent {
           hintText = '【品詞: 動詞】見出し語となる辞書形（語尾-хを含める）を回答';
         }
       }
+      const mainText = isVerbQ ? `${rawJa}（${verbForm === 'root' ? '語幹' : '辞書形'}）` : rawJa;
       return {
-        promptText: rawJa,
+        promptText: mainText,
         displayPrefix: promptPrefix,
         categoryLabel: `復習期日到来（忘却曲線）${item.sourceLabel ? ' - ' + item.sourceLabel : ''}`,
         isCyrillicAnswer: true,
@@ -624,12 +625,13 @@ export class ReviewNotebookComponent {
 
     // 単語マスターとマッチした場合、常にクリーンな見出し情報から出題を構成（ただし明示的に文法・格変化・読解などの非単語問題の場合は問題文を優先）
     if (matchedWord && !isExplicitNonWord) {
+      const verbForm = item._verbTargetForm || 'dict';
       if (isCyrillicAns) {
-        displayPrefix = '【単語】';
-        promptText = matchedWord.japanese;
+        displayPrefix = isV ? (verbForm === 'root' ? '【動詞語幹】' : '【動詞辞書形】') : '【単語】';
+        promptText = isV ? `${matchedWord.japanese}（${verbForm === 'root' ? '語幹' : '辞書形'}）` : matchedWord.japanese;
       } else {
         displayPrefix = '【日本語訳】';
-        promptText = details.dictForm || matchedWord.mongolian;
+        promptText = isV ? (verbForm === 'root' ? `${details.root}-（語幹）` : `${details.dictForm}（辞書形）`) : (details.dictForm || matchedWord.mongolian);
       }
     } else {
       // 単語マスター以外の問題（文法・格変化・読解・リスニング等）の場合

@@ -124166,11 +124166,11 @@ class WordTestComponent {
       if (isV) {
         if (verbForm === 'dict') {
           questionPrompt = "日本語に合う動詞の【辞書形（〜х）】をキリル文字で入力してください";
-          questionMain = q.japanese;
+          questionMain = `${q.japanese}（辞書形）`;
           subHint = "【品詞: 動詞】見出し語となる【辞書形（〜х）】を回答（語尾 -ах / -эх 等を含める）";
         } else {
           questionPrompt = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
-          questionMain = q.japanese;
+          questionMain = `${q.japanese}（語幹）`;
           subHint = "【品詞: 動詞】活用の土台となる【語幹】を回答（語尾-ахや括弧は不要）";
         }
       } else {
@@ -124183,11 +124183,11 @@ class WordTestComponent {
       if (isV) {
         if (verbForm === 'dict') {
           questionPrompt = "動詞の【辞書形】の意味（日本語）を入力してください";
-          questionMain = details.dictForm;
+          questionMain = `${details.dictForm}（辞書形）`;
           subHint = "【品詞: 動詞（辞書形）】";
         } else {
           questionPrompt = "動詞の【語幹】の意味（日本語）を入力してください";
-          questionMain = `${details.root}-`;
+          questionMain = `${details.root}-（語幹）`;
           subHint = `【品詞: 動詞（語幹）】活用の土台（辞書形: ${details.dictForm}）`;
         }
       } else {
@@ -124211,15 +124211,15 @@ class WordTestComponent {
           questionPrompt = "日本語に合う正しいモンゴル語（キリル文字）を選択してください";
           subHint = q.pos ? `【品詞: ${q.pos}】` : '';
         }
-        questionMain = q.japanese;
+        questionMain = isV ? `${q.japanese}（${verbForm === 'dict' ? '辞書形' : '語幹'}）` : q.japanese;
       } else {
         if (isV) {
           if (verbForm === 'dict') {
             questionPrompt = "動詞の【辞書形】に合う正しい日本語訳を選択してください";
-            questionMain = details.dictForm;
+            questionMain = `${details.dictForm}（辞書形）`;
           } else {
             questionPrompt = "動詞の【語幹】に合う正しい日本語訳を選択してください";
-            questionMain = `${details.root}-`;
+            questionMain = `${details.root}-（語幹）`;
           }
         } else {
           questionPrompt = "正しい日本語訳を選択してください";
@@ -124230,11 +124230,11 @@ class WordTestComponent {
     } else if (mode === 'root_input') {
       if (verbForm === 'dict') {
         questionPrompt = "動詞の【辞書形（見出し語）】を答えてください";
-        questionMain = `${details.root}（${q.japanese}）`;
+        questionMain = `${details.root}（${q.japanese}）（辞書形）`;
         subHint = "※ 不定詞語尾（-ах/-эх等）をつけた辞書形を入力";
       } else {
         questionPrompt = "動詞の【語幹（活用の土台）】を答えてください";
-        questionMain = `${details.dictForm}（${q.japanese}）`;
+        questionMain = `${details.dictForm}（${q.japanese}）（語幹）`;
         subHint = "※ 不定詞語尾（-ах/-эх等）を除いた語幹を入力（ハイフン-は省略可）";
       }
       isCyrillicInput = true;
@@ -124248,7 +124248,7 @@ class WordTestComponent {
       } else {
         questionPrompt = "イラストに合うモンゴル語（キリル文字）を入力してください";
       }
-      questionMain = q.svg ? `<div class="w-32 h-32 mx-auto drop-shadow-md select-none">${q.svg}</div>` : q.japanese;
+      questionMain = q.svg ? `<div class="w-32 h-32 mx-auto drop-shadow-md select-none">${q.svg}</div>${isV ? `<div class="mt-2 text-xl font-black text-slate-800">（${verbForm === 'dict' ? '辞書形' : '語幹'}）</div>` : ''}` : (isV ? `${q.japanese}（${verbForm === 'dict' ? '辞書形' : '語幹'}）` : q.japanese);
       subHint = q.category ? `【${q.category}】${q.hint ? ' 💡 ' + q.hint : ''}` : '';
       isCyrillicInput = true;
     }
@@ -125175,9 +125175,9 @@ class JapaneseTestComponent {
             ${isV ? (verbForm === 'dict' ? '動詞の【辞書形（〜х）】を見て【日本語訳（意味）】を答えてください' : '動詞の【語幹】を見て【日本語訳（意味）】を答えてください') : 'モンゴル語を見て【日本語訳（意味）】を答えてください'}
           </div>
 
-          <!-- モンゴル語メイン表記 -->
+          <!-- モンゴル語メイン表記（動詞の場合は同じ大きさでカッコ書き明記） -->
           <div class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight cyrillic-text pt-1">
-            ${isV ? (verbForm === 'root' ? `${details.root}-` : details.dictForm) : (details.dictForm || q.mongolian)}
+            ${isV ? (verbForm === 'root' ? `${details.root}-（語幹）` : `${details.dictForm}（辞書形）`) : (details.dictForm || q.mongolian)}
           </div>
 
           <!-- 品詞 ＆ 語幹ヒント（タップで展開） -->
@@ -143869,8 +143869,9 @@ class ReviewNotebookComponent {
           hintText = '【品詞: 動詞】見出し語となる辞書形（語尾-хを含める）を回答';
         }
       }
+      const mainText = isVerbQ ? `${rawJa}（${verbForm === 'root' ? '語幹' : '辞書形'}）` : rawJa;
       return {
-        promptText: rawJa,
+        promptText: mainText,
         displayPrefix: promptPrefix,
         categoryLabel: `復習期日到来（忘却曲線）${item.sourceLabel ? ' - ' + item.sourceLabel : ''}`,
         isCyrillicAnswer: true,
@@ -143889,12 +143890,13 @@ class ReviewNotebookComponent {
 
     // 単語マスターとマッチした場合、常にクリーンな見出し情報から出題を構成（ただし明示的に文法・格変化・読解などの非単語問題の場合は問題文を優先）
     if (matchedWord && !isExplicitNonWord) {
+      const verbForm = item._verbTargetForm || 'dict';
       if (isCyrillicAns) {
-        displayPrefix = '【単語】';
-        promptText = matchedWord.japanese;
+        displayPrefix = isV ? (verbForm === 'root' ? '【動詞語幹】' : '【動詞辞書形】') : '【単語】';
+        promptText = isV ? `${matchedWord.japanese}（${verbForm === 'root' ? '語幹' : '辞書形'}）` : matchedWord.japanese;
       } else {
         displayPrefix = '【日本語訳】';
-        promptText = details.dictForm || matchedWord.mongolian;
+        promptText = isV ? (verbForm === 'root' ? `${details.root}-（語幹）` : `${details.dictForm}（辞書形）`) : (details.dictForm || matchedWord.mongolian);
       }
     } else {
       // 単語マスター以外の問題（文法・格変化・読解・リスニング等）の場合
