@@ -2250,10 +2250,6 @@ export class StorageService {
       }
     } catch (_) {}
   }
-}
-
-if (typeof window !== 'undefined') {
-  window.StorageService = StorageService;
 
   // ==========================================
   // 日次24時間復習サイクル＆2回正解による本日分クリア管理
@@ -2359,5 +2355,8 @@ if (typeof window !== 'undefined') {
       target: 2
     };
   }
+}
 
+if (typeof window !== 'undefined') {
+  window.StorageService = StorageService;
 }
