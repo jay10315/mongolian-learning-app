@@ -84,73 +84,75 @@ export class Navbar {
 
     if (headerContainer) {
       headerContainer.innerHTML = `
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs w-full max-w-full overflow-hidden">
-          <div class="max-w-6xl mx-auto px-2.5 sm:px-6 py-2 flex items-center justify-between w-full">
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+          <div class="max-w-6xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between">
             <!-- ロゴ -->
-            <div class="flex items-center gap-2 sm:gap-3 cursor-pointer shrink-0" id="nav-logo">
-              <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white font-bold text-base sm:text-xl shadow-md">
+            <div class="flex items-center gap-3 cursor-pointer" id="nav-logo">
+              <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-md">
                 М
               </div>
               <div>
-                <h1 class="text-sm sm:text-lg font-bold text-slate-800 leading-tight flex items-center gap-1">
+                <h1 class="text-base sm:text-lg font-bold text-slate-800 leading-tight flex items-center gap-1.5">
                   Монгол хэл
-                  <span class="text-[10px] font-normal text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200 hidden sm:inline-block">
+                  <span class="text-[11px] font-normal text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 hidden sm:inline-block">
                     モンゴル語学習ノート
                   </span>
                 </h1>
-                <p class="text-[10px] text-slate-500 hidden sm:block">モンゴル語学習・単語文法テスト</p>
+                <p class="text-[11px] text-slate-500">モンゴル語学習・単語文法テスト</p>
               </div>
             </div>
 
-            <!-- 右側: 同期状態 ＆ ユーザーアカウント ＆ ナイトモード（スマホ超軽量化・画面はみ出し完全防止） -->
-            <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+            <!-- 右側: 同期状態 ＆ ユーザーアカウント ＆ 音声エンジン -->
+            <div class="flex items-center gap-2">
               
               <!-- Оцон шувуу ＆ レベル表示ピル -->
-              <button type="button" id="btn-penguin-status" class="text-[11px] sm:text-xs px-1.5 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-black bg-gradient-to-r from-sky-50 to-emerald-50 text-sky-900 border border-sky-300 hover:border-sky-500 transition-all shadow-2xs cursor-pointer">
+              <button type="button" id="btn-penguin-status" class="text-xs px-2.5 py-1 rounded-full flex items-center gap-1.5 font-black bg-gradient-to-r from-sky-50 to-emerald-50 text-sky-900 border border-sky-300 hover:border-sky-500 transition-all shadow-2xs cursor-pointer">
                 <span>🐧</span>
                 <span>Lv.${profile.level}</span>
-                <span class="hidden md:inline text-[11px] text-sky-700 font-bold">${profile.currentTitle}</span>
+                <span class="hidden sm:inline text-[11px] text-sky-700 font-bold">${profile.currentTitle}</span>
               </button>
 
-              <!-- クラウド同期インジケーター -->
-              <button type="button" id="btn-cloud-sync-status" class="text-[11px] sm:text-xs px-1.5 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold transition-all border cursor-pointer hover:shadow-2xs" title="クラウド同期設定・状態確認">
+              <!-- クラウド同期インジケーター（スマホでも常時クラウドアイコン表示） -->
+              <button type="button" id="btn-cloud-sync-status" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold transition-all border cursor-pointer hover:shadow-2xs" title="クラウド同期設定・状態確認">
                 <span>☁️</span>
                 <span class="w-2 h-2 rounded-full" id="sync-dot"></span>
-                <span id="sync-text" class="hidden sm:inline">同期</span>
+                <span id="sync-text" class="hidden xs:inline">クラウド</span>
               </button>
 
               <!-- ユーザーアカウントボタン -->
-              <button type="button" id="btn-user-auth" class="text-[11px] sm:text-xs px-1.5 sm:px-3 py-1 rounded-full flex items-center gap-1 font-bold transition-all border ${
+              <button type="button" id="btn-user-auth" class="text-xs px-2.5 sm:px-3 py-1 rounded-full flex items-center gap-1.5 font-bold transition-all border ${
                 currentUser ? 'bg-slate-800 text-white border-slate-800 hover:bg-slate-900' : 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
               }">
                 <span>👤</span>
-                <span class="max-w-[45px] sm:max-w-[120px] truncate">${currentUser ? (currentUser.displayName || currentUser.username) : 'ログイン'}</span>
+                <span class="max-w-[80px] sm:max-w-[120px] truncate">${currentUser ? (currentUser.displayName || currentUser.username) : 'ログイン'}</span>
               </button>
 
               <!-- 🌙/☀️ ワンタップナイトモード切替 -->
-              <button type="button" id="btn-toggle-night-mode" class="text-[11px] sm:text-xs px-1.5 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold transition-all border cursor-pointer hover:shadow-2xs ${
+              <button type="button" id="btn-toggle-night-mode" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold transition-all border cursor-pointer hover:shadow-2xs ${
                 isDarkMode 
                   ? 'bg-amber-400/20 text-amber-300 border-amber-400/40 hover:bg-amber-400/30' 
                   : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
-              }" title="ナイトモード切替">
+              }" title="ナイトモード切替（ワンタップで昼夜反転）">
                 <span>${isDarkMode ? '☀️' : '🌙'}</span>
+                <span class="hidden md:inline">${isDarkMode ? 'ライト' : 'ナイト'}</span>
               </button>
 
-              <!-- 🎨 背景色設定（スマホではアイコンのみまたは非表示） -->
-              <button type="button" id="btn-open-theme-palette" class="hidden sm:inline-flex text-xs px-2.5 py-1 rounded-full items-center gap-1 font-bold border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 cursor-pointer shadow-2xs" title="背景色・テーマの変更">
+              <!-- 🎨 背景色・テーマパレット設定 -->
+              <button type="button" id="btn-open-theme-palette" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold transition-all border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 cursor-pointer hover:shadow-2xs" title="背景色・テーマの変更（お好みの色にカスタマイズ）">
                 <span>🎨</span>
-                <span class="hidden md:inline">背景色</span>
+                <span class="hidden sm:inline">背景色</span>
               </button>
 
-              <!-- タブレット・スマホ連携ボタン（PC画面用） -->
-              <button type="button" id="btn-device-connect" class="hidden sm:inline-flex text-xs px-2.5 py-1 rounded-full items-center gap-1 font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 shadow-2xs cursor-pointer" title="タブレットやスマホで開く">
+              <!-- タブレット・スマホ連携ボタン -->
+              <button type="button" id="btn-device-connect" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-all shadow-2xs cursor-pointer" title="タブレットやスマホで開く">
                 <span>📱</span>
-                <span class="hidden md:inline">連携</span>
+                <span class="hidden sm:inline">タブレット連携</span>
               </button>
 
-              <!-- 音声一括DL（PC画面用） -->
-              <button type="button" id="btn-batch-audio-dl" class="hidden sm:inline-flex text-xs px-2.5 py-1 rounded-full items-center gap-1 font-bold bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-300 shadow-2xs cursor-pointer" title="全音声一括保存">
+              <!-- 音声一括ダウンロードボタン -->
+              <button type="button" id="btn-batch-audio-dl" class="text-xs px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 font-bold bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-300 transition-all shadow-2xs cursor-pointer" title="全音声を端末に一括保存（完全オフライン対応）">
                 <span>📥</span>
+                <span class="hidden sm:inline">音声一括DL</span>
               </button>
 
               <!-- 音声エンジンステータス（デスクトップ） -->
