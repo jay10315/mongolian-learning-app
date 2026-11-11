@@ -3,7 +3,7 @@ import { StorageService } from '../services/storage.js';
 import { SrsService } from '../services/srs.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, scrollToQuizTop } from '../utils/helpers.js';
+import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, getWordSynonymExplanation, SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, scrollToQuizTop } from '../utils/helpers.js';
 
 export class ReviewNotebookComponent {
   static activeKeyHandler = null;
@@ -946,6 +946,26 @@ export class ReviewNotebookComponent {
                       </div>
                     ` : ''}
 
+                    ${(() => {
+                      const synExpl = (typeof getWordSynonymExplanation === 'function') ? getWordSynonymExplanation(item) : null;
+                      if (!synExpl) return '';
+                      return `
+                        <div class="p-3 rounded-xl bg-blue-50/95 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-950 dark:text-blue-100 text-xs shadow-2xs space-y-1.5 my-2">
+                          <div class="font-bold flex items-center gap-1.5 text-blue-700 dark:text-blue-300">
+                            <span class="text-base">✨</span>
+                            <span>別の言い方・同義語（どちらで答えても正解です）:</span>
+                          </div>
+                          <div class="leading-relaxed">
+                            ${synExpl.note}
+                          </div>
+                          <div class="flex items-center gap-1.5 flex-wrap pt-1">
+                            <span class="text-[11px] text-blue-600 dark:text-blue-400 font-semibold">正解となる表現:</span>
+                            ${synExpl.synonyms.map(s => `<span class="bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-700 px-2 py-0.5 rounded-md font-bold cyrillic-text text-blue-800 dark:text-blue-200">${s}</span>`).join('')}
+                          </div>
+                        </div>
+                      `;
+                    })()}
+
                     ${item.explanation ? `
                       <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
                         <div class="font-bold text-slate-900 dark:text-slate-100 mb-1">💡 解説:</div>
@@ -1092,6 +1112,18 @@ export class ReviewNotebookComponent {
       if (!isCorrect && !parsed.isVerb) {
         isCorrect = isFuzzyMatch(val, item.correctAnswer);
       }
+      if (!isCorrect) {
+        const synExpl = (typeof getWordSynonymExplanation === 'function') ? getWordSynonymExplanation(matchedWord || item) : null;
+        if (synExpl && synExpl.synonyms) {
+          const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '');
+          for (const s of synExpl.synonyms) {
+            if (uClean === s.toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '')) {
+              isCorrect = true;
+              break;
+            }
+          }
+        }
+      }
       if (!isCorrect && item.correctAnswer) {
         const syns = (typeof getWordSynonyms === 'function') ? getWordSynonyms(item.correctAnswer) : [];
         const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
@@ -1104,6 +1136,18 @@ export class ReviewNotebookComponent {
       }
     } else {
       isCorrect = isFuzzyMatch(val, item.correctAnswer);
+      if (!isCorrect) {
+        const synExpl = (typeof getWordSynonymExplanation === 'function') ? getWordSynonymExplanation(item) : null;
+        if (synExpl && synExpl.synonyms) {
+          const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '');
+          for (const s of synExpl.synonyms) {
+            if (uClean === s.toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '')) {
+              isCorrect = true;
+              break;
+            }
+          }
+        }
+      }
       if (!isCorrect && item.correctAnswer) {
         const syns = (typeof getWordSynonyms === 'function') ? getWordSynonyms(item.correctAnswer) : [];
         const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');

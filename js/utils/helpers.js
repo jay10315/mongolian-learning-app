@@ -704,6 +704,67 @@ export function getWordGrammarDetails(item) {
 // 「モードによって表示される語彙が違うことがあるから、あっているよく使われる方で統一して。他の単語がある場合は()で解説時に表示して」
 // ==========================================
 export const VOCABULARY_SYNONYMS = {
+  // --- 曜日（伝統チベット語由来 vs 日常会話・口語数字表現・吉日表現：どちらも100%正解） ---
+  // 月曜日
+  'даваа гараг': ['даваа', 'нэгдэх өдөр', 'нэг дэх өдөр', '1 дэх өдөр'],
+  'даваа': ['даваа гараг', 'нэгдэх өдөр', 'нэг дэх өдөр'],
+  'нэгдэх өдөр': ['даваа гараг', 'даваа', 'нэг дэх өдөр'],
+  'нэг дэх өдөр': ['даваа гараг', 'даваа', 'нэгдэх өдөр'],
+
+  // 火曜日
+  'мягмар гараг': ['мягмар', 'хоёрдахь өдөр', 'хоёр дахь өдөр', '2 дахь өдөр'],
+  'мягмар': ['мягмар гараг', 'хоёрдахь өдөр', 'хоёр дахь өдөр'],
+  'хоёрдахь өдөр': ['мягмар гараг', 'мягмар', 'хоёр дахь өдөр'],
+  'хоёр дахь өдөр': ['мягмар гараг', 'мягмар', 'хоёрдахь өдөр'],
+
+  // 水曜日
+  'лхагва гараг': ['лхагва', 'гуравдахь өдөр', 'гурав дахь өдөр', '3 дахь өдөр'],
+  'лхагва': ['лхагва гараг', 'гуравдахь өдөр', 'гурав дахь өдөр'],
+  'гуравдахь өдөр': ['лхагва гараг', 'лхагва', 'гурав дахь өдөр'],
+  'гурав дахь өдөр': ['лхагва гараг', 'лхагва', 'гуравдахь өдөр'],
+
+  // 木曜日
+  'пүрэв гараг': ['пүрэв', 'дөрөвдэх өдөр', 'дөрөв дэх өдөр', '4 дэх өдөр'],
+  'пүрэв': ['пүрэв гараг', 'дөрөвдэх өдөр', 'дөрөв дэх өдөр'],
+  'дөрөвдэх өдөр': ['пүрэв гараг', 'пүрэв', 'дөрөв дэх өдөр'],
+  'дөрөв дэх өдөр': ['пүрэв гараг', 'пүрэв', 'дөрөвдэх өдөр'],
+
+  // 金曜日
+  'баасан гараг': ['баасан', 'тавдахь өдөр', 'тав дахь өдөр', '5 дахь өдөр'],
+  'баасан': ['баасан гараг', 'тавдахь өдөр', 'тав дахь өдөр'],
+  'тавдахь өдөр': ['баасан гараг', 'баасан', 'тав дахь өдөр'],
+  'тав дахь өдөр': ['баасан гараг', 'баасан', 'тавдахь өдөр'],
+
+  // 土曜日
+  'бямба гараг': ['бямба', 'хагас сайн өдөр', 'хагас сайн', 'зургаадахь өдөр', 'зургаа дахь өдөр'],
+  'бямба': ['бямба гараг', 'хагас сайн өдөр', 'хагас сайн'],
+  'хагас сайн өдөр': ['бямба гараг', 'бямба', 'хагас сайн', 'зургаадахь өдөр'],
+  'хагас сайн': ['бямба гараг', 'бямба', 'хагас сайн өдөр'],
+  'зургаадахь өдөр': ['бямба гараг', 'бямба', 'хагас сайн өдөр'],
+
+  // 日曜日
+  'ням гараг': ['ням', 'бүтэн сайн өдөр', 'бүтэн сайн', 'долоодахь өдөр', 'долоо дахь өдөр'],
+  'ням': ['ням гараг', 'бүтэн сайн өдөр', 'бүтэн сайн'],
+  'бүтэн сайн өдөр': ['ням гараг', 'ням', 'бүтэн сайн', 'долоодахь өдөр'],
+  'бүтэн сайн': ['ням гараг', 'ням', 'бүтэн сайн өдөр'],
+  'долоодахь өдөр': ['ням гараг', 'ням', 'бүтэн сайн өдөр'],
+
+  // 休日・週末・平日
+  'амралтын өдөр': ['амралтын өдрүүд', 'хагас бүтэн сайн өдөр'],
+  'амралтын өдрүүд': ['амралтын өдөр', 'хагас бүтэн сайн өдөр'],
+  'ажлын өдөр': ['ажлын өдрүүд'],
+  'ажлын өдрүүд': ['ажлын өдөр'],
+
+  // 家族・日常尊称
+  'ээж': ['эх'],
+  'эх': ['ээж'],
+  'аав': ['эцэг'],
+  'эцэг': ['аав'],
+  'эхнэр': ['гэргий'],
+  'гэргий': ['эхнэр'],
+  'нөхөр': ['хань'],
+  'хань': ['нөхөр'],
+
   // パイナップル: 固有語・教科書標準語 vs ロシア語借用語
   'хан боргоцой': ['ананас'],
   'ананас': ['хан боргоцой'],
@@ -824,6 +885,81 @@ export function getWordSynonyms(wordOrItem) {
   return results;
 }
 
+/**
+ * 単語の別名・同義語解説を取得する（「どちらでも正解」の丁寧な背景解説付き）
+ */
+export function getWordSynonymExplanation(wordOrItem) {
+  if (!wordOrItem) return null;
+  const raw = typeof wordOrItem === 'string' 
+    ? wordOrItem 
+    : (wordOrItem.dictForm || wordOrItem.mongolian || wordOrItem.japanese || wordOrItem.correctAnswer || '');
+  const ja = typeof wordOrItem === 'object' ? (wordOrItem.japanese || wordOrItem.meaning || wordOrItem.question || '') : '';
+  const combined = (raw + ' ' + ja).toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '');
+
+  // 曜日の判定（チベット語由来の伝統名 vs 日常会話・口語の数字・吉日名）
+  const isMon = combined.includes('даваа') || combined.includes('нэгдэх') || combined.includes('月曜');
+  const isTue = combined.includes('мягмар') || combined.includes('хоёрдахь') || combined.includes('хоёрдах') || combined.includes('火曜');
+  const isWed = combined.includes('лхагва') || combined.includes('гуравдахь') || combined.includes('гуравдах') || combined.includes('水曜');
+  const isThu = combined.includes('пүрэв') || combined.includes('дөрөвдэх') || combined.includes('木曜');
+  const isFri = combined.includes('баасан') || combined.includes('тавдахь') || combined.includes('金曜');
+  const isSat = combined.includes('бямба') || combined.includes('хагассайн') || combined.includes('зургаадахь') || combined.includes('土曜');
+  const isSun = combined.includes('ням') || combined.includes('бүтэнсайн') || combined.includes('долоодахь') || combined.includes('日曜');
+
+  if (isMon) {
+    return {
+      synonyms: ['даваа гараг', 'даваа', 'нэгдэх өдөр'],
+      note: 'モンゴル語の曜日は、チベット語由来の伝統的な言い方（「даваа гараг / даваа」）と、日常会話・口語で非常に広く使われる数字の言い方（「нэгдэх өдөр：第1の日」）の2系統があり、どちらで答えても正解になります！'
+    };
+  }
+  if (isTue) {
+    return {
+      synonyms: ['мягмар гараг', 'мягмар', 'хоёр дахь өдөр'],
+      note: '伝統的な言い方（「мягмар гараг / мягмар」）と、日常会話・口語の数字表現（「хоёр дахь өдөр：第2の日」）のどちらで答えても正解になります！'
+    };
+  }
+  if (isWed) {
+    return {
+      synonyms: ['лхагва гараг', 'лхагва', 'гурав дахь өдөр'],
+      note: '伝統的な言い方（「лхагва гараг / лхагва」）と、日常会話・口語の数字表現（「гурав дахь өдөр：第3の日」）のどちらで答えても正解になります！'
+    };
+  }
+  if (isThu) {
+    return {
+      synonyms: ['пүрэв гараг', 'пүрэв', 'дөрөв дэх өдөр'],
+      note: '伝統的な言い方（「пүрэв гараг / пүрэв」）と、日常会話・口語の数字表現（「дөрөв дэх өдөр：第4の日」）のどちらで答えても正解になります！'
+    };
+  }
+  if (isFri) {
+    return {
+      synonyms: ['баасан гараг', 'баасан', 'тав дахь өдөр'],
+      note: '伝統的な言い方（「баасан гараг / баасан」）と、日常会話・口語の数字表現（「тав дахь өдөр：第5の日」）のどちらで答えても正解になります！'
+    };
+  }
+  if (isSat) {
+    return {
+      synonyms: ['бямба гараг', 'бямба', 'хагас сайн өдөр'],
+      note: '伝統的な言い方（「бямба гараг / бямба」）と、日常会話で最も親しまれている吉日表現（「хагас сайн өдөр：半吉日 / 週末の休み」）のどちらで答えても正解になります！'
+    };
+  }
+  if (isSun) {
+    return {
+      synonyms: ['ням гараг', 'ням', 'бүтэн сайн өдөр'],
+      note: '伝統的な言い方（「ням гараг / ням」）と、日常会話で最も親しまれている吉日表現（「бүтэн сайн өдөр：全吉日 / 終日の休み」）のどちらで答えても正解になります！'
+    };
+  }
+
+  // 一般同義語
+  const syns = getWordSynonyms(wordOrItem);
+  if (syns && syns.length > 0) {
+    const displayWord = typeof wordOrItem === 'string' ? wordOrItem : (wordOrItem.dictForm || wordOrItem.mongolian || '');
+    return {
+      synonyms: syns,
+      note: `モンゴル語では「${displayWord || '正解'}」のほかに「${syns.join('」「')}」とも表現し、どちらで答えても正解になります！`
+    };
+  }
+  return null;
+}
+
 export function getWordSynonymNote(wordOrItem) {
   const syns = getWordSynonyms(wordOrItem);
   return syns.length > 0 ? syns[0] : '';
@@ -941,6 +1077,15 @@ export function isWordAnswerMatch(userAnswer, item, mode, options = {}) {
     //    バナナ (гадил / банана), ソファー (буйдан / диван),
     //    テレビ (зурагт / телевизор), ビール (шар айраг / пиво),
     //    ワイン (дарс / вино) など
+    // 曜日の2系統表現・同義語・別表記の相互正解判定（どちらでも100%正解）
+    const synExpl = getWordSynonymExplanation(item);
+    if (synExpl && synExpl.synonyms) {
+      for (const syn of synExpl.synonyms) {
+        const sClean = syn.toLowerCase().replace(/[.,!?。、！？\s«»"'\-]/g, '');
+        if (u === sClean) return true;
+      }
+    }
+
     const knownSynonyms = getWordSynonyms(details.dictForm || item.mongolian || item);
     for (const syn of knownSynonyms) {
       const synClean = syn.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
@@ -4135,6 +4280,7 @@ export function renderGrammarExplanationHTML({
   const pron = pronunciation || (item ? item.pronunciation : '');
   const note = item ? item.note : '';
   const altSynNote = getWordSynonymNote(item || dictForm || correctAnswer);
+  const synExplanation = getWordSynonymExplanation(item || { dictForm, mongolian: correctAnswer, japanese: meaning, question: grammarExplanation });
   const exampleMn = item ? item.exampleMn : '';
   const exampleJa = item ? item.exampleJa : '';
 
@@ -4158,6 +4304,23 @@ export function renderGrammarExplanationHTML({
           ${meaning ? `<div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${meaning}</div>` : ''}
         </div>
       </div>
+
+      <!-- どっちでもいい単語・同義語の解説バナー（どちらで答えても正解） -->
+      ${synExplanation ? `
+        <div class="p-3 rounded-xl bg-blue-50/95 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-950 dark:text-blue-100 text-xs shadow-2xs space-y-1.5 my-2">
+          <div class="font-bold flex items-center gap-1.5 text-blue-700 dark:text-blue-300">
+            <span class="text-base">✨</span>
+            <span>別の言い方・同義語（どちらで答えても正解です）:</span>
+          </div>
+          <div class="leading-relaxed">
+            ${synExplanation.note}
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap pt-1">
+            <span class="text-[11px] text-blue-600 dark:text-blue-400 font-semibold">正解となる表現:</span>
+            ${synExplanation.synonyms.map(s => `<span class="bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-700 px-2 py-0.5 rounded-md font-bold cyrillic-text text-blue-800 dark:text-blue-200">${s}</span>`).join('')}
+          </div>
+        </div>
+      ` : ''}
 
       ${!isCorrect && userAnswer ? `
         <div class="text-rose-700 bg-rose-50/80 p-2 rounded-lg border border-rose-200">
