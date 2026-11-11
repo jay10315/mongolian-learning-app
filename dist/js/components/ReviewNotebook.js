@@ -3,7 +3,7 @@ import { StorageService } from '../services/storage.js';
 import { SrsService } from '../services/srs.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, getWordSynonymExplanation, SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, scrollToQuizTop } from '../utils/helpers.js';
+import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, getWordSynonymExplanation, SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant, scrollToQuizTop } from '../utils/helpers.js';
 
 export class ReviewNotebookComponent {
   static activeKeyHandler = null;
@@ -1028,6 +1028,7 @@ export class ReviewNotebookComponent {
       if (input) {
         input.focus();
         CyrillicKeyboard.setActiveInput(input);
+        bindCyrillicInputAssistant(this.container, '#input-review-answer');
         input.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') {
             e.preventDefault();

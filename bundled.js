@@ -143578,6 +143578,7 @@ class ReviewNotebookComponent {
       if (input) {
         input.focus();
         CyrillicKeyboard.setActiveInput(input);
+        bindCyrillicInputAssistant(this.container, '#input-review-answer');
         input.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') {
             e.preventDefault();
