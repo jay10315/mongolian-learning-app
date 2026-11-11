@@ -256,6 +256,10 @@ export class JapaneseTestComponent {
     const mode = this.state.settings.mode;
     const details = getWordGrammarDetails(q);
     const isV = details.isVerb;
+    if (isV && !q._verbTargetForm) {
+      q._verbTargetForm = Math.random() < 0.5 ? 'dict' : 'root';
+    }
+    const verbForm = q._verbTargetForm || 'dict';
 
     this.container.innerHTML = `
       <div class="animate-fade-in max-w-xl mx-auto px-4 py-3 space-y-3">
@@ -286,12 +290,12 @@ export class JapaneseTestComponent {
         <!-- 問題カード（モンゴル語表示） -->
         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm text-center relative overflow-hidden space-y-2">
           <div class="text-xs font-bold text-slate-400">
-            モンゴル語を見て【日本語訳（意味）】を答えてください
+            ${isV ? (verbForm === 'dict' ? '動詞の【辞書形（〜х）】を見て【日本語訳（意味）】を答えてください' : '動詞の【語幹】を見て【日本語訳（意味）】を答えてください') : 'モンゴル語を見て【日本語訳（意味）】を答えてください'}
           </div>
 
-          <!-- モンゴル語メイン表記（辞書形） -->
+          <!-- モンゴル語メイン表記 -->
           <div class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight cyrillic-text pt-1">
-            ${details.dictForm || q.mongolian}
+            ${isV ? (verbForm === 'root' ? `${details.root}-` : details.dictForm) : (details.dictForm || q.mongolian)}
           </div>
 
           <!-- 品詞 ＆ 語幹ヒント（タップで展開） -->
@@ -304,9 +308,9 @@ export class JapaneseTestComponent {
               <span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-medium">
                 【品詞: ${q.pos || '単語'}】
               </span>
-              ${isV && details.root ? `
+              ${isV ? `
                 <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-bold border border-emerald-200">
-                  🌱 語幹: <span class="cyrillic-text">${details.root}</span>
+                  ${verbForm === 'root' ? `📖 辞書形: <span class="cyrillic-text">${details.dictForm}</span>` : `🌱 語幹: <span class="cyrillic-text">${details.root}</span>`}
                 </span>
               ` : ''}
               ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `
@@ -381,7 +385,8 @@ export class JapaneseTestComponent {
                 item: q,
                 pronunciation: q.pronunciation,
                 grammarExplanation: q.note,
-                isVerbQuestion: isV
+                isVerbQuestion: isV,
+                verbTargetForm: verbForm
               })}
 
               <!-- 4択の場合：選択肢に出た単語の全解説アコーディオン -->

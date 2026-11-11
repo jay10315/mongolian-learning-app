@@ -923,13 +923,18 @@ export class WordGameComponent {
     } else if (genre === 'mn_translation') {
       // 2. モンゴル語訳: 選択肢はモンゴル語（キリル文字）
       const d = getWordGrammarDetails(q);
-      const correctText = d.dictForm || q.mongolian;
+      if (d.isVerb && !q._verbTargetForm) {
+        q._verbTargetForm = Math.random() < 0.5 ? 'dict' : 'root';
+      }
+      const verbForm = q._verbTargetForm || 'dict';
+      const correctText = (d.isVerb && verbForm === 'root') ? d.root : (d.dictForm || q.mongolian);
       const others = vocabList.filter(v => v.id !== q.id && v.mongolian !== q.mongolian && (v.dictForm || v.mongolian) !== correctText);
       const distractors = shuffleArray(others).slice(0, 3).map(v => {
         const vd = getWordGrammarDetails(v);
+        const text = (d.isVerb && verbForm === 'root') ? (vd.root || vd.dictForm || v.mongolian) : (vd.dictForm || v.mongolian);
         return {
           id: v.id,
-          text: vd.dictForm || v.mongolian,
+          text: text,
           isCorrect: false,
           isCyrillic: true
         };
@@ -1155,7 +1160,7 @@ export class WordGameComponent {
           <!-- 4択モンゴル語回答ボタン（画面下部） -->
           <div class="space-y-2">
             <div class="text-xs font-bold text-slate-600 flex items-center justify-between px-1">
-              <span>正解のモンゴル語（キリル文字）をタップ！</span>
+              <span>${details && details.isVerb ? (q._verbTargetForm === 'root' ? '動詞の【語幹】をタップ！' : '動詞の【辞書形（〜х）】をタップ！') : '正解のモンゴル語（キリル文字）をタップ！'}</span>
               <span class="text-[11px] text-sky-600 font-extrabold">即座に氷のレーザー発射 ⚡</span>
             </div>
 

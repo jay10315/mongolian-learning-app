@@ -1530,14 +1530,15 @@ function getWordSynonymNote(wordOrItem) {
   return syns.length > 0 ? syns[0] : '';
 }
 
-function isWordAnswerMatch(userAnswer, item, mode) {
+function isWordAnswerMatch(userAnswer, item, mode, options = {}) {
   if (!userAnswer || !item) return false;
   const u = userAnswer.trim().toLowerCase().replace(/[.,!?。、！？\s]/g, '').replace(/[«»"']/g, '');
   if (!u) return false;
 
   const details = getWordGrammarDetails(item);
+  const targetForm = options.verbTargetForm || item._verbTargetForm || (mode === 'root_input' ? 'root' : 'dict');
 
-  if (mode === 'root_input' || (mode === 'ja_to_mn' && details.isVerb)) {
+  if (details.isVerb && targetForm === 'root') {
     // 動詞の語幹を回答対象とする場合
     const uClean = u.replace(/-/g, '');
     const rClean = details.root.toLowerCase().replace(/-/g, '').trim();
@@ -1562,6 +1563,29 @@ function isWordAnswerMatch(userAnswer, item, mode) {
     // 母音脱落動詞（例: "амар" に対し "амр"）
     if (details.dictForm === 'амрах' && (uClean === 'амар' || uClean === 'амр')) return true;
     if (details.dictForm === 'амьдрах' && (uClean === 'амьдар' || uClean === 'амьдр')) return true;
+
+    return false;
+  }
+
+  if (details.isVerb && targetForm === 'dict') {
+    // 動詞の辞書形（〜х）を回答対象とする場合
+    const uClean = u.replace(/-/g, '');
+    const dClean = details.dictForm.toLowerCase().replace(/[.,!?。、！？\s]/g, '');
+
+    // 辞書形完全一致
+    if (uClean === dClean) return true;
+
+    // 原文そのまま（例: ユーザーが入力した表記との一致）
+    const rawClean = (item.mongolian || '').toLowerCase().replace(/[.,!?。、！？\s]/g, '');
+    if (uClean === rawClean) return true;
+
+    // 許容回答リストがある場合
+    if (item.acceptableAnswers && Array.isArray(item.acceptableAnswers)) {
+      for (const ans of item.acceptableAnswers) {
+        const aClean = ans.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+        if (uClean === aClean) return true;
+      }
+    }
 
     return false;
   }
@@ -4786,7 +4810,8 @@ function renderGrammarExplanationHTML({
   pronunciation = '',
   grammarExplanation = '',
   rule = '',
-  isVerbQuestion = false
+  isVerbQuestion = false,
+  verbTargetForm = ''
 }) {
   const details = item ? getWordGrammarDetails(item) : null;
   const isV = isVerbQuestion || (details ? details.isVerb : false);
@@ -4809,8 +4834,11 @@ function renderGrammarExplanationHTML({
   const exampleMn = item ? item.exampleMn : '';
   const exampleJa = item ? item.exampleJa : '';
 
-  // ユーザーが誤って辞書形を入力したかの判定
-  const wasDictFormEntered = isV && userAnswer && dictForm && (userAnswer.trim().toLowerCase() === dictForm.toLowerCase());
+  // 動詞の出題形態（語幹を求めたのか、辞書形を求めたのか）の判定
+  const targetForm = verbTargetForm || (item && item._verbTargetForm) || (correctAnswer && root && correctAnswer.trim().toLowerCase().replace(/-/g, '') === root.toLowerCase().replace(/-/g, '') ? 'root' : 'dict');
+  const uClean = (userAnswer || '').trim().toLowerCase().replace(/[.,!?。、！？\s]/g, '').replace(/[«»"']/g, '');
+  const wasDictFormEntered = isV && targetForm === 'root' && uClean && dictForm && (uClean === dictForm.toLowerCase().replace(/[.,!?。、！？\s]/g, ''));
+  const wasRootEntered = isV && targetForm === 'dict' && uClean && root && (uClean === root.toLowerCase().replace(/[.,!?。、！？\s-]/g, ''));
 
   return `
     <div class="space-y-2.5 text-xs sm:text-sm">
@@ -4835,7 +4863,12 @@ function renderGrammarExplanationHTML({
           </div>
           ${wasDictFormEntered ? `
             <div class="text-xs text-amber-800 font-medium mt-1">
-              ⚠️「${userAnswer}」は動詞の【辞書形】です。テストでは活用の土台となる【語幹（${root}）】を回答します。
+              ⚠️「${userAnswer}」は動詞の【辞書形】です。この問題では活用の土台となる【語幹（${root}）】を回答します。
+            </div>
+          ` : ''}
+          ${wasRootEntered ? `
+            <div class="text-xs text-amber-800 font-medium mt-1">
+              ⚠️「${userAnswer}」は動詞の【語幹】です。この問題では見出し語となる【辞書形（${dictForm}）】を回答します。
             </div>
           ` : ''}
         </div>
@@ -121901,13 +121934,18 @@ class WordGameComponent {
     } else if (genre === 'mn_translation') {
       // 2. モンゴル語訳: 選択肢はモンゴル語（キリル文字）
       const d = getWordGrammarDetails(q);
-      const correctText = d.dictForm || q.mongolian;
+      if (d.isVerb && !q._verbTargetForm) {
+        q._verbTargetForm = Math.random() < 0.5 ? 'dict' : 'root';
+      }
+      const verbForm = q._verbTargetForm || 'dict';
+      const correctText = (d.isVerb && verbForm === 'root') ? d.root : (d.dictForm || q.mongolian);
       const others = vocabList.filter(v => v.id !== q.id && v.mongolian !== q.mongolian && (v.dictForm || v.mongolian) !== correctText);
       const distractors = shuffleArray(others).slice(0, 3).map(v => {
         const vd = getWordGrammarDetails(v);
+        const text = (d.isVerb && verbForm === 'root') ? (vd.root || vd.dictForm || v.mongolian) : (vd.dictForm || v.mongolian);
         return {
           id: v.id,
-          text: vd.dictForm || v.mongolian,
+          text: text,
           isCorrect: false,
           isCyrillic: true
         };
@@ -122133,7 +122171,7 @@ class WordGameComponent {
           <!-- 4択モンゴル語回答ボタン（画面下部） -->
           <div class="space-y-2">
             <div class="text-xs font-bold text-slate-600 flex items-center justify-between px-1">
-              <span>正解のモンゴル語（キリル文字）をタップ！</span>
+              <span>${details && details.isVerb ? (q._verbTargetForm === 'root' ? '動詞の【語幹】をタップ！' : '動詞の【辞書形（〜х）】をタップ！') : '正解のモンゴル語（キリル文字）をタップ！'}</span>
               <span class="text-[11px] text-sky-600 font-extrabold">即座に氷のレーザー発射 ⚡</span>
             </div>
 
@@ -123901,6 +123939,11 @@ class WordTestComponent {
 
     const details = getWordGrammarDetails(q);
     const isV = details.isVerb;
+    // 動詞の場合：辞書形を答えるか語幹を答えるかをランダム（50%）に決定
+    if (isV && !q._verbTargetForm) {
+      q._verbTargetForm = Math.random() < 0.5 ? 'dict' : 'root';
+    }
+    const verbForm = q._verbTargetForm || 'dict';
 
     let questionPrompt = "";
     let questionMain = "";
@@ -123909,9 +123952,15 @@ class WordTestComponent {
 
     if (mode === 'ja_to_mn') {
       if (isV) {
-        questionPrompt = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
-        questionMain = q.japanese;
-        subHint = "【品詞: 動詞】活用の土台となる【語幹】を回答（語尾-ахや括弧は不要）";
+        if (verbForm === 'dict') {
+          questionPrompt = "日本語に合う動詞の【辞書形（〜х）】をキリル文字で入力してください";
+          questionMain = q.japanese;
+          subHint = "【品詞: 動詞】見出し語となる【辞書形（〜х）】を回答（語尾 -ах / -эх 等を含める）";
+        } else {
+          questionPrompt = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
+          questionMain = q.japanese;
+          subHint = "【品詞: 動詞】活用の土台となる【語幹】を回答（語尾-ахや括弧は不要）";
+        }
       } else {
         questionPrompt = "日本語に合うモンゴル語（キリル文字）を入力してください";
         questionMain = q.japanese;
@@ -123919,28 +123968,74 @@ class WordTestComponent {
       }
       isCyrillicInput = true;
     } else if (mode === 'mn_to_ja') {
-      questionPrompt = "モンゴル語の意味（日本語）を入力してください";
-      questionMain = details.dictForm;
-      subHint = (typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `⚠️ 読み注意: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
+      if (isV) {
+        if (verbForm === 'dict') {
+          questionPrompt = "動詞の【辞書形】の意味（日本語）を入力してください";
+          questionMain = details.dictForm;
+          subHint = "【品詞: 動詞（辞書形）】";
+        } else {
+          questionPrompt = "動詞の【語幹】の意味（日本語）を入力してください";
+          questionMain = `${details.root}-`;
+          subHint = `【品詞: 動詞（語幹）】活用の土台（辞書形: ${details.dictForm}）`;
+        }
+      } else {
+        questionPrompt = "モンゴル語の意味（日本語）を入力してください";
+        questionMain = details.dictForm;
+        subHint = (typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `⚠️ 読み注意: ${q.pronunciation}` : '';
+      }
       isCyrillicInput = false;
     } else if (mode === 'choice_4') {
       const isJaToMn = this.state.settings.choiceDirection === 'ja_to_mn';
       if (isJaToMn) {
-        questionPrompt = "日本語に合う正しいモンゴル語（キリル文字）を選択してください";
+        if (isV) {
+          if (verbForm === 'dict') {
+            questionPrompt = "日本語に合う動詞の【辞書形（〜х）】を選択してください";
+            subHint = "【品詞: 動詞】見出し語となる【辞書形（〜х）】を選択";
+          } else {
+            questionPrompt = "日本語に合う動詞の【語幹】を選択してください";
+            subHint = "【品詞: 動詞】活用の土台となる【語幹】を選択";
+          }
+        } else {
+          questionPrompt = "日本語に合う正しいモンゴル語（キリル文字）を選択してください";
+          subHint = q.pos ? `【品詞: ${q.pos}】` : '';
+        }
         questionMain = q.japanese;
-        subHint = q.pos ? `【品詞: ${q.pos}】` : '';
       } else {
-        questionPrompt = "正しい日本語訳を選択してください";
-        questionMain = details.dictForm || q.mongolian;
+        if (isV) {
+          if (verbForm === 'dict') {
+            questionPrompt = "動詞の【辞書形】に合う正しい日本語訳を選択してください";
+            questionMain = details.dictForm;
+          } else {
+            questionPrompt = "動詞の【語幹】に合う正しい日本語訳を選択してください";
+            questionMain = `${details.root}-`;
+          }
+        } else {
+          questionPrompt = "正しい日本語訳を選択してください";
+          questionMain = details.dictForm || q.mongolian;
+        }
         subHint = (typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `⚠️ 読み注意: ${q.pronunciation}` : (isV ? `【動詞】語幹: ${details.root}` : '');
       }
     } else if (mode === 'root_input') {
-      questionPrompt = `動詞の【語幹（活用の土台）】を答えてください`;
-      questionMain = `${details.dictForm}（${q.japanese}）`;
-      subHint = "※ 不定詞語尾（-ах/-эх等）を除いた語幹を入力（ハイフン-は省略可）";
+      if (verbForm === 'dict') {
+        questionPrompt = "動詞の【辞書形（見出し語）】を答えてください";
+        questionMain = `${details.root}（${q.japanese}）`;
+        subHint = "※ 不定詞語尾（-ах/-эх等）をつけた辞書形を入力";
+      } else {
+        questionPrompt = "動詞の【語幹（活用の土台）】を答えてください";
+        questionMain = `${details.dictForm}（${q.japanese}）`;
+        subHint = "※ 不定詞語尾（-ах/-эх等）を除いた語幹を入力（ハイフン-は省略可）";
+      }
       isCyrillicInput = true;
     } else if (mode === 'visual') {
-      questionPrompt = "イラストに合うモンゴル語（キリル文字）を入力してください";
+      if (isV) {
+        if (verbForm === 'dict') {
+          questionPrompt = "イラストに合う動詞の【辞書形（〜х）】をキリル文字で入力してください";
+        } else {
+          questionPrompt = "イラストに合う動詞の【語幹】をキリル文字で入力してください";
+        }
+      } else {
+        questionPrompt = "イラストに合うモンゴル語（キリル文字）を入力してください";
+      }
       questionMain = q.svg ? `<div class="w-32 h-32 mx-auto drop-shadow-md select-none">${q.svg}</div>` : q.japanese;
       subHint = q.category ? `【${q.category}】${q.hint ? ' 💡 ' + q.hint : ''}` : '';
       isCyrillicInput = true;
@@ -124010,19 +124105,30 @@ class WordTestComponent {
             ${mode === 'choice_4' ? `
               <!-- 4択選択肢 -->
               <div class="grid grid-cols-1 gap-2">
-                ${this.state.choices.map((choice, i) => `
-                  <button type="button" class="btn-choice text-left p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40 text-slate-800 font-semibold text-sm transition-all active:scale-98 flex items-center justify-between" data-choice-id="${choice.id}">
-                    <span><span class="inline-block w-6 text-slate-400 font-normal">${i + 1}.</span> ${(this.state.settings.mode === 'choice_4' && this.state.settings.choiceDirection === 'ja_to_mn') ? (choice.dictForm || choice.mongolian) : choice.japanese}</span>
-                    <span class="text-xs text-slate-400">選択</span>
-                  </button>
-                `).join('')}
+                ${this.state.choices.map((choice, i) => {
+                  let choiceText = choice.japanese;
+                  if (this.state.settings.mode === 'choice_4' && this.state.settings.choiceDirection === 'ja_to_mn') {
+                    const cd = getWordGrammarDetails(choice);
+                    if (isV && verbForm === 'root') {
+                      choiceText = cd.root || cd.dictForm || choice.mongolian;
+                    } else {
+                      choiceText = cd.dictForm || choice.mongolian;
+                    }
+                  }
+                  return `
+                    <button type="button" class="btn-choice text-left p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40 text-slate-800 font-semibold text-sm transition-all active:scale-98 flex items-center justify-between" data-choice-id="${choice.id}">
+                      <span><span class="inline-block w-6 text-slate-400 font-normal">${i + 1}.</span> ${choiceText}</span>
+                      <span class="text-xs text-slate-400">選択</span>
+                    </button>
+                  `;
+                }).join('')}
               </div>
             ` : `
               <!-- テキスト入力 -->
               <div>
                 <input type="text" id="input-word-answer" 
                   class="w-full text-base sm:text-lg p-3 rounded-xl border-2 border-slate-300 focus:border-emerald-500 focus:outline-hidden text-center font-bold text-slate-800 cyrillic-text cyrillic-input" 
-                  placeholder="${isCyrillicInput ? ((isV || mode === 'root_input') ? '動詞の語幹（キリル文字）を入力...' : 'キリル文字で入力...') : '日本語で入力...'}" 
+                  placeholder="${isCyrillicInput ? (isV ? (verbForm === 'dict' ? '動詞の辞書形（〜х）を入力...' : '動詞の語幹を入力...') : (mode === 'root_input' ? '動詞の語幹を入力...' : 'キリル文字で入力...')) : '日本語で入力...'}" 
                   data-cyrillic="${isCyrillicInput ? 'true' : 'false'}"
                   autofocus autocomplete="off">
 
@@ -124043,8 +124149,11 @@ class WordTestComponent {
           <!-- 回答後フィードバック -->
           <div class="animate-fade-in space-y-3">
             <div class="p-4 sm:p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950' : 'bg-rose-50/90 border-rose-300 text-rose-950'} shadow-sm">
-              <div class="flex items-center gap-2 mb-2">
+              <div class="flex items-center justify-between mb-2">
                 <span class="text-2xl">${this.state.isCorrect ? '⭕ 正解！' : '❌ 不正解'}</span>
+                <span class="text-xs font-bold text-slate-500 bg-white/70 px-2 py-0.5 rounded-md">
+                  ${isV ? (verbForm === 'dict' ? '動詞【辞書形】問題' : '動詞【語幹】問題') : ''}
+                </span>
               </div>
 
               ${this.state.lastSrsUpdate ? `
@@ -124058,13 +124167,14 @@ class WordTestComponent {
 
               <!-- 6項目完全網羅解説カード（辞書形・語幹・意味・過程の明確化） -->
               ${renderGrammarExplanationHTML({
-                correctAnswer: (mode === 'root_input' || (mode === 'ja_to_mn' && isV)) ? details.root : (mode === 'mn_to_ja' ? q.japanese : details.dictForm),
+                correctAnswer: (mode === 'mn_to_ja') ? q.japanese : (isV ? (verbForm === 'root' ? details.root : details.dictForm) : details.dictForm),
                 userAnswer: this.state.userAnswer,
                 isCorrect: this.state.isCorrect,
                 item: q,
                 pronunciation: q.pronunciation,
                 grammarExplanation: q.note,
-                isVerbQuestion: isV
+                isVerbQuestion: isV,
+                verbTargetForm: verbForm
               })}
 
               <!-- 4択の場合：選択肢に出た単語の全解説アコーディオン -->
@@ -124167,7 +124277,17 @@ class WordTestComponent {
           btn.addEventListener('click', () => {
             const chosenId = btn.getAttribute('data-choice-id');
             const chosen = this.state.choices.find(c => c.id === chosenId);
-            const chosenText = (this.state.settings.choiceDirection === 'ja_to_mn') ? (chosen.dictForm || chosen.mongolian) : chosen.japanese;
+            const cd = getWordGrammarDetails(chosen);
+            const isV = getWordGrammarDetails(this.state.currentQuestion).isVerb;
+            const verbForm = this.state.currentQuestion._verbTargetForm || 'dict';
+            let chosenText = chosen.japanese;
+            if (this.state.settings.choiceDirection === 'ja_to_mn') {
+              if (isV && verbForm === 'root') {
+                chosenText = cd.root || cd.dictForm || chosen.mongolian;
+              } else {
+                chosenText = cd.dictForm || chosen.mongolian;
+              }
+            }
             this.submitAnswer(chosenText, chosen.id === this.state.currentQuestion.id);
           });
         });
@@ -124237,8 +124357,8 @@ class WordTestComponent {
     const q = this.state.currentQuestion;
     const mode = this.state.settings.mode;
     const isCorrect = mode === 'visual'
-      ? isWordAnswerMatch(val, q, 'ja_to_mn')
-      : isWordAnswerMatch(val, q, mode);
+      ? isWordAnswerMatch(val, q, 'ja_to_mn', { verbTargetForm: q._verbTargetForm })
+      : isWordAnswerMatch(val, q, mode, { verbTargetForm: q._verbTargetForm });
     this.submitAnswer(val, isCorrect);
   }
 
@@ -124247,9 +124367,18 @@ class WordTestComponent {
     const mode = this.state.settings.mode;
     const details = getWordGrammarDetails(q);
     const isV = details.isVerb;
-    const expectedCorrectAnswer = (mode === 'root_input' || (mode === 'ja_to_mn' && isV)) 
-      ? details.root 
-      : (mode === 'mn_to_ja' ? q.japanese : (mode === 'visual' ? (q.dictForm || q.mongolian) : details.dictForm));
+    const verbForm = q._verbTargetForm || 'dict';
+
+    let expectedCorrectAnswer = "";
+    if (mode === 'mn_to_ja') {
+      expectedCorrectAnswer = q.japanese;
+    } else if (isV) {
+      expectedCorrectAnswer = (verbForm === 'root') ? details.root : details.dictForm;
+    } else if (mode === 'visual') {
+      expectedCorrectAnswer = q.dictForm || q.mongolian;
+    } else {
+      expectedCorrectAnswer = details.dictForm;
+    }
 
     this.state.hasAnswered = true;
     this.state.userAnswer = userAnswer;
@@ -124272,13 +124401,13 @@ class WordTestComponent {
       // 間違いノートに自動記録（問題文に答えを漏洩させない）
       let mistakeQuestion = "";
       if (mode === 'ja_to_mn') {
-        mistakeQuestion = `【単語】${q.japanese}`;
+        mistakeQuestion = isV ? (verbForm === 'dict' ? `【動詞辞書形】${q.japanese}` : `【動詞語幹】${q.japanese}`) : `【単語】${q.japanese}`;
       } else if (mode === 'mn_to_ja') {
-        mistakeQuestion = `【日本語訳】${details.dictForm} の意味`;
+        mistakeQuestion = `【日本語訳】${verbForm === 'root' ? details.root + '-' : details.dictForm} の意味`;
       } else if (mode === 'root_input') {
-        mistakeQuestion = `【語幹】${details.dictForm}（${q.japanese}）`;
+        mistakeQuestion = verbForm === 'dict' ? `【動詞辞書形】${details.root}（${q.japanese}）` : `【語幹】${details.dictForm}（${q.japanese}）`;
       } else if (mode === 'visual') {
-        mistakeQuestion = `【イラスト】${q.japanese}`;
+        mistakeQuestion = isV ? (verbForm === 'dict' ? `【イラスト動詞辞書形】${q.japanese}` : `【イラスト動詞語幹】${q.japanese}`) : `【イラスト】${q.japanese}`;
       } else {
         mistakeQuestion = `【単語】${details.dictForm} の意味`;
       }
@@ -124291,7 +124420,9 @@ class WordTestComponent {
         type: 'word',
         category: q.category || '単語',
         explanation: isV 
-          ? `【動詞】正解(語幹): ${details.root} / 辞書形: ${details.dictForm} / 意味: ${q.japanese}。${details.derivation}`
+          ? (verbForm === 'dict' 
+              ? `【動詞】正解(辞書形): ${details.dictForm} / 語幹: ${details.root} / 意味: ${q.japanese}。${details.derivation}`
+              : `【動詞】正解(語幹): ${details.root} / 辞書形: ${details.dictForm} / 意味: ${q.japanese}。${details.derivation}`)
           : `${q.japanese} = ${details.dictForm}。${details.derivation}`
       });
     }
@@ -124779,6 +124910,10 @@ class JapaneseTestComponent {
     const mode = this.state.settings.mode;
     const details = getWordGrammarDetails(q);
     const isV = details.isVerb;
+    if (isV && !q._verbTargetForm) {
+      q._verbTargetForm = Math.random() < 0.5 ? 'dict' : 'root';
+    }
+    const verbForm = q._verbTargetForm || 'dict';
 
     this.container.innerHTML = `
       <div class="animate-fade-in max-w-xl mx-auto px-4 py-3 space-y-3">
@@ -124809,12 +124944,12 @@ class JapaneseTestComponent {
         <!-- 問題カード（モンゴル語表示） -->
         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm text-center relative overflow-hidden space-y-2">
           <div class="text-xs font-bold text-slate-400">
-            モンゴル語を見て【日本語訳（意味）】を答えてください
+            ${isV ? (verbForm === 'dict' ? '動詞の【辞書形（〜х）】を見て【日本語訳（意味）】を答えてください' : '動詞の【語幹】を見て【日本語訳（意味）】を答えてください') : 'モンゴル語を見て【日本語訳（意味）】を答えてください'}
           </div>
 
-          <!-- モンゴル語メイン表記（辞書形） -->
+          <!-- モンゴル語メイン表記 -->
           <div class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight cyrillic-text pt-1">
-            ${details.dictForm || q.mongolian}
+            ${isV ? (verbForm === 'root' ? `${details.root}-` : details.dictForm) : (details.dictForm || q.mongolian)}
           </div>
 
           <!-- 品詞 ＆ 語幹ヒント（タップで展開） -->
@@ -124827,9 +124962,9 @@ class JapaneseTestComponent {
               <span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-medium">
                 【品詞: ${q.pos || '単語'}】
               </span>
-              ${isV && details.root ? `
+              ${isV ? `
                 <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-bold border border-emerald-200">
-                  🌱 語幹: <span class="cyrillic-text">${details.root}</span>
+                  ${verbForm === 'root' ? `📖 辞書形: <span class="cyrillic-text">${details.dictForm}</span>` : `🌱 語幹: <span class="cyrillic-text">${details.root}</span>`}
                 </span>
               ` : ''}
               ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(q) && q.pronunciation) ? `
@@ -124904,7 +125039,8 @@ class JapaneseTestComponent {
                 item: q,
                 pronunciation: q.pronunciation,
                 grammarExplanation: q.note,
-                isVerbQuestion: isV
+                isVerbQuestion: isV,
+                verbTargetForm: verbForm
               })}
 
               <!-- 4択の場合：選択肢に出た単語の全解説アコーディオン -->
@@ -143572,9 +143708,18 @@ class ReviewNotebookComponent {
       }
     } else if (isCyrillicAns) {
       if (isV) {
-        categoryLabel = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
-        subHint = `【動詞】活用の土台となる【語幹】を入力（例: ${details.dictForm} の語幹「${details.root}」、語尾-ахや括弧は不要）`;
-        placeholder = "語幹（または辞書形）をキリル文字で入力...";
+        if (!item._verbTargetForm) {
+          item._verbTargetForm = Math.random() < 0.5 ? 'dict' : 'root';
+        }
+        if (item._verbTargetForm === 'dict') {
+          categoryLabel = "日本語に合う動詞の【辞書形（〜х）】をキリル文字で入力してください";
+          subHint = `【動詞】見出し語となる【辞書形（〜х）】を入力（例: ${details.dictForm}）`;
+          placeholder = "動詞の辞書形（〜х）をキリル文字で入力...";
+        } else {
+          categoryLabel = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
+          subHint = `【動詞】活用の土台となる【語幹】を入力（例: ${details.dictForm} の語幹「${details.root}」、語尾-ахや括弧は不要）`;
+          placeholder = "動詞の語幹をキリル文字で入力...";
+        }
       } else {
         categoryLabel = "日本語に合うモンゴル語（キリル文字）を入力してください";
         subHint = (matchedWord && matchedWord.pos) ? `【品詞: ${matchedWord.pos}】` : '';
@@ -143708,13 +143853,17 @@ class ReviewNotebookComponent {
                 const matchedWord = (!isExplicitNonWord && currentParsed) ? currentParsed.matchedWord : null;
 
                 if (matchedWord) {
+                  const expectedAns = currentParsed.isVerb 
+                    ? (item._verbTargetForm === 'root' ? currentParsed.details.root : currentParsed.details.dictForm) 
+                    : item.correctAnswer;
                   return renderGrammarExplanationHTML({
-                    correctAnswer: item.correctAnswer,
+                    correctAnswer: expectedAns,
                     userAnswer: this.state.userAnswer,
                     isCorrect: this.state.isCorrect,
                     item: matchedWord,
                     grammarExplanation: item.explanation,
-                    isVerbQuestion: currentParsed ? currentParsed.isVerb : false
+                    isVerbQuestion: currentParsed ? currentParsed.isVerb : false,
+                    verbTargetForm: item._verbTargetForm
                   });
                 }
 
@@ -143892,15 +144041,9 @@ class ReviewNotebookComponent {
         }
       }
     } else if (matchedWord) {
-      // 単語判定（語幹、辞書形、マルチワード動詞、隠れ-н、揺らぎ吸収）
-      isCorrect = isWordAnswerMatch(val, matchedWord, parsed.isVerb ? 'root_input' : (parsed.isCyrillicAnswer ? 'ja_to_mn' : 'mn_to_ja'));
-      if (!isCorrect && parsed.isVerb) {
-        // 復習時の特別配慮: 動詞で辞書形 (例: орчуулах) を入力した場合も正解とする
-        const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s]/g, '');
-        const dClean = (parsed.details.dictForm || '').toLowerCase().replace(/[.,!?。、！？\s]/g, '');
-        if (uClean === dClean) isCorrect = true;
-      }
-      if (!isCorrect) {
+      // 単語判定（動詞は辞書形か語幹かを verbTargetForm に基づいて厳密判定）
+      isCorrect = isWordAnswerMatch(val, matchedWord, parsed.isCyrillicAnswer ? 'ja_to_mn' : 'mn_to_ja', { verbTargetForm: item._verbTargetForm });
+      if (!isCorrect && !parsed.isVerb) {
         isCorrect = isFuzzyMatch(val, item.correctAnswer);
       }
       if (!isCorrect && item.correctAnswer) {

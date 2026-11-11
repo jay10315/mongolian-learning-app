@@ -814,14 +814,15 @@ export function getWordSynonymNote(wordOrItem) {
   return syns.length > 0 ? syns[0] : '';
 }
 
-export function isWordAnswerMatch(userAnswer, item, mode) {
+export function isWordAnswerMatch(userAnswer, item, mode, options = {}) {
   if (!userAnswer || !item) return false;
   const u = userAnswer.trim().toLowerCase().replace(/[.,!?。、！？\s]/g, '').replace(/[«»"']/g, '');
   if (!u) return false;
 
   const details = getWordGrammarDetails(item);
+  const targetForm = options.verbTargetForm || item._verbTargetForm || (mode === 'root_input' ? 'root' : 'dict');
 
-  if (mode === 'root_input' || (mode === 'ja_to_mn' && details.isVerb)) {
+  if (details.isVerb && targetForm === 'root') {
     // 動詞の語幹を回答対象とする場合
     const uClean = u.replace(/-/g, '');
     const rClean = details.root.toLowerCase().replace(/-/g, '').trim();
@@ -846,6 +847,29 @@ export function isWordAnswerMatch(userAnswer, item, mode) {
     // 母音脱落動詞（例: "амар" に対し "амр"）
     if (details.dictForm === 'амрах' && (uClean === 'амар' || uClean === 'амр')) return true;
     if (details.dictForm === 'амьдрах' && (uClean === 'амьдар' || uClean === 'амьдр')) return true;
+
+    return false;
+  }
+
+  if (details.isVerb && targetForm === 'dict') {
+    // 動詞の辞書形（〜х）を回答対象とする場合
+    const uClean = u.replace(/-/g, '');
+    const dClean = details.dictForm.toLowerCase().replace(/[.,!?。、！？\s]/g, '');
+
+    // 辞書形完全一致
+    if (uClean === dClean) return true;
+
+    // 原文そのまま（例: ユーザーが入力した表記との一致）
+    const rawClean = (item.mongolian || '').toLowerCase().replace(/[.,!?。、！？\s]/g, '');
+    if (uClean === rawClean) return true;
+
+    // 許容回答リストがある場合
+    if (item.acceptableAnswers && Array.isArray(item.acceptableAnswers)) {
+      for (const ans of item.acceptableAnswers) {
+        const aClean = ans.toLowerCase().replace(/[.,!?。、！？\s«»"']/g, '');
+        if (uClean === aClean) return true;
+      }
+    }
 
     return false;
   }
@@ -4070,7 +4094,8 @@ export function renderGrammarExplanationHTML({
   pronunciation = '',
   grammarExplanation = '',
   rule = '',
-  isVerbQuestion = false
+  isVerbQuestion = false,
+  verbTargetForm = ''
 }) {
   const details = item ? getWordGrammarDetails(item) : null;
   const isV = isVerbQuestion || (details ? details.isVerb : false);
@@ -4093,8 +4118,11 @@ export function renderGrammarExplanationHTML({
   const exampleMn = item ? item.exampleMn : '';
   const exampleJa = item ? item.exampleJa : '';
 
-  // ユーザーが誤って辞書形を入力したかの判定
-  const wasDictFormEntered = isV && userAnswer && dictForm && (userAnswer.trim().toLowerCase() === dictForm.toLowerCase());
+  // 動詞の出題形態（語幹を求めたのか、辞書形を求めたのか）の判定
+  const targetForm = verbTargetForm || (item && item._verbTargetForm) || (correctAnswer && root && correctAnswer.trim().toLowerCase().replace(/-/g, '') === root.toLowerCase().replace(/-/g, '') ? 'root' : 'dict');
+  const uClean = (userAnswer || '').trim().toLowerCase().replace(/[.,!?。、！？\s]/g, '').replace(/[«»"']/g, '');
+  const wasDictFormEntered = isV && targetForm === 'root' && uClean && dictForm && (uClean === dictForm.toLowerCase().replace(/[.,!?。、！？\s]/g, ''));
+  const wasRootEntered = isV && targetForm === 'dict' && uClean && root && (uClean === root.toLowerCase().replace(/[.,!?。、！？\s-]/g, ''));
 
   return `
     <div class="space-y-2.5 text-xs sm:text-sm">
@@ -4119,7 +4147,12 @@ export function renderGrammarExplanationHTML({
           </div>
           ${wasDictFormEntered ? `
             <div class="text-xs text-amber-800 font-medium mt-1">
-              ⚠️「${userAnswer}」は動詞の【辞書形】です。テストでは活用の土台となる【語幹（${root}）】を回答します。
+              ⚠️「${userAnswer}」は動詞の【辞書形】です。この問題では活用の土台となる【語幹（${root}）】を回答します。
+            </div>
+          ` : ''}
+          ${wasRootEntered ? `
+            <div class="text-xs text-amber-800 font-medium mt-1">
+              ⚠️「${userAnswer}」は動詞の【語幹】です。この問題では見出し語となる【辞書形（${dictForm}）】を回答します。
             </div>
           ` : ''}
         </div>

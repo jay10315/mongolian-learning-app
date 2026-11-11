@@ -727,9 +727,18 @@ export class ReviewNotebookComponent {
       }
     } else if (isCyrillicAns) {
       if (isV) {
-        categoryLabel = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
-        subHint = `【動詞】活用の土台となる【語幹】を入力（例: ${details.dictForm} の語幹「${details.root}」、語尾-ахや括弧は不要）`;
-        placeholder = "語幹（または辞書形）をキリル文字で入力...";
+        if (!item._verbTargetForm) {
+          item._verbTargetForm = Math.random() < 0.5 ? 'dict' : 'root';
+        }
+        if (item._verbTargetForm === 'dict') {
+          categoryLabel = "日本語に合う動詞の【辞書形（〜х）】をキリル文字で入力してください";
+          subHint = `【動詞】見出し語となる【辞書形（〜х）】を入力（例: ${details.dictForm}）`;
+          placeholder = "動詞の辞書形（〜х）をキリル文字で入力...";
+        } else {
+          categoryLabel = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
+          subHint = `【動詞】活用の土台となる【語幹】を入力（例: ${details.dictForm} の語幹「${details.root}」、語尾-ахや括弧は不要）`;
+          placeholder = "動詞の語幹をキリル文字で入力...";
+        }
       } else {
         categoryLabel = "日本語に合うモンゴル語（キリル文字）を入力してください";
         subHint = (matchedWord && matchedWord.pos) ? `【品詞: ${matchedWord.pos}】` : '';
@@ -863,13 +872,17 @@ export class ReviewNotebookComponent {
                 const matchedWord = (!isExplicitNonWord && currentParsed) ? currentParsed.matchedWord : null;
 
                 if (matchedWord) {
+                  const expectedAns = currentParsed.isVerb 
+                    ? (item._verbTargetForm === 'root' ? currentParsed.details.root : currentParsed.details.dictForm) 
+                    : item.correctAnswer;
                   return renderGrammarExplanationHTML({
-                    correctAnswer: item.correctAnswer,
+                    correctAnswer: expectedAns,
                     userAnswer: this.state.userAnswer,
                     isCorrect: this.state.isCorrect,
                     item: matchedWord,
                     grammarExplanation: item.explanation,
-                    isVerbQuestion: currentParsed ? currentParsed.isVerb : false
+                    isVerbQuestion: currentParsed ? currentParsed.isVerb : false,
+                    verbTargetForm: item._verbTargetForm
                   });
                 }
 
@@ -1047,15 +1060,9 @@ export class ReviewNotebookComponent {
         }
       }
     } else if (matchedWord) {
-      // 単語判定（語幹、辞書形、マルチワード動詞、隠れ-н、揺らぎ吸収）
-      isCorrect = isWordAnswerMatch(val, matchedWord, parsed.isVerb ? 'root_input' : (parsed.isCyrillicAnswer ? 'ja_to_mn' : 'mn_to_ja'));
-      if (!isCorrect && parsed.isVerb) {
-        // 復習時の特別配慮: 動詞で辞書形 (例: орчуулах) を入力した場合も正解とする
-        const uClean = val.trim().toLowerCase().replace(/[.,!?。、！？\s]/g, '');
-        const dClean = (parsed.details.dictForm || '').toLowerCase().replace(/[.,!?。、！？\s]/g, '');
-        if (uClean === dClean) isCorrect = true;
-      }
-      if (!isCorrect) {
+      // 単語判定（動詞は辞書形か語幹かを verbTargetForm に基づいて厳密判定）
+      isCorrect = isWordAnswerMatch(val, matchedWord, parsed.isCyrillicAnswer ? 'ja_to_mn' : 'mn_to_ja', { verbTargetForm: item._verbTargetForm });
+      if (!isCorrect && !parsed.isVerb) {
         isCorrect = isFuzzyMatch(val, item.correctAnswer);
       }
       if (!isCorrect && item.correctAnswer) {
