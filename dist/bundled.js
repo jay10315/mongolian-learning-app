@@ -141806,10 +141806,7 @@ class InterviewMasterComponent {
       this.timerInterval = null;
     }
   }
-}
 
-if (typeof window !== 'undefined') {
-  window.InterviewMasterComponent = InterviewMasterComponent;
   static handleVocabSubmit(topic) {
     const activeList = this.vocabActiveList || [];
     const currentWord = activeList[this.vocabQuizIndex];
@@ -141876,6 +141873,10 @@ if (typeof window !== 'undefined') {
     this.vocabShowHint = false;
     this.render(this.container, this.onNavigate);
   }
+}
+
+if (typeof window !== 'undefined') {
+  window.InterviewMasterComponent = InterviewMasterComponent;
 }
 
 
