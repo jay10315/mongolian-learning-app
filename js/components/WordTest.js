@@ -7,6 +7,15 @@ import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
 export class WordTestComponent {
+  static activeKeyHandler = null;
+
+  static cleanupKeyHandler() {
+    if (this.activeKeyHandler) {
+      window.removeEventListener('keydown', this.activeKeyHandler);
+      this.activeKeyHandler = null;
+    }
+  }
+
   static state = {
     view: 'settings', // 'settings' | 'testing' | 'result'
     settings: {
@@ -51,6 +60,7 @@ export class WordTestComponent {
 
   // --- 1. テスト設定画面 ---
   static renderSettings() {
+    this.cleanupKeyHandler();
     const vocabList = StorageService.getVocabulary();
     const mistakes = StorageService.getMistakes();
     const categories = Array.from(new Set(vocabList.map(v => v.category || 'その他'))).filter(Boolean);
@@ -286,6 +296,7 @@ export class WordTestComponent {
   }
 
   static loadQuestion(index) {
+    this.cleanupKeyHandler();
     this.state.currentIndex = index;
     const q = this.state.questions[index];
     this.state.currentQuestion = q;
@@ -590,6 +601,7 @@ export class WordTestComponent {
   }
 
   static bindTestingEvents() {
+    this.cleanupKeyHandler();
     // 中断ボタン
     const quitBtn = this.container.querySelector('#btn-quit-test');
     if (quitBtn) {
@@ -688,7 +700,7 @@ export class WordTestComponent {
           bindCyrillicInputAssistant(this.container, '#input-word-answer');
 
           input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.isComposing) {
               e.preventDefault();
               this.checkInputAnswer(input.value);
             }
@@ -710,31 +722,34 @@ export class WordTestComponent {
         });
       }
     } else {
-      // 回答後: 次の問題へ（回答直後のEnterキーバブリングによる誤スキップを確実に防止）
+      // 回答後: 次の問題へ（解説カードを確実に読めるよう400msディレイ＆キーハンドラ一元管理）
       const nextBtn = this.container.querySelector('#btn-next-question');
       if (nextBtn) {
         let allowEnterNext = false;
         setTimeout(() => {
           allowEnterNext = true;
           try { nextBtn.focus(); } catch (_) {}
-        }, 350);
+        }, 400);
+
+        const proceedNext = () => {
+          this.cleanupKeyHandler();
+          this.goNext();
+        };
 
         nextBtn.addEventListener('click', (e) => {
-          if (!allowEnterNext) {
-            e.preventDefault();
-            return;
-          }
-          this.goNext();
+          e.preventDefault();
+          proceedNext();
         });
 
-        const keyHandler = (e) => {
-          if (e.key === 'Enter') {
+        this.activeKeyHandler = (e) => {
+          if (e.key === 'Enter' && !e.isComposing) {
             if (!allowEnterNext) return;
-            window.removeEventListener('keydown', keyHandler);
-            this.goNext();
+            e.preventDefault();
+            e.stopPropagation();
+            proceedNext();
           }
         };
-        window.addEventListener('keydown', keyHandler);
+        window.addEventListener('keydown', this.activeKeyHandler);
       }
     }
   }
@@ -878,6 +893,7 @@ export class WordTestComponent {
 
   // --- 4. テスト結果画面 ---
   static renderResult() {
+    this.cleanupKeyHandler();
     const total = this.state.questions.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;
     const wrong = total - correct;

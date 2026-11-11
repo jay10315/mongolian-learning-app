@@ -879,6 +879,13 @@ export class GenreWordMasterComponent {
           GamificationService.addXp(10);
         }
       } catch (_) {}
+
+      // SRS忘却曲線進捗の更新（正解）＆3回正解克服連携
+      try {
+        if (this.state.currentQuestion?.id) {
+          StorageService.recordWordAnswer(this.state.currentQuestion.id, true, 'good');
+        }
+      } catch (_) {}
     } else {
       this.state.gameCombo = 0;
       this.state.mascotMood = 'sad';
@@ -896,6 +903,7 @@ export class GenreWordMasterComponent {
         const isMnToJa = this.state.questionType === 'mn_to_ja';
         const userWord = chosen ? chosen.word : null;
         StorageService.recordMistake({
+          wordId: curQ.id || null,
           question: `【ジャンル: ${genre.titleJa || '単語'}】${isMnToJa ? curQ.mongolian : curQ.japanese}`,
           userAnswer: userWord ? (isMnToJa ? userWord.japanese : userWord.mongolian) : '(未選択)',
           correctAnswer: isMnToJa ? curQ.japanese : (curQ.dictForm || curQ.mongolian),
@@ -906,6 +914,13 @@ export class GenreWordMasterComponent {
       } catch (err) {
         console.warn('Genre mistake recording error:', err);
       }
+
+      // SRS忘却曲線進捗の更新（不正解）
+      try {
+        if (this.state.currentQuestion?.id) {
+          StorageService.recordWordAnswer(this.state.currentQuestion.id, false, 'again');
+        }
+      } catch (_) {}
     }
 
     if (!this.state.gameResults) this.state.gameResults = [];

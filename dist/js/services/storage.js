@@ -1329,8 +1329,11 @@ export class StorageService {
     });
     let itemToSync = null;
 
+    const extractedWordId = mistake.wordId || mistake.srsWordId || (typeof mistake.id === 'string' && mistake.id.startsWith('due_') ? mistake.id.replace(/^due_/, '') : null);
+    const resolvedType = (mistake.type && mistake.type !== 'due_review' && mistake.type !== 'looked_up') ? mistake.type : 'word';
+
     if (existingIdx !== -1) {
-      if (!list[existingIdx].id) {
+      if (!list[existingIdx].id || list[existingIdx].id.startsWith('due_') || list[existingIdx].id.startsWith('lookup_')) {
         list[existingIdx].id = `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
       }
       list[existingIdx].wrongCount = (list[existingIdx].wrongCount || 1) + 1;
@@ -1338,16 +1341,21 @@ export class StorageService {
       list[existingIdx].userAnswer = mistake.userAnswer;
       list[existingIdx].resolved = false;
       list[existingIdx].consecutiveCorrect = 0; // 再度間違えたら連続正解数をリセット
-      if (mistake.wordId) list[existingIdx].wordId = mistake.wordId;
+      if (extractedWordId) list[existingIdx].wordId = extractedWordId;
+      if (list[existingIdx].type === 'due_review' || list[existingIdx].type === 'looked_up' || !list[existingIdx].type) {
+        list[existingIdx].type = resolvedType;
+      }
       if (sanitizedMistake.explanation && (!list[existingIdx].explanation || sanitizedMistake.explanation.length > list[existingIdx].explanation.length)) {
         list[existingIdx].explanation = sanitizedMistake.explanation;
       }
       itemToSync = list[existingIdx];
     } else {
+      const { id: _ignoreId, ...restSanitized } = sanitizedMistake;
       itemToSync = {
         id: `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-        wordId: mistake.wordId || null,
-        ...sanitizedMistake,
+        ...restSanitized,
+        wordId: extractedWordId || null,
+        type: resolvedType,
         wrongCount: 1,
         consecutiveCorrect: 0,
         lastWrongDate: new Date().toISOString(),

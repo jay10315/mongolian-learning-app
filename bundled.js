@@ -111357,8 +111357,11 @@ class StorageService {
     });
     let itemToSync = null;
 
+    const extractedWordId = mistake.wordId || mistake.srsWordId || (typeof mistake.id === 'string' && mistake.id.startsWith('due_') ? mistake.id.replace(/^due_/, '') : null);
+    const resolvedType = (mistake.type && mistake.type !== 'due_review' && mistake.type !== 'looked_up') ? mistake.type : 'word';
+
     if (existingIdx !== -1) {
-      if (!list[existingIdx].id) {
+      if (!list[existingIdx].id || list[existingIdx].id.startsWith('due_') || list[existingIdx].id.startsWith('lookup_')) {
         list[existingIdx].id = `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
       }
       list[existingIdx].wrongCount = (list[existingIdx].wrongCount || 1) + 1;
@@ -111366,16 +111369,21 @@ class StorageService {
       list[existingIdx].userAnswer = mistake.userAnswer;
       list[existingIdx].resolved = false;
       list[existingIdx].consecutiveCorrect = 0; // 再度間違えたら連続正解数をリセット
-      if (mistake.wordId) list[existingIdx].wordId = mistake.wordId;
+      if (extractedWordId) list[existingIdx].wordId = extractedWordId;
+      if (list[existingIdx].type === 'due_review' || list[existingIdx].type === 'looked_up' || !list[existingIdx].type) {
+        list[existingIdx].type = resolvedType;
+      }
       if (sanitizedMistake.explanation && (!list[existingIdx].explanation || sanitizedMistake.explanation.length > list[existingIdx].explanation.length)) {
         list[existingIdx].explanation = sanitizedMistake.explanation;
       }
       itemToSync = list[existingIdx];
     } else {
+      const { id: _ignoreId, ...restSanitized } = sanitizedMistake;
       itemToSync = {
         id: `m_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-        wordId: mistake.wordId || null,
-        ...sanitizedMistake,
+        ...restSanitized,
+        wordId: extractedWordId || null,
+        type: resolvedType,
         wrongCount: 1,
         consecutiveCorrect: 0,
         lastWrongDate: new Date().toISOString(),
@@ -122936,6 +122944,15 @@ class WordGameComponent {
 
 
 class WordTestComponent {
+  static activeKeyHandler = null;
+
+  static cleanupKeyHandler() {
+    if (this.activeKeyHandler) {
+      window.removeEventListener('keydown', this.activeKeyHandler);
+      this.activeKeyHandler = null;
+    }
+  }
+
   static state = {
     view: 'settings', // 'settings' | 'testing' | 'result'
     settings: {
@@ -122980,6 +122997,7 @@ class WordTestComponent {
 
   // --- 1. テスト設定画面 ---
   static renderSettings() {
+    this.cleanupKeyHandler();
     const vocabList = StorageService.getVocabulary();
     const mistakes = StorageService.getMistakes();
     const categories = Array.from(new Set(vocabList.map(v => v.category || 'その他'))).filter(Boolean);
@@ -123215,6 +123233,7 @@ class WordTestComponent {
   }
 
   static loadQuestion(index) {
+    this.cleanupKeyHandler();
     this.state.currentIndex = index;
     const q = this.state.questions[index];
     this.state.currentQuestion = q;
@@ -123519,6 +123538,7 @@ class WordTestComponent {
   }
 
   static bindTestingEvents() {
+    this.cleanupKeyHandler();
     // 中断ボタン
     const quitBtn = this.container.querySelector('#btn-quit-test');
     if (quitBtn) {
@@ -123617,7 +123637,7 @@ class WordTestComponent {
           bindCyrillicInputAssistant(this.container, '#input-word-answer');
 
           input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.isComposing) {
               e.preventDefault();
               this.checkInputAnswer(input.value);
             }
@@ -123639,31 +123659,34 @@ class WordTestComponent {
         });
       }
     } else {
-      // 回答後: 次の問題へ（回答直後のEnterキーバブリングによる誤スキップを確実に防止）
+      // 回答後: 次の問題へ（解説カードを確実に読めるよう400msディレイ＆キーハンドラ一元管理）
       const nextBtn = this.container.querySelector('#btn-next-question');
       if (nextBtn) {
         let allowEnterNext = false;
         setTimeout(() => {
           allowEnterNext = true;
           try { nextBtn.focus(); } catch (_) {}
-        }, 350);
+        }, 400);
+
+        const proceedNext = () => {
+          this.cleanupKeyHandler();
+          this.goNext();
+        };
 
         nextBtn.addEventListener('click', (e) => {
-          if (!allowEnterNext) {
-            e.preventDefault();
-            return;
-          }
-          this.goNext();
+          e.preventDefault();
+          proceedNext();
         });
 
-        const keyHandler = (e) => {
-          if (e.key === 'Enter') {
+        this.activeKeyHandler = (e) => {
+          if (e.key === 'Enter' && !e.isComposing) {
             if (!allowEnterNext) return;
-            window.removeEventListener('keydown', keyHandler);
-            this.goNext();
+            e.preventDefault();
+            e.stopPropagation();
+            proceedNext();
           }
         };
-        window.addEventListener('keydown', keyHandler);
+        window.addEventListener('keydown', this.activeKeyHandler);
       }
     }
   }
@@ -123807,6 +123830,7 @@ class WordTestComponent {
 
   // --- 4. テスト結果画面 ---
   static renderResult() {
+    this.cleanupKeyHandler();
     const total = this.state.questions.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;
     const wrong = total - correct;
@@ -123975,6 +123999,15 @@ class WordTestComponent {
 
 
 class JapaneseTestComponent {
+  static activeKeyHandler = null;
+
+  static cleanupKeyHandler() {
+    if (this.activeKeyHandler) {
+      window.removeEventListener('keydown', this.activeKeyHandler);
+      this.activeKeyHandler = null;
+    }
+  }
+
   static state = {
     view: 'settings', // 'settings' | 'testing' | 'result'
     settings: {
@@ -124018,6 +124051,7 @@ class JapaneseTestComponent {
 
   // --- 1. 設定画面 ---
   static renderSettings() {
+    this.cleanupKeyHandler();
     const vocabList = StorageService.getVocabulary();
     const categories = Array.from(new Set(vocabList.map(v => v.category || 'その他'))).filter(Boolean);
 
@@ -124197,6 +124231,7 @@ class JapaneseTestComponent {
   }
 
   static loadQuestion(index) {
+    this.cleanupKeyHandler();
     this.state.currentIndex = index;
     const q = this.state.questions[index];
     this.state.currentQuestion = q;
@@ -124385,6 +124420,7 @@ class JapaneseTestComponent {
   }
 
   static bindTestingEvents() {
+    this.cleanupKeyHandler();
     // 中断
     const quitBtn = this.container.querySelector('#btn-quit-ja-test');
     if (quitBtn) {
@@ -124466,7 +124502,7 @@ class JapaneseTestComponent {
         if (input) {
           input.focus();
           input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.isComposing) {
               e.preventDefault();
               this.checkAnswer(input.value);
             }
@@ -124486,24 +124522,27 @@ class JapaneseTestComponent {
         setTimeout(() => {
           allowEnterNext = true;
           try { nextBtn.focus(); } catch (_) {}
-        }, 350);
+        }, 400);
+
+        const proceedNext = () => {
+          this.cleanupKeyHandler();
+          this.goNext();
+        };
 
         nextBtn.addEventListener('click', (e) => {
-          if (!allowEnterNext) {
-            e.preventDefault();
-            return;
-          }
-          this.goNext();
+          e.preventDefault();
+          proceedNext();
         });
 
-        const keyHandler = (e) => {
-          if (e.key === 'Enter') {
+        this.activeKeyHandler = (e) => {
+          if (e.key === 'Enter' && !e.isComposing) {
             if (!allowEnterNext) return;
-            window.removeEventListener('keydown', keyHandler);
-            this.goNext();
+            e.preventDefault();
+            e.stopPropagation();
+            proceedNext();
           }
         };
-        window.addEventListener('keydown', keyHandler);
+        window.addEventListener('keydown', this.activeKeyHandler);
       }
     }
   }
@@ -124608,6 +124647,7 @@ class JapaneseTestComponent {
 
   // --- 4. 結果画面 ---
   static renderResult() {
+    this.cleanupKeyHandler();
     const total = this.state.questions.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;
     const wrong = total - correct;
@@ -124777,6 +124817,14 @@ class JapaneseTestComponent {
 
 
 class GrammarTestComponent {
+  static activeKeyHandler = null;
+
+  static cleanupKeyHandler() {
+    if (this.activeKeyHandler) {
+      window.removeEventListener('keydown', this.activeKeyHandler);
+      this.activeKeyHandler = null;
+    }
+  }
   static state = {
     view: 'settings', // 'settings' | 'testing' | 'result'
     settings: {
@@ -124810,6 +124858,7 @@ class GrammarTestComponent {
 
   // --- 1. 設定画面 ---
   static renderSettings() {
+    this.cleanupKeyHandler();
     const allQuizzes = StorageService.getGrammarQuizzes();
 
     this.container.innerHTML = `
@@ -124953,6 +125002,7 @@ class GrammarTestComponent {
   }
 
   static loadQuiz(index) {
+    this.cleanupKeyHandler();
     this.state.currentIndex = index;
     const q = this.state.quizzes[index];
     scrollToQuizTop(this.container);
@@ -125231,6 +125281,7 @@ class GrammarTestComponent {
   }
 
   static bindTestingEvents() {
+    this.cleanupKeyHandler();
     // ヒントトグル
     const toggleHintBtn = this.container.querySelector('#btn-toggle-grammar-hint');
     const hintContent = this.container.querySelector('#grammar-hint-content');
@@ -125287,7 +125338,7 @@ class GrammarTestComponent {
           input.focus();
           CyrillicKeyboard.setActiveInput(input);
           input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.isComposing) {
               e.preventDefault();
               this.checkAnswer(input.value);
             }
@@ -125318,14 +125369,20 @@ class GrammarTestComponent {
           this.goNext();
         });
 
-        const keyHandler = (e) => {
-          if (e.key === 'Enter') {
+        const proceedNext = () => {
+          this.cleanupKeyHandler();
+          this.goNext();
+        };
+
+        this.activeKeyHandler = (e) => {
+          if (e.key === 'Enter' && !e.isComposing) {
             if (!allowEnterNext) return;
-            window.removeEventListener('keydown', keyHandler);
-            this.goNext();
+            e.preventDefault();
+            e.stopPropagation();
+            proceedNext();
           }
         };
-        window.addEventListener('keydown', keyHandler);
+        window.addEventListener('keydown', this.activeKeyHandler);
       }
     }
   }
@@ -125421,6 +125478,7 @@ class GrammarTestComponent {
 
   // --- 4. 結果画面 ---
   static renderResult() {
+    this.cleanupKeyHandler();
     const total = this.state.quizzes.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;
     const wrong = total - correct;
@@ -125612,6 +125670,14 @@ class GrammarTestComponent {
 
 
 class DeclensionTestComponent {
+  static activeKeyHandler = null;
+
+  static cleanupKeyHandler() {
+    if (this.activeKeyHandler) {
+      window.removeEventListener('keydown', this.activeKeyHandler);
+      this.activeKeyHandler = null;
+    }
+  }
   static state = {
     view: 'settings', // 'settings' | 'testing' | 'result'
     settings: {
@@ -125660,6 +125726,7 @@ class DeclensionTestComponent {
 
   // --- 1. 設定画面 ---
   static renderSettings() {
+    this.cleanupKeyHandler();
     if (!this.container) return;
     this.container.innerHTML = `
       <div class="animate-fade-in max-w-xl mx-auto px-4 py-4 space-y-5">
@@ -125817,6 +125884,7 @@ class DeclensionTestComponent {
   }
 
   static loadQuiz(index) {
+    this.cleanupKeyHandler();
     if (!this.state.quizzes || !this.state.quizzes.length) return;
     this.state.currentIndex = index;
     scrollToQuizTop(this.container);
@@ -126005,6 +126073,7 @@ class DeclensionTestComponent {
   }
 
   static bindTestingEvents() {
+    this.cleanupKeyHandler();
     const quitBtn = this.container.querySelector('#btn-quit-declension');
     if (quitBtn) {
       quitBtn.addEventListener('click', () => {
@@ -126046,7 +126115,7 @@ class DeclensionTestComponent {
           CyrillicKeyboard.setActiveInput(input);
           bindCyrillicInputAssistant(this.container, '#input-decl-answer');
           input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.isComposing) {
               e.preventDefault();
               this.checkAnswer(input.value);
             }
@@ -126083,14 +126152,20 @@ class DeclensionTestComponent {
           this.goNext();
         });
 
-        const keyHandler = (e) => {
-          if (e.key === 'Enter') {
+        const proceedNext = () => {
+          this.cleanupKeyHandler();
+          this.goNext();
+        };
+
+        this.activeKeyHandler = (e) => {
+          if (e.key === 'Enter' && !e.isComposing) {
             if (!allowEnterNext) return;
-            window.removeEventListener('keydown', keyHandler);
-            this.goNext();
+            e.preventDefault();
+            e.stopPropagation();
+            proceedNext();
           }
         };
-        window.addEventListener('keydown', keyHandler);
+        window.addEventListener('keydown', this.activeKeyHandler);
       }
 
       // 自己正解化ボタン（表記ゆれ・タイポ）
@@ -126201,6 +126276,7 @@ class DeclensionTestComponent {
 
   // --- 4. 結果画面 ---
   static renderResult() {
+    this.cleanupKeyHandler();
     if (!this.container) return;
     const total = this.state.quizzes.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;
@@ -139740,6 +139816,13 @@ class GenreWordMasterComponent {
           GamificationService.addXp(10);
         }
       } catch (_) {}
+
+      // SRS忘却曲線進捗の更新（正解）＆3回正解克服連携
+      try {
+        if (this.state.currentQuestion?.id) {
+          StorageService.recordWordAnswer(this.state.currentQuestion.id, true, 'good');
+        }
+      } catch (_) {}
     } else {
       this.state.gameCombo = 0;
       this.state.mascotMood = 'sad';
@@ -139757,6 +139840,7 @@ class GenreWordMasterComponent {
         const isMnToJa = this.state.questionType === 'mn_to_ja';
         const userWord = chosen ? chosen.word : null;
         StorageService.recordMistake({
+          wordId: curQ.id || null,
           question: `【ジャンル: ${genre.titleJa || '単語'}】${isMnToJa ? curQ.mongolian : curQ.japanese}`,
           userAnswer: userWord ? (isMnToJa ? userWord.japanese : userWord.mongolian) : '(未選択)',
           correctAnswer: isMnToJa ? curQ.japanese : (curQ.dictForm || curQ.mongolian),
@@ -139767,6 +139851,13 @@ class GenreWordMasterComponent {
       } catch (err) {
         console.warn('Genre mistake recording error:', err);
       }
+
+      // SRS忘却曲線進捗の更新（不正解）
+      try {
+        if (this.state.currentQuestion?.id) {
+          StorageService.recordWordAnswer(this.state.currentQuestion.id, false, 'again');
+        }
+      } catch (_) {}
     }
 
     if (!this.state.gameResults) this.state.gameResults = [];
@@ -142300,6 +142391,7 @@ class FlashcardsComponent {
 
 
 
+
 class ReviewNotebookComponent {
   static activeKeyHandler = null;
 
@@ -142394,8 +142486,9 @@ class ReviewNotebookComponent {
     const dueWords = combinedSrsWords.map(w => ({
       id: `due_${w.id}`,
       srsWordId: w.id,
+      wordId: w.id,
       sourceType: 'due_review',
-      type: 'due_review',
+      type: 'word',
       category: '要復習(SRS)',
       sourceLabel: w._label || '要復習(SRS)',
       question: `【${w._label || '要復習'}】${w.japanese}`,
@@ -142818,8 +142911,9 @@ class ReviewNotebookComponent {
 
     const allWords = StorageService.getVocabulary();
 
-    // 3段階で確実に該当単語を特定（完全一致 -> 日本語一致 -> 最長モンゴル語部分一致）
-    let matchedWord = null;
+    // 1. wordId / srsWordId による完全一致
+    const targetWordId = item?.wordId || item?.srsWordId || (typeof item?.id === 'string' && item.id.startsWith('due_') ? item.id.replace(/^due_/, '') : null);
+    let matchedWord = targetWordId ? allWords.find(w => w.id === targetWordId) : null;
 
     // 1. 正解キーの完全一致
     if (aClean) {
@@ -142880,14 +142974,30 @@ class ReviewNotebookComponent {
     }
 
     if (item && item.sourceType === 'due_review') {
-      const rawJa = cleanRawQ.replace(/^【要復習】\s*/, '');
+      const rawJa = (matchedWord ? matchedWord.japanese : cleanRawQ.replace(/^【(要復習|要復習\(SRS期日\)|忘却リスク高)】\s*/, '')).trim();
+      const isVerbQ = isV;
+      const verbForm = item._verbTargetForm || 'dict';
+      let promptPrefix = '【要復習(SRS)】';
+      let promptHolder = 'キリル文字で入力...';
+      let hintText = '';
+      if (isVerbQ) {
+        if (verbForm === 'root') {
+          promptPrefix = '【動詞語幹】';
+          promptHolder = '動詞の語幹を入力...';
+          hintText = `【品詞: 動詞】語尾を除いた語幹を回答（辞書形: ${details?.dictForm || matchedWord?.dictForm || ''}）`;
+        } else {
+          promptPrefix = '【動詞辞書形】';
+          promptHolder = '動詞の辞書形（〜х）を入力...';
+          hintText = '【品詞: 動詞】見出し語となる辞書形（語尾-хを含める）を回答';
+        }
+      }
       return {
         promptText: rawJa,
-        displayPrefix: '【要復習(SRS)】',
-        categoryLabel: '復習期日到来（忘却曲線）',
+        displayPrefix: promptPrefix,
+        categoryLabel: `復習期日到来（忘却曲線）${item.sourceLabel ? ' - ' + item.sourceLabel : ''}`,
         isCyrillicAnswer: true,
-        placeholder: 'キリル文字で入力...',
-        subHint: '',
+        placeholder: promptHolder,
+        subHint: hintText,
         matchedWord: matchedWord,
         details: details,
         isVerb: isV
@@ -143062,7 +143172,14 @@ class ReviewNotebookComponent {
   static loadReviewQuestion(index) {
     this.cleanupKeyHandler();
     this.state.testIndex = index;
-    this.state.currentTestItem = this.state.testList[index];
+    const item = this.state.testList[index];
+    if (item) {
+      const parsed = this.parseReviewItem(item);
+      if (parsed && parsed.isVerb && !item._verbTargetForm) {
+        item._verbTargetForm = Math.random() < 0.5 ? 'dict' : 'root';
+      }
+    }
+    this.state.currentTestItem = item;
     this.state.userAnswer = '';
     this.state.hasAnswered = false;
     this.state.isCorrect = false;
@@ -143168,8 +143285,9 @@ class ReviewNotebookComponent {
                 const matchedWord = (!isExplicitNonWord && currentParsed) ? currentParsed.matchedWord : null;
 
                 if (matchedWord) {
-                  const expectedAns = currentParsed.isVerb 
-                    ? (item._verbTargetForm === 'root' ? currentParsed.details.root : currentParsed.details.dictForm) 
+                  const detailsObj = currentParsed?.details || getWordGrammarDetails(matchedWord);
+                  const expectedAns = currentParsed?.isVerb 
+                    ? (item._verbTargetForm === 'root' ? (detailsObj?.root || matchedWord.root || item.correctAnswer) : (detailsObj?.dictForm || matchedWord.dictForm || item.correctAnswer)) 
                     : item.correctAnswer;
                   return renderGrammarExplanationHTML({
                     correctAnswer: expectedAns,
@@ -143397,6 +143515,8 @@ class ReviewNotebookComponent {
       parsed
     });
 
+    const targetWordId = item.wordId || item.srsWordId || (matchedWord ? matchedWord.id : null);
+
     if (isCorrect) {
       SoundEffects.playCorrect();
       
@@ -143405,10 +143525,9 @@ class ReviewNotebookComponent {
         const lookupKey = item.rawLookup?.id || item.rawLookup?.dictForm || item.correctAnswer;
         StorageService.markLookedUpWordResolved(lookupKey, true);
       } else if (item.sourceType === 'due_review') {
-        if (item.srsWordId) {
+        if (targetWordId) {
           try {
-            const curProg = StorageService.getWordProgress(item.srsWordId);
-            StorageService.saveWordProgress(SrsService.processAnswer(curProg, true, 'good'));
+            StorageService.recordWordAnswer(targetWordId, true, 'good');
           } catch (_) {}
         }
       } else {
@@ -143420,11 +143539,10 @@ class ReviewNotebookComponent {
         }
       }
 
-      // 単語マスターのSRS進捗も向上（マスター・得意化）※重複カウントを防ぐため直接SRS保存
-      if (matchedWord && matchedWord.id) {
+      // 単語マスターのSRS進捗も向上（マスター・得意化）
+      if (targetWordId && item.sourceType !== 'due_review') {
         try {
-          const curProg = StorageService.getWordProgress(matchedWord.id);
-          StorageService.saveWordProgress(SrsService.processAnswer(curProg, true, 'good'));
+          StorageService.recordWordAnswer(targetWordId, true, 'good');
         } catch (_) {}
       }
 
@@ -143441,9 +143559,27 @@ class ReviewNotebookComponent {
           item.resolved = false;
         }
       }
+      
+      // SRS進捗の降格・リセット更新
+      if (targetWordId) {
+        try {
+          StorageService.recordWordAnswer(targetWordId, false, 'again');
+        } catch (_) {}
+      }
+
+      // 間違いノートへ確実に登録（id の衝突を避け、常に正規の m_ ID で記録）
+      const qText = item.question || (parsed ? `【単語】${parsed.promptText}` : '');
+      const ansText = item.correctAnswer || (matchedWord ? matchedWord.dictForm : '');
+      const explText = item.explanation || (matchedWord ? `${matchedWord.japanese} = ${matchedWord.dictForm || matchedWord.mongolian}` : '');
+      
       StorageService.recordMistake({
-        ...item,
-        userAnswer: val
+        wordId: targetWordId || null,
+        question: qText,
+        correctAnswer: ansText,
+        userAnswer: val,
+        type: (item.type && item.type !== 'due_review' && item.type !== 'looked_up') ? item.type : 'word',
+        category: item.category || (matchedWord ? matchedWord.category : '単語'),
+        explanation: explText
       });
       item.consecutiveCorrect = 0;
       item.resolved = false;

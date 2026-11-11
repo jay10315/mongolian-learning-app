@@ -7,6 +7,14 @@ import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
 export class DeclensionTestComponent {
+  static activeKeyHandler = null;
+
+  static cleanupKeyHandler() {
+    if (this.activeKeyHandler) {
+      window.removeEventListener('keydown', this.activeKeyHandler);
+      this.activeKeyHandler = null;
+    }
+  }
   static state = {
     view: 'settings', // 'settings' | 'testing' | 'result'
     settings: {
@@ -55,6 +63,7 @@ export class DeclensionTestComponent {
 
   // --- 1. 設定画面 ---
   static renderSettings() {
+    this.cleanupKeyHandler();
     if (!this.container) return;
     this.container.innerHTML = `
       <div class="animate-fade-in max-w-xl mx-auto px-4 py-4 space-y-5">
@@ -212,6 +221,7 @@ export class DeclensionTestComponent {
   }
 
   static loadQuiz(index) {
+    this.cleanupKeyHandler();
     if (!this.state.quizzes || !this.state.quizzes.length) return;
     this.state.currentIndex = index;
     scrollToQuizTop(this.container);
@@ -400,6 +410,7 @@ export class DeclensionTestComponent {
   }
 
   static bindTestingEvents() {
+    this.cleanupKeyHandler();
     const quitBtn = this.container.querySelector('#btn-quit-declension');
     if (quitBtn) {
       quitBtn.addEventListener('click', () => {
@@ -441,7 +452,7 @@ export class DeclensionTestComponent {
           CyrillicKeyboard.setActiveInput(input);
           bindCyrillicInputAssistant(this.container, '#input-decl-answer');
           input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.isComposing) {
               e.preventDefault();
               this.checkAnswer(input.value);
             }
@@ -478,14 +489,20 @@ export class DeclensionTestComponent {
           this.goNext();
         });
 
-        const keyHandler = (e) => {
-          if (e.key === 'Enter') {
+        const proceedNext = () => {
+          this.cleanupKeyHandler();
+          this.goNext();
+        };
+
+        this.activeKeyHandler = (e) => {
+          if (e.key === 'Enter' && !e.isComposing) {
             if (!allowEnterNext) return;
-            window.removeEventListener('keydown', keyHandler);
-            this.goNext();
+            e.preventDefault();
+            e.stopPropagation();
+            proceedNext();
           }
         };
-        window.addEventListener('keydown', keyHandler);
+        window.addEventListener('keydown', this.activeKeyHandler);
       }
 
       // 自己正解化ボタン（表記ゆれ・タイポ）
@@ -596,6 +613,7 @@ export class DeclensionTestComponent {
 
   // --- 4. 結果画面 ---
   static renderResult() {
+    this.cleanupKeyHandler();
     if (!this.container) return;
     const total = this.state.quizzes.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;

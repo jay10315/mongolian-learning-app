@@ -6,6 +6,15 @@ import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
 export class JapaneseTestComponent {
+  static activeKeyHandler = null;
+
+  static cleanupKeyHandler() {
+    if (this.activeKeyHandler) {
+      window.removeEventListener('keydown', this.activeKeyHandler);
+      this.activeKeyHandler = null;
+    }
+  }
+
   static state = {
     view: 'settings', // 'settings' | 'testing' | 'result'
     settings: {
@@ -49,6 +58,7 @@ export class JapaneseTestComponent {
 
   // --- 1. 設定画面 ---
   static renderSettings() {
+    this.cleanupKeyHandler();
     const vocabList = StorageService.getVocabulary();
     const categories = Array.from(new Set(vocabList.map(v => v.category || 'その他'))).filter(Boolean);
 
@@ -228,6 +238,7 @@ export class JapaneseTestComponent {
   }
 
   static loadQuestion(index) {
+    this.cleanupKeyHandler();
     this.state.currentIndex = index;
     const q = this.state.questions[index];
     this.state.currentQuestion = q;
@@ -416,6 +427,7 @@ export class JapaneseTestComponent {
   }
 
   static bindTestingEvents() {
+    this.cleanupKeyHandler();
     // 中断
     const quitBtn = this.container.querySelector('#btn-quit-ja-test');
     if (quitBtn) {
@@ -497,7 +509,7 @@ export class JapaneseTestComponent {
         if (input) {
           input.focus();
           input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.isComposing) {
               e.preventDefault();
               this.checkAnswer(input.value);
             }
@@ -517,24 +529,27 @@ export class JapaneseTestComponent {
         setTimeout(() => {
           allowEnterNext = true;
           try { nextBtn.focus(); } catch (_) {}
-        }, 350);
+        }, 400);
+
+        const proceedNext = () => {
+          this.cleanupKeyHandler();
+          this.goNext();
+        };
 
         nextBtn.addEventListener('click', (e) => {
-          if (!allowEnterNext) {
-            e.preventDefault();
-            return;
-          }
-          this.goNext();
+          e.preventDefault();
+          proceedNext();
         });
 
-        const keyHandler = (e) => {
-          if (e.key === 'Enter') {
+        this.activeKeyHandler = (e) => {
+          if (e.key === 'Enter' && !e.isComposing) {
             if (!allowEnterNext) return;
-            window.removeEventListener('keydown', keyHandler);
-            this.goNext();
+            e.preventDefault();
+            e.stopPropagation();
+            proceedNext();
           }
         };
-        window.addEventListener('keydown', keyHandler);
+        window.addEventListener('keydown', this.activeKeyHandler);
       }
     }
   }
@@ -639,6 +654,7 @@ export class JapaneseTestComponent {
 
   // --- 4. 結果画面 ---
   static renderResult() {
+    this.cleanupKeyHandler();
     const total = this.state.questions.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;
     const wrong = total - correct;

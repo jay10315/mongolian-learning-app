@@ -7,6 +7,14 @@ import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
 export class GrammarTestComponent {
+  static activeKeyHandler = null;
+
+  static cleanupKeyHandler() {
+    if (this.activeKeyHandler) {
+      window.removeEventListener('keydown', this.activeKeyHandler);
+      this.activeKeyHandler = null;
+    }
+  }
   static state = {
     view: 'settings', // 'settings' | 'testing' | 'result'
     settings: {
@@ -40,6 +48,7 @@ export class GrammarTestComponent {
 
   // --- 1. 設定画面 ---
   static renderSettings() {
+    this.cleanupKeyHandler();
     const allQuizzes = StorageService.getGrammarQuizzes();
 
     this.container.innerHTML = `
@@ -183,6 +192,7 @@ export class GrammarTestComponent {
   }
 
   static loadQuiz(index) {
+    this.cleanupKeyHandler();
     this.state.currentIndex = index;
     const q = this.state.quizzes[index];
     scrollToQuizTop(this.container);
@@ -461,6 +471,7 @@ export class GrammarTestComponent {
   }
 
   static bindTestingEvents() {
+    this.cleanupKeyHandler();
     // ヒントトグル
     const toggleHintBtn = this.container.querySelector('#btn-toggle-grammar-hint');
     const hintContent = this.container.querySelector('#grammar-hint-content');
@@ -517,7 +528,7 @@ export class GrammarTestComponent {
           input.focus();
           CyrillicKeyboard.setActiveInput(input);
           input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.isComposing) {
               e.preventDefault();
               this.checkAnswer(input.value);
             }
@@ -548,14 +559,20 @@ export class GrammarTestComponent {
           this.goNext();
         });
 
-        const keyHandler = (e) => {
-          if (e.key === 'Enter') {
+        const proceedNext = () => {
+          this.cleanupKeyHandler();
+          this.goNext();
+        };
+
+        this.activeKeyHandler = (e) => {
+          if (e.key === 'Enter' && !e.isComposing) {
             if (!allowEnterNext) return;
-            window.removeEventListener('keydown', keyHandler);
-            this.goNext();
+            e.preventDefault();
+            e.stopPropagation();
+            proceedNext();
           }
         };
-        window.addEventListener('keydown', keyHandler);
+        window.addEventListener('keydown', this.activeKeyHandler);
       }
     }
   }
@@ -651,6 +668,7 @@ export class GrammarTestComponent {
 
   // --- 4. 結果画面 ---
   static renderResult() {
+    this.cleanupKeyHandler();
     const total = this.state.quizzes.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;
     const wrong = total - correct;

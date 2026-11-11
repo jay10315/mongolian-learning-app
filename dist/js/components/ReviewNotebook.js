@@ -1,5 +1,6 @@
 // 間違いノート・復習コンポーネント
 import { StorageService } from '../services/storage.js';
+import { SrsService } from '../services/srs.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
 import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, scrollToQuizTop } from '../utils/helpers.js';
@@ -98,8 +99,9 @@ export class ReviewNotebookComponent {
     const dueWords = combinedSrsWords.map(w => ({
       id: `due_${w.id}`,
       srsWordId: w.id,
+      wordId: w.id,
       sourceType: 'due_review',
-      type: 'due_review',
+      type: 'word',
       category: '要復習(SRS)',
       sourceLabel: w._label || '要復習(SRS)',
       question: `【${w._label || '要復習'}】${w.japanese}`,
@@ -522,8 +524,9 @@ export class ReviewNotebookComponent {
 
     const allWords = StorageService.getVocabulary();
 
-    // 3段階で確実に該当単語を特定（完全一致 -> 日本語一致 -> 最長モンゴル語部分一致）
-    let matchedWord = null;
+    // 1. wordId / srsWordId による完全一致
+    const targetWordId = item?.wordId || item?.srsWordId || (typeof item?.id === 'string' && item.id.startsWith('due_') ? item.id.replace(/^due_/, '') : null);
+    let matchedWord = targetWordId ? allWords.find(w => w.id === targetWordId) : null;
 
     // 1. 正解キーの完全一致
     if (aClean) {
@@ -584,14 +587,30 @@ export class ReviewNotebookComponent {
     }
 
     if (item && item.sourceType === 'due_review') {
-      const rawJa = cleanRawQ.replace(/^【要復習】\s*/, '');
+      const rawJa = (matchedWord ? matchedWord.japanese : cleanRawQ.replace(/^【(要復習|要復習\(SRS期日\)|忘却リスク高)】\s*/, '')).trim();
+      const isVerbQ = isV;
+      const verbForm = item._verbTargetForm || 'dict';
+      let promptPrefix = '【要復習(SRS)】';
+      let promptHolder = 'キリル文字で入力...';
+      let hintText = '';
+      if (isVerbQ) {
+        if (verbForm === 'root') {
+          promptPrefix = '【動詞語幹】';
+          promptHolder = '動詞の語幹を入力...';
+          hintText = `【品詞: 動詞】語尾を除いた語幹を回答（辞書形: ${details?.dictForm || matchedWord?.dictForm || ''}）`;
+        } else {
+          promptPrefix = '【動詞辞書形】';
+          promptHolder = '動詞の辞書形（〜х）を入力...';
+          hintText = '【品詞: 動詞】見出し語となる辞書形（語尾-хを含める）を回答';
+        }
+      }
       return {
         promptText: rawJa,
-        displayPrefix: '【要復習(SRS)】',
-        categoryLabel: '復習期日到来（忘却曲線）',
+        displayPrefix: promptPrefix,
+        categoryLabel: `復習期日到来（忘却曲線）${item.sourceLabel ? ' - ' + item.sourceLabel : ''}`,
         isCyrillicAnswer: true,
-        placeholder: 'キリル文字で入力...',
-        subHint: '',
+        placeholder: promptHolder,
+        subHint: hintText,
         matchedWord: matchedWord,
         details: details,
         isVerb: isV
@@ -766,7 +785,14 @@ export class ReviewNotebookComponent {
   static loadReviewQuestion(index) {
     this.cleanupKeyHandler();
     this.state.testIndex = index;
-    this.state.currentTestItem = this.state.testList[index];
+    const item = this.state.testList[index];
+    if (item) {
+      const parsed = this.parseReviewItem(item);
+      if (parsed && parsed.isVerb && !item._verbTargetForm) {
+        item._verbTargetForm = Math.random() < 0.5 ? 'dict' : 'root';
+      }
+    }
+    this.state.currentTestItem = item;
     this.state.userAnswer = '';
     this.state.hasAnswered = false;
     this.state.isCorrect = false;
@@ -872,8 +898,9 @@ export class ReviewNotebookComponent {
                 const matchedWord = (!isExplicitNonWord && currentParsed) ? currentParsed.matchedWord : null;
 
                 if (matchedWord) {
-                  const expectedAns = currentParsed.isVerb 
-                    ? (item._verbTargetForm === 'root' ? currentParsed.details.root : currentParsed.details.dictForm) 
+                  const detailsObj = currentParsed?.details || getWordGrammarDetails(matchedWord);
+                  const expectedAns = currentParsed?.isVerb 
+                    ? (item._verbTargetForm === 'root' ? (detailsObj?.root || matchedWord.root || item.correctAnswer) : (detailsObj?.dictForm || matchedWord.dictForm || item.correctAnswer)) 
                     : item.correctAnswer;
                   return renderGrammarExplanationHTML({
                     correctAnswer: expectedAns,
@@ -1101,6 +1128,8 @@ export class ReviewNotebookComponent {
       parsed
     });
 
+    const targetWordId = item.wordId || item.srsWordId || (matchedWord ? matchedWord.id : null);
+
     if (isCorrect) {
       SoundEffects.playCorrect();
       
@@ -1109,10 +1138,9 @@ export class ReviewNotebookComponent {
         const lookupKey = item.rawLookup?.id || item.rawLookup?.dictForm || item.correctAnswer;
         StorageService.markLookedUpWordResolved(lookupKey, true);
       } else if (item.sourceType === 'due_review') {
-        if (item.srsWordId) {
+        if (targetWordId) {
           try {
-            const curProg = StorageService.getWordProgress(item.srsWordId);
-            StorageService.saveWordProgress(SrsService.processAnswer(curProg, true, 'good'));
+            StorageService.recordWordAnswer(targetWordId, true, 'good');
           } catch (_) {}
         }
       } else {
@@ -1124,11 +1152,10 @@ export class ReviewNotebookComponent {
         }
       }
 
-      // 単語マスターのSRS進捗も向上（マスター・得意化）※重複カウントを防ぐため直接SRS保存
-      if (matchedWord && matchedWord.id) {
+      // 単語マスターのSRS進捗も向上（マスター・得意化）
+      if (targetWordId && item.sourceType !== 'due_review') {
         try {
-          const curProg = StorageService.getWordProgress(matchedWord.id);
-          StorageService.saveWordProgress(SrsService.processAnswer(curProg, true, 'good'));
+          StorageService.recordWordAnswer(targetWordId, true, 'good');
         } catch (_) {}
       }
 
@@ -1145,9 +1172,27 @@ export class ReviewNotebookComponent {
           item.resolved = false;
         }
       }
+      
+      // SRS進捗の降格・リセット更新
+      if (targetWordId) {
+        try {
+          StorageService.recordWordAnswer(targetWordId, false, 'again');
+        } catch (_) {}
+      }
+
+      // 間違いノートへ確実に登録（id の衝突を避け、常に正規の m_ ID で記録）
+      const qText = item.question || (parsed ? `【単語】${parsed.promptText}` : '');
+      const ansText = item.correctAnswer || (matchedWord ? matchedWord.dictForm : '');
+      const explText = item.explanation || (matchedWord ? `${matchedWord.japanese} = ${matchedWord.dictForm || matchedWord.mongolian}` : '');
+      
       StorageService.recordMistake({
-        ...item,
-        userAnswer: val
+        wordId: targetWordId || null,
+        question: qText,
+        correctAnswer: ansText,
+        userAnswer: val,
+        type: (item.type && item.type !== 'due_review' && item.type !== 'looked_up') ? item.type : 'word',
+        category: item.category || (matchedWord ? matchedWord.category : '単語'),
+        explanation: explText
       });
       item.consecutiveCorrect = 0;
       item.resolved = false;
