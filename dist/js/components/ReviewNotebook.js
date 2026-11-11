@@ -631,7 +631,24 @@ export class ReviewNotebookComponent {
     let displayPrefix = '';
     let promptText = '';
 
-    const isExplicitNonWord = item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review';
+    const is4ChoiceItem = item && item.options && Array.isArray(item.options) && item.options.length >= 2;
+    const isExplicitNonWord = is4ChoiceItem || (item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review');
+
+    if (is4ChoiceItem) {
+      return {
+        promptText: item.question || cleanRawQ,
+        displayPrefix: '【4択模試】',
+        categoryLabel: item.category ? `【${item.category}】正しい選択肢を選んでください` : 'モンゴル語の設問に合う正しい選択肢を選んでください',
+        isCyrillicAnswer: false,
+        placeholder: '選択肢を選んでください',
+        subHint: item.explanation ? '💡 設問と4つの選択肢をよく読んで選んでください' : '',
+        matchedWord: null,
+        details: null,
+        isVerb: false,
+        isExplicitNonWord: true,
+        is4Choice: true
+      };
+    }
 
     // 単語マスターとマッチした場合、常にクリーンな見出し情報から出題を構成（ただし明示的に文法・格変化・読解などの非単語問題の場合は問題文を優先）
     if (matchedWord && !isExplicitNonWord) {
@@ -851,22 +868,45 @@ export class ReviewNotebookComponent {
           ` : ''}
         </div>
 
-        <!-- 回答エリア -->
+        <!-- 回答エリア（4択問題または通常入力） -->
         ${!this.state.hasAnswered ? `
-          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3">
-            <input type="text" id="input-review-answer" 
-              class="w-full text-base sm:text-lg p-3 rounded-xl border-2 border-slate-300 focus:border-rose-500 focus:outline-hidden text-center font-bold text-slate-800 cyrillic-text cyrillic-input" 
-              placeholder="${parsed.placeholder}" 
-              data-cyrillic="${parsed.isCyrillicAnswer ? 'true' : 'false'}"
-              autofocus autocomplete="off">
+          ${(item.options && Array.isArray(item.options) && item.options.length >= 2) ? `
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3">
+              <div class="text-xs font-bold text-slate-500 text-center mb-1">
+                正しいと思う選択肢を選んでください（1〜4キー対応）
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                ${item.options.map((opt, oIdx) => {
+                  const letter = ['A', 'B', 'C', 'D'][oIdx] || (oIdx + 1);
+                  return `
+                    <button type="button" class="btn-review-choice w-full p-3.5 rounded-xl border-2 border-slate-200 hover:border-rose-400 bg-white hover:bg-rose-50/50 text-left transition-all flex items-center gap-3 select-none cursor-pointer active:scale-98 group shadow-2xs" data-choice="${opt}">
+                      <span class="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-rose-600 group-hover:text-white font-black text-xs text-slate-600 flex items-center justify-center shrink-0 transition-colors">
+                        ${letter}
+                      </span>
+                      <span class="text-sm font-bold text-slate-800 leading-snug cyrillic-text">
+                        ${opt}
+                      </span>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          ` : `
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3">
+              <input type="text" id="input-review-answer" 
+                class="w-full text-base sm:text-lg p-3 rounded-xl border-2 border-slate-300 focus:border-rose-500 focus:outline-hidden text-center font-bold text-slate-800 cyrillic-text cyrillic-input" 
+                placeholder="${parsed.placeholder}" 
+                data-cyrillic="${parsed.isCyrillicAnswer ? 'true' : 'false'}"
+                autofocus autocomplete="off">
 
-            <!-- PC標準モンゴル語キーボード＆特有文字パレット（キリル文字回答時） -->
-            ${parsed.isCyrillicAnswer ? renderCyrillicInputAssistantHTML('input-review-answer', true) : ''}
+              <!-- PC標準モンゴル語キーボード＆特有文字パレット（キリル文字回答時） -->
+              ${parsed.isCyrillicAnswer ? renderCyrillicInputAssistantHTML('input-review-answer', true) : ''}
 
-            <button type="button" id="btn-submit-review" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm cursor-pointer">
-              回答する（Enter）
-            </button>
-          </div>
+              <button type="button" id="btn-submit-review" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm cursor-pointer">
+                回答する（Enter）
+              </button>
+            </div>
+          `}
         ` : `
           <div class="animate-fade-in space-y-4">
             <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50 dark:bg-rose-950/50 border-rose-300 dark:border-rose-900/60 text-rose-950 dark:text-rose-100'} shadow-sm">
@@ -1035,6 +1075,26 @@ export class ReviewNotebookComponent {
     }
 
     if (!this.state.hasAnswered) {
+      const choiceBtns = this.container.querySelectorAll('.btn-review-choice');
+      if (choiceBtns.length > 0) {
+        choiceBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const choice = btn.getAttribute('data-choice');
+            this.checkReviewAnswer(choice);
+          });
+        });
+
+        this.activeKeyHandler = (e) => {
+          const key = e.key.toUpperCase();
+          const map = { '1': 0, '2': 1, '3': 2, '4': 3, 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+          if (map[key] !== undefined && choiceBtns[map[key]]) {
+            e.preventDefault();
+            choiceBtns[map[key]].click();
+          }
+        };
+        window.addEventListener('keydown', this.activeKeyHandler);
+      }
+
       const input = this.container.querySelector('#input-review-answer');
       const submitBtn = this.container.querySelector('#btn-submit-review');
 

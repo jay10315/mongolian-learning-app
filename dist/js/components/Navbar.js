@@ -64,6 +64,7 @@ export class Navbar {
       { id: 'grammar_test', label: '文法テスト', icon: '📐' },
       { id: 'declension_test', label: '格変化・活用', icon: '⚡' },
       { id: 'suffix_dojo', label: '語尾・助詞道場', icon: '⚡' },
+      { id: 'mock_exam', label: '総合4択模試', icon: '📝' },
       { id: 'interview_prep', label: '口述試験特訓', icon: '🎙️' },
       { id: 'roleplay', label: '会話ロールプレイ', icon: '🏕️' },
       { id: 'number_master', label: '数字マスター', icon: '🔢' },

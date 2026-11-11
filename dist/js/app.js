@@ -32,6 +32,7 @@ import { SpellingGameComponent } from './components/SpellingGame.js';
 import { ExerciseNotebookTestComponent } from './components/ExerciseNotebookTest.js';
 import { SuffixRuleDojoComponent } from './components/SuffixRuleDojo.js';
 import { EtymologyMasterComponent } from './components/EtymologyMaster.js';
+import { MockExamComponent } from './components/MockExam.js';
 import { InterviewMasterComponent } from './components/InterviewMaster.js';
 import { GenreWordMasterComponent } from './components/GenreWordMaster.js';
 
@@ -282,6 +283,10 @@ class App {
         break;
       case 'pronunciation_test':
         PronunciationTestComponent.render(mainContainer, onNavigate);
+        break;
+      case 'mock_exam':
+        const mockExam = new MockExamComponent(mainContainer, onNavigate);
+        mockExam.render();
         break;
       case 'interview_prep':
         InterviewMasterComponent.render(mainContainer, onNavigate);

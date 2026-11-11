@@ -1348,6 +1348,9 @@ export class StorageService {
       if (sanitizedMistake.explanation && (!list[existingIdx].explanation || sanitizedMistake.explanation.length > list[existingIdx].explanation.length)) {
         list[existingIdx].explanation = sanitizedMistake.explanation;
       }
+      if (sanitizedMistake.options && Array.isArray(sanitizedMistake.options)) {
+        list[existingIdx].options = sanitizedMistake.options;
+      }
       itemToSync = list[existingIdx];
     } else {
       const { id: _ignoreId, ...restSanitized } = sanitizedMistake;

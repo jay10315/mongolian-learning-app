@@ -743,6 +743,31 @@ export class HomeComponent {
             </div>
 
             <!-- 最終口述面接・スピーチ特訓（Сүүлийн шалгалт） -->
+            <!-- 新機能: 総合4択模試（全分野モンゴル語質問） -->
+            <div class="bg-gradient-to-br from-indigo-600/15 via-purple-500/10 to-pink-500/15 rounded-xl p-5 border-2 border-indigo-500 hover:border-indigo-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="mock_exam">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    📝
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-2xs">
+                    新機能 ⚡ 4択模試
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-indigo-700 transition-colors flex items-center gap-1.5">
+                  <span>総合4択模試モード</span>
+                  <span class="text-[10px] bg-indigo-100 text-indigo-800 font-bold px-1.5 py-0.5 rounded-sm">全分野</span>
+                </h4>
+                <p class="text-xs text-slate-500 mt-1.5 leading-relaxed font-medium">
+                  語彙・文法・会話・自己紹介読解・文化の全分野が<strong>モンゴル語で質問される本格4択試験</strong>！間違えた問題は4択のまま忘却曲線・間違いノートに自動収納されます。
+                </p>
+              </div>
+              <div class="mt-4 flex items-center justify-between text-xs font-bold text-indigo-700 group-hover:translate-x-1 transition-transform">
+                <span>模試を開始する</span>
+                <span>→</span>
+              </div>
+            </div>
+
             <div class="bg-gradient-to-br from-emerald-600/15 via-teal-500/10 to-cyan-500/15 rounded-xl p-5 border-2 border-emerald-500 hover:border-emerald-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="interview_prep">
               <div>
                 <div class="flex items-center justify-between mb-3">

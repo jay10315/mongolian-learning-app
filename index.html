@@ -115478,6 +115478,508 @@ const interviewVocabulary = [
 ];
 
 
+// === js/data/mockExamData.js ===
+// ============================================================
+// 総合4択模試データ（Монгол хэлний цогц сорилго / 4-Choice Mock Exam）
+// すべてモンゴル語で質問される本格的な4択問題集
+// ============================================================
+
+const MOCK_EXAM_STATIC_QUESTIONS = [
+  // ------------------------------------------------------------
+  // 1. 語彙・意味・反対語・類義語 (Үгсийн сан / Vocabulary)
+  // ------------------------------------------------------------
+  {
+    id: "mock_v_01",
+    category: "vocab",
+    categoryLabel: "語彙・意味",
+    level: "basic",
+    question: "«Сургууль» гэдэг үг ямар утгатай вэ?",
+    options: ["学校", "病院", "駅", "図書館"],
+    correctAnswer: "学校",
+    explanation: "«Сургууль» は「学校」という意味の名詞です。「сур-（学ぶ）」という動詞語幹に接尾辞「-гуул/-гүүль」が付いて派生した単語です。",
+    points: "сургууль = 学校、эмнэлэг = 病院、өртөө / буудал = 駅、номын сан = 図書館"
+  },
+  {
+    id: "mock_v_02",
+    category: "vocab",
+    categoryLabel: "反対語",
+    level: "basic",
+    question: "«Том» гэдэг үгийн эсрэг утгатай үгийг сонгоно уу.",
+    options: ["жижиг", "өндөр", "урт", "хүнд"],
+    correctAnswer: "жижиг",
+    explanation: "«Том» は「大きい」という意味の形容詞です。その対義語（反対語）は「小さい」を意味する «жижиг» です。",
+    points: "том (大きい) ⇄ жижиг (小さい)、өндөр (高い)、урт (長い)、хүнд (重い)"
+  },
+  {
+    id: "mock_v_03",
+    category: "vocab",
+    categoryLabel: "語彙・意味",
+    level: "basic",
+    question: "«Ном» гэдэг үгийн утга юу вэ?",
+    options: ["本", "ペン", "ノート", "机"],
+    correctAnswer: "本",
+    explanation: "«Ном» は「本・書籍」という意味です。チベット語・サンスクリット語の法（Dharma）に由来する言葉です。",
+    points: "ном = 本、үзэг = ペン、дэвтэр = ノート、ширээ = 机"
+  },
+  {
+    id: "mock_v_04",
+    category: "vocab",
+    categoryLabel: "類義語",
+    level: "standard",
+    question: "«Баяртай» гэдэг үгтэй хамгийн ойролцоо утгатай үг аль нь вэ?",
+    options: ["Дараа уулзъя", "Баярлалаа", "Сайн байна уу", "Уучлаарай"],
+    correctAnswer: "Дараа уулзъя",
+    explanation: "«Баяртай» は別れ際の挨拶「さようなら」です。「また会いましょう」を意味する «Дараа уулзъя» と同様のシチュエーションで使われます。",
+    points: "баяртай = さようなら、дараа уулзъя = また会いましょう、баярлалаа = ありがとう"
+  },
+  {
+    id: "mock_v_05",
+    category: "vocab",
+    categoryLabel: "曜日・語彙",
+    level: "basic",
+    question: "«Нэгдэх өдөр» буюу «даваа гараг» нь ямар гараг вэ?",
+    options: ["Даваа гараг (月曜日)", "Мягмар гараг (火曜日)", "Баасан гараг (金曜日)", "Ням гараг (日曜日)"],
+    correctAnswer: "Даваа гараг (月曜日)",
+    explanation: "モンゴル語の曜日は伝統的なチベット語由来の名（даваа гараг）と、数字を用いた口語表現（нэгдэх өдөр＝第1の日）があり、どちらも「月曜日」を指します。",
+    points: "нэгдэх өдөр / даваа гараг = 月曜日、хоёр дахь өдөр / мягмар гараг = 火曜日"
+  },
+  {
+    id: "mock_v_06",
+    category: "vocab",
+    categoryLabel: "動詞・意味",
+    level: "standard",
+    question: "«Идэх» гэдэг үйл үг ямар утга илэрхийлдэг вэ?",
+    options: ["食べる", "飲む", "見る", "聞く"],
+    correctAnswer: "食べる",
+    explanation: "«Идэх» は動詞の辞書形で「食べる」を意味します。語幹は «ид-» です。",
+    points: "идэх = 食べる、уух = 飲む、үзэх / харах = 見る、сонсох = 聞く"
+  },
+  {
+    id: "mock_v_07",
+    category: "vocab",
+    categoryLabel: "語彙・反対語",
+    level: "standard",
+    question: "«Халуун» гэдэг үгийн эсрэг утгатай үг аль нь вэ?",
+    options: ["хүйтэн", "дулаан", "хурдан", "хямд"],
+    correctAnswer: "хүйтэн",
+    explanation: "«Халуун» は「熱い・暑い」という意味です。その反対語は「冷たい・寒い」を表す «хүйтэн» です。",
+    points: "халуун (暑い・熱い) ⇄ хүйтэн (寒い・冷たい)、дулаан (暖かい)"
+  },
+  {
+    id: "mock_v_08",
+    category: "vocab",
+    categoryLabel: "形容詞",
+    level: "standard",
+    question: "«Амттай» гэдэг үгийн утгыг сонгоно уу.",
+    options: ["美味しい", "甘い", "辛い", "苦い"],
+    correctAnswer: "美味しい",
+    explanation: "«Амттай» は「味（амт）」に有属性接尾辞「-тай」が付いた単語で、「美味しい・味がある」という意味です。",
+    points: "амттай = 美味しい、чихэрлэг / чихэртэй = 甘い、халуун ногоотой = 辛い"
+  },
+
+  // ------------------------------------------------------------
+  // 2. 文法・助詞・格変化 (Хэл зүй, Тийн ялгал / Grammar & Particles)
+  // ------------------------------------------------------------
+  {
+    id: "mock_g_01",
+    category: "grammar",
+    categoryLabel: "格変化・方向格",
+    level: "basic",
+    question: "Би маргааш Монгол ___ явна. Цэгийн оронд тохирох нөхцөлийг сонгоно уу.",
+    options: ["руу", "аас", "д", "тай"],
+    correctAnswer: "руу",
+    explanation: "「〜へ向かう」という方向を表すには方向格の後置詞 «руу / рүү» を用います。モンゴルは男性語なので «руу» が正解です。",
+    points: "Монгол руу явна = モンゴルへ行く。-аас は起点（〜から）、-д は与位格（〜に・で）"
+  },
+  {
+    id: "mock_g_02",
+    category: "grammar",
+    categoryLabel: "格助詞・属格",
+    level: "standard",
+    question: "Энэ бол миний найз___ ном. Цэгийн оронд тохирох属格 (нөхцөл) аль нь вэ?",
+    options: ["-ын", "-ий", "-ний", "-ыг"],
+    correctAnswer: "-ын",
+    explanation: "«найз» は子音で終わる男性語（短母音語幹）であり、属格（〜の）は男性語語尾 «-ын» を接続して «найзын ном（友人の本）» となります。",
+    points: "найз + ын = найзын (友人の)。-ыг は対格（〜を）"
+  },
+  {
+    id: "mock_g_03",
+    category: "grammar",
+    categoryLabel: "過去時制",
+    level: "basic",
+    question: "Би өчигдөр сонирхолтой кино ___. Цэгийн оронд тохирох үгийн хэлбэрийг сонгоно уу.",
+    options: ["үзсэн", "үзнэ", "үзэж байна", "үзэх дуртай"],
+    correctAnswer: "үзсэн",
+    explanation: "文頭に「昨日（өчигдөр）」という過去を表す時間副詞があるため、過去形語尾 «-сан/-сэн/-сон/-сөн» を用いた «үзсэн（見た）» が適切です。",
+    points: "өчигдөр үзсэн = 昨日見た、үзнэ = これから見る（未来・確定）、үзэж байна = 見ている（進行形）"
+  },
+  {
+    id: "mock_g_04",
+    category: "grammar",
+    categoryLabel: "疑問助詞",
+    level: "basic",
+    question: "«Энэ таны үзэг мөн ___?» Цэгийн оронд тохирох асуух сул үгийг сонгоно уу.",
+    options: ["үү", "уу", "бэ", "вэ"],
+    correctAnswer: "үү",
+    explanation: "Yes/No疑問文で、直前の語「мөн」が女性母音語（өө/ө）であるため、女性語用の疑問助詞 «үү» を用います。",
+    points: "男性語: уу, 女性語: үү。疑問詞疑問文には бэ / вэ を使用"
+  },
+  {
+    id: "mock_g_05",
+    category: "grammar",
+    categoryLabel: "進行形",
+    level: "standard",
+    question: "Одоо би ном ___. Цэгийн оронд одоо цагт үргэлжилж буй үйлийг илэрхийлэх хэлбэрийг сонгоно уу.",
+    options: ["уншиж байна", "уншсан", "уншина", "уншвал"],
+    correctAnswer: "уншиж байна",
+    explanation: "「今（одоо）」現在進行している動作を表すため、「動詞語幹 ＋ -ж/-ч байна」の現在進行形を用います。унших の語幹 unsh に -ж байна が接続して «уншиж байна（読んでいる）» となります。",
+    points: "уншиж байна = 読んでいる、уншсан = 読んだ、уншина = 読む予定だ"
+  },
+  {
+    id: "mock_g_06",
+    category: "grammar",
+    categoryLabel: "希望・願望",
+    level: "standard",
+    question: "Би Монгол хоол идэ___ байна. Хүсэх хэлбэрийн нөхцөл аль нь вエ?",
+    options: ["-мээр", "-сан", "-ж", "-дэг"],
+    correctAnswer: "-мээр",
+    explanation: "「〜したい」という願望を表すには「動詞語幹 ＋ -маар/-мээр/-моор/-мөөр байна」を用います。идэх は女性語なので «идмээр байна» となります。",
+    points: "идмээр байна = 食べたい、уншмаар байна = 読みたい"
+  },
+  {
+    id: "mock_g_07",
+    category: "grammar",
+    categoryLabel: "丁寧な命令・依頼",
+    level: "standard",
+    question: "«Цай уу___!» гэж зочноо хүндэтгэн урихад тохирох нөхцөл аль нь вэ?",
+    options: ["-гаарай", "-сан", "-хгүй", "-ж"],
+    correctAnswer: "-гаарай",
+    explanation: "「〜してください・どうぞ〜してください」という丁寧な招待・命令・助言を表すには「動詞語幹 ＋ -аарай/-ээрэй/-оорой/-өөрэй (母音語幹には -гаарай/-гээрей)」を用います。уу- には «-гаарай» が付きます。",
+    points: "Цай уугаарай! = お茶をどうぞ飲んでください！"
+  },
+  {
+    id: "mock_g_08",
+    category: "grammar",
+    categoryLabel: "動詞語幹判定",
+    level: "standard",
+    question: "«Бичих» гэдэг үйл үгийн үндэс (яргаа) нь аль вэ?",
+    options: ["бич", "бичих", "бичнэ", "бичсэн"],
+    correctAnswer: "бич",
+    explanation: "動詞辞書形 «бичих（書く）» から不定詞語尾 «-их» を取り除いた語幹（活用の土台）は «бич-» です。",
+    points: "辞書形: бичих ➔ 語幹: бич"
+  },
+
+  // ------------------------------------------------------------
+  // 3. 会話・シチュエーション応答 (Харилцан яриа / Conversation)
+  // ------------------------------------------------------------
+  {
+    id: "mock_c_01",
+    category: "conversation",
+    categoryLabel: "挨拶と応答",
+    level: "basic",
+    question: "Хүн танд «Сайн байна уу?» гэж мэндлэхэд та хэрхэн хариулах вэ?",
+    options: ["Сайн, та сайн байна уу?", "Баярлалаа", "Баяртай", "Зүгээр ээ"],
+    correctAnswer: "Сайн, та сайн байна уу?",
+    explanation: "«Сайн байна уу?»（こんにちは）と挨拶されたら、「Сайн, та сайн байна уу?（元気です、あなたもお元気ですか？）」と返すのが最も標準的で丁寧な挨拶です。",
+    points: "Сайн байна уу? ➔ Сайн, та сайн байна уу?（こんにちは ➔ 元気です、あなたはお元気ですか？）"
+  },
+  {
+    id: "mock_c_02",
+    category: "conversation",
+    categoryLabel: "御礼と返答",
+    level: "basic",
+    question: "Хэн нэгэн танд «Их баярлалаа!» гэж хэлэхэд та юу гэж хариулах нь зөв бэ?",
+    options: ["Зүгээр ээ", "Баяртай", "Сайн байна", "Тийм"],
+    correctAnswer: "Зүгээр ээ",
+    explanation: "「どうもありがとうございます」とお礼を言われた際の返答としては、「どういたしまして・大丈夫ですよ」を意味する «Зүгээр ээ» が使われます。",
+    points: "Баярлалаа ➔ Зүгээр ээ（ありがとう ➔ どういたしまして）"
+  },
+  {
+    id: "mock_c_03",
+    category: "conversation",
+    categoryLabel: "買い物・価格",
+    level: "standard",
+    question: "Дэлгүүрт барааны үнэ асуухдаа аль өгүүлбэрийг ашиглах вэ?",
+    options: ["Энэ ямар үнэтэй вэ?", "Энэ хаана байдаг вэ?", "Та хэн бэ?", "Цаг хэд болж байна вэ?"],
+    correctAnswer: "Энэ ямар үнэтэй вэ?",
+    explanation: "「これはいくらですか？」と値段を尋ねる表現は «Энэ ямар үнэтэй вэ?» または «Энэ хэд вэ?» です。",
+    points: "ямар үнэтэй вэ? = いくらですか、хаана байдаг вэ? = どこにありますか、цаг хэд болж байна вэ? = 何時ですか"
+  },
+  {
+    id: "mock_c_04",
+    category: "conversation",
+    categoryLabel: "出身・国籍",
+    level: "basic",
+    question: "«Та хаанаас ирсэн бэ?» гэсэн асуултад хэрхэн зөв хариулах вэ?",
+    options: ["Би Японоос ирсэн.", "Би Монголд явна.", "Би 22 настай.", "Би оюутан байна."],
+    correctAnswer: "Би Японоос ирсэн.",
+    explanation: "«Хаанаас ирсэн бэ?（どこから来ましたか？）» という質問に対しては、出身国に奪格「-аас/-ээс（〜から）」をつけた «Би Японоос ирсэн（私は日本から来ました）» と答えます。",
+    points: "Хаанаас ирсэн бэ? = どこから来ましたか ➔ 〜аас ирсэн = 〜から来ました"
+  },
+  {
+    id: "mock_c_05",
+    category: "conversation",
+    categoryLabel: "初対面・挨拶",
+    level: "basic",
+    question: "Анх уулзсан хүнтэй танилцахдаа юу гэж хэлдэг вэ?",
+    options: ["Танилцсандаа баяртай байна.", "Маргааш уулзъя.", "Зүгээр ээ.", "Оройн мэнд."],
+    correctAnswer: "Танилцсандаа баяртай байна.",
+    explanation: "初対面の人と挨拶を交わす際、「お会いできて嬉しいです・はじめまして」の意味で «Танилцсандаа баяртай байна» と言います。",
+    points: "Танилцсандаа баяртай байна = はじめまして、お会いできて光栄です"
+  },
+
+  // ------------------------------------------------------------
+  // 4. 口頭試問・自己紹介読解 (Аман шалгалт / Oral Interview Topics)
+  // ------------------------------------------------------------
+  {
+    id: "mock_i_01",
+    category: "interview",
+    categoryLabel: "自己紹介・出身",
+    level: "basic",
+    question: "Кахо Японы ямар хотод төрсөн бэ?",
+    options: ["Сайтама мужийн Сока хотод", "Токио хотод", "Осака хотод", "Хоккайдод"],
+    correctAnswer: "Сайтама мужийн Сока хотод",
+    explanation: "自己紹介（Миний тухай）の本文に「Би Сайтама мужийн Сока хотод төрсөн.（私は埼玉県草加市で生まれました）」と書かれています。",
+    points: "Сока хот нь Токио хоттой их ойрхон байдаг（草加市は東京ととても近い）"
+  },
+  {
+    id: "mock_i_02",
+    category: "interview",
+    categoryLabel: "大学・専門分野",
+    level: "standard",
+    question: "Кахо их сургуульд ямар чиглэлээр суралцсан бэ?",
+    options: ["Криминологи буюу гэмт хэрэг судлал", "Эдийн засаг", "Анагаах ухаан", "Монгол судлал"],
+    correctAnswer: "Криминологи буюу гэмт хэрэг судлал",
+    explanation: "「Би их сургуульд криминологи буюу гэмт хэргийн тухай сурсан.」とあり、犯罪学（クリミノロジー）を専攻しました。",
+    points: "гэмт хэрэг, хүүхдийн хөгжил, нийгмийн олон асуудлыг сонирхдог"
+  },
+  {
+    id: "mock_i_03",
+    category: "interview",
+    categoryLabel: "派遣先・活動地域",
+    level: "standard",
+    question: "Кахо Монгол улсад очоод ямар аймагт ажиллах вэ?",
+    options: ["Дорнод аймагт", "Хэнтий аймагт", "Сэлэнгэ аймагт", "Өмнөговь аймагт"],
+    correctAnswer: "Дорнод аймагт",
+    explanation: "「Би Монголд очоод, Дорнод аймгийн Чойбалсан хотод байрлах төвд ажиллана.」とあり、ドルノド県チョイバルサン市で活動します。",
+    points: "Дорнод аймаг = ドルノド県（モンゴル東部）"
+  },
+  {
+    id: "mock_i_04",
+    category: "interview",
+    categoryLabel: "配属先機関",
+    level: "advanced",
+    question: "Кахо Чойбалсан хотод ямар байгууллагад ажиллах вэ?",
+    options: [
+      "Хүүхэд, гэр бүлийн хөгжил, хамгааллын төв",
+      "Улсын нэгдсэн эмнэлэг",
+      "Их сургуулийн номын сан",
+      "Цэцэрлэгт хүрээлэн"
+    ],
+    correctAnswer: "Хүүхэд, гэр бүлийн хөгжил, хамгааллын төв",
+    explanation: "「Хүүхэд, гэр бүлийн хөгжил, хамгааллын төвд ажиллана.（子ども・家庭開発保護センターで活動します）」と記載されています。",
+    points: "хүүхэд (子ども)、гэр бүл (家族)、хөгжил (開発)、хамгаалал (保護)"
+  },
+  {
+    id: "mock_i_05",
+    category: "interview",
+    categoryLabel: "家族構成",
+    level: "standard",
+    question: "Кахогийн гэр бүл хэдэн хүнтэй вэ?",
+    options: ["Таван хүнтэй", "Гурван хүнтэй", "Дөрвөн хүнтэй", "Зургаан хүнтэй"],
+    correctAnswer: "Таван хүнтэй",
+    explanation: "トピック2「Манай гэр бүл」に「Манай гэр бүл таван хүнтэй. Эмээ, аав, ээж, ах, бид тав хамт байдаг.」とあり、5人家族です。",
+    points: "таван хүнтэй = 5人家族（祖母、父、母、兄、本人）"
+  },
+  {
+    id: "mock_i_06",
+    category: "interview",
+    categoryLabel: "家族・ペット",
+    level: "standard",
+    question: "Аав, ээжийн гэрт байдаг хоёр муурын нэр хэн бэ?",
+    options: ["Фүкү, Чаби", "Мий, Моо", "Гүү, Барс", "Широ, Куро"],
+    correctAnswer: "Фүкү, Чаби",
+    explanation: "「Аав, ээжийн гэрт хоёр хөөрхөн муур байдаг. Муурнуудын нэрийг Фүкү, Чаби гэдэг.」とあり、フクとチャビです。（兄の猫はグー）",
+    points: "муур = 猫、Фүкү ба Чаби"
+  },
+  {
+    id: "mock_i_07",
+    category: "interview",
+    categoryLabel: "出身地・特産品",
+    level: "standard",
+    question: "Сока хот ямар алдартай амттан/хүнсээрээ алдартай вэ?",
+    options: ["Сенбэй (цагаан будааны жигнэмэг)", "Рамен гоймон", "Сүши", "Тэнпүра"],
+    correctAnswer: "Сенбэй (цагаан будааны жиグнэмэг)",
+    explanation: "トピック3「Төрсөн нутгийнхаа тухай」で「Сока хотод сенбэй буюу Японы цагаан будааны жигнэмэг шиг юм байдаг. Сенбэй маш амттай байдаг.」と述べられています。",
+    points: "Сока сенбэй = 草加せんべい（草加市の代表的名物）"
+  },
+  {
+    id: "mock_i_08",
+    category: "interview",
+    categoryLabel: "訓練所生活・スケジュール",
+    level: "standard",
+    question: "Нихонмацү сургалтын төвд өглөө хэдэн цагт босдог вэ?",
+    options: ["Зургаа хагаст (06:30)", "Долоон цагт (07:00)", "Найман цагт (08:00)", "Таван цагт (05:00)"],
+    correctAnswer: "Зургаа хагаст (06:30)",
+    explanation: "トピック4「Нихонмацү сургалтын төвийн амьдрал」で「Би өглөө бүр зургаа хагаст босдог.」とあり、毎朝6時半に起床します。",
+    points: "зургаа хагас = 6時半（06:30）"
+  },
+
+  // ------------------------------------------------------------
+  // 5. 文化・生活・地理 (Соёл, Ахуй амьдрал / Culture & Daily Life)
+  // ------------------------------------------------------------
+  {
+    id: "mock_cu_01",
+    category: "culture",
+    categoryLabel: "首都・地理",
+    level: "basic",
+    question: "Монгол улсын нийслэл хот аль нь вэ?",
+    options: ["Улаанбаатар", "Дархан", "Эрдэнэт", "Чойбалсан"],
+    correctAnswer: "Улаанбаатар",
+    explanation: "モンゴル国の首都（нийслэл）はウランバートル（Улаанбаатар：赤い英雄の意）です。",
+    points: "нийслэл = 首都、Улаанбаатар = ウランバートル"
+  },
+  {
+    id: "mock_cu_02",
+    category: "culture",
+    categoryLabel: "伝統住居",
+    level: "basic",
+    question: "Монголчуудын уламжлалт нүүдэлчдийн сууцыг юу гэж нэрлэдэг вэ?",
+    options: ["Гэр", "Байшин", "Майхан", "Өртөө"],
+    correctAnswer: "Гэр",
+    explanation: "モンゴル遊牧民の伝統的な移動式住居は «Гэр（ゲル）» と呼ばれます。",
+    points: "гэр = 家・ゲル、нүүдэлчин = 遊牧民"
+  },
+  {
+    id: "mock_cu_03",
+    category: "culture",
+    categoryLabel: "伝統飲料",
+    level: "basic",
+    question: "Монголчуудын өдөр тутам уудаг сүүтэй уламжлалт цайг юу гэдэг вэ?",
+    options: ["Сүүтэй цай", "Айраг", "Шар айраг", "Жүүс"],
+    correctAnswer: "Сүүтэй цай",
+    explanation: "モンゴルの伝統的なミルクティーは «Сүүтэй цай（スーテイツァイ）» と呼ばれ、塩や少量のバターを入れて日常的に飲まれます。",
+    points: "сүүтэй цай = スーテーツァイ（伝統ミルクティー）、айраг = 馬乳酒"
+  },
+  {
+    id: "mock_cu_04",
+    category: "culture",
+    categoryLabel: "通貨単位",
+    level: "basic",
+    question: "Монгол улсын үндэсний мөнгөн тэмдэгт (валют) юу вэ?",
+    options: ["Төгрөг", "Иен", "Доллар", "Юань"],
+    correctAnswer: "Төгрөг",
+    explanation: "モンゴル国の通貨単位は «Төгрөг（トゥグルグ / MNT）» です。",
+    points: "төгрөг = トゥグルグ（モンゴル通貨）"
+  },
+  {
+    id: "mock_cu_05",
+    category: "culture",
+    categoryLabel: "五畜・遊牧文化",
+    level: "standard",
+    question: "Монголын «Таван хошуу мал»-д аль амьтан хамаарахгүй вэ?",
+    options: ["Гахай (豚)", "Морь (馬)", "Тэмээ (ラクダ)", "Хонь (羊)"],
+    correctAnswer: "Гахай (豚)",
+    explanation: "モンゴル遊牧の五畜（Таван хошуу мал）は「馬（морь）、ラクダ（тэмээ）、牛（үхэр）、羊（хонь）、ヤギ（ямаа）」の5種です。豚（гахай）は含まれません。",
+    points: "Таван хошуу мал = 五畜（морь, тэмээ, үхэр, хонь, ямаа）"
+  },
+  {
+    id: "mock_cu_06",
+    category: "culture",
+    categoryLabel: "伝統の祝祭",
+    level: "standard",
+    question: "Монголын үндэсний их баяр наадмаар ямар гурван уламжлалт спорт болдог вэ?",
+    options: [
+      "Бөх барилдах, морь уралдах, сур харвах",
+      "Хөлбөмбөг, сагсан бөмбөг, гүйлт",
+      "Цана, тэшүүр, бөх",
+      "Шатар, даам, морь"
+    ],
+    correctAnswer: "Бөх барилдах, морь уралдах, сур харвах",
+    explanation: "毎年7月に開催されるナーダム（Наадам）祭では、「Эрийн гурван наадам（男の三遊戯）」として相撲（бөх）、競馬（морины уралдаан）、弓術（сур харваа）の3競技が行われます。",
+    points: "бөх = モンゴル相撲、морь = 競馬、сур = 弓射"
+  }
+];
+
+/**
+ * 語彙・文法データからモンゴル語質問の4択問題を動的生成するヘルパー
+ */
+function generateDynamicMockQuestions(vocabList, count = 20) {
+  if (!vocabList || vocabList.length < 4) return [];
+
+  const generated = [];
+  const validWords = vocabList.filter(w => w.mongolian && w.japanese && w.mongolian.length >= 2);
+  const shuffled = [...validWords].sort(() => 0.5 - Math.random());
+
+  for (let i = 0; i < Math.min(count, shuffled.length); i++) {
+    const target = shuffled[i];
+    
+    // 他の単語から誤答選択肢を3つ選定
+    const distractorPool = validWords.filter(w => w.id !== target.id && w.japanese !== target.japanese);
+    if (distractorPool.length < 3) continue;
+
+    const chosenDistractors = [...distractorPool].sort(() => 0.5 - Math.random()).slice(0, 3);
+    const options = [
+      target.japanese,
+      chosenDistractors[0].japanese,
+      chosenDistractors[1].japanese,
+      chosenDistractors[2].japanese
+    ].sort(() => 0.5 - Math.random());
+
+    const isVerb = target.pos === '動詞' || target.mongolian.endsWith('х');
+    const qText = isVerb
+      ? `«${target.dictForm || target.mongolian}» гэдэг үйл үгийн утга аль нь вэ?`
+      : `«${target.mongolian}» гэдэг үгийн зөв утгыг сонгоно уу.`;
+
+    generated.push({
+      id: `dyn_mock_${target.id || i}`,
+      category: "vocab",
+      categoryLabel: isVerb ? "動詞・意味" : "単語・意味",
+      level: target.level || "standard",
+      question: qText,
+      options: options,
+      correctAnswer: target.japanese,
+      explanation: `«${target.dictForm || target.mongolian}» は日本語で「${target.japanese}」という意味です。${target.pronunciation ? '【発音: ' + target.pronunciation + '】' : ''}`,
+      points: `正解: ${target.mongolian} = ${target.japanese}`
+    });
+  }
+
+  return generated;
+}
+
+/**
+ * 指定された設定に基づいて模試問題を抽出・構成する
+ */
+function getMockExamQuestions({ count = 20, category = 'all', level = 'all', vocabList = [] } = {}) {
+  let pool = [...MOCK_EXAM_STATIC_QUESTIONS];
+
+  // 動的語彙クイズもプールに追加
+  if (vocabList && vocabList.length >= 4) {
+    const dynamicQuestions = generateDynamicMockQuestions(vocabList, 30);
+    pool = [...pool, ...dynamicQuestions];
+  }
+
+  // カテゴリフィルタ
+  if (category && category !== 'all') {
+    pool = pool.filter(q => q.category === category);
+  }
+
+  // レベルフィルタ
+  if (level && level !== 'all') {
+    pool = pool.filter(q => q.level === level);
+  }
+
+  // シャッフル
+  pool = pool.sort(() => 0.5 - Math.random());
+
+  // 問題数スライス
+  if (count === 'all' || count >= pool.length) {
+    return pool;
+  }
+  return pool.slice(0, parseInt(count, 10) || 20);
+}
+
+
 // === js/services/srs.js ===
 // 間隔反復学習（Spaced Repetition System / 忘却曲線）エンジン
 // SuperMemo SM-2 および FSRS (Free Spaced Repetition Scheduler) の原理に基づく実装
@@ -118964,6 +119466,9 @@ class StorageService {
       }
       if (sanitizedMistake.explanation && (!list[existingIdx].explanation || sanitizedMistake.explanation.length > list[existingIdx].explanation.length)) {
         list[existingIdx].explanation = sanitizedMistake.explanation;
+      }
+      if (sanitizedMistake.options && Array.isArray(sanitizedMistake.options)) {
+        list[existingIdx].options = sanitizedMistake.options;
       }
       itemToSync = list[existingIdx];
     } else {
@@ -126085,6 +126590,7 @@ class Navbar {
       { id: 'grammar_test', label: '文法テスト', icon: '📐' },
       { id: 'declension_test', label: '格変化・活用', icon: '⚡' },
       { id: 'suffix_dojo', label: '語尾・助詞道場', icon: '⚡' },
+      { id: 'mock_exam', label: '総合4択模試', icon: '📝' },
       { id: 'interview_prep', label: '口述試験特訓', icon: '🎙️' },
       { id: 'roleplay', label: '会話ロールプレイ', icon: '🏕️' },
       { id: 'number_master', label: '数字マスター', icon: '🔢' },
@@ -127665,6 +128171,31 @@ class HomeComponent {
             </div>
 
             <!-- 最終口述面接・スピーチ特訓（Сүүлийн шалгалт） -->
+            <!-- 新機能: 総合4択模試（全分野モンゴル語質問） -->
+            <div class="bg-gradient-to-br from-indigo-600/15 via-purple-500/10 to-pink-500/15 rounded-xl p-5 border-2 border-indigo-500 hover:border-indigo-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="mock_exam">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    📝
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-2xs">
+                    新機能 ⚡ 4択模試
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-indigo-700 transition-colors flex items-center gap-1.5">
+                  <span>総合4択模試モード</span>
+                  <span class="text-[10px] bg-indigo-100 text-indigo-800 font-bold px-1.5 py-0.5 rounded-sm">全分野</span>
+                </h4>
+                <p class="text-xs text-slate-500 mt-1.5 leading-relaxed font-medium">
+                  語彙・文法・会話・自己紹介読解・文化の全分野が<strong>モンゴル語で質問される本格4択試験</strong>！間違えた問題は4択のまま忘却曲線・間違いノートに自動収納されます。
+                </p>
+              </div>
+              <div class="mt-4 flex items-center justify-between text-xs font-bold text-indigo-700 group-hover:translate-x-1 transition-transform">
+                <span>模試を開始する</span>
+                <span>→</span>
+              </div>
+            </div>
+
             <div class="bg-gradient-to-br from-emerald-600/15 via-teal-500/10 to-cyan-500/15 rounded-xl p-5 border-2 border-emerald-500 hover:border-emerald-600 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="interview_prep">
               <div>
                 <div class="flex items-center justify-between mb-3">
@@ -142032,6 +142563,712 @@ if (typeof window !== 'undefined') {
 }
 
 
+// === js/components/MockExam.js ===
+// ============================================================
+// 総合4択模試コンポーネント（MockExamComponent）
+// すべてモンゴル語で質問される本格的な総合模試モード
+// ============================================================
+
+
+
+
+
+
+class MockExamComponent {
+  constructor(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+
+    this.state = {
+      view: 'start', // 'start' | 'testing' | 'result'
+      config: {
+        count: 20,
+        category: 'all',
+        level: 'all'
+      },
+      questions: [],
+      currentIndex: 0,
+      currentQuestion: null,
+      hasAnswered: false,
+      userChoice: null,
+      isCorrect: false,
+      results: [],
+      activeKeyHandler: null
+    };
+  }
+
+  render() {
+    this.cleanupKeyHandler();
+    if (this.state.view === 'start') {
+      this.renderStart();
+    } else if (this.state.view === 'testing') {
+      this.renderTesting();
+    } else if (this.state.view === 'result') {
+      this.renderResult();
+    }
+  }
+
+  cleanupKeyHandler() {
+    if (this.state.activeKeyHandler) {
+      window.removeEventListener('keydown', this.state.activeKeyHandler);
+      this.state.activeKeyHandler = null;
+    }
+  }
+
+  // ------------------------------------------------------------
+  // 1. スタート画面（問題数・ジャンル・難易度の設定）
+  // ------------------------------------------------------------
+  renderStart() {
+    const allMistakes = StorageService.getMistakes();
+    const mockMistakes = allMistakes.filter(m => m.type === 'mock_exam' && !m.resolved);
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-6 space-y-6">
+        
+        <!-- ヘッダーカード -->
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
+          <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="relative z-10 space-y-2">
+            <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-amber-200">
+              <span>📝</span>
+              <span>Монгол хэлний цогц сорилго</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight">総合4択模試モード</h1>
+            <p class="text-xs sm:text-sm text-indigo-100 leading-relaxed font-medium">
+              すべての設問が<strong>モンゴル語（キリル文字）</strong>で出題される本格的な4択模擬試験です。<br>
+              語彙・文法・会話・自己紹介読解・文化の全分野から出題され、回答後は詳しい解説で復習できます。
+            </p>
+          </div>
+        </div>
+
+        <!-- 設定フォームカード -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-5">
+          
+          <!-- 問題数選択 -->
+          <div>
+            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2">
+              📊 出題する問題数
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              ${[
+                { label: '10問', val: 10, sub: 'サクッと' },
+                { label: '20問', val: 20, sub: '標準・推奨' },
+                { label: '30問', val: 30, sub: 'しっかり' },
+                { label: '50問', val: 50, sub: '本格模試' },
+                { label: '全問', val: 'all', sub: '限界挑戦' }
+              ].map(opt => `
+                <button type="button" class="btn-select-count p-2.5 rounded-xl border-2 text-center transition-all cursor-pointer select-none ${
+                  this.state.config.count === opt.val
+                    ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200 font-black shadow-xs'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'
+                }" data-count="${opt.val}">
+                  <div class="text-sm font-bold">${opt.label}</div>
+                  <div class="text-[10px] text-slate-400 font-medium">${opt.sub}</div>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- 分野・カテゴリ選択 -->
+          <div>
+            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2">
+              🎯 出題分野
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              ${[
+                { label: '総合ランダム', val: 'all', desc: '全分野からバランスよく' },
+                { label: '語彙・意味', val: 'vocab', desc: '単語・反対語・類義語' },
+                { label: '文法・助詞', val: 'grammar', desc: '格変化・時制・語幹' },
+                { label: '会話・挨拶', val: 'conversation', desc: '日常会話・状況応答' },
+                { label: '口頭試問・読解', val: 'interview', desc: '自己紹介13テーマ読解' },
+                { label: '文化・生活', val: 'culture', desc: '五畜・首都・習慣' }
+              ].map(cat => `
+                <button type="button" class="btn-select-category p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer select-none ${
+                  this.state.config.category === cat.val
+                    ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200 font-bold shadow-xs'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'
+                }" data-category="${cat.val}">
+                  <div class="text-xs font-bold">${cat.label}</div>
+                  <div class="text-[10px] text-slate-400">${cat.desc}</div>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- 難易度選択 -->
+          <div>
+            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2">
+              ⭐ 難易度
+            </label>
+            <div class="grid grid-cols-3 gap-2">
+              ${[
+                { label: 'すべて', val: 'all' },
+                { label: '初級 (Basic)', val: 'basic' },
+                { label: '標準 (Standard)', val: 'standard' }
+              ].map(lvl => `
+                <button type="button" class="btn-select-level p-2 rounded-xl border-2 text-center text-xs font-bold transition-all cursor-pointer select-none ${
+                  this.state.config.level === lvl.val
+                    ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'
+                }" data-level="${lvl.val}">
+                  ${lvl.label}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- 特徴案内 -->
+          <div class="bg-indigo-50/70 dark:bg-indigo-950/30 p-3.5 rounded-xl border border-indigo-100 dark:border-indigo-900/40 space-y-1 text-xs text-indigo-900 dark:text-indigo-200">
+            <div class="font-bold flex items-center gap-1.5">
+              <span>💡</span> 模試モードの特徴
+            </div>
+            <ul class="list-disc list-inside space-y-0.5 text-[11px] text-indigo-800 dark:text-indigo-300">
+              <li>問題文はすべてモンゴル語で提示され、実際の試験感覚で取り組めます。</li>
+              <li>間違えた問題は<strong>4択の選択肢を保持したまま「間違いノート」に自動保存</strong>されます。</li>
+              <li>忘却曲線（SRS）にも4択問題として組み込まれ、定期的に復習できます。</li>
+              <li>回答後は正誤にかかわらず、質問文の日本語訳と詳しい根拠解説が表示されます。</li>
+            </ul>
+          </div>
+
+          <!-- 開始ボタン -->
+          <button type="button" id="btn-start-mock-exam" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black rounded-2xl shadow-lg transition-all active:scale-98 text-base flex items-center justify-center gap-2 cursor-pointer">
+            <span>🚀</span>
+            <span>模試を開始する (${this.state.config.count === 'all' ? '全問' : this.state.config.count + '問'}) →</span>
+          </button>
+
+          ${mockMistakes.length > 0 ? `
+            <button type="button" id="btn-start-mock-mistakes" class="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-200 font-bold rounded-xl border border-rose-200 dark:border-rose-800 text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>🔥</span>
+              <span>間違えた模試問題だけを4択で再特訓 (${mockMistakes.length}問)</span>
+            </button>
+          ` : ''}
+
+        </div>
+
+      </div>
+    `;
+
+    // イベントバインド
+    this.container.querySelectorAll('.btn-select-count').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const c = btn.getAttribute('data-count');
+        this.state.config.count = c === 'all' ? 'all' : parseInt(c, 10);
+        this.renderStart();
+      });
+    });
+
+    this.container.querySelectorAll('.btn-select-category').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.config.category = btn.getAttribute('data-category');
+        this.renderStart();
+      });
+    });
+
+    this.container.querySelectorAll('.btn-select-level').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.config.level = btn.getAttribute('data-level');
+        this.renderStart();
+      });
+    });
+
+    const startBtn = this.container.querySelector('#btn-start-mock-exam');
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        this.startExam();
+      });
+    }
+
+    const mistakesBtn = this.container.querySelector('#btn-start-mock-mistakes');
+    if (mistakesBtn) {
+      mistakesBtn.addEventListener('click', () => {
+        this.startMistakesOnly();
+      });
+    }
+  }
+
+  // ------------------------------------------------------------
+  // 模試開始処理
+  // ------------------------------------------------------------
+  startExam() {
+    const vocab = StorageService.getVocabulary();
+    const questions = getMockExamQuestions({
+      count: this.state.config.count,
+      category: this.state.config.category,
+      level: this.state.config.level,
+      vocabList: vocab
+    });
+
+    if (!questions || questions.length === 0) {
+      alert('該当する模試問題がありませんでした。条件を変更してください。');
+      return;
+    }
+
+    this.state.questions = questions;
+    this.state.currentIndex = 0;
+    this.state.currentQuestion = questions[0];
+    this.state.hasAnswered = false;
+    this.state.userChoice = null;
+    this.state.isCorrect = false;
+    this.state.results = [];
+    this.state.view = 'testing';
+    this.renderTesting();
+  }
+
+  startMistakesOnly() {
+    const allMistakes = StorageService.getMistakes();
+    const mockMistakes = allMistakes.filter(m => m.type === 'mock_exam' && !m.resolved && m.options && m.options.length >= 2);
+
+    if (mockMistakes.length === 0) {
+      alert('現在、未克服の模試間違い問題はありません！');
+      return;
+    }
+
+    this.state.questions = mockMistakes.map(m => ({
+      id: m.id,
+      category: m.category || 'vocab',
+      categoryLabel: '間違い再特訓',
+      question: m.question,
+      options: m.options,
+      correctAnswer: m.correctAnswer,
+      explanation: m.explanation || '間違えた問題の再復習です。',
+      isFromMistakes: true
+    }));
+
+    this.state.currentIndex = 0;
+    this.state.currentQuestion = this.state.questions[0];
+    this.state.hasAnswered = false;
+    this.state.userChoice = null;
+    this.state.isCorrect = false;
+    this.state.results = [];
+    this.state.view = 'testing';
+    this.renderTesting();
+  }
+
+  // ------------------------------------------------------------
+  // 2. 試験実施画面
+  // ------------------------------------------------------------
+  renderTesting() {
+    this.cleanupKeyHandler();
+    const q = this.state.currentQuestion;
+    const idx = this.state.currentIndex;
+    const total = this.state.questions.length;
+    const progressPercent = Math.round(((idx) / total) * 100);
+
+    const categoryBadge = q.categoryLabel || '総合問題';
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-xl mx-auto px-4 py-3 space-y-4">
+        
+        <!-- プログレスバー＆中断ボタン -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center text-xs font-bold text-slate-500">
+            <span class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[11px] font-black">第 ${idx + 1} / ${total} 問</span>
+              <span class="text-slate-400">|</span>
+              <span class="text-indigo-600 font-bold">${categoryBadge}</span>
+            </span>
+            <button type="button" id="btn-quit-mock-test" class="text-slate-400 hover:text-slate-700 cursor-pointer">
+              中断・終了
+            </button>
+          </div>
+          <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+          </div>
+        </div>
+
+        <!-- モンゴル語問題文カード -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm text-center relative overflow-hidden">
+          
+          <div class="flex items-center justify-center gap-2 mb-3">
+            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+              モンゴル語の設問
+            </span>
+            <button type="button" id="btn-mock-speech" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-indigo-100 text-slate-600 hover:text-indigo-700 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="音声を聴く">
+              <span>🔊</span>
+            </button>
+          </div>
+
+          <!-- 設問テキスト（大きく明瞭なキリル文字） -->
+          <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white cyrillic-text leading-relaxed tracking-tight py-2">
+            ${q.question}
+          </div>
+
+          <div class="text-xs text-slate-400 font-medium mt-1">
+            正しいと思う選択肢（A〜D）を1つ選んでください
+          </div>
+        </div>
+
+        <!-- 4つの選択肢エリア -->
+        <div class="grid grid-cols-1 gap-2.5 pt-1">
+          ${q.options.map((opt, oIdx) => {
+            const letter = ['A', 'B', 'C', 'D'][oIdx] || (oIdx + 1);
+            let btnStyle = 'border-slate-200 hover:border-indigo-400 bg-white hover:bg-indigo-50/50 text-slate-800';
+            let badgeStyle = 'bg-slate-100 text-slate-600 group-hover:bg-indigo-600 group-hover:text-white';
+            let iconMark = '';
+
+            if (this.state.hasAnswered) {
+              const isCorrectOpt = isFuzzyMatch(opt, q.correctAnswer);
+              const isUserChoice = isFuzzyMatch(opt, this.state.userChoice);
+
+              if (isCorrectOpt) {
+                btnStyle = 'border-emerald-500 bg-emerald-50 text-emerald-950 ring-2 ring-emerald-300 font-black';
+                badgeStyle = 'bg-emerald-600 text-white';
+                iconMark = '<span class="text-emerald-600 font-black ml-auto">✓ 正解</span>';
+              } else if (isUserChoice) {
+                btnStyle = 'border-rose-400 bg-rose-50 text-rose-950 font-bold';
+                badgeStyle = 'bg-rose-600 text-white';
+                iconMark = '<span class="text-rose-600 font-black ml-auto">✕ あなたの回答</span>';
+              } else {
+                btnStyle = 'border-slate-200 opacity-60 bg-white text-slate-500';
+                badgeStyle = 'bg-slate-100 text-slate-400';
+              }
+            }
+
+            return `
+              <button type="button" class="btn-mock-choice w-full p-4 rounded-xl border-2 ${btnStyle} text-left transition-all flex items-center gap-3.5 select-none ${!this.state.hasAnswered ? 'cursor-pointer active:scale-98 hover:shadow-xs group' : 'cursor-default'}" data-choice="${opt}" ${this.state.hasAnswered ? 'disabled' : ''}>
+                <span class="w-8 h-8 rounded-lg ${badgeStyle} font-black text-sm flex items-center justify-center shrink-0 transition-colors">
+                  ${letter}
+                </span>
+                <span class="text-sm sm:text-base font-bold leading-snug cyrillic-text">
+                  ${opt}
+                </span>
+                ${iconMark}
+              </button>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- 回答後の詳細解説カード（正誤に関わらず必ず展開） -->
+        ${this.state.hasAnswered ? `
+          <div class="animate-fade-in space-y-3 pt-2">
+            
+            <!-- 正誤バナー -->
+            <div class="p-3.5 rounded-2xl border ${
+              this.state.isCorrect
+                ? 'bg-emerald-100 border-emerald-400 text-emerald-950'
+                : 'bg-rose-100 border-rose-300 text-rose-950'
+            } flex items-center justify-between gap-3 shadow-2xs">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">${this.state.isCorrect ? '🎉' : '⚠️'}</span>
+                <div>
+                  <div class="text-base font-black">
+                    ${this.state.isCorrect ? '正解です！（Зөв байна!）' : '不正解です（Буруу байна）'}
+                  </div>
+                  <div class="text-xs font-medium">
+                    ${this.state.isCorrect ? '見事に正解を選びました！' : '間違えた問題は4択のまま間違いノートに自動保存されました。'}
+                  </div>
+                </div>
+              </div>
+              <div class="text-xs font-black px-2.5 py-1 rounded-full ${this.state.isCorrect ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} shrink-0">
+                ${this.state.isCorrect ? '+1 点' : '復習対象'}
+              </div>
+            </div>
+
+            <!-- 解説カード -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3 text-xs">
+              
+              <!-- 設問の日本語訳 -->
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div class="text-[11px] font-black text-slate-500 mb-1 flex items-center gap-1">
+                  <span>🇯🇵</span> 設問の日本語の意味
+                </div>
+                <div class="text-sm font-bold text-slate-800">
+                  ${q.question}
+                </div>
+              </div>
+
+              <!-- 正解のポイントと根拠 -->
+              <div class="space-y-1">
+                <div class="font-black text-slate-700 flex items-center gap-1 text-xs">
+                  <span>💡</span> 正解の根拠・解説
+                </div>
+                <div class="p-3 rounded-xl bg-indigo-50/70 border border-indigo-100 text-indigo-950 text-xs sm:text-sm leading-relaxed">
+                  ${q.explanation || '正解と各選択肢の違いをしっかり確認しましょう。'}
+                </div>
+              </div>
+
+              ${q.points ? `
+                <div class="p-2.5 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-950 text-xs font-medium">
+                  📌 <strong>重要ポイント:</strong> ${q.points}
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- 次へ進むボタン -->
+            <button type="button" id="btn-next-mock-question" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black rounded-2xl shadow-md transition-all active:scale-98 text-base flex items-center justify-center gap-2 cursor-pointer">
+              <span>${idx + 1 < total ? '次の問題へ進む (Enter) →' : '模試の結果を見る 🏆 →'}</span>
+            </button>
+
+          </div>
+        ` : ''}
+
+      </div>
+    `;
+
+    // イベントバインド
+    const quitBtn = this.container.querySelector('#btn-quit-mock-test');
+    if (quitBtn) {
+      quitBtn.addEventListener('click', () => {
+        if (confirm('模試を中断してスタート画面に戻りますか？')) {
+          this.state.view = 'start';
+          this.render();
+        }
+      });
+    }
+
+    // 音声読み上げボタン
+    const speechBtn = this.container.querySelector('#btn-mock-speech');
+    if (speechBtn) {
+      speechBtn.addEventListener('click', () => {
+        SpeechService.speak(q.question);
+      });
+    }
+
+    if (!this.state.hasAnswered) {
+      const choiceBtns = this.container.querySelectorAll('.btn-mock-choice');
+      choiceBtns.forEach((btn, cIdx) => {
+        btn.addEventListener('click', () => {
+          const choice = btn.getAttribute('data-choice');
+          this.submitAnswer(choice);
+        });
+      });
+
+      // キーボードショートカット（1, 2, 3, 4 または A, B, C, D）
+      this.state.activeKeyHandler = (e) => {
+        const key = e.key.toUpperCase();
+        const map = { '1': 0, '2': 1, '3': 2, '4': 3, 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+        if (map[key] !== undefined && choiceBtns[map[key]]) {
+          e.preventDefault();
+          choiceBtns[map[key]].click();
+        }
+      };
+      window.addEventListener('keydown', this.state.activeKeyHandler);
+    } else {
+      const nextBtn = this.container.querySelector('#btn-next-mock-question');
+      if (nextBtn) {
+        let allowEnter = false;
+        setTimeout(() => { allowEnter = true; }, 400);
+
+        nextBtn.addEventListener('click', () => {
+          this.nextQuestion();
+        });
+
+        this.state.activeKeyHandler = (e) => {
+          if (e.key === 'Enter') {
+            if (!allowEnter) return;
+            e.preventDefault();
+            nextBtn.click();
+          }
+        };
+        window.addEventListener('keydown', this.state.activeKeyHandler);
+      }
+    }
+  }
+
+  // ------------------------------------------------------------
+  // 回答判定処理
+  // ------------------------------------------------------------
+  submitAnswer(choice) {
+    const q = this.state.currentQuestion;
+    const isCorrect = isFuzzyMatch(choice, q.correctAnswer);
+
+    this.state.hasAnswered = true;
+    this.state.userChoice = choice;
+    this.state.isCorrect = isCorrect;
+
+    this.state.results.push({
+      question: q,
+      userChoice: choice,
+      isCorrect: isCorrect
+    });
+
+    if (isCorrect) {
+      SoundEffects.playCorrect();
+      // もし間違いノートからの再特訓だった場合は克服処理
+      if (q.isFromMistakes) {
+        StorageService.recordMistakeAnswer(q, true);
+      }
+    } else {
+      SoundEffects.playWrong();
+      // 間違いノートへ「4択選択肢 options」を保持したまま収納！
+      StorageService.recordMistake({
+        question: q.question,
+        options: q.options,
+        correctAnswer: q.correctAnswer,
+        userAnswer: choice,
+        type: 'mock_exam',
+        category: q.categoryLabel || '4択模試',
+        explanation: `${q.explanation || ''} 【ポイント】${q.points || ''}`
+      });
+    }
+
+    scrollToQuizTop(this.container);
+    this.renderTesting();
+  }
+
+  nextQuestion() {
+    this.cleanupKeyHandler();
+    scrollToQuizTop(this.container);
+    if (this.state.currentIndex + 1 < this.state.questions.length) {
+      this.state.currentIndex += 1;
+      this.state.currentQuestion = this.state.questions[this.state.currentIndex];
+      this.state.hasAnswered = false;
+      this.state.userChoice = null;
+      this.state.isCorrect = false;
+      this.renderTesting();
+    } else {
+      this.state.view = 'result';
+      this.renderResult();
+    }
+  }
+
+  // ------------------------------------------------------------
+  // 3. 結果発表画面
+  // ------------------------------------------------------------
+  renderResult() {
+    this.cleanupKeyHandler();
+    const results = this.state.results;
+    const total = results.length;
+    const correctCount = results.filter(r => r.isCorrect).length;
+    const wrongCount = total - correctCount;
+    const score = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+    const isPassed = score >= 80;
+
+    // 学習履歴に記録
+    StorageService.recordHistory({
+      type: 'mock_exam',
+      category: '総合4択模試',
+      total: total,
+      correct: correctCount,
+      score: score
+    });
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-xl mx-auto px-4 py-6 space-y-6">
+        
+        <!-- 結果サマリーカード -->
+        <div class="bg-gradient-to-r ${isPassed ? 'from-emerald-600 to-teal-600' : 'from-indigo-600 to-purple-600'} rounded-3xl p-6 text-white text-center shadow-lg relative overflow-hidden">
+          <div class="space-y-2">
+            <div class="inline-flex items-center gap-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold">
+              <span>${isPassed ? '🎉 模試合格' : '📝 模試完了'}</span>
+            </div>
+            <div class="text-5xl sm:text-6xl font-black tracking-tight my-2">
+              ${score}<span class="text-2xl font-bold">点</span>
+            </div>
+            <p class="text-sm font-bold text-white/90">
+              ${isPassed ? '素晴らしいスコアです！合格基準（80点）を達成しました！' : 'お疲れ様でした！間違えた問題を復習して次回80点以上を目指しましょう！'}
+            </p>
+          </div>
+
+          <!-- スコア詳細バッジ -->
+          <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-white/20 text-xs">
+            <div>
+              <div class="text-white/70">出題数</div>
+              <div class="text-lg font-black">${total}問</div>
+            </div>
+            <div>
+              <div class="text-emerald-200">正解</div>
+              <div class="text-lg font-black text-emerald-100">${correctCount}問</div>
+            </div>
+            <div>
+              <div class="text-rose-200">不正解</div>
+              <div class="text-lg font-black text-rose-100">${wrongCount}問</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- アクションボタン -->
+        <div class="space-y-2.5">
+          ${wrongCount > 0 ? `
+            <button type="button" id="btn-retry-mock-mistakes" class="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl shadow-md transition-all active:scale-98 text-sm flex items-center justify-center gap-2 cursor-pointer">
+              <span>🔥</span>
+              <span>間違えた問題（${wrongCount}問）を4択のまま再特訓する</span>
+            </button>
+          ` : ''}
+
+          <button type="button" id="btn-restart-mock" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-sm transition-all active:scale-98 text-sm flex items-center justify-center gap-2 cursor-pointer">
+            <span>🔄</span>
+            <span>別の設定で模試を受ける</span>
+          </button>
+
+          <button type="button" id="btn-back-home" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all active:scale-98 text-sm flex items-center justify-center gap-2 cursor-pointer">
+            <span>🏠</span>
+            <span>ホームに戻る</span>
+          </button>
+        </div>
+
+        <!-- 全問題の振り返りリスト -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+          <h3 class="text-sm font-black text-slate-800 flex items-center gap-1.5">
+            <span>📋</span> 解答一覧と詳細解説
+          </h3>
+
+          <div class="space-y-3">
+            ${results.map((r, rIdx) => `
+              <div class="p-3.5 rounded-xl border ${r.isCorrect ? 'border-emerald-200 bg-emerald-50/20' : 'border-rose-200 bg-rose-50/20'} space-y-2 text-xs">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-5 h-5 rounded-full ${r.isCorrect ? 'bg-emerald-600' : 'bg-rose-600'} text-white text-[10px] font-black flex items-center justify-center">
+                      ${r.isCorrect ? '✓' : '✕'}
+                    </span>
+                    <span class="font-bold text-slate-800 cyrillic-text">第 ${rIdx + 1} 問: ${r.question.question}</span>
+                  </div>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full ${r.isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'} font-bold shrink-0">
+                    ${r.isCorrect ? '正解' : '不正解'}
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px] pt-1">
+                  <div>正解: <strong class="text-emerald-700 font-bold">${r.question.correctAnswer}</strong></div>
+                  <div>あなたの回答: <strong class="${r.isCorrect ? 'text-emerald-700' : 'text-rose-700'} font-bold">${r.userChoice}</strong></div>
+                </div>
+
+                <div class="p-2 bg-white rounded-lg border border-slate-200 text-[11px] text-slate-600 leading-relaxed">
+                  ${r.question.explanation}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    // イベントバインド
+    const retryMistakesBtn = this.container.querySelector('#btn-retry-mock-mistakes');
+    if (retryMistakesBtn) {
+      retryMistakesBtn.addEventListener('click', () => {
+        const wrongQuestions = results.filter(r => !r.isCorrect).map(r => r.question);
+        this.state.questions = wrongQuestions;
+        this.state.currentIndex = 0;
+        this.state.currentQuestion = wrongQuestions[0];
+        this.state.hasAnswered = false;
+        this.state.userChoice = null;
+        this.state.isCorrect = false;
+        this.state.results = [];
+        this.state.view = 'testing';
+        this.renderTesting();
+      });
+    }
+
+    const restartBtn = this.container.querySelector('#btn-restart-mock');
+    if (restartBtn) {
+      restartBtn.addEventListener('click', () => {
+        this.state.view = 'start';
+        this.render();
+      });
+    }
+
+    const backHomeBtn = this.container.querySelector('#btn-back-home');
+    if (backHomeBtn) {
+      backHomeBtn.addEventListener('click', () => {
+        if (this.onNavigate) this.onNavigate('home');
+      });
+    }
+  }
+}
+
+
 // === js/components/NumberMasterTest.js ===
 // 数字・金額・時刻・日付スピードマスターコンポーネント
 
@@ -151179,7 +152416,24 @@ class ReviewNotebookComponent {
     let displayPrefix = '';
     let promptText = '';
 
-    const isExplicitNonWord = item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review';
+    const is4ChoiceItem = item && item.options && Array.isArray(item.options) && item.options.length >= 2;
+    const isExplicitNonWord = is4ChoiceItem || (item && item.type && item.type !== 'word' && item.type !== 'looked_up' && item.type !== 'due_review');
+
+    if (is4ChoiceItem) {
+      return {
+        promptText: item.question || cleanRawQ,
+        displayPrefix: '【4択模試】',
+        categoryLabel: item.category ? `【${item.category}】正しい選択肢を選んでください` : 'モンゴル語の設問に合う正しい選択肢を選んでください',
+        isCyrillicAnswer: false,
+        placeholder: '選択肢を選んでください',
+        subHint: item.explanation ? '💡 設問と4つの選択肢をよく読んで選んでください' : '',
+        matchedWord: null,
+        details: null,
+        isVerb: false,
+        isExplicitNonWord: true,
+        is4Choice: true
+      };
+    }
 
     // 単語マスターとマッチした場合、常にクリーンな見出し情報から出題を構成（ただし明示的に文法・格変化・読解などの非単語問題の場合は問題文を優先）
     if (matchedWord && !isExplicitNonWord) {
@@ -151399,22 +152653,45 @@ class ReviewNotebookComponent {
           ` : ''}
         </div>
 
-        <!-- 回答エリア -->
+        <!-- 回答エリア（4択問題または通常入力） -->
         ${!this.state.hasAnswered ? `
-          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3">
-            <input type="text" id="input-review-answer" 
-              class="w-full text-base sm:text-lg p-3 rounded-xl border-2 border-slate-300 focus:border-rose-500 focus:outline-hidden text-center font-bold text-slate-800 cyrillic-text cyrillic-input" 
-              placeholder="${parsed.placeholder}" 
-              data-cyrillic="${parsed.isCyrillicAnswer ? 'true' : 'false'}"
-              autofocus autocomplete="off">
+          ${(item.options && Array.isArray(item.options) && item.options.length >= 2) ? `
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3">
+              <div class="text-xs font-bold text-slate-500 text-center mb-1">
+                正しいと思う選択肢を選んでください（1〜4キー対応）
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                ${item.options.map((opt, oIdx) => {
+                  const letter = ['A', 'B', 'C', 'D'][oIdx] || (oIdx + 1);
+                  return `
+                    <button type="button" class="btn-review-choice w-full p-3.5 rounded-xl border-2 border-slate-200 hover:border-rose-400 bg-white hover:bg-rose-50/50 text-left transition-all flex items-center gap-3 select-none cursor-pointer active:scale-98 group shadow-2xs" data-choice="${opt}">
+                      <span class="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-rose-600 group-hover:text-white font-black text-xs text-slate-600 flex items-center justify-center shrink-0 transition-colors">
+                        ${letter}
+                      </span>
+                      <span class="text-sm font-bold text-slate-800 leading-snug cyrillic-text">
+                        ${opt}
+                      </span>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          ` : `
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3">
+              <input type="text" id="input-review-answer" 
+                class="w-full text-base sm:text-lg p-3 rounded-xl border-2 border-slate-300 focus:border-rose-500 focus:outline-hidden text-center font-bold text-slate-800 cyrillic-text cyrillic-input" 
+                placeholder="${parsed.placeholder}" 
+                data-cyrillic="${parsed.isCyrillicAnswer ? 'true' : 'false'}"
+                autofocus autocomplete="off">
 
-            <!-- PC標準モンゴル語キーボード＆特有文字パレット（キリル文字回答時） -->
-            ${parsed.isCyrillicAnswer ? renderCyrillicInputAssistantHTML('input-review-answer', true) : ''}
+              <!-- PC標準モンゴル語キーボード＆特有文字パレット（キリル文字回答時） -->
+              ${parsed.isCyrillicAnswer ? renderCyrillicInputAssistantHTML('input-review-answer', true) : ''}
 
-            <button type="button" id="btn-submit-review" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm cursor-pointer">
-              回答する（Enter）
-            </button>
-          </div>
+              <button type="button" id="btn-submit-review" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-98 text-sm cursor-pointer">
+                回答する（Enter）
+              </button>
+            </div>
+          `}
         ` : `
           <div class="animate-fade-in space-y-4">
             <div class="p-5 rounded-2xl border ${this.state.isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100' : 'bg-rose-50 dark:bg-rose-950/50 border-rose-300 dark:border-rose-900/60 text-rose-950 dark:text-rose-100'} shadow-sm">
@@ -151583,6 +152860,26 @@ class ReviewNotebookComponent {
     }
 
     if (!this.state.hasAnswered) {
+      const choiceBtns = this.container.querySelectorAll('.btn-review-choice');
+      if (choiceBtns.length > 0) {
+        choiceBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const choice = btn.getAttribute('data-choice');
+            this.checkReviewAnswer(choice);
+          });
+        });
+
+        this.activeKeyHandler = (e) => {
+          const key = e.key.toUpperCase();
+          const map = { '1': 0, '2': 1, '3': 2, '4': 3, 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+          if (map[key] !== undefined && choiceBtns[map[key]]) {
+            e.preventDefault();
+            choiceBtns[map[key]].click();
+          }
+        };
+        window.addEventListener('keydown', this.activeKeyHandler);
+      }
+
       const input = this.container.querySelector('#input-review-answer');
       const submitBtn = this.container.querySelector('#btn-submit-review');
 
@@ -154169,6 +155466,7 @@ class ReferenceGuideComponent {
 
 
 
+
 class App {
   static currentTab = 'home';
 
@@ -154416,6 +155714,10 @@ class App {
         break;
       case 'pronunciation_test':
         PronunciationTestComponent.render(mainContainer, onNavigate);
+        break;
+      case 'mock_exam':
+        const mockExam = new MockExamComponent(mainContainer, onNavigate);
+        mockExam.render();
         break;
       case 'interview_prep':
         InterviewMasterComponent.render(mainContainer, onNavigate);
