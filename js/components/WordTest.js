@@ -351,11 +351,11 @@ export class WordTestComponent {
       if (isV) {
         if (verbForm === 'dict') {
           questionPrompt = "日本語に合う動詞の【辞書形（〜х）】をキリル文字で入力してください";
-          questionMain = `${q.japanese}（辞書形）`;
+          questionMain = q.japanese;
           subHint = "【品詞: 動詞】見出し語となる【辞書形（〜х）】を回答（語尾 -ах / -эх 等を含める）";
         } else {
           questionPrompt = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
-          questionMain = `${q.japanese}（語幹）`;
+          questionMain = q.japanese;
           subHint = "【品詞: 動詞】活用の土台となる【語幹】を回答（語尾-ахや括弧は不要）";
         }
       } else {
@@ -396,7 +396,7 @@ export class WordTestComponent {
           questionPrompt = "日本語に合う正しいモンゴル語（キリル文字）を選択してください";
           subHint = q.pos ? `【品詞: ${q.pos}】` : '';
         }
-        questionMain = isV ? `${q.japanese}（${verbForm === 'dict' ? '辞書形' : '語幹'}）` : q.japanese;
+        questionMain = q.japanese;
       } else {
         if (isV) {
           if (verbForm === 'dict') {
@@ -433,7 +433,7 @@ export class WordTestComponent {
       } else {
         questionPrompt = "イラストに合うモンゴル語（キリル文字）を入力してください";
       }
-      questionMain = q.svg ? `<div class="w-32 h-32 mx-auto drop-shadow-md select-none">${q.svg}</div>${isV ? `<div class="mt-2 text-xl font-black text-slate-800">（${verbForm === 'dict' ? '辞書形' : '語幹'}）</div>` : ''}` : (isV ? `${q.japanese}（${verbForm === 'dict' ? '辞書形' : '語幹'}）` : q.japanese);
+      questionMain = q.svg ? `<div class="w-32 h-32 mx-auto drop-shadow-md select-none">${q.svg}</div>` : q.japanese;
       subHint = q.category ? `【${q.category}】${q.hint ? ' 💡 ' + q.hint : ''}` : '';
       isCyrillicInput = true;
     }

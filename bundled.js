@@ -123451,11 +123451,11 @@ class WordTestComponent {
       if (isV) {
         if (verbForm === 'dict') {
           questionPrompt = "日本語に合う動詞の【辞書形（〜х）】をキリル文字で入力してください";
-          questionMain = `${q.japanese}（辞書形）`;
+          questionMain = q.japanese;
           subHint = "【品詞: 動詞】見出し語となる【辞書形（〜х）】を回答（語尾 -ах / -эх 等を含める）";
         } else {
           questionPrompt = "日本語に合う動詞の【語幹】をキリル文字で入力してください";
-          questionMain = `${q.japanese}（語幹）`;
+          questionMain = q.japanese;
           subHint = "【品詞: 動詞】活用の土台となる【語幹】を回答（語尾-ахや括弧は不要）";
         }
       } else {
@@ -123496,7 +123496,7 @@ class WordTestComponent {
           questionPrompt = "日本語に合う正しいモンゴル語（キリル文字）を選択してください";
           subHint = q.pos ? `【品詞: ${q.pos}】` : '';
         }
-        questionMain = isV ? `${q.japanese}（${verbForm === 'dict' ? '辞書形' : '語幹'}）` : q.japanese;
+        questionMain = q.japanese;
       } else {
         if (isV) {
           if (verbForm === 'dict') {
@@ -123533,7 +123533,7 @@ class WordTestComponent {
       } else {
         questionPrompt = "イラストに合うモンゴル語（キリル文字）を入力してください";
       }
-      questionMain = q.svg ? `<div class="w-32 h-32 mx-auto drop-shadow-md select-none">${q.svg}</div>${isV ? `<div class="mt-2 text-xl font-black text-slate-800">（${verbForm === 'dict' ? '辞書形' : '語幹'}）</div>` : ''}` : (isV ? `${q.japanese}（${verbForm === 'dict' ? '辞書形' : '語幹'}）` : q.japanese);
+      questionMain = q.svg ? `<div class="w-32 h-32 mx-auto drop-shadow-md select-none">${q.svg}</div>` : q.japanese;
       subHint = q.category ? `【${q.category}】${q.hint ? ' 💡 ' + q.hint : ''}` : '';
       isCyrillicInput = true;
     }
@@ -143154,10 +143154,9 @@ class ReviewNotebookComponent {
           hintText = '【品詞: 動詞】見出し語となる辞書形（語尾-хを含める）を回答';
         }
       }
-      const mainText = isVerbQ ? `${rawJa}（${verbForm === 'root' ? '語幹' : '辞書形'}）` : rawJa;
       return {
-        promptText: mainText,
-        displayPrefix: promptPrefix,
+        promptText: rawJa,
+        displayPrefix: '【単語】',
         categoryLabel: `復習期日到来（忘却曲線）${item.sourceLabel ? ' - ' + item.sourceLabel : ''}`,
         isCyrillicAnswer: true,
         placeholder: promptHolder,
@@ -143175,13 +143174,12 @@ class ReviewNotebookComponent {
 
     // 単語マスターとマッチした場合、常にクリーンな見出し情報から出題を構成（ただし明示的に文法・格変化・読解などの非単語問題の場合は問題文を優先）
     if (matchedWord && !isExplicitNonWord) {
-      const verbForm = item._verbTargetForm || 'dict';
       if (isCyrillicAns) {
-        displayPrefix = isV ? (verbForm === 'root' ? '【動詞語幹】' : '【動詞辞書形】') : '【単語】';
-        promptText = isV ? `${matchedWord.japanese}（${verbForm === 'root' ? '語幹' : '辞書形'}）` : matchedWord.japanese;
+        displayPrefix = '【単語】';
+        promptText = matchedWord.japanese;
       } else {
         displayPrefix = '【日本語訳】';
-        promptText = isV ? (verbForm === 'root' ? `${details.root}-（語幹）` : `${details.dictForm}（辞書形）`) : (details.dictForm || matchedWord.mongolian);
+        promptText = details.dictForm || matchedWord.mongolian;
       }
     } else {
       // 単語マスター以外の問題（文法・格変化・読解・リスニング等）の場合
