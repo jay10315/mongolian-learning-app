@@ -3,8 +3,8 @@
 import { SpeechService } from '../services/speech.js';
 import { StorageService } from '../services/storage.js';
 import { GamificationService } from '../services/gamification.js';
-import { interviewTopics } from '../data/interviewTopics.js';
-import { isFuzzyMatch, SoundEffects, renderClickableWordsHTML, findWordInDictionary, showUniversalWordModal } from '../utils/helpers.js';
+import { interviewTopics, interviewVocabulary } from '../data/interviewTopics.js';
+import { isFuzzyMatch, SoundEffects, renderClickableWordsHTML, findWordInDictionary, showUniversalWordModal, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant, shuffleArray } from '../utils/helpers.js';
 
 export class InterviewMasterComponent {
   static currentTopicIndex = 0;
@@ -40,6 +40,16 @@ export class InterviewMasterComponent {
   static typingShowHint = false;
   static typingCompleted = {};
   static typingMistakes = [];
+
+  // Step 5: 出題単語全問テスト用状態（ここに出てきた単語のみ特訓）
+  static vocabQuizIndex = 0;
+  static vocabScope = 'current'; // 'current' | 'all'
+  static vocabUserInput = '';
+  static vocabHasAnswered = false;
+  static vocabIsCorrect = false;
+  static vocabShowHint = false;
+  static vocabMistakes = [];
+  static vocabActiveList = [];
 
   static render(container, onNavigate) {
     this.container = container;
@@ -199,6 +209,12 @@ export class InterviewMasterComponent {
               data-step="4"
               class="step-tab-btn pb-3 px-2 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${this.currentStep === 4 ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-800'}">
               <span>⏱️ Step 4: 4分スピーチ実践</span>
+            </button>
+            <button
+              type="button"
+              data-step="5"
+              class="step-tab-btn pb-3 px-2 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${this.currentStep === 5 ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-800'}">
+              <span>📝 Step 5: 出題単語テスト</span>
             </button>
           </div>
 
@@ -858,6 +874,272 @@ export class InterviewMasterComponent {
     `;
   }
 
+  // Step 5: 出題単語テスト用の単語リスト初期化
+  static initVocabList(topic, forceReset = false) {
+    if (this.vocabActiveList && this.vocabActiveList.length > 0 && !forceReset) {
+      return this.vocabActiveList;
+    }
+    let list = [];
+    if (this.vocabScope === 'current') {
+      list = interviewVocabulary.filter(w => (w.topicIds || []).includes(topic.id));
+      if (!list || list.length === 0) {
+        list = (topic.vocabulary || []).map((v, i) => ({
+          id: `iv_fallback_${topic.id}_${i}`,
+          mongolian: v.mn,
+          dictForm: v.mn,
+          japanese: v.ja,
+          pos: v.pos || '単語',
+          pronunciation: v.pron || '',
+          topicIds: [topic.id],
+          exampleMn: topic.sentences[0] ? topic.sentences[0].mn : '',
+          exampleJa: topic.sentences[0] ? topic.sentences[0].ja : ''
+        }));
+      }
+    } else {
+      list = [...interviewVocabulary];
+    }
+    this.vocabActiveList = shuffleArray([...list]);
+    this.vocabQuizIndex = 0;
+    this.vocabUserInput = '';
+    this.vocabHasAnswered = false;
+    this.vocabIsCorrect = false;
+    this.vocabShowHint = false;
+    this.vocabMistakes = [];
+    return this.vocabActiveList;
+  }
+
+  // Step 5: 出題単語特訓テスト メイン画面描画
+  static renderStep5(topic) {
+    const activeList = this.initVocabList(topic);
+    const totalCount = activeList.length;
+    const isCompleted = this.vocabQuizIndex >= totalCount;
+
+    const currentTopicWords = interviewVocabulary.filter(w => (w.topicIds || []).includes(topic.id));
+    const currentCount = currentTopicWords.length || (topic.vocabulary || []).length;
+    const allCount = interviewVocabulary.length;
+
+    // 全問完了結果画面
+    if (isCompleted) {
+      const correctCount = totalCount - (this.vocabMistakes ? this.vocabMistakes.length : 0);
+      const accuracy = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 100;
+      return `
+        <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl text-center space-y-5 animate-bounce-in">
+          <div class="text-6xl mb-1">🎉🏆</div>
+          <h3 class="text-xl sm:text-2xl font-black">口頭試験 出題単語テスト 完了！</h3>
+          <p class="text-xs sm:text-sm text-emerald-100 max-w-lg mx-auto leading-relaxed">
+            ${this.vocabScope === 'current' ? `テーマ「${topic.titleJa}」の出題単語全 ${totalCount} 語` : `口頭試験13テーマの全出題単語 ${totalCount} 語`} のテストを完走しました！
+          </p>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-md mx-auto">
+            <div class="bg-white/15 backdrop-blur-xs rounded-2xl p-3 border border-white/20">
+              <div class="text-xs text-emerald-200">問題数</div>
+              <div class="text-xl font-black">${totalCount} 問</div>
+            </div>
+            <div class="bg-white/15 backdrop-blur-xs rounded-2xl p-3 border border-white/20">
+              <div class="text-xs text-emerald-200">正解数</div>
+              <div class="text-xl font-black text-emerald-300">${correctCount} 問</div>
+            </div>
+            <div class="col-span-2 sm:col-span-1 bg-white/15 backdrop-blur-xs rounded-2xl p-3 border border-white/20">
+              <div class="text-xs text-emerald-200">正解率</div>
+              <div class="text-xl font-black">${accuracy}%</div>
+            </div>
+          </div>
+
+          ${(this.vocabMistakes && this.vocabMistakes.length > 0) ? `
+            <div class="p-4 bg-white/95 dark:bg-slate-900/90 rounded-2xl border border-rose-300 text-left space-y-3 text-slate-800 dark:text-slate-200">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-rose-700 flex items-center gap-1.5">
+                  <span>🔥</span> 間違えた単語 (${this.vocabMistakes.length}件)
+                </span>
+                <span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full">間違いノートに保存済</span>
+              </div>
+              <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                ${this.vocabMistakes.map(m => `
+                  <div class="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200 text-xs space-y-1">
+                    <div class="font-bold text-slate-700">🇯🇵 ${m.ja}</div>
+                    <div class="text-emerald-700 font-bold cyrillic-text">正解: ${m.mn} ${m.pron ? `[${m.pron}]` : ''}</div>
+                    <div class="text-rose-600">入力: <span class="line-through">${m.user}</span></div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                <button type="button" id="btn-retry-vocab-mistakes" class="flex-1 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                  <span>🔄 間違えた ${this.vocabMistakes.length} 語だけ再テスト</span>
+                </button>
+                <button type="button" id="btn-goto-mistakes-from-vocab" class="flex-1 py-2 bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                  <span>🔥 ホームの間違いノートへ →</span>
+                </button>
+              </div>
+            </div>
+          ` : `
+            <div class="p-3 bg-emerald-500/20 border border-emerald-300 rounded-xl text-xs text-emerald-100 font-bold">
+              🌟 全問パーフェクト！口頭試験の出題単語を完璧にマスターしました！
+            </div>
+          `}
+
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button
+              type="button"
+              id="btn-restart-vocab-test"
+              class="px-5 py-2.5 rounded-xl bg-white text-slate-900 font-bold text-xs shadow-md hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+              🔄 もう一度最初からテストする
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    const currentWord = activeList[this.vocabQuizIndex];
+    if (!currentWord) return '';
+
+    return `
+      <div class="space-y-5 animate-fade-in">
+        <!-- 上部ヘッダー＆出題範囲切り替え -->
+        <div class="bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-sky-500/10 border border-teal-300/60 dark:border-teal-700/60 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl select-none">📝</span>
+            <div>
+              <h3 class="text-sm font-bold text-teal-950 dark:text-teal-200">
+                口頭試験 出題単語特訓テスト
+              </h3>
+              <p class="text-[11px] text-teal-700 dark:text-teal-400">
+                この13テーマに出現する全単語・かつここに出てくる単語のみを徹底反復！
+              </p>
+            </div>
+          </div>
+
+          <!-- スコープ切り替えボタン -->
+          <div class="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800 p-1 rounded-xl border border-teal-200/60">
+            <button
+              type="button"
+              id="btn-scope-current"
+              class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.vocabScope === 'current' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}">
+              このテーマ (${currentCount}語)
+            </button>
+            <button
+              type="button"
+              id="btn-scope-all"
+              class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.vocabScope === 'all' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}">
+              全13テーマ (${allCount}語)
+            </button>
+          </div>
+        </div>
+
+        <!-- 進捗プログレスバー -->
+        <div class="flex items-center justify-between text-xs text-slate-500 font-semibold px-1">
+          <span>単語 ${this.vocabQuizIndex + 1} / ${totalCount}</span>
+          <span>残り ${totalCount - this.vocabQuizIndex} 語</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden -mt-3">
+          <div class="bg-emerald-500 h-2 rounded-full transition-all duration-300" style="width: ${Math.round(((this.vocabQuizIndex + 1) / totalCount) * 100)}%"></div>
+        </div>
+
+        <!-- 単語問題カード -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6 text-center">
+          <div class="flex flex-wrap items-center justify-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+              ${currentWord.pos || '単語'}
+            </span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+              口頭試験出題
+            </span>
+            ${currentWord.isVerb ? '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">動詞（辞書形）</span>' : ''}
+          </div>
+
+          <div>
+            <div class="text-xs text-slate-400 font-semibold mb-1">日本語の意味に合うキリル文字を入力</div>
+            <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              ${currentWord.japanese}
+            </h2>
+          </div>
+
+          <!-- ヒントトグル -->
+          <div>
+            <button
+              type="button"
+              id="btn-toggle-vocab-hint"
+              class="text-xs text-emerald-700 hover:text-emerald-900 font-medium inline-flex items-center gap-1 cursor-pointer bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+              <span>💡 ${this.vocabShowHint ? 'ヒントを隠す ▲' : '例文ヒントを見る ▼'}</span>
+            </button>
+            ${this.vocabShowHint ? `
+              <div class="mt-3 p-3 rounded-2xl bg-amber-50/80 border border-amber-200 text-left max-w-md mx-auto text-xs space-y-1 animate-fade-in">
+                ${currentWord.pronunciation ? `<div class="text-amber-900"><strong>読み方:</strong> ${currentWord.pronunciation}</div>` : ''}
+                ${currentWord.exampleJa ? `<div class="text-slate-600"><strong>例文訳:</strong> ${currentWord.exampleJa}</div>` : ''}
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- 回答前入力欄 -->
+          ${!this.vocabHasAnswered ? `
+            <div class="max-w-md mx-auto space-y-3 pt-2">
+              <div class="relative">
+                <input
+                  type="text"
+                  id="interview-vocab-input"
+                  class="w-full text-center text-lg sm:text-xl font-bold px-4 py-3.5 rounded-2xl border-2 border-slate-300 focus:border-emerald-500 focus:outline-hidden transition-all shadow-inner cyrillic-text"
+                  placeholder="キリル文字で入力..."
+                  value="${this.vocabUserInput || ''}"
+                  autocomplete="off"
+                  autofocus />
+              </div>
+
+              <!-- 特殊文字バー & 仮想キーボードアシスタント -->
+              <div class="flex justify-center">
+                ${renderCyrillicInputAssistantHTML('interview-vocab-input')}
+              </div>
+
+              <button
+                type="button"
+                id="btn-submit-vocab-answer"
+                class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md active:scale-98 transition-all cursor-pointer">
+                回答する (Enter)
+              </button>
+            </div>
+          ` : `
+            <!-- 回答後フィードバックカード -->
+            <div class="max-w-md mx-auto p-5 rounded-2xl border text-left space-y-3 animate-fade-in ${this.vocabIsCorrect ? 'bg-emerald-50 border-emerald-300 text-emerald-950' : 'bg-rose-50 border-rose-300 text-rose-950'}">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-black flex items-center gap-1.5">
+                  <span>${this.vocabIsCorrect ? '🎉 正解！' : '❌ 不正解'}</span>
+                </span>
+                <button
+                  type="button"
+                  id="btn-speak-vocab-answer"
+                  class="text-xs font-bold px-2.5 py-1 rounded-lg border bg-white flex items-center gap-1 cursor-pointer shadow-xs">
+                  <span>🔊 発音を聴く</span>
+                </button>
+              </div>
+
+              <div class="space-y-1">
+                <div class="text-xs text-slate-500">正解:</div>
+                <div class="text-xl sm:text-2xl font-black cyrillic-text text-emerald-800">
+                  ${currentWord.dictForm || currentWord.mongolian}
+                  ${currentWord.pronunciation ? `<span class="text-xs font-normal text-slate-600 ml-2">[${currentWord.pronunciation}]</span>` : ''}
+                </div>
+              </div>
+
+              ${!this.vocabIsCorrect ? `
+                <div class="text-xs text-rose-700 pt-1 border-t border-rose-200">
+                  あなたの入力: <span class="line-through font-bold">${this.vocabUserInput || '(未入力)'}</span>
+                </div>
+                <div class="text-[11px] bg-rose-100 text-rose-800 px-2.5 py-1 rounded-lg font-bold">
+                  ⚠️ 間違いノートに自動保存しました（ホームでまとめて再復習できます）
+                </div>
+              ` : ''}
+
+              <button
+                type="button"
+                id="btn-next-vocab-question"
+                class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2">
+                <span>次の単語へ (Enter) →</span>
+              </button>
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+  }
+
   static renderStepContent(topic) {
     switch (this.currentStep) {
       case 1:
@@ -868,6 +1150,8 @@ export class InterviewMasterComponent {
         return this.renderStep3(topic);
       case 4:
         return this.renderStep4(topic);
+      case 5:
+        return this.renderStep5(topic);
       default:
         return this.renderStep1(topic);
     }
@@ -1155,6 +1439,122 @@ export class InterviewMasterComponent {
       });
     }
 
+    // --- Step 5: 出題単語テスト イベントリスナー ---
+    const vocabInput = container.querySelector('#interview-vocab-input');
+    if (vocabInput) {
+      vocabInput.addEventListener('input', (e) => {
+        this.vocabUserInput = e.target.value;
+      });
+      vocabInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.handleVocabSubmit(topic);
+        }
+      });
+      bindCyrillicInputAssistant(container, 'interview-vocab-input');
+      setTimeout(() => vocabInput.focus(), 50);
+    }
+
+    const submitVocabBtn = container.querySelector('#btn-submit-vocab-answer');
+    if (submitVocabBtn) {
+      submitVocabBtn.addEventListener('click', () => {
+        this.handleVocabSubmit(topic);
+      });
+    }
+
+    const nextVocabBtn = container.querySelector('#btn-next-vocab-question');
+    if (nextVocabBtn) {
+      nextVocabBtn.addEventListener('click', () => {
+        this.handleVocabNext(topic);
+      });
+      // Enter key for next question
+      const enterNextHandler = (e) => {
+        if (e.key === 'Enter') {
+          window.removeEventListener('keydown', enterNextHandler);
+          this.handleVocabNext(topic);
+        }
+      };
+      window.addEventListener('keydown', enterNextHandler, { once: true });
+    }
+
+    const speakVocabBtn = container.querySelector('#btn-speak-vocab-answer');
+    if (speakVocabBtn) {
+      speakVocabBtn.addEventListener('click', () => {
+        const activeList = this.vocabActiveList || [];
+        const currentWord = activeList[this.vocabQuizIndex];
+        if (currentWord) {
+          SpeechService.speak(currentWord.dictForm || currentWord.mongolian);
+        }
+      });
+    }
+
+    const toggleVocabHintBtn = container.querySelector('#btn-toggle-vocab-hint');
+    if (toggleVocabHintBtn) {
+      toggleVocabHintBtn.addEventListener('click', () => {
+        this.vocabShowHint = !this.vocabShowHint;
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    const scopeCurrentBtn = container.querySelector('#btn-scope-current');
+    if (scopeCurrentBtn) {
+      scopeCurrentBtn.addEventListener('click', () => {
+        if (this.vocabScope !== 'current') {
+          this.vocabScope = 'current';
+          this.initVocabList(topic, true);
+          this.render(container, this.onNavigate);
+        }
+      });
+    }
+
+    const scopeAllBtn = container.querySelector('#btn-scope-all');
+    if (scopeAllBtn) {
+      scopeAllBtn.addEventListener('click', () => {
+        if (this.vocabScope !== 'all') {
+          this.vocabScope = 'all';
+          this.initVocabList(topic, true);
+          this.render(container, this.onNavigate);
+        }
+      });
+    }
+
+    const restartVocabTestBtn = container.querySelector('#btn-restart-vocab-test');
+    if (restartVocabTestBtn) {
+      restartVocabTestBtn.addEventListener('click', () => {
+        this.initVocabList(topic, true);
+        this.render(container, this.onNavigate);
+      });
+    }
+
+    const retryVocabMistakesBtn = container.querySelector('#btn-retry-vocab-mistakes');
+    if (retryVocabMistakesBtn) {
+      retryVocabMistakesBtn.addEventListener('click', () => {
+        if (this.vocabMistakes && this.vocabMistakes.length > 0) {
+          this.vocabActiveList = this.vocabMistakes.map(m => ({
+            id: m.id,
+            mongolian: m.mn,
+            dictForm: m.mn,
+            japanese: m.ja,
+            pronunciation: m.pron || '',
+            pos: '単語'
+          }));
+          this.vocabQuizIndex = 0;
+          this.vocabUserInput = '';
+          this.vocabHasAnswered = false;
+          this.vocabIsCorrect = false;
+          this.vocabMistakes = [];
+          this.render(container, this.onNavigate);
+        }
+      });
+    }
+
+    const gotoMistakesFromVocab = container.querySelector('#btn-goto-mistakes-from-vocab');
+    if (gotoMistakesFromVocab) {
+      gotoMistakesFromVocab.addEventListener('click', () => {
+        if (this.onNavigate) this.onNavigate('review');
+      });
+    }
+
     const gotoMistakesInterviewBtn = container.querySelector('#btn-goto-mistakes-from-interview');
     if (gotoMistakesInterviewBtn) {
       gotoMistakesInterviewBtn.addEventListener('click', () => {
@@ -1260,4 +1660,70 @@ export class InterviewMasterComponent {
 
 if (typeof window !== 'undefined') {
   window.InterviewMasterComponent = InterviewMasterComponent;
+  static handleVocabSubmit(topic) {
+    const activeList = this.vocabActiveList || [];
+    const currentWord = activeList[this.vocabQuizIndex];
+    if (!currentWord) return;
+
+    const userText = (this.vocabUserInput || '').trim();
+    const correctText = (currentWord.dictForm || currentWord.mongolian).trim();
+
+    const clean = (s) => (s || '').toLowerCase().replace(/[.,!?！？。、\s\-_'"]/g, '').trim();
+    const isCorrect = isFuzzyMatch(userText, correctText) || (clean(userText) === clean(correctText));
+
+    this.vocabHasAnswered = true;
+    this.vocabIsCorrect = isCorrect;
+
+    if (isCorrect) {
+      try {
+        if (typeof SoundEffects !== 'undefined' && typeof SoundEffects.playCorrect === 'function') {
+          SoundEffects.playCorrect();
+        }
+      } catch (_) {}
+      try {
+        SpeechService.speak(correctText);
+      } catch (_) {}
+      if (typeof GamificationService !== 'undefined' && typeof GamificationService.addXp === 'function') {
+        GamificationService.addXp(10);
+      }
+    } else {
+      try {
+        if (typeof SoundEffects !== 'undefined' && typeof SoundEffects.playWrong === 'function') {
+          SoundEffects.playWrong();
+        }
+      } catch (_) {}
+      try {
+        StorageService.recordMistake({
+          wordId: currentWord.id || null,
+          question: `【口頭試験単語】${currentWord.japanese}`,
+          userAnswer: userText || '(未入力)',
+          correctAnswer: correctText,
+          type: 'word',
+          category: '口頭試験単語',
+          explanation: `正解: ${correctText} [${currentWord.pronunciation || ''}] = ${currentWord.japanese} (${currentWord.pos || '単語'})`
+        });
+      } catch (err) {
+        console.warn('StorageService.recordMistake failed:', err);
+      }
+      if (!this.vocabMistakes) this.vocabMistakes = [];
+      this.vocabMistakes.push({
+        id: currentWord.id,
+        ja: currentWord.japanese,
+        mn: correctText,
+        user: userText || '(未入力)',
+        pron: currentWord.pronunciation
+      });
+    }
+
+    this.render(this.container, this.onNavigate);
+  }
+
+  static handleVocabNext(topic) {
+    this.vocabQuizIndex++;
+    this.vocabUserInput = '';
+    this.vocabHasAnswered = false;
+    this.vocabIsCorrect = false;
+    this.vocabShowHint = false;
+    this.render(this.container, this.onNavigate);
+  }
 }
