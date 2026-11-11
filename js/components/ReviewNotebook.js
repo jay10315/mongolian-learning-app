@@ -204,9 +204,17 @@ export class ReviewNotebookComponent {
                 選択中カテゴリーに <strong class="text-white text-sm">${currentFilterActive}</strong> 件の項目があります。
               </div>
             </div>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="flex items-center gap-1.5 bg-white/20 backdrop-blur-xs px-2.5 py-1 rounded-xl text-xs font-bold text-white">
+                <span>出題数:</span>
+                <input type="number" id="input-custom-review-count" min="1" max="${currentFilterActive}"
+                  class="w-16 px-1.5 py-0.5 text-center font-bold text-xs bg-white text-slate-800 rounded-lg focus:outline-hidden shadow-2xs"
+                  placeholder="全問"
+                  value="">
+                <span>問</span>
+              </div>
               <button type="button" id="btn-start-all-review" class="px-4 py-2 bg-white text-slate-900 hover:bg-amber-50 text-xs font-black rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer">
-                全問特訓スタート (${currentFilterActive}問)
+                復習特訓スタート (${currentFilterActive}問)
               </button>
             </div>
           </div>

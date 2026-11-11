@@ -121,12 +121,22 @@ export class PronunciationTestComponent {
             </div>
           </div>
 
-          <!-- 問題数 -->
+          <!-- 問題数（選択式 ＋ 自由入力欄） -->
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-2">特訓出題数</label>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-bold text-slate-700">特訓出題数</label>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-medium">自由入力:</span>
+                <input type="number" id="input-custom-pron-count" min="1" max="999" 
+                  class="w-16 px-2 py-1 text-center font-bold text-xs bg-white border ${![5, 10, 15, 20].includes(this.state.count) ? 'border-teal-500 ring-2 ring-teal-200 text-teal-800' : 'border-slate-300 text-slate-700'} rounded-lg focus:outline-hidden"
+                  placeholder="指定数"
+                  value="${![5, 10, 15, 20].includes(this.state.count) ? this.state.count : ''}">
+                <span class="font-bold text-slate-600">問</span>
+              </div>
+            </div>
             <div class="grid grid-cols-4 gap-2">
               ${[5, 10, 15, 20].map(n => `
-                <button type="button" class="btn-count py-2 rounded-xl text-xs font-bold border transition-all ${
+                <button type="button" class="btn-count py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                   this.state.count === n ? 'bg-teal-600 text-white border-teal-600 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                 }" data-count="${n}">
                   ${n} 問

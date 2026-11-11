@@ -201,11 +201,21 @@ export class ListeningTestComponent {
           <!-- 4. 出題数 & 自動再生 -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 border-t border-slate-100">
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1.5">出題数</label>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-bold text-slate-700">出題数</label>
+                <div class="flex items-center gap-1 text-xs">
+                  <span class="text-slate-500 font-medium">自由入力:</span>
+                  <input type="number" id="input-custom-listen-count" min="1" max="999" 
+                    class="w-14 px-1.5 py-0.5 text-center font-bold text-xs bg-white border ${![5, 10, 20, 50].includes(this.state.settings.questionCount) ? 'border-indigo-500 ring-2 ring-indigo-200 text-indigo-800' : 'border-slate-300 text-slate-700'} rounded-lg focus:outline-hidden"
+                    placeholder="指定数"
+                    value="${![5, 10, 20, 50].includes(this.state.settings.questionCount) ? this.state.settings.questionCount : ''}">
+                  <span class="font-bold text-slate-600">問</span>
+                </div>
+              </div>
               <div class="flex items-center gap-1.5">
                 ${[5, 10, 20, 50].map(cnt => `
                   <button type="button" class="btn-count-select flex-1 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
-                    this.state.settings.questionCount === cnt ? 'bg-slate-800 text-white border-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-100'
+                    this.state.settings.questionCount === cnt ? 'bg-slate-800 text-white border-slate-800 shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-100'
                   }" data-val="${cnt}">
                     ${cnt === 50 ? '全問' : `${cnt}問`}
                   </button>

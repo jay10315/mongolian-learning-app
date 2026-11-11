@@ -280,11 +280,21 @@ export class SentenceTranslationTestComponent {
         <!-- 2. 出題数＆カテゴリーの選択 -->
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
           
-          <!-- 出題数 -->
+          <!-- 出題数（選択式 ＋ 自由入力欄） -->
           <div>
-            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
-              <span>🔢</span> 出題問題数
-            </label>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-black text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                <span>🔢</span> 出題問題数
+              </label>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-medium">自由入力:</span>
+                <input type="number" id="input-custom-sentence-count" min="1" max="999" 
+                  class="w-16 px-2 py-1 text-center font-bold text-xs bg-white dark:bg-slate-700 border ${![5, 10, 20, 'all'].map(String).includes(String(count)) ? 'border-teal-500 ring-2 ring-teal-200 text-teal-800' : 'border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white'} rounded-lg focus:outline-hidden"
+                  placeholder="指定数"
+                  value="${![5, 10, 20, 'all'].map(String).includes(String(count)) ? count : ''}">
+                <span class="font-bold text-slate-600 dark:text-slate-300">問</span>
+              </div>
+            </div>
             <div class="grid grid-cols-4 gap-2 text-xs">
               ${[5, 10, 20, 'all'].map(cnt => `
                 <button type="button" class="btn-select-count py-2.5 rounded-xl border font-black transition-all cursor-pointer ${

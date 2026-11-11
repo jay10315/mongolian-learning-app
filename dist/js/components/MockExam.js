@@ -78,11 +78,21 @@ export class MockExamComponent {
         <!-- 設定フォームカード -->
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-5">
           
-          <!-- 問題数選択 -->
+          <!-- 問題数選択（選択式 ＋ 自由入力欄） -->
           <div>
-            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2">
-              📊 出題する問題数
-            </label>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-black text-slate-700 dark:text-slate-300">
+                📊 出題する問題数
+              </label>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-medium">自由入力:</span>
+                <input type="number" id="input-custom-mock-count" min="1" max="999" 
+                  class="w-16 px-2 py-1 text-center font-bold text-xs bg-white dark:bg-slate-700 border ${![10, 20, 30, 50, 'all'].includes(this.state.config.count) ? 'border-indigo-500 ring-2 ring-indigo-200 text-indigo-800' : 'border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white'} rounded-lg focus:outline-hidden"
+                  placeholder="指定数"
+                  value="${![10, 20, 30, 50, 'all'].includes(this.state.config.count) ? this.state.config.count : ''}">
+                <span class="font-bold text-slate-600 dark:text-slate-300">問</span>
+              </div>
+            </div>
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
               ${[
                 { label: '10問', val: 10, sub: 'サクッと' },
@@ -190,6 +200,24 @@ export class MockExamComponent {
         this.renderStart();
       });
     });
+
+    const customMockCountInput = this.container.querySelector('#input-custom-mock-count');
+    if (customMockCountInput) {
+      customMockCountInput.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (val && val > 0) {
+          this.state.config.count = val;
+          this.container.querySelectorAll('.btn-select-count').forEach(b => {
+            b.className = 'btn-select-count p-2.5 rounded-xl border-2 text-center transition-all cursor-pointer select-none border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300';
+          });
+          customMockCountInput.className = 'w-16 px-2 py-1 text-center font-bold text-xs bg-white dark:bg-slate-700 border border-indigo-500 ring-2 ring-indigo-200 text-indigo-800 rounded-lg focus:outline-hidden';
+          const startBtn = this.container.querySelector('#btn-start-mock-exam');
+          if (startBtn) {
+            startBtn.innerHTML = `<span>🚀</span><span>模試を開始する (${val}問) →</span>`;
+          }
+        }
+      });
+    }
 
     this.container.querySelectorAll('.btn-select-category').forEach(btn => {
       btn.addEventListener('click', () => {

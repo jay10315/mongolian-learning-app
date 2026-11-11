@@ -132,12 +132,22 @@ export class DeclensionTestComponent {
             </div>
           </div>
 
-          <!-- 出題数 -->
+          <!-- 出題数（選択式 ＋ 自由入力欄） -->
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1.5">出題数</label>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-bold text-slate-700">出題数</label>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-medium">自由入力:</span>
+                <input type="number" id="input-custom-decl-count" min="1" max="999" 
+                  class="w-16 px-2 py-1 text-center font-bold text-xs bg-white border ${![5, 10, 20, 'all'].includes(this.state.settings.count) ? 'border-amber-500 ring-2 ring-amber-200 text-amber-800' : 'border-slate-300 text-slate-700'} rounded-lg focus:outline-hidden"
+                  placeholder="指定数"
+                  value="${![5, 10, 20, 'all'].includes(this.state.settings.count) ? this.state.settings.count : ''}">
+                <span class="font-bold text-slate-600">問</span>
+              </div>
+            </div>
             <div class="grid grid-cols-4 gap-2">
               ${[5, 10, 20, 'all'].map(num => `
-                <button type="button" class="btn-count py-2 text-xs font-bold rounded-lg border transition-all ${
+                <button type="button" class="btn-count py-2 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
                   this.state.settings.count === num ? 'bg-amber-600 text-white border-amber-600 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                 }" data-count="${num}">
                   ${num === 'all' ? '全問' : `${num}問`}

@@ -131289,12 +131289,22 @@ class WordTestComponent {
             </div>
           </div>
 
-          <!-- 出題数 -->
+          <!-- 出題数（選択式 ＋ 自由入力欄） -->
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1.5">出題数</label>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-bold text-slate-700">出題数</label>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-medium">自由入力:</span>
+                <input type="number" id="input-custom-word-count" min="1" max="999" 
+                  class="w-16 px-2 py-1 text-center font-bold text-xs bg-white border ${![5, 10, 20, 'all'].includes(this.state.settings.count) ? 'border-emerald-500 ring-2 ring-emerald-200 text-emerald-800' : 'border-slate-300 text-slate-700'} rounded-lg focus:outline-hidden"
+                  placeholder="指定数"
+                  value="${![5, 10, 20, 'all'].includes(this.state.settings.count) ? this.state.settings.count : ''}">
+                <span class="font-bold text-slate-600">問</span>
+              </div>
+            </div>
             <div class="grid grid-cols-4 gap-2">
               ${[5, 10, 20, 'all'].map(num => `
-                <button type="button" class="btn-count py-2 text-xs font-bold rounded-lg border transition-all ${
+                <button type="button" class="btn-count py-2 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
                   this.state.settings.count === num ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                 }" data-count="${num}">
                   ${num === 'all' ? '全問' : `${num}問`}
@@ -133139,12 +133149,22 @@ class GrammarTestComponent {
             </select>
           </div>
 
-          <!-- 出題数 -->
+          <!-- 出題数（選択式 ＋ 自由入力欄） -->
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1.5">出題数</label>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-bold text-slate-700">出題数</label>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-medium">自由入力:</span>
+                <input type="number" id="input-custom-grammar-count" min="1" max="999" 
+                  class="w-16 px-2 py-1 text-center font-bold text-xs bg-white border ${![5, 10, 20, 'all'].includes(this.state.settings.count) ? 'border-sky-500 ring-2 ring-sky-200 text-sky-800' : 'border-slate-300 text-slate-700'} rounded-lg focus:outline-hidden"
+                  placeholder="指定数"
+                  value="${![5, 10, 20, 'all'].includes(this.state.settings.count) ? this.state.settings.count : ''}">
+                <span class="font-bold text-slate-600">問</span>
+              </div>
+            </div>
             <div class="grid grid-cols-4 gap-2">
               ${[5, 10, 20, 'all'].map(num => `
-                <button type="button" class="btn-count py-2 text-xs font-bold rounded-lg border transition-all ${
+                <button type="button" class="btn-count py-2 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
                   this.state.settings.count === num ? 'bg-sky-600 text-white border-sky-600 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                 }" data-count="${num}">
                   ${num === 'all' ? '全問' : `${num}問`}
@@ -134021,12 +134041,22 @@ class DeclensionTestComponent {
             </div>
           </div>
 
-          <!-- 出題数 -->
+          <!-- 出題数（選択式 ＋ 自由入力欄） -->
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1.5">出題数</label>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-bold text-slate-700">出題数</label>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-medium">自由入力:</span>
+                <input type="number" id="input-custom-decl-count" min="1" max="999" 
+                  class="w-16 px-2 py-1 text-center font-bold text-xs bg-white border ${![5, 10, 20, 'all'].includes(this.state.settings.count) ? 'border-amber-500 ring-2 ring-amber-200 text-amber-800' : 'border-slate-300 text-slate-700'} rounded-lg focus:outline-hidden"
+                  placeholder="指定数"
+                  value="${![5, 10, 20, 'all'].includes(this.state.settings.count) ? this.state.settings.count : ''}">
+                <span class="font-bold text-slate-600">問</span>
+              </div>
+            </div>
             <div class="grid grid-cols-4 gap-2">
               ${[5, 10, 20, 'all'].map(num => `
-                <button type="button" class="btn-count py-2 text-xs font-bold rounded-lg border transition-all ${
+                <button type="button" class="btn-count py-2 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
                   this.state.settings.count === num ? 'bg-amber-600 text-white border-amber-600 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                 }" data-count="${num}">
                   ${num === 'all' ? '全問' : `${num}問`}
@@ -134889,11 +134919,21 @@ class ListeningTestComponent {
           <!-- 4. 出題数 & 自動再生 -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 border-t border-slate-100">
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1.5">出題数</label>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-bold text-slate-700">出題数</label>
+                <div class="flex items-center gap-1 text-xs">
+                  <span class="text-slate-500 font-medium">自由入力:</span>
+                  <input type="number" id="input-custom-listen-count" min="1" max="999" 
+                    class="w-14 px-1.5 py-0.5 text-center font-bold text-xs bg-white border ${![5, 10, 20, 50].includes(this.state.settings.questionCount) ? 'border-indigo-500 ring-2 ring-indigo-200 text-indigo-800' : 'border-slate-300 text-slate-700'} rounded-lg focus:outline-hidden"
+                    placeholder="指定数"
+                    value="${![5, 10, 20, 50].includes(this.state.settings.questionCount) ? this.state.settings.questionCount : ''}">
+                  <span class="font-bold text-slate-600">問</span>
+                </div>
+              </div>
               <div class="flex items-center gap-1.5">
                 ${[5, 10, 20, 50].map(cnt => `
                   <button type="button" class="btn-count-select flex-1 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
-                    this.state.settings.questionCount === cnt ? 'bg-slate-800 text-white border-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-100'
+                    this.state.settings.questionCount === cnt ? 'bg-slate-800 text-white border-slate-800 shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-100'
                   }" data-val="${cnt}">
                     ${cnt === 50 ? '全問' : `${cnt}問`}
                   </button>
@@ -138584,11 +138624,21 @@ class SentenceTranslationTestComponent {
         <!-- 2. 出題数＆カテゴリーの選択 -->
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
           
-          <!-- 出題数 -->
+          <!-- 出題数（選択式 ＋ 自由入力欄） -->
           <div>
-            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
-              <span>🔢</span> 出題問題数
-            </label>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-black text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                <span>🔢</span> 出題問題数
+              </label>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-medium">自由入力:</span>
+                <input type="number" id="input-custom-sentence-count" min="1" max="999" 
+                  class="w-16 px-2 py-1 text-center font-bold text-xs bg-white dark:bg-slate-700 border ${![5, 10, 20, 'all'].map(String).includes(String(count)) ? 'border-teal-500 ring-2 ring-teal-200 text-teal-800' : 'border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white'} rounded-lg focus:outline-hidden"
+                  placeholder="指定数"
+                  value="${![5, 10, 20, 'all'].map(String).includes(String(count)) ? count : ''}">
+                <span class="font-bold text-slate-600 dark:text-slate-300">問</span>
+              </div>
+            </div>
             <div class="grid grid-cols-4 gap-2 text-xs">
               ${[5, 10, 20, 'all'].map(cnt => `
                 <button type="button" class="btn-select-count py-2.5 rounded-xl border font-black transition-all cursor-pointer ${
@@ -139523,12 +139573,22 @@ class PronunciationTestComponent {
             </div>
           </div>
 
-          <!-- 問題数 -->
+          <!-- 問題数（選択式 ＋ 自由入力欄） -->
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-2">特訓出題数</label>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-bold text-slate-700">特訓出題数</label>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-medium">自由入力:</span>
+                <input type="number" id="input-custom-pron-count" min="1" max="999" 
+                  class="w-16 px-2 py-1 text-center font-bold text-xs bg-white border ${![5, 10, 15, 20].includes(this.state.count) ? 'border-teal-500 ring-2 ring-teal-200 text-teal-800' : 'border-slate-300 text-slate-700'} rounded-lg focus:outline-hidden"
+                  placeholder="指定数"
+                  value="${![5, 10, 15, 20].includes(this.state.count) ? this.state.count : ''}">
+                <span class="font-bold text-slate-600">問</span>
+              </div>
+            </div>
             <div class="grid grid-cols-4 gap-2">
               ${[5, 10, 15, 20].map(n => `
-                <button type="button" class="btn-count py-2 rounded-xl text-xs font-bold border transition-all ${
+                <button type="button" class="btn-count py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                   this.state.count === n ? 'bg-teal-600 text-white border-teal-600 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                 }" data-count="${n}">
                   ${n} 問
@@ -142644,11 +142704,21 @@ class MockExamComponent {
         <!-- 設定フォームカード -->
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-5">
           
-          <!-- 問題数選択 -->
+          <!-- 問題数選択（選択式 ＋ 自由入力欄） -->
           <div>
-            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2">
-              📊 出題する問題数
-            </label>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-black text-slate-700 dark:text-slate-300">
+                📊 出題する問題数
+              </label>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-slate-500 font-medium">自由入力:</span>
+                <input type="number" id="input-custom-mock-count" min="1" max="999" 
+                  class="w-16 px-2 py-1 text-center font-bold text-xs bg-white dark:bg-slate-700 border ${![10, 20, 30, 50, 'all'].includes(this.state.config.count) ? 'border-indigo-500 ring-2 ring-indigo-200 text-indigo-800' : 'border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white'} rounded-lg focus:outline-hidden"
+                  placeholder="指定数"
+                  value="${![10, 20, 30, 50, 'all'].includes(this.state.config.count) ? this.state.config.count : ''}">
+                <span class="font-bold text-slate-600 dark:text-slate-300">問</span>
+              </div>
+            </div>
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
               ${[
                 { label: '10問', val: 10, sub: 'サクッと' },
@@ -142756,6 +142826,24 @@ class MockExamComponent {
         this.renderStart();
       });
     });
+
+    const customMockCountInput = this.container.querySelector('#input-custom-mock-count');
+    if (customMockCountInput) {
+      customMockCountInput.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (val && val > 0) {
+          this.state.config.count = val;
+          this.container.querySelectorAll('.btn-select-count').forEach(b => {
+            b.className = 'btn-select-count p-2.5 rounded-xl border-2 text-center transition-all cursor-pointer select-none border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300';
+          });
+          customMockCountInput.className = 'w-16 px-2 py-1 text-center font-bold text-xs bg-white dark:bg-slate-700 border border-indigo-500 ring-2 ring-indigo-200 text-indigo-800 rounded-lg focus:outline-hidden';
+          const startBtn = this.container.querySelector('#btn-start-mock-exam');
+          if (startBtn) {
+            startBtn.innerHTML = `<span>🚀</span><span>模試を開始する (${val}問) →</span>`;
+          }
+        }
+      });
+    }
 
     this.container.querySelectorAll('.btn-select-category').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -151989,9 +152077,17 @@ class ReviewNotebookComponent {
                 選択中カテゴリーに <strong class="text-white text-sm">${currentFilterActive}</strong> 件の項目があります。
               </div>
             </div>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="flex items-center gap-1.5 bg-white/20 backdrop-blur-xs px-2.5 py-1 rounded-xl text-xs font-bold text-white">
+                <span>出題数:</span>
+                <input type="number" id="input-custom-review-count" min="1" max="${currentFilterActive}"
+                  class="w-16 px-1.5 py-0.5 text-center font-bold text-xs bg-white text-slate-800 rounded-lg focus:outline-hidden shadow-2xs"
+                  placeholder="全問"
+                  value="">
+                <span>問</span>
+              </div>
               <button type="button" id="btn-start-all-review" class="px-4 py-2 bg-white text-slate-900 hover:bg-amber-50 text-xs font-black rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer">
-                全問特訓スタート (${currentFilterActive}問)
+                復習特訓スタート (${currentFilterActive}問)
               </button>
             </div>
           </div>
