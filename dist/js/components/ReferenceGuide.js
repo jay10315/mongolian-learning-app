@@ -57,9 +57,8 @@ export class ReferenceGuideComponent {
       this.state.selectedCategory = categoryOrNum || 'all';
     }
     this.state.view = 'cloze_settings';
-    if (this.container) {
-      this.render(this.container, this.onNavigate);
-    }
+    const activeCont = this.container || document.getElementById('main-content') || document.querySelector('#app-container') || document.body;
+    this.render(activeCont, this.onNavigate);
   }
 
   static render(container, onNavigate) {
@@ -82,7 +81,8 @@ export class ReferenceGuideComponent {
   // ==========================================
   static renderGuide() {
     this.cleanupKeyHandler();
-    const container = this.container;
+    const container = this.container || document.getElementById('main-content') || document.querySelector('#app-container') || document.body;
+    this.container = container;
     const onNavigate = this.onNavigate;
     if (!container) return;
     const grammarList = StorageService.getGrammar();
@@ -1816,7 +1816,9 @@ export class ReferenceGuideComponent {
     const startHiddenTestBtn = container.querySelector('#btn-ref-start-hidden-test');
     if (startHiddenTestBtn) {
       startHiddenTestBtn.addEventListener('click', () => {
-        DeclensionTestComponent.startWithCategory('hidden_n_g');
+        if (typeof DeclensionTestComponent !== 'undefined' && DeclensionTestComponent.startWithCategory) {
+          DeclensionTestComponent.startWithCategory('hidden_n_g');
+        }
         if (onNavigate) onNavigate('declension_test');
       });
     }
@@ -1877,17 +1879,20 @@ export class ReferenceGuideComponent {
     }
 
     // 📊 マトリクス表モードテスト開始ボタン
-    const startMatrixTestBtn = this.container.querySelector('#btn-ref-start-matrix-test');
+    const startMatrixTestBtn = container.querySelector('#btn-ref-start-matrix-test');
     if (startMatrixTestBtn) {
       startMatrixTestBtn.addEventListener('click', () => {
-        GrammarTestComponent.startTableMode('choice', 'all');
-        if (this.onNavigate) this.onNavigate('grammar_test');
+        if (typeof GrammarTestComponent !== 'undefined' && GrammarTestComponent.startTableMode) {
+          GrammarTestComponent.startTableMode('choice', 'all');
+        }
+        if (onNavigate) onNavigate('grammar_test');
+        else if (this.onNavigate) this.onNavigate('grammar_test');
       });
     }
 
     // 属性カテゴリフィルター
-    const catFilters = this.container.querySelectorAll('.btn-matrix-cat-filter');
-    const matrixRows = this.container.querySelectorAll('.matrix-row');
+    const catFilters = container.querySelectorAll('.btn-matrix-cat-filter');
+    const matrixRows = container.querySelectorAll('.matrix-row');
     catFilters.forEach(btn => {
       btn.addEventListener('click', () => {
         const cat = btn.dataset.cat;
@@ -1908,9 +1913,9 @@ export class ReferenceGuideComponent {
     });
 
     // 文法範囲セレクト
-    const rangeSelect = this.container.querySelector('#select-matrix-range');
-    const colHeaders = this.container.querySelectorAll('.matrix-col-header');
-    const allCells = this.container.querySelectorAll('.matrix-cell');
+    const rangeSelect = container.querySelector('#select-matrix-range');
+    const colHeaders = container.querySelectorAll('.matrix-col-header');
+    const allCells = container.querySelectorAll('.matrix-cell');
     if (rangeSelect) {
       rangeSelect.addEventListener('change', (e) => {
         const val = e.target.value;
@@ -1932,11 +1937,11 @@ export class ReferenceGuideComponent {
     }
 
     // セルタップによる詳細モーダル表示
-    const modal = this.container.querySelector('#matrix-cell-modal');
-    const modalGnum = this.container.querySelector('#modal-matrix-gnum');
-    const modalRow = this.container.querySelector('#modal-matrix-rowname');
-    const modalContent = this.container.querySelector('#modal-matrix-content');
-    const modalSpeak = this.container.querySelector('#btn-modal-speak');
+    const modal = container.querySelector('#matrix-cell-modal');
+    const modalGnum = container.querySelector('#modal-matrix-gnum');
+    const modalRow = container.querySelector('#modal-matrix-rowname');
+    const modalContent = container.querySelector('#modal-matrix-content');
+    const modalSpeak = container.querySelector('#btn-modal-speak');
     let currentCellText = '';
 
     allCells.forEach(cell => {
@@ -1958,8 +1963,8 @@ export class ReferenceGuideComponent {
     const closeModal = () => {
       if (modal) modal.classList.add('hidden');
     };
-    const closeBtn = this.container.querySelector('#btn-close-matrix-modal');
-    const closeActionBtn = this.container.querySelector('#btn-modal-close-action');
+    const closeBtn = container.querySelector('#btn-close-matrix-modal');
+    const closeActionBtn = container.querySelector('#btn-modal-close-action');
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (closeActionBtn) closeActionBtn.addEventListener('click', closeModal);
     if (modal) {
@@ -1982,21 +1987,21 @@ export class ReferenceGuideComponent {
     }
 
     // 穴埋め特訓モードの起動イベント
-    const startAllBtn = this.container.querySelector('#btn-start-cloze-all');
+    const startAllBtn = container.querySelector('#btn-start-cloze-all');
     if (startAllBtn) {
       startAllBtn.addEventListener('click', () => {
         this.startClozeTest('all');
       });
     }
 
-    this.container.querySelectorAll('.btn-cloze-quick-cat').forEach(btn => {
+    container.querySelectorAll('.btn-cloze-quick-cat').forEach(btn => {
       btn.addEventListener('click', () => {
         const cat = btn.dataset.cat;
         this.startClozeTest(cat);
       });
     });
 
-    this.container.querySelectorAll('.btn-start-single-cloze').forEach(btn => {
+    container.querySelectorAll('.btn-start-single-cloze').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const num = parseInt(btn.dataset.num, 10);
@@ -2110,7 +2115,7 @@ export class ReferenceGuideComponent {
     `;
 
     // イベントリスナー
-    const backBtn = this.container.querySelector('#btn-cloze-back-guide');
+    const backBtn = container.querySelector('#btn-cloze-back-guide');
     if (backBtn) {
       backBtn.addEventListener('click', () => {
         this.state.view = 'guide';
@@ -2118,7 +2123,7 @@ export class ReferenceGuideComponent {
       });
     }
 
-    const switchAllBtn = this.container.querySelector('#btn-switch-to-all-cats');
+    const switchAllBtn = container.querySelector('#btn-switch-to-all-cats');
     if (switchAllBtn) {
       switchAllBtn.addEventListener('click', () => {
         this.state.selectedCategory = 'all';
@@ -2127,14 +2132,14 @@ export class ReferenceGuideComponent {
       });
     }
 
-    this.container.querySelectorAll('.btn-select-cloze-cat').forEach(btn => {
+    container.querySelectorAll('.btn-select-cloze-cat').forEach(btn => {
       btn.addEventListener('click', () => {
         this.state.selectedCategory = btn.dataset.id;
         this.renderClozeSettings();
       });
     });
 
-    this.container.querySelectorAll('.btn-cloze-count').forEach(btn => {
+    container.querySelectorAll('.btn-cloze-count').forEach(btn => {
       btn.addEventListener('click', () => {
         const c = btn.dataset.count;
         this.state.questionCount = c === 'all' ? 'all' : parseInt(c, 10);
@@ -2142,20 +2147,20 @@ export class ReferenceGuideComponent {
       });
     });
 
-    const customInput = this.container.querySelector('#input-cloze-custom-count');
+    const customInput = container.querySelector('#input-cloze-custom-count');
     if (customInput) {
       customInput.addEventListener('change', (e) => {
         const val = parseInt(e.target.value, 10);
         if (val > 0) {
           this.state.questionCount = val;
-          this.container.querySelectorAll('.btn-cloze-count').forEach(b => {
+          container.querySelectorAll('.btn-cloze-count').forEach(b => {
             b.className = 'btn-cloze-count px-4 py-2 rounded-xl text-xs font-black border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100';
           });
         }
       });
     }
 
-    const startBtn = this.container.querySelector('#btn-start-cloze-quiz-now');
+    const startBtn = container.querySelector('#btn-start-cloze-quiz-now');
     if (startBtn) {
       startBtn.addEventListener('click', () => {
         this.prepareClozeTesting();
@@ -2283,7 +2288,7 @@ export class ReferenceGuideComponent {
     `;
 
     // 単語タップ辞書イベント
-    this.container.querySelectorAll('.cyrillic-text').forEach(el => {
+    container.querySelectorAll('.cyrillic-text').forEach(el => {
       const words = el.innerText.split(/\s+/);
       // 単語タップ可能にするため内部処理
       el.addEventListener('click', (e) => {
@@ -2298,7 +2303,7 @@ export class ReferenceGuideComponent {
     });
 
     // 中断ボタン
-    const abortBtn = this.container.querySelector('#btn-cloze-abort');
+    const abortBtn = container.querySelector('#btn-cloze-abort');
     if (abortBtn) {
       abortBtn.addEventListener('click', () => {
         if (confirm('穴埋めテストを中断して文法まとめに戻りますか？')) {
@@ -2309,7 +2314,7 @@ export class ReferenceGuideComponent {
     }
 
     // 選択肢ボタンイベント
-    this.container.querySelectorAll('.btn-cloze-option').forEach(btn => {
+    container.querySelectorAll('.btn-cloze-option').forEach(btn => {
       btn.addEventListener('click', () => {
         if (this.state.hasAnswered) return;
         const opt = btn.dataset.option;
@@ -2328,7 +2333,7 @@ export class ReferenceGuideComponent {
       }
       if (['1', '2', '3', '4'].includes(e.key)) {
         const idx = parseInt(e.key, 10) - 1;
-        const btns = this.container.querySelectorAll('.btn-cloze-option');
+        const btns = container.querySelectorAll('.btn-cloze-option');
         if (btns[idx]) btns[idx].click();
       }
     };
@@ -2372,7 +2377,7 @@ export class ReferenceGuideComponent {
     });
 
     // 選択肢ボタンのスタイル更新
-    const optionBtns = this.container.querySelectorAll('.btn-cloze-option');
+    const optionBtns = container.querySelectorAll('.btn-cloze-option');
     optionBtns.forEach(btn => {
       const opt = btn.dataset.option;
       btn.classList.remove('hover:border-emerald-500', 'hover:bg-emerald-50/50', 'active:scale-98');
@@ -2386,7 +2391,7 @@ export class ReferenceGuideComponent {
     });
 
     // 詳しい解説カードの展開
-    const expContainer = this.container.querySelector('#cloze-explanation-container');
+    const expContainer = container.querySelector('#cloze-explanation-container');
     if (expContainer) {
       expContainer.classList.remove('hidden');
       const isLast = (this.state.currentIndex + 1 >= this.state.quizzes.length);
@@ -2566,14 +2571,14 @@ export class ReferenceGuideComponent {
     `;
 
     // イベントリスナー
-    const retryBtn = this.container.querySelector('#btn-cloze-retry');
+    const retryBtn = container.querySelector('#btn-cloze-retry');
     if (retryBtn) {
       retryBtn.addEventListener('click', () => {
         this.prepareClozeTesting();
       });
     }
 
-    const returnBtn = this.container.querySelector('#btn-cloze-return-guide');
+    const returnBtn = container.querySelector('#btn-cloze-return-guide');
     if (returnBtn) {
       returnBtn.addEventListener('click', () => {
         this.state.view = 'guide';
