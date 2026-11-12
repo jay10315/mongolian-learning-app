@@ -37,6 +37,7 @@ import { EtymologyMasterComponent } from './components/EtymologyMaster.js';
 import { MockExamComponent } from './components/MockExam.js';
 import { InterviewMasterComponent } from './components/InterviewMaster.js';
 import { GenreWordMasterComponent } from './components/GenreWordMaster.js';
+import { ComplexSentenceComponent } from './components/ComplexSentenceMode.js';
 
 class App {
   static currentTab = 'home';
@@ -270,6 +271,9 @@ class App {
         break;
       case 'declension_test':
         DeclensionTestComponent.render(mainContainer, onNavigate);
+        break;
+      case 'complex_sentence':
+        ComplexSentenceComponent.init(mainContainer, onNavigate);
         break;
       case 'listening_test':
         ListeningTestComponent.render(mainContainer, onNavigate);

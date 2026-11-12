@@ -563,10 +563,13 @@ export class ReviewNotebookComponent {
     const qNorm = normPrompt(rawQ);
 
     // 過去の古い不十分な設問名（例: 【疑問形】単体）を完全な設問文に自動補正
-    if (!qNorm || qNorm === '疑問形' || qNorm === '疑問文' || qNorm === '文法') {
-      const gqFix = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes)
+    if (!qNorm || qNorm === '疑問形' || qNorm === '疑問文' || qNorm === '文法' || rawQ === '【文法】 【疑問形】' || rawQ === '【疑問形】') {
+      let gqFix = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes)
         ? initialGrammarQuizzes.find(x => x.id === item.id || (correctAns && x.answer === correctAns))
         : null;
+      if (!gqFix && typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes) {
+        gqFix = initialGrammarQuizzes.find(x => x.question && x.question.includes('【疑問文】'));
+      }
       if (gqFix && gqFix.question) {
         rawQ = gqFix.question;
         correctAns = gqFix.answer;
@@ -577,7 +580,7 @@ export class ReviewNotebookComponent {
     }
 
     if (!correctAns) {
-      const sq = (typeof spatialQuizzes !== 'undefined' && spatialQuizzes) ? spatialQuizzes.find(x => x.id === item.id || (qNorm && normPrompt(x.prompt) === qNorm)) : null;
+      const sq = (typeof spatialQuizzes !== 'undefined' && spatialQuizzes) ? spatialQuizzes.find(x => x.id === item.id || (qNorm && normPrompt(x.prompt) === qNorm) || (rawQ && x.prompt && (x.prompt.includes(rawQ) || rawQ.includes(x.prompt)))) : null;
       if (sq) {
         correctAns = sq.answer;
         item.correctAnswer = sq.answer;
@@ -585,14 +588,14 @@ export class ReviewNotebookComponent {
         if (!item.options || item.options.length === 0) item.options = sq.options;
         if (!item.japanese) item.japanese = sq.promptJa;
       }
-      const gq = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes) ? initialGrammarQuizzes.find(x => x.id === item.id || (qNorm && normPrompt(x.question) === qNorm)) : null;
+      const gq = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes) ? initialGrammarQuizzes.find(x => x.id === item.id || (qNorm && normPrompt(x.question) === qNorm) || (rawQ && x.question && (x.question.includes(rawQ) || rawQ.includes(x.question)))) : null;
       if (gq) {
         correctAns = gq.answer;
         item.correctAnswer = gq.answer;
         if (!item.explanation) item.explanation = gq.explanation;
         if (!item.options || item.options.length === 0) item.options = gq.options || [];
       }
-      const dq = (typeof initialDeclensionQuizzes !== 'undefined' && initialDeclensionQuizzes) ? initialDeclensionQuizzes.find(x => x.id === item.id || (qNorm && normPrompt(x.question) === qNorm)) : null;
+      const dq = (typeof initialDeclensionQuizzes !== 'undefined' && initialDeclensionQuizzes) ? initialDeclensionQuizzes.find(x => x.id === item.id || (qNorm && normPrompt(x.question) === qNorm) || (rawQ && x.question && (x.question.includes(rawQ) || rawQ.includes(x.question)))) : null;
       if (dq) {
         correctAns = dq.answer;
         item.correctAnswer = dq.answer;

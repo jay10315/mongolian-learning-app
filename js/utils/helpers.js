@@ -5109,23 +5109,80 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
   for (const v of verbSuffixes) {
     if (lower.endsWith(v.suffix) && lower.length > v.suffix.length + 2) {
       const stem = cleanWord.slice(0, -v.suffix.length);
-      // 基本形「stem + х」を辞書で再チェック
-      const candDict = stem.toLowerCase() + 'х';
-      const match = (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY) ? COMPREHENSIVE_DICTIONARY[candDict] : null;
-      if (match) {
-        return {
-          rawWord: cleanWord,
-          dictForm: match.dictForm || candDict,
-          meaning: `${match.meaning}（${v.name}）`,
-          pos: '動詞（活用形）',
-          pron: match.pronunciation || '',
-          derivation: `動詞「${match.dictForm || candDict}」＋ 活用語尾「-${v.suffix}」（${v.name}）`
-        };
+      const stemLower = stem.toLowerCase();
+      // 基本形（-х, -ах, -эх, -ох, -өх, -их, -уулах, -үүлэх）を包括的にチェック
+      const candDicts = [
+        stemLower + 'х', stemLower + 'эх', stemLower + 'ах', stemLower + 'ох', stemLower + 'өх', stemLower + 'их',
+        stemLower + 'уулах', stemLower + 'үүлэх', stemLower + 'лгах', stemLower + 'лгэх'
+      ];
+      for (const cand of candDicts) {
+        const match = (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY) ? COMPREHENSIVE_DICTIONARY[cand] : null;
+        if (match) {
+          return {
+            rawWord: cleanWord,
+            dictForm: match.dictForm || cand,
+            meaning: `${match.meaning}（${v.name}）`,
+            pos: '動詞（活用形）',
+            pron: match.pronunciation || '',
+            derivation: `動詞「${match.dictForm || cand}」＋ 活用語尾「-${v.suffix}」（${v.name}）`
+          };
+        }
+        const vMatch = vocab.find(item => (item.dictForm || item.mongolian || '').toLowerCase() === cand);
+        if (vMatch) {
+          return {
+            rawWord: cleanWord,
+            dictForm: vMatch.dictForm || vMatch.mongolian,
+            meaning: `${vMatch.japanese || vMatch.baseMeaning || vMatch.meaning}（${v.name}）`,
+            pos: '動詞（活用形）',
+            pron: vMatch.pronunciation || '',
+            derivation: `動詞「${vMatch.dictForm || vMatch.mongolian}」＋ 活用語尾「-${v.suffix}」（${v.name}）`
+          };
+        }
+      }
+
+      // 派生語幹（使役 -уул/-үүл, 受動 -гд, 完了 -чих 等）の再帰的語幹解決
+      const derivPatterns = [
+        { s: 'уул', name: '使役（〜させる・〜してもらう）' },
+        { s: 'үүл', name: '使役（〜させる・〜してもらう）' },
+        { s: 'лга', name: '使役（〜させる）' },
+        { s: 'лгэ', name: '使役（〜させる）' },
+        { s: 'чих', name: '完了（〜してしまう）' },
+        { s: 'гд', name: '受動（〜される）' }
+      ];
+      for (const dp of derivPatterns) {
+        if (stemLower.endsWith(dp.s) && stemLower.length > dp.s.length + 1) {
+          const rootStem = stemLower.slice(0, -dp.s.length);
+          const rootCands = [rootStem + 'эх', rootStem + 'ах', rootStem + 'ох', rootStem + 'өх', rootStem + 'х'];
+          for (const rc of rootCands) {
+            const rootMatch = (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY) ? COMPREHENSIVE_DICTIONARY[rc] : null;
+            if (rootMatch) {
+              return {
+                rawWord: cleanWord,
+                dictForm: stem + (stem.endsWith('л') ? 'эх' : 'х'),
+                meaning: `${rootMatch.meaning}【${dp.name}】（${v.name}）`,
+                pos: '動詞（派生活用形）',
+                pron: rootMatch.pronunciation || '',
+                derivation: `動詞「${rootMatch.dictForm || rc}」（${rootMatch.meaning}）＋ ${dp.name}「-${dp.s}」＋ 活用語尾「-${v.suffix}」（${v.name}）`
+              };
+            }
+          }
+        }
+      }
+
+      // 部分語幹一致による意味の確実な補完（意味が不明瞭になるのを完全防止）
+      let fallbackMeaning = '';
+      if (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY) {
+        for (const [k, val] of Object.entries(COMPREHENSIVE_DICTIONARY)) {
+          if (k.startsWith(stemLower.slice(0, 3)) && val.meaning) {
+            fallbackMeaning = val.meaning.split(/[、,（(]/)[0];
+            break;
+          }
+        }
       }
       return {
         rawWord: cleanWord,
         dictForm: stem + 'х',
-        meaning: `動詞「${stem}х」の活用形（${v.name}）`,
+        meaning: fallbackMeaning ? `${fallbackMeaning}関連動作（${v.name}）` : `動詞語幹「${stem}」の活用（${v.name}）`,
         pos: '動詞（活用形）',
         pron: '',
         derivation: `動詞語幹「${stem}」に活用語尾「-${v.suffix}」（${v.name}）が接続した文法形です。`

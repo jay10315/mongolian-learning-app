@@ -549,6 +549,31 @@ export class HomeComponent {
               </div>
             </div>
 
+            <!-- 複文特化マスター（接続表現・動詞活用・複文構造完全攻略） -->
+            <div class="bg-gradient-to-br from-teal-700 via-emerald-600 to-cyan-700 rounded-xl p-5 border-2 border-teal-400 hover:border-teal-300 shadow-md hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between text-white relative overflow-hidden" data-target="complex_sentence">
+              <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center text-xl font-bold backdrop-blur-xs shadow-2xs">
+                    🔗
+                  </div>
+                  <span class="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-amber-400 text-teal-950 shadow-2xs">
+                    新機能・完全攻略
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-white group-hover:text-amber-200 transition-colors flex items-center gap-1.5">
+                  <span>複文特化マスター</span>
+                </h4>
+                <p class="text-xs text-teal-100 mt-1 leading-relaxed">
+                  理由・逆接・条件・順序・時間・名詞修飾など全10カテゴリー接続表現、同一動詞比較、条件変化What-Ifを完全制覇！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs font-black text-white">
+                <span>4択空欄補充特訓へ</span>
+                <span class="group-hover:translate-x-1 transition-transform">開始する →</span>
+              </div>
+            </div>
+
             <!-- 格変化・動詞活用テスト -->
             <div class="bg-white rounded-xl p-5 border border-slate-200 hover:border-amber-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="declension_test">
               <div>
