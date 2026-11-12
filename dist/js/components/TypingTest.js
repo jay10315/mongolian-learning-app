@@ -1529,7 +1529,7 @@ export class TypingTestComponent {
     }
 
     // モーダル表示
-    this.showWordModal(wordInfo, sentence.categoryLabel || sentence.level || '自作例文');
+    showUniversalWordModal({ wordInfo, passageTitle: `タイピング: ${sentence.categoryLabel || sentence.level || '自作例文'}` });
   }
 
   static showWordModal(wordInfo, categoryLabel) {

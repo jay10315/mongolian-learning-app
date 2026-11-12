@@ -136,7 +136,6 @@ export const GRAMMAR_MATRIX_ROWS = [
   }
 ];
 
-export const GRAMMAR_MATRIX_COLS = 
 export const GRAMMAR_MATRIX_COLUMNS = [
   {
     "num": 1,
@@ -5533,3 +5532,5 @@ export const grammarMatrixQuizzes = [
     "grammarRef": "No.48 Нь（三人称所有・主題提示の助詞）"
   }
 ];
+
+export const GRAMMAR_MATRIX_COLS = GRAMMAR_MATRIX_COLUMNS;

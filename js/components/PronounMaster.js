@@ -425,10 +425,10 @@ export class PronounMasterComponent {
           <div class="space-y-2">
             <button type="button" id="btn-toggle-pronoun-hint" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-all cursor-pointer shadow-2xs active:scale-95">
               <span>💡</span>
-              <span id="pronoun-hint-toggle-text">${(this.state.isHintRevealed || this.state.hasAnswered) ? 'ヒント（日本語の意味）を閉じる ▲' : 'ヒントを見る ▼'}</span>
+              <span id="pronoun-hint-toggle-text">${this.state.isHintRevealed ? 'ヒント（日本語の意味）を閉じる ▲' : 'ヒントを見る ▼'}</span>
             </button>
 
-            <div id="pronoun-hint-container" class="${(this.state.isHintRevealed || this.state.hasAnswered) ? '' : 'hidden'} p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-all animate-fade-in">
+            <div id="pronoun-hint-container" class="${this.state.isHintRevealed ? '' : 'hidden'} p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-all animate-fade-in">
               <span class="font-bold text-slate-900 dark:text-slate-100 mr-2">🇯🇵 日本語の意味:</span>
               <span>${q.questionJa}</span>
             </div>
@@ -507,7 +507,7 @@ export class PronounMasterComponent {
                   <span>📍</span>
                   <span>【文頭・文中の配置ルール】</span>
                 </div>
-                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium bg-white/70 dark:bg-slate-900/60 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium bg-white/70 dark:bg-slate-900/60 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 whitespace-pre-line">
                   ${q.positionRule}
                 </p>
               </div>
@@ -518,7 +518,7 @@ export class PronounMasterComponent {
                   <span>📌</span>
                   <span>【文法解説・なぜこの形になるのか】</span>
                 </div>
-                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed bg-white/70 dark:bg-slate-900/60 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed bg-white/70 dark:bg-slate-900/60 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 whitespace-pre-line leading-relaxed font-medium">
                   ${q.explanation}
                 </p>
               </div>
@@ -535,6 +535,13 @@ export class PronounMasterComponent {
                   </div>
                 </div>
               ` : ''}
+
+              <!-- 選択肢全解説（各選択肢がなぜ正解/不正解かの明快解説） -->
+              ${(typeof renderChoiceExplanationsHTML === 'function') ? renderChoiceExplanationsHTML(this.state.shuffledOptions, {
+                expectedAnswer: q.answer,
+                userAnswer: this.state.selectedOption,
+                title: '選択肢全解説（なぜ正解・なぜ不正解か）を見る（タップで開閉）'
+              }) : ''}
 
               <!-- 次へボタン -->
               <div class="pt-2">

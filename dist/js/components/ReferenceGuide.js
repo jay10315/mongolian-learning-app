@@ -2289,7 +2289,7 @@ export class ReferenceGuideComponent {
               <span>💡</span>
               <span id="cloze-hint-toggle-text">${(this.state.isClozeHintRevealed || this.state.hasAnswered) ? 'ヒント（日本語訳）を閉じる ▲' : 'ヒントを見る ▼'}</span>
             </button>
-            <div id="cloze-hint-container" class="${(this.state.isClozeHintRevealed || this.state.hasAnswered) ? '' : 'hidden'} mt-2 text-sm font-bold text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 animate-fade-in">
+            <div id="cloze-hint-container" class="${this.state.isClozeHintRevealed ? '' : 'hidden'} mt-2 text-sm font-bold text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 animate-fade-in">
               ${q.questionJa}
             </div>
           </div>

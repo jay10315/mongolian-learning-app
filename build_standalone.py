@@ -8,6 +8,7 @@ def read_f(rel):
 
 # 読み込むファイル順序（依存関係順）
 files_order = [
+    'js/data/comprehensiveDictionary.js',
     'js/utils/helpers.js',
     'js/utils/qrcode.js',
     'js/data/initialVocabulary.js',
@@ -99,6 +100,7 @@ for rel in files_order:
     combined_js.append(f"// === {rel} ===\n" + code)
 
 all_js = "\n\n".join(combined_js)
+all_js = "if (typeof window !== 'undefined' && typeof COMPREHENSIVE_DICTIONARY !== 'undefined') { window.COMPREHENSIVE_DICTIONARY = COMPREHENSIVE_DICTIONARY; }\n" + all_js
 
 # HTMLパーサーがJSコード内の </script> タグを誤認識しないようエスケープ
 # （テンプレートリテラル内に </script> が含まれる場合に Unexpected token エラーが発生する）

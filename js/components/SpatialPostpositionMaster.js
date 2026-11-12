@@ -437,9 +437,9 @@ export class SpatialPostpositionMasterComponent {
             <div class="pt-1">
               <button type="button" id="btn-toggle-spatial-hint" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600 transition-all cursor-pointer shadow-2xs active:scale-95">
                 <span>💡</span>
-                <span id="spatial-hint-toggle-text">${(this.state.isHintRevealed || this.state.hasAnswered) ? 'ヒント（日本語訳）を閉じる ▲' : 'ヒントを見る ▼'}</span>
+                <span id="spatial-hint-toggle-text">${this.state.isHintRevealed ? 'ヒント（日本語訳）を閉じる ▲' : 'ヒントを見る ▼'}</span>
               </button>
-              <div id="spatial-hint-container" class="${(this.state.isHintRevealed || this.state.hasAnswered) ? '' : 'hidden'} mt-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 animate-fade-in">
+              <div id="spatial-hint-container" class="${this.state.isHintRevealed ? '' : 'hidden'} mt-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 animate-fade-in">
                 ${quiz.promptJa}
               </div>
             </div>

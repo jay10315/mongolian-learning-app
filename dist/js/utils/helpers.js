@@ -5062,7 +5062,7 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
   };
 }
 
-/**/**
+/**
  * モンゴル語キリル文字テキストの各単語をタップ可能なspan要素でラップする
  * @param {string} text - 対象テキスト
  * @param {function} lookedUpCheckFn - 単語が保存済みか判定する関数 (token => boolean)
