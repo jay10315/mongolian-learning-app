@@ -46890,3 +46890,5 @@ export const COMPREHENSIVE_DICTIONARY = {
     "en": "will have something resolved"
   }
 };
+
+if (typeof window !== 'undefined') { window.COMPREHENSIVE_DICTIONARY = COMPREHENSIVE_DICTIONARY; }

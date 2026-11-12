@@ -1,4 +1,3 @@
-if (typeof window !== 'undefined' && typeof COMPREHENSIVE_DICTIONARY !== 'undefined') { window.COMPREHENSIVE_DICTIONARY = COMPREHENSIVE_DICTIONARY; }
 // === js/data/comprehensiveDictionary.js ===
 const COMPREHENSIVE_DICTIONARY = {
   "турш": {
@@ -46892,6 +46891,8 @@ const COMPREHENSIVE_DICTIONARY = {
     "en": "will have something resolved"
   }
 };
+
+if (typeof window !== 'undefined') { window.COMPREHENSIVE_DICTIONARY = COMPREHENSIVE_DICTIONARY; }
 
 
 // === js/utils/helpers.js ===
