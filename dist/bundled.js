@@ -160574,7 +160574,7 @@ const suffixRuleQuizzes = [
   "explanation": "「өгөх（与える）」は補助動詞として「相手の利益のために〜してあげる」を表します。「тусалж өгөх」で「手伝ってあげる」となります。",
   "exampleSentenceMn": "Би дүүдээ ном уншиж өгсөн.",
   "exampleSentenceJa": "私は弟に本を読んであげた。"
-}
+},
 
   // ==========================================
   // 【新設】文における月・日の使い方（与位格 -д/-т の要否）
@@ -216682,8 +216682,7 @@ class ReferenceGuideComponent {
     selectedOption: null,
     isCorrect: false,
     combo: 0,
-    results: []
-  },
+    results: [],
     // 表形式インタラクティブ回答モード State
     tableQuiz: {
       answeringMode: 'choice', // 'choice' (選択式) | 'input' (入力式)
@@ -218299,6 +218298,162 @@ class ReferenceGuideComponent {
             </div>
           </div>
         </div>
+
+          <!-- タブ16: 文における月・日の使い方（与位格 -д/-т の要否） -->
+          <div id="ref-tab-time-dative" class="ref-subtab-pane hidden space-y-4">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-4 rounded-2xl text-white shadow-sm space-y-1">
+              <div class="font-black text-base flex items-center gap-2">
+                <span>📅</span> 文における月・日の使い方（与位格 -д/-т の要否 5大対比）
+              </div>
+              <p class="text-xs text-blue-100 leading-relaxed">
+                モンゴル語の時間・日時表現では、<strong>「与位格（-д/-т）をつける表現」</strong>と<strong>「助詞をつけてはいけない（辞書形のまま置く）表現」</strong>が厳密に決まっています！
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- ⭕ 与位格が【要る】グループ -->
+              <div class="bg-white rounded-2xl p-4 border-2 border-emerald-300 shadow-2xs space-y-3">
+                <div class="flex items-center justify-between border-b border-emerald-100 pb-2">
+                  <div class="font-black text-sm text-emerald-950 flex items-center gap-1.5">
+                    <span>⭕</span> 与位格（-д/-т）が【要る】
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-bold text-[10px]">助詞必須</span>
+                </div>
+                <div class="space-y-2.5 text-xs">
+                  <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                    <div class="font-bold text-emerald-900 mb-0.5">① 〜 сар（月）</div>
+                    <div class="text-slate-700">ирэх сар<strong>д</strong>（来月に）、энэ сар<strong>д</strong>（今月に）</div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                    <div class="font-bold text-emerald-900 mb-0.5">② 〜 долоо хоног（週）</div>
+                    <div class="text-slate-700">энэ долоо хоног<strong>т</strong>（今週に）、дараагийн долоо хоног<strong>т</strong>（来週に）</div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                    <div class="font-bold text-emerald-900 mb-0.5">③ 年月日（数字＋単位）</div>
+                    <div class="text-slate-700">2-р сар<strong>д</strong>（2月に）、9-р сарын нэгэн<strong>д</strong>（9月1日に）、2014 он<strong>д</strong>（2014年に）</div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                    <div class="font-bold text-emerald-900 mb-0.5">④ 〜 гараг（曜日）</div>
+                    <div class="text-slate-700">даваа гараг<strong>т</strong>（月曜日に）、баасан гараг<strong>т</strong>（金曜日に）</div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                    <div class="font-bold text-emerald-900 mb-0.5">⑤ 頻度・割合（〜につき / 〜に1回）</div>
+                    <div class="text-slate-700">өдөр<strong>т</strong> 3 удаа（1日に3回）、2 жил<strong>д</strong> нэг удаа（2年に1回）、1 сар<strong>д</strong> 4 удаа（1ヶ月に4回）</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ❌ 与位格が【要らない】グループ -->
+              <div class="bg-white rounded-2xl p-4 border-2 border-rose-300 shadow-2xs space-y-3">
+                <div class="flex items-center justify-between border-b border-rose-100 pb-2">
+                  <div class="font-black text-sm text-rose-950 flex items-center gap-1.5">
+                    <span>❌</span> 与位格（-д/-т）が【要らない】
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-900 font-bold text-[10px]">助詞不要・そのまま置く</span>
+                </div>
+                <div class="space-y-2.5 text-xs">
+                  <div class="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200">
+                    <div class="font-bold text-rose-900 mb-0.5">① 〜 жил（年）</div>
+                    <div class="text-slate-700 font-mono">ирэх жил（来年）、энэ жил（今年）、тэр жил（あの年）<br><span class="text-rose-600 font-sans text-3xs font-bold">※ ирэх жилд とは言わない！</span></div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200">
+                    <div class="font-bold text-rose-900 mb-0.5">② 〜 хэддэх өдөр（口語曜日）</div>
+                    <div class="text-slate-700 font-mono">нэгдэх өдөр（月曜）、хагас сайн өдөр（土曜）、бүтэн сайн өдөр（日曜）<br><span class="text-rose-600 font-sans text-3xs font-bold">※ -д/-т を付けずにそのまま文中に置く！</span></div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200">
+                    <div class="font-bold text-rose-900 mb-0.5">③ 日常の時称副詞</div>
+                    <div class="text-slate-700">өчигдөр（昨日）、өнөөдөр（今日）、маргааш（明日）、өглөө（朝）、орой（晩）、үдээс өмнө（午前）、үдээс хойш（午後）</div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200">
+                    <div class="font-bold text-rose-900 mb-0.5">④ 〜 дараа / 〜 өмнө（〜後 / 〜前）</div>
+                    <div class="text-slate-700 font-mono">2 жилийн дараа（2年後）、1 сарын өмнө（1ヶ月前）<br><span class="text-rose-600 font-sans text-3xs font-bold">※ дараад / өмнөд とは言わない！</span></div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200">
+                    <div class="font-bold text-rose-900 mb-0.5">⑤ 期間（どれだけのあいだ）</div>
+                    <div class="text-slate-700">2 жил（2年間）、2 сар（2ヶ月間）、2 хоног（2日間）、3 өдөр（3日間）</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- タブ17: 道具名詞(-уур) ＆ 使役(-уул/-лга) vs 受動(-гд) -->
+          <div id="ref-tab-derivative-suffixes" class="ref-subtab-pane hidden space-y-4">
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-700 p-4 rounded-2xl text-white shadow-sm space-y-1">
+              <div class="font-black text-base flex items-center gap-2">
+                <span>🛠️</span> 道具名詞(-уур/-үүр) ＆ 使役（-уул/-лга）vs 受動（-гд）の識別ルール
+              </div>
+              <p class="text-xs text-purple-100 leading-relaxed">
+                接尾辞の意味・機能と、学習者がもっとも混同しやすい「使役」と「受動」の決定的な見分け方を完全整理！
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- -уур / -үүр 道具・場所名詞化 -->
+              <div class="bg-white rounded-2xl p-4 border border-purple-200 shadow-2xs space-y-3">
+                <div class="flex items-center gap-2 border-b border-purple-100 pb-2">
+                  <span class="text-xl">🔑</span>
+                  <div>
+                    <h4 class="font-black text-sm text-purple-950">接尾辞「-уур / -үүр」の本質</h4>
+                    <span class="text-[10px] text-purple-600 font-bold">動詞 ➔ 道具・場所の名詞（※受け身ではない！）</span>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-700 leading-relaxed">
+                  動詞の語幹の後ろにつき、その動作を行う<strong>「道具」</strong>や<strong>「場所」</strong>を表す名詞を作ります。英語で言う動詞＋<strong>-er</strong>（cook ➔ cooker [調理器具]）と同じ感覚です！
+                </p>
+                <div class="space-y-2 text-xs">
+                  <div class="p-2 rounded-xl bg-purple-50 border border-purple-200">
+                    <div class="font-bold text-purple-900">・дэлгэх（広げる）＋ -үүр ＝ дэлгүүр（店・広げる場所）</div>
+                  </div>
+                  <div class="p-2 rounded-xl bg-purple-50 border border-purple-200">
+                    <div class="font-bold text-purple-900">・түлхэх（押す）＋ -үүр ＝ түлхүүр（鍵・押して開ける道具）</div>
+                  </div>
+                  <div class="p-2 rounded-xl bg-purple-50 border border-purple-200">
+                    <div class="font-bold text-purple-900">・хутгах（かき混ぜる）＋ -уур ＝ хутгуур（マドラー・へら）</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 使役 vs 受動 の識別神公式 -->
+              <div class="bg-white rounded-2xl p-4 border border-indigo-200 shadow-2xs space-y-3">
+                <div class="flex items-center gap-2 border-b border-indigo-100 pb-2">
+                  <span class="text-xl">⚡</span>
+                  <div>
+                    <h4 class="font-black text-sm text-indigo-950">使役 vs 受動 1秒判定の神公式</h4>
+                    <span class="text-[10px] text-indigo-600 font-bold">文字に含まれる子音に注目！</span>
+                  </div>
+                </div>
+                <div class="space-y-2.5 text-xs">
+                  <div class="p-3 rounded-xl bg-blue-50 border border-blue-200 space-y-1">
+                    <div class="font-black text-blue-950 flex items-center justify-between">
+                      <span>👑 使役（〜させる・〜してもらう）</span>
+                      <span class="px-2 py-0.5 rounded-full bg-blue-200 text-blue-900 font-mono font-bold text-[10px]">必ず「л」が入る！</span>
+                    </div>
+                    <div class="text-slate-700">語尾: <strong>-уул / -үүл</strong> または <strong>-лга / -лгэ</strong></div>
+                    <div class="text-slate-600 font-mono text-[11px]">
+                      ・явах → яв<strong>уул</strong>ах（行かせる）<br>
+                      ・унших → унш<strong>уул</strong>ах（読ませる）<br>
+                      ・шийдэх → шийд<strong>үүл</strong>эх（解決させる）
+                    </div>
+                  </div>
+
+                  <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 space-y-1">
+                    <div class="font-black text-rose-950 flex items-center justify-between">
+                      <span>🛡️ 受け身（〜される・〜られる）</span>
+                      <span class="px-2 py-0.5 rounded-full bg-rose-200 text-rose-900 font-mono font-bold text-[10px]">「г」＋「д」の合体！</span>
+                    </div>
+                    <div class="text-slate-700">語尾: <strong>-гд</strong>（-гдах / -гдэх / -гдох / -гдөх）</div>
+                    <div class="text-slate-600 font-mono text-[11px]">
+                      ・шийдэх → шийд<strong>эгд</strong>эх（解決される）<br>
+                      ・үзэх → үз<strong>эгд</strong>эх（見られる・姿が見える）<br>
+                      ・барих → бари<strong>гд</strong>ах（捕まる・建てられる）
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
 
         <!-- 3. 母音調和 -->
         <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
