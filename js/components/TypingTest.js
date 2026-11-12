@@ -1517,14 +1517,7 @@ export class TypingTestComponent {
     if (!wordInfo) return;
 
     // 「調べた単語」として保存
-    StorageService.saveLookedUpWord({
-      rawWord: wordInfo.rawWord,
-      dictForm: wordInfo.dictForm,
-      meaning: wordInfo.meaning,
-      pos: wordInfo.pos,
-      pron: wordInfo.pron,
-      passageTitle: `タイピング: ${sentence.categoryLabel || sentence.level || '自作例文'}`
-    });
+        // StorageService.saveLookedUpWord(...) // 自動保存停止
 
     // 発音再生
     SpeechService.speak(wordInfo.dictForm || wordInfo.rawWord);

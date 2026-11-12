@@ -625,16 +625,7 @@ export class PronounMasterComponent {
         const rawWord = span.getAttribute('data-word');
         if (!rawWord) return;
         const wordInfo = findWordInDictionary(rawWord);
-        try {
-          StorageService.saveLookedUpWord({
-            rawWord: wordInfo.rawWord || rawWord,
-            dictForm: wordInfo.dictForm,
-            ja: wordInfo.ja,
-            pos: wordInfo.pos,
-            pron: wordInfo.pron,
-            passageTitle: `人称代名詞特訓 (${q.categoryLabel})`
-          });
-        } catch (_) {}
+        // 自動保存は行わず、ユーザーがモーダル内で明示的に保存を選べるようにする
         try {
           SpeechService.speak(wordInfo.dictForm || wordInfo.rawWord);
         } catch (_) {}

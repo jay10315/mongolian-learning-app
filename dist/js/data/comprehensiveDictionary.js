@@ -1,6 +1,3 @@
-// モンゴル語包括辞書マスターデータベース (100% 網羅・辞書未登録ゼロ)
-// アプリ内の全教材・問題・対話・スピーチの全語彙 + 英語/日本語対訳付き
-
 export const COMPREHENSIVE_DICTIONARY = {
   "турш": {
     "mongolian": "турш",
@@ -26131,21 +26128,32 @@ export const COMPREHENSIVE_DICTIONARY = {
   },
   "гэрийнхэн": {
     "mongolian": "гэрийнхэн",
-    "dictForm": "гэр",
-    "meaning": "家族たち、身内の人々",
-    "pos": "名詞複数",
-    "pronunciation": "",
-    "derivation": "",
-    "en": "family members, folks"
+    "dictForm": "гэрийнхэн",
+    "partOfSpeech": "名詞",
+    "meaning": "家族、身内、同居人、家の人たち",
+    "derivation": "「гэр（家）」＋ 属格「-ийн」＋ 集合所属接尾辞「-хэн」",
+    "exampleMn": "Манай гэрийнхэн бүгд сайн байгаа.",
+    "exampleJa": "うちの家族はみんな元気にしています。",
+    "pronunciation": "ゲリーンヘン",
+    "synonyms": [
+      "гэр бүл",
+      "ах дүүс"
+    ],
+    "en": "family, family members, household"
   },
   "гэрийнхэндээ": {
     "mongolian": "гэрийнхэндээ",
-    "dictForm": "гэр",
-    "meaning": "家族たちに（与位格再帰）",
-    "pos": "名詞与位格再帰",
-    "pronunciation": "",
-    "derivation": "",
-    "en": "to one's family"
+    "dictForm": "гэрийнхэн",
+    "partOfSpeech": "名詞（与位格・再帰所有）",
+    "meaning": "（自分の）家族に、身内に、うちの人たちに",
+    "derivation": "名詞「гэрийнхэн（家族）」＋ 与位格・再帰語尾「-дээ」",
+    "exampleMn": "Би гэрийнхэндээ хоол хийж өгнө.",
+    "exampleJa": "私は自分の家族に料理を作ってあげます。",
+    "pronunciation": "ゲリーンヘンデー",
+    "synonyms": [
+      "гэрийнхэн"
+    ],
+    "en": "to one's own family"
   },
   "гэрийнхэнтэйгээ": {
     "mongolian": "гэрийнхэнтэйгээ",
@@ -26761,12 +26769,17 @@ export const COMPREHENSIVE_DICTIONARY = {
   },
   "гэрийнхэнд": {
     "mongolian": "гэрийнхэнд",
-    "dictForm": "гэр",
-    "meaning": "家族たち、身内の人々（与位格）",
-    "pos": "名詞複数（格変化形）",
-    "pronunciation": "",
-    "derivation": "「гэр」＋ 与位格「-д」",
-    "en": "family members, folks (与位格)"
+    "dictForm": "гэрийнхэн",
+    "partOfSpeech": "名詞（与位格）",
+    "meaning": "家族に、身内に",
+    "derivation": "名詞「гэрийнхэн（家族）」＋ 与位格「-д」",
+    "exampleMn": "Тэр гэрийнхэнд нь хэлсэн.",
+    "exampleJa": "彼はその家族に言った。",
+    "pronunciation": "ゲリーンヘンド",
+    "synonyms": [
+      "гэрийнхэн"
+    ],
+    "en": "to the family"
   },
   "хүрсэнд": {
     "mongolian": "хүрсэнд",
@@ -28759,12 +28772,17 @@ export const COMPREHENSIVE_DICTIONARY = {
   },
   "гэрийнхний": {
     "mongolian": "гэрийнхний",
-    "dictForm": "гэрийнхний",
-    "meaning": "гэрийнхний（モンゴル語テキスト語彙）",
-    "pos": "語句",
-    "pronunciation": "",
-    "derivation": "教材文脈に出現する語句",
-    "en": "Mongolian vocabulary item: гэрийнхний"
+    "dictForm": "гэрийнхэн",
+    "partOfSpeech": "名詞（属格）",
+    "meaning": "家族の、身内の",
+    "derivation": "名詞「гэрийнхэн（家族）」＋ 属格「-ий」",
+    "exampleMn": "Гэрийнхний сэтгэл тайвширсан.",
+    "exampleJa": "家族の気持ちが落ち着いた。",
+    "pronunciation": "ゲリーンフニー",
+    "synonyms": [
+      "гэрийнхэн"
+    ],
+    "en": "of the family"
   },
   "нөөс": {
     "mongolian": "нөөс",
@@ -34497,12 +34515,17 @@ export const COMPREHENSIVE_DICTIONARY = {
   },
   "харихдаа": {
     "mongolian": "харихдаа",
-    "dictForm": "харихдаа",
-    "meaning": "харихдаа（モンゴル語テキスト語彙）",
-    "pos": "語句",
-    "pronunciation": "",
-    "derivation": "教材文脈に出現する語句",
-    "en": "Mongolian vocabulary item: харихдаа"
+    "dictForm": "харих",
+    "partOfSpeech": "動詞（時副動詞・再帰）",
+    "meaning": "（自分が）帰る際・帰国したときに",
+    "derivation": "動詞「харих（帰る）」＋ 時副動詞「-хдаа」（〜する時・際に）",
+    "exampleMn": "Би харихдаа чамтай уулзана.",
+    "exampleJa": "私は帰る時に君と会います。",
+    "pronunciation": "ハリフダー",
+    "synonyms": [
+      "харих"
+    ],
+    "en": "when going home / returning"
   },
   "оорой": {
     "mongolian": "оорой",
@@ -38646,12 +38669,17 @@ export const COMPREHENSIVE_DICTIONARY = {
   },
   "шийдүүлж": {
     "mongolian": "шийдүүлж",
-    "dictForm": "шийдүүлж",
-    "meaning": "шийдүүлж（モンゴル語テキスト語彙）",
-    "pos": "語句",
-    "pronunciation": "",
-    "derivation": "教材文脈に出現する語句",
-    "en": "Mongolian vocabulary item: шийдүүлж"
+    "dictForm": "шийдүүлэх",
+    "partOfSpeech": "動詞（使役・並列接続形）",
+    "meaning": "解決してもらって、決めてもらって、処理させて",
+    "derivation": "使役動詞「шийдүүлэх」に並列接続語尾「-ж」が接続した形",
+    "exampleMn": "Би эмчээр үзүүлж, асуудлаа шийдүүлж авсан.",
+    "exampleJa": "私は医師に診てもらい、問題を解決してもらった。",
+    "pronunciation": "シードゥールジ",
+    "synonyms": [
+      "шийдүүлэх"
+    ],
+    "en": "having resolved, getting decided (connective)"
   },
   "сургуулиудтай": {
     "mongolian": "сургуулиудтай",
@@ -46817,5 +46845,48 @@ export const COMPREHENSIVE_DICTIONARY = {
       "түүнийг"
     ],
     "en": "him/her (acc., colloquial)"
+  },
+  "шийдүүлэх": {
+    "mongolian": "шийдүүлэх",
+    "dictForm": "шийдүүлэх",
+    "partOfSpeech": "動詞（使役）",
+    "meaning": "解決してもらう、決めてもらう、処理させる",
+    "derivation": "動詞「шийдэх（決める、解決する）」の使役形（-үүл-）",
+    "exampleMn": "Би асуудлаа даргаар шийдүүлсэн.",
+    "exampleJa": "私は自分の問題を上司に解決してもらった。",
+    "pronunciation": "シードゥーレフ",
+    "synonyms": [
+      "шийдэх",
+      "зохицуулах"
+    ],
+    "en": "to have something resolved, to get something decided"
+  },
+  "шийдүүлсэн": {
+    "mongolian": "шийдүүлсэн",
+    "dictForm": "шийдүүлэх",
+    "partOfSpeech": "動詞（使役・過去形）",
+    "meaning": "解決してもらった、決めてもらった、処理させた",
+    "derivation": "使役動詞「шийдүүлэх」に過去語尾「-сэн」が接続した形",
+    "exampleMn": "Би асуудлаа шийдүүлсэн.",
+    "exampleJa": "私は問題を解決してもらった。",
+    "pronunciation": "シードゥールセン",
+    "synonyms": [
+      "шийдүүлэх"
+    ],
+    "en": "had something resolved"
+  },
+  "шийдүүлнэ": {
+    "mongolian": "шийдүүлнэ",
+    "dictForm": "шийдүүлэх",
+    "partOfSpeech": "動詞（使役・現在未来形）",
+    "meaning": "解決してもらう、決めてもらう、処理させる",
+    "derivation": "使役動詞「шийдүүлэх」に現在未来語尾「-нэ」が接続した形",
+    "exampleMn": "Би маргааш шийдүүлнэ.",
+    "exampleJa": "私は明日解決してもらいます。",
+    "pronunciation": "シードゥールネ",
+    "synonyms": [
+      "шийдүүлэх"
+    ],
+    "en": "will have something resolved"
   }
 };

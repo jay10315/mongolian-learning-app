@@ -473,14 +473,7 @@ export class ReadingTestComponent {
     if (!wordInfo) return;
 
     // 2. 「調べた単語」としてローカルストレージに自動保存
-    const saved = StorageService.saveLookedUpWord({
-      rawWord: wordInfo.rawWord,
-      dictForm: wordInfo.dictForm,
-      meaning: wordInfo.meaning,
-      pos: wordInfo.pos,
-      pron: wordInfo.pron,
-      passageTitle: passage.titleMn
-    });
+    const saved = // StorageService.saveLookedUpWord(...) // 自動保存停止・モーダル内手動操作に統一
 
     // 3. 発音音声再生
     SpeechService.speak(wordInfo.dictForm || wordInfo.rawWord);

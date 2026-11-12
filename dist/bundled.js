@@ -4893,6 +4893,45 @@ function findWordInDictionary(rawWord, passageGlossary = null) {
           };
         }
       }
+
+      // 4.2. 使役・受動・相互等の派生語幹の深掘り探索（例: шийдүүл- -> шийдэх）
+      const derivSuffixes = [
+        { suf: 'уул', name: '使役（〜してもらう・させる）' },
+        { suf: 'үүл', name: '使役（〜してもらう・させる）' },
+        { suf: 'лга', name: '使役（〜させる）' },
+        { suf: 'лгэ', name: '使役（〜させる）' },
+        { suf: 'лго', name: '使役（〜させる）' },
+        { suf: 'лгө', name: '使役（〜させる）' },
+        { suf: 'гд', name: '受動（〜される）' },
+        { suf: 'лц', name: '相互（〜し合う・一緒に〜する）' },
+        { suf: 'чих', name: '完了（〜してしまう）' }
+      ];
+
+      for (const ds of derivSuffixes) {
+        if (stem.endsWith(ds.suf) && stem.length >= ds.suf.length + 2) {
+          const baseStem = stem.slice(0, -ds.suf.length);
+          const baseCandidates = [baseStem + 'эх', baseStem + 'ах', baseStem + 'ох', baseStem + 'өх', baseStem + 'х'];
+          
+          for (const bc of baseCandidates) {
+            let baseMatch = (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY) ? COMPREHENSIVE_DICTIONARY[bc] : null;
+            if (!baseMatch) {
+              baseMatch = vocab.find(item => (item.dictForm || item.mongolian || '').toLowerCase() === bc);
+            }
+            if (baseMatch) {
+              const baseMeaning = baseMatch.meaning || baseMatch.japanese || baseMatch.baseMeaning || '';
+              return {
+                rawWord: cleanWord,
+                dictForm: stem + 'х',
+                meaning: `${baseMeaning}【${ds.name}】（${v.name}）`,
+                pos: '動詞（派生・活用形）',
+                pron: baseMatch.pronunciation || '',
+                derivation: `動詞「${baseMatch.dictForm || bc}」（${baseMeaning}）＋ ${ds.name}「-${ds.suf}」＋ ${v.name}「-${v.suffix}」`
+              };
+            }
+          }
+        }
+      }
+
     }
   }
 
@@ -4988,10 +5027,23 @@ function findWordInDictionary(rawWord, passageGlossary = null) {
   for (const v of verbSuffixes) {
     if (lower.endsWith(v.suffix) && lower.length > v.suffix.length + 2) {
       const stem = cleanWord.slice(0, -v.suffix.length);
+      // 基本形「stem + х」を辞書で再チェック
+      const candDict = stem.toLowerCase() + 'х';
+      const match = (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY) ? COMPREHENSIVE_DICTIONARY[candDict] : null;
+      if (match) {
+        return {
+          rawWord: cleanWord,
+          dictForm: match.dictForm || candDict,
+          meaning: `${match.meaning}（${v.name}）`,
+          pos: '動詞（活用形）',
+          pron: match.pronunciation || '',
+          derivation: `動詞「${match.dictForm || candDict}」＋ 活用語尾「-${v.suffix}」（${v.name}）`
+        };
+      }
       return {
         rawWord: cleanWord,
         dictForm: stem + 'х',
-        meaning: `動詞語幹「${stem}」＋ 活用語尾【${v.name}】`,
+        meaning: `動詞「${stem}х」の活用形（${v.name}）`,
         pos: '動詞（活用形）',
         pron: '',
         derivation: `動詞語幹「${stem}」に活用語尾「-${v.suffix}」（${v.name}）が接続した文法形です。`
@@ -147771,14 +147823,7 @@ class ReadingTestComponent {
     if (!wordInfo) return;
 
     // 2. 「調べた単語」としてローカルストレージに自動保存
-    const saved = StorageService.saveLookedUpWord({
-      rawWord: wordInfo.rawWord,
-      dictForm: wordInfo.dictForm,
-      meaning: wordInfo.meaning,
-      pos: wordInfo.pos,
-      pron: wordInfo.pron,
-      passageTitle: passage.titleMn
-    });
+    const saved = // StorageService.saveLookedUpWord(...) // 自動保存停止・モーダル内手動操作に統一
 
     // 3. 発音音声再生
     SpeechService.speak(wordInfo.dictForm || wordInfo.rawWord);
@@ -149640,14 +149685,7 @@ class TypingTestComponent {
     if (!wordInfo) return;
 
     // 「調べた単語」として保存
-    StorageService.saveLookedUpWord({
-      rawWord: wordInfo.rawWord,
-      dictForm: wordInfo.dictForm,
-      meaning: wordInfo.meaning,
-      pos: wordInfo.pos,
-      pron: wordInfo.pron,
-      passageTitle: `タイピング: ${sentence.categoryLabel || sentence.level || '自作例文'}`
-    });
+        // StorageService.saveLookedUpWord(...) // 自動保存停止
 
     // 発音再生
     SpeechService.speak(wordInfo.dictForm || wordInfo.rawWord);
@@ -152280,13 +152318,7 @@ class RoleplayComponent {
         if (!rawToken) return;
 
         const info = findWordInDictionary(rawToken);
-        const saved = StorageService.saveLookedUpWord({
-          rawWord: rawToken,
-          dictForm: info.dictForm,
-          meaning: info.meaning,
-          pos: info.pos,
-          passageTitle: `対話: ${sc.title}`
-        });
+        // StorageService.saveLookedUpWord(...) // 自動保存停止
 
         span.classList.remove('hover:bg-amber-100', 'border-dotted');
         span.classList.add('bg-amber-100/80', 'border-b-2', 'border-amber-400', 'font-bold', 'text-amber-950');
@@ -153893,13 +153925,7 @@ class InterviewMasterComponent {
         if (!rawToken) return;
 
         const info = findWordInDictionary(rawToken);
-        const saved = StorageService.saveLookedUpWord({
-          rawWord: rawToken,
-          dictForm: info.dictForm,
-          meaning: info.meaning,
-          pos: info.pos,
-          passageTitle: `口述試験: ${topic.titleJa || topic.titleMn}`
-        });
+        // StorageService.saveLookedUpWord(...) // 自動保存停止
 
         span.classList.remove('hover:bg-amber-100', 'border-dotted');
         span.classList.add('bg-amber-100/80', 'border-b-2', 'border-amber-400', 'font-bold', 'text-amber-950');
@@ -156065,14 +156091,7 @@ class MockExamComponent {
         if (!rawWord) return;
         const wordInfo = findWordInDictionary(rawWord);
         try {
-          StorageService.saveLookedUpWord({
-            rawWord: wordInfo.rawWord || rawWord,
-            dictForm: wordInfo.dictForm,
-            ja: wordInfo.ja,
-            pos: wordInfo.pos,
-            pron: wordInfo.pron,
-            passageTitle: `4択模試: ${q.categoryLabel || '総合模試'}`
-          });
+        // StorageService.saveLookedUpWord(...) // 自動保存停止
         } catch (_) {}
         try {
           SpeechService.speak(wordInfo.dictForm || wordInfo.rawWord);
@@ -161299,16 +161318,7 @@ class PronounMasterComponent {
         const rawWord = span.getAttribute('data-word');
         if (!rawWord) return;
         const wordInfo = findWordInDictionary(rawWord);
-        try {
-          StorageService.saveLookedUpWord({
-            rawWord: wordInfo.rawWord || rawWord,
-            dictForm: wordInfo.dictForm,
-            ja: wordInfo.ja,
-            pos: wordInfo.pos,
-            pron: wordInfo.pron,
-            passageTitle: `人称代名詞特訓 (${q.categoryLabel})`
-          });
-        } catch (_) {}
+        // 自動保存は行わず、ユーザーがモーダル内で明示的に保存を選べるようにする
         try {
           SpeechService.speak(wordInfo.dictForm || wordInfo.rawWord);
         } catch (_) {}

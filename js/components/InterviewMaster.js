@@ -1414,13 +1414,7 @@ export class InterviewMasterComponent {
         if (!rawToken) return;
 
         const info = findWordInDictionary(rawToken);
-        const saved = StorageService.saveLookedUpWord({
-          rawWord: rawToken,
-          dictForm: info.dictForm,
-          meaning: info.meaning,
-          pos: info.pos,
-          passageTitle: `口述試験: ${topic.titleJa || topic.titleMn}`
-        });
+        // StorageService.saveLookedUpWord(...) // 自動保存停止
 
         span.classList.remove('hover:bg-amber-100', 'border-dotted');
         span.classList.add('bg-amber-100/80', 'border-b-2', 'border-amber-400', 'font-bold', 'text-amber-950');

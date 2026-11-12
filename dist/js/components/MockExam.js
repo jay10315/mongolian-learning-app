@@ -505,14 +505,7 @@ export class MockExamComponent {
         if (!rawWord) return;
         const wordInfo = findWordInDictionary(rawWord);
         try {
-          StorageService.saveLookedUpWord({
-            rawWord: wordInfo.rawWord || rawWord,
-            dictForm: wordInfo.dictForm,
-            ja: wordInfo.ja,
-            pos: wordInfo.pos,
-            pron: wordInfo.pron,
-            passageTitle: `4択模試: ${q.categoryLabel || '総合模試'}`
-          });
+        // StorageService.saveLookedUpWord(...) // 自動保存停止
         } catch (_) {}
         try {
           SpeechService.speak(wordInfo.dictForm || wordInfo.rawWord);

@@ -4892,6 +4892,45 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
           };
         }
       }
+
+      // 4.2. 使役・受動・相互等の派生語幹の深掘り探索（例: шийдүүл- -> шийдэх）
+      const derivSuffixes = [
+        { suf: 'уул', name: '使役（〜してもらう・させる）' },
+        { suf: 'үүл', name: '使役（〜してもらう・させる）' },
+        { suf: 'лга', name: '使役（〜させる）' },
+        { suf: 'лгэ', name: '使役（〜させる）' },
+        { suf: 'лго', name: '使役（〜させる）' },
+        { suf: 'лгө', name: '使役（〜させる）' },
+        { suf: 'гд', name: '受動（〜される）' },
+        { suf: 'лц', name: '相互（〜し合う・一緒に〜する）' },
+        { suf: 'чих', name: '完了（〜してしまう）' }
+      ];
+
+      for (const ds of derivSuffixes) {
+        if (stem.endsWith(ds.suf) && stem.length >= ds.suf.length + 2) {
+          const baseStem = stem.slice(0, -ds.suf.length);
+          const baseCandidates = [baseStem + 'эх', baseStem + 'ах', baseStem + 'ох', baseStem + 'өх', baseStem + 'х'];
+          
+          for (const bc of baseCandidates) {
+            let baseMatch = (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY) ? COMPREHENSIVE_DICTIONARY[bc] : null;
+            if (!baseMatch) {
+              baseMatch = vocab.find(item => (item.dictForm || item.mongolian || '').toLowerCase() === bc);
+            }
+            if (baseMatch) {
+              const baseMeaning = baseMatch.meaning || baseMatch.japanese || baseMatch.baseMeaning || '';
+              return {
+                rawWord: cleanWord,
+                dictForm: stem + 'х',
+                meaning: `${baseMeaning}【${ds.name}】（${v.name}）`,
+                pos: '動詞（派生・活用形）',
+                pron: baseMatch.pronunciation || '',
+                derivation: `動詞「${baseMatch.dictForm || bc}」（${baseMeaning}）＋ ${ds.name}「-${ds.suf}」＋ ${v.name}「-${v.suffix}」`
+              };
+            }
+          }
+        }
+      }
+
     }
   }
 
@@ -4987,10 +5026,23 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
   for (const v of verbSuffixes) {
     if (lower.endsWith(v.suffix) && lower.length > v.suffix.length + 2) {
       const stem = cleanWord.slice(0, -v.suffix.length);
+      // 基本形「stem + х」を辞書で再チェック
+      const candDict = stem.toLowerCase() + 'х';
+      const match = (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY) ? COMPREHENSIVE_DICTIONARY[candDict] : null;
+      if (match) {
+        return {
+          rawWord: cleanWord,
+          dictForm: match.dictForm || candDict,
+          meaning: `${match.meaning}（${v.name}）`,
+          pos: '動詞（活用形）',
+          pron: match.pronunciation || '',
+          derivation: `動詞「${match.dictForm || candDict}」＋ 活用語尾「-${v.suffix}」（${v.name}）`
+        };
+      }
       return {
         rawWord: cleanWord,
         dictForm: stem + 'х',
-        meaning: `動詞語幹「${stem}」＋ 活用語尾【${v.name}】`,
+        meaning: `動詞「${stem}х」の活用形（${v.name}）`,
         pos: '動詞（活用形）',
         pron: '',
         derivation: `動詞語幹「${stem}」に活用語尾「-${v.suffix}」（${v.name}）が接続した文法形です。`
