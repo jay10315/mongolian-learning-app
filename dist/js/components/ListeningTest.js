@@ -896,9 +896,12 @@ export class ListeningTestComponent {
                     <span class="text-sm">${r.isCorrect ? '⭕' : '❌'}</span>
                     <span class="text-xs font-bold text-slate-700">${r.quiz.categoryLabel}</span>
                   </div>
-                  <button type="button" class="btn-replay-item px-2 py-1 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg text-xs font-bold text-slate-700 shadow-2xs flex items-center gap-1 cursor-pointer" data-text="${r.quiz.audioText || r.quiz.sentence.replace(/[\[\]]/g, '')}">
-                    <span>🔊</span> 再生
-                  </button>
+                  <div class="flex items-center gap-2">
+                    ${(typeof renderReviewToggleButtonHTML === 'function') ? renderReviewToggleButtonHTML({ id: r.quiz.id, question: r.quiz.sentence, correctAnswer: r.expectedAnswer || r.quiz.answer, japanese: r.quiz.japanese || r.quiz.sentenceJa, category: 'リスニング', type: 'listening' }) : ''}
+                    <button type="button" class="btn-replay-item px-2 py-1 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg text-xs font-bold text-slate-700 shadow-2xs flex items-center gap-1 cursor-pointer" data-text="${r.quiz.audioText || r.quiz.sentence.replace(/[\[\]]/g, '')}">
+                      <span>🔊</span> 再生
+                    </button>
+                  </div>
                 </div>
 
                 <div class="text-sm font-bold text-slate-900 cyrillic-text">
@@ -961,6 +964,7 @@ export class ListeningTestComponent {
     });
 
     // 各問題の音声再生
+    bindReviewToggleButtons(this.container);
     this.container.querySelectorAll('.btn-replay-item').forEach(btn => {
       btn.addEventListener('click', () => {
         const text = btn.getAttribute('data-text');

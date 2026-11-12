@@ -5,7 +5,7 @@
 
 import { SPATIAL_CATEGORIES, SPATIAL_SVGS, SPATIAL_ITEMS, spatialQuizzes } from '../data/spatialPostpositionData.js';
 import { SpeechService } from '../services/speech.js';
-import { SoundEffects, shuffleArray, scrollToQuizTop, renderClickableWordsHTML, showUniversalWordModal, findWordInDictionary } from '../utils/helpers.js';
+import { SoundEffects, shuffleArray, scrollToQuizTop, renderClickableWordsHTML, renderChoiceExplanationsHTML, renderReviewToggleButtonHTML, bindReviewToggleButtons } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { StorageService } from '../services/storage.js';
 import { PenguinMascot } from './PenguinMascot.js';
@@ -462,71 +462,91 @@ export class SpatialPostpositionMasterComponent {
                 this.state.hasAnswered ? 'disabled' : ''
               }>
                 ${icon}
-                <span class="flex-1 text-base cyrillic-text">${opt}</span>
+                <span class="flex-1 text-base font-bold">${opt}</span>
               </button>
             `;
           }).join('')}
         </div>
 
-        <!-- 回答後の詳細解説エリア -->
-        <div id="spatial-explanation-area" class="${this.state.hasAnswered ? '' : 'hidden'} animate-fade-in space-y-3">
-          <div class="p-4 rounded-2xl border ${
+        <!-- 回答後の詳細解説エリア（WordTest / GrammarTest と完全統一） -->
+        <div id="spatial-explanation-area" class="${this.state.hasAnswered ? '' : 'hidden'} animate-fade-in space-y-3.5">
+          <div class="p-4 sm:p-5 rounded-2xl border ${
             this.state.isCorrect
-              ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950'
-              : 'bg-rose-50/90 border-rose-300 text-rose-950'
-          } shadow-xs space-y-3">
+              ? 'bg-emerald-50/95 border-emerald-300 text-emerald-950'
+              : 'bg-rose-50/95 border-rose-300 text-rose-950'
+          } shadow-sm space-y-3.5">
             
             <div class="flex items-center justify-between border-b ${
               this.state.isCorrect ? 'border-emerald-200' : 'border-rose-200'
-            } pb-2.5">
-              <div class="flex items-center gap-2">
-                <span class="text-xl">${this.state.isCorrect ? '🎉' : '❌'}</span>
+            } pb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="text-2xl">${this.state.isCorrect ? '⭕' : '❌'}</span>
                 <div>
-                  <h4 class="font-black text-sm">
-                    ${this.state.isCorrect ? '正解です！' : `不正解... 正解は「${quiz.answer}」`}
+                  <h4 class="font-black text-base">
+                    ${this.state.isCorrect ? '正解です！' : '不正解'}
                   </h4>
-                  <p class="text-2xs font-bold opacity-80">
-                    ${this.state.isCorrect ? '+15 XP 獲得！' : '解説を確認してマスターしましょう'}
-                  </p>
+                  <div class="text-xs font-bold ${this.state.isCorrect ? 'text-emerald-800' : 'text-rose-800'}">
+                    正解: <span class="font-black text-base cyrillic-text">${quiz.answer}</span>
+                    ${(() => {
+                      const itemInfo = SPATIAL_ITEMS.find(it => it.word === quiz.answer);
+                      return itemInfo ? `<span class="text-slate-600 font-normal ml-1.5">[${itemInfo.pronunciation}] ${itemInfo.japanese}</span>` : '';
+                    })()}
+                  </div>
                 </div>
               </div>
 
-              <button id="btn-speak-answer" class="px-3 py-1 bg-white/80 hover:bg-white text-slate-800 rounded-lg text-xs font-black shadow-2xs transition-all flex items-center gap-1">
-                <span>🔊</span>
-                <span>正解を発音</span>
+              <!-- 音声再生ボタン -->
+              <button type="button" id="btn-speak-answer" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 inline-flex items-center gap-1 shadow-2xs cursor-pointer">
+                <span>🔊</span> 発音を聞く
               </button>
             </div>
 
-            <!-- 解説文 -->
-            <div class="text-xs font-medium leading-relaxed whitespace-pre-line text-slate-800 bg-white/70 rounded-xl p-3 border ${
-              this.state.isCorrect ? 'border-emerald-200/60' : 'border-rose-200/60'
-            }">
+            ${!this.state.isCorrect && this.state.selectedOption ? `
+              <div class="text-xs text-rose-700 bg-rose-100/70 p-2.5 rounded-xl border border-rose-200 font-bold">
+                あなたの回答: <span class="line-through">${this.state.selectedOption}</span>
+              </div>
+            ` : ''}
+
+            <!-- 接続ルール解説 -->
+            ${(() => {
+              const itemInfo = SPATIAL_ITEMS.find(it => it.word === quiz.answer);
+              return itemInfo && itemInfo.caseRequirement ? `
+                <div class="bg-white/90 rounded-xl p-3 border border-slate-200/80 text-xs space-y-1">
+                  <div class="font-bold text-indigo-900 flex items-center gap-1">
+                    <span>📐</span> 文法接続ルール:
+                  </div>
+                  <div class="font-black text-slate-800">
+                    ${itemInfo.caseRequirement}
+                  </div>
+                </div>
+              ` : '';
+            })()}
+
+            <!-- 詳しい解説文 -->
+            <div class="text-xs font-medium leading-relaxed whitespace-pre-line text-slate-800 bg-white/80 rounded-xl p-3.5 border border-slate-200/60">
               ${quiz.explanation}
             </div>
 
-            <!-- 次へ進むボタン -->
+            <!-- 4択の選択肢全解説アコーディオン（WordTest / GrammarTest と完全統一） -->
+            ${(typeof renderChoiceExplanationsHTML === 'function') ? renderChoiceExplanationsHTML(this.state.shuffledOptions, {
+              expectedAnswer: quiz.answer,
+              userAnswer: this.state.selectedOption
+            }) : ''}
+
+            <!-- 次の問題へボタン (Enter対応) -->
             <div class="pt-1">
-              <button id="btn-next-question" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 active:scale-98">
-                <span>次の問題へ (Enter)</span>
-                <span>→</span>
+              <button type="button" id="btn-next-question" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl shadow-md transition-all active:scale-98 text-sm flex items-center justify-center gap-1.5 cursor-pointer">
+                <span>${current < total ? '次の問題へ（Enter） →' : '結果を見る 🎉'}</span>
               </button>
             </div>
+
           </div>
         </div>
 
       </div>
     `;
 
-    // 単語タップ辞書モーダル
-    this.container.querySelectorAll('.cyrillic-text').forEach(el => {
-      el.addEventListener('click', (e) => {
-        const text = e.target.textContent.trim();
-        const info = findWordInDictionary(text);
-        if (info) {
-          showUniversalWordModal({ wordInfo: info, onNavigate: this.onNavigate });
-        }
-      });
-    });
+    // （問題中の単語タップ辞書モーダルは他モードと統一のため除去）
 
     // 中断ボタン
     this.container.querySelector('#btn-abort-test').addEventListener('click', () => {
@@ -845,10 +865,12 @@ export class SpatialPostpositionMasterComponent {
               }
             </div>
 
-            <button class="btn-speak-result-item text-slate-400 hover:text-indigo-600 font-bold flex items-center gap-1" data-phrase="${q.prompt.replace('___', q.answer)}">
-              <span>🔊</span>
-              <span>再生</span>
-            </button>
+            <div class="flex items-center gap-2">
+              ${(typeof renderReviewToggleButtonHTML === 'function') ? renderReviewToggleButtonHTML({ id: q.id, question: q.prompt, correctAnswer: q.answer, japanese: q.promptJa, category: q.category, type: 'spatial_postposition' }) : ''}
+              <button type="button" class="btn-speak-result-item text-slate-400 hover:text-indigo-600 font-bold flex items-center gap-1 p-1 rounded-lg hover:bg-slate-100 cursor-pointer" data-phrase="${q.prompt.replace('___', q.answer)}" title="発音を聞く">
+                <span>🔊</span>
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -856,6 +878,7 @@ export class SpatialPostpositionMasterComponent {
   }
 
   static attachResultListEvents() {
+    bindReviewToggleButtons(this.container);
     this.container.querySelectorAll('.btn-speak-result-item').forEach(btn => {
       btn.addEventListener('click', () => {
         const phrase = btn.dataset.phrase;

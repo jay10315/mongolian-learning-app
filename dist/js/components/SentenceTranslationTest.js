@@ -1002,9 +1002,12 @@ export class SentenceTranslationTestComponent {
                     }">
                       ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
                     </span>
-                    <button type="button" class="btn-sentence-audio-res text-slate-400 hover:text-teal-600 p-1 rounded-lg transition-colors cursor-pointer" data-text="${r.quiz.textMn}" title="発音を聞く">
-                      🔊
-                    </button>
+                    <div class="flex items-center gap-2">
+                      ${(typeof renderReviewToggleButtonHTML === 'function') ? renderReviewToggleButtonHTML({ id: r.quiz.id, question: isJaToMn ? r.quiz.textJa : r.quiz.textMn, correctAnswer: isJaToMn ? r.quiz.textMn : r.quiz.textJa, japanese: r.quiz.textJa, category: '短文和訳', type: 'sentence' }) : ''}
+                      <button type="button" class="btn-sentence-audio-res text-slate-400 hover:text-teal-600 p-1 rounded-lg transition-colors cursor-pointer" data-text="${r.quiz.textMn}" title="発音を聞く">
+                        🔊
+                      </button>
+                    </div>
                   </div>
 
                   <!-- 設問 -->
@@ -1064,6 +1067,7 @@ export class SentenceTranslationTestComponent {
       });
     });
 
+    bindReviewToggleButtons(this.container);
     this.container.querySelectorAll('.btn-sentence-audio-res').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();

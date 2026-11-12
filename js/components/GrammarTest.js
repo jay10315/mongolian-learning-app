@@ -969,11 +969,14 @@ export class GrammarTestComponent {
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${r.isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
                       ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
                     </span>
-                    ${/[\u0400-\u04FF]/.test(r.quiz.answer) ? `
-                      <button type="button" class="btn-speak-grammar-result text-slate-400 hover:text-sky-700 p-1 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" data-word="${r.quiz.answer}" title="正解の発音を聞く">
-                        🔊
-                      </button>
-                    ` : ''}
+                    <div class="flex items-center gap-2">
+                      ${(typeof renderReviewToggleButtonHTML === 'function') ? renderReviewToggleButtonHTML({ id: r.quiz.id, question: r.quiz.question, correctAnswer: r.quiz.answer, category: '文法', type: 'grammar' }) : ''}
+                      ${/[\u0400-\u04FF]/.test(r.quiz.answer) ? `
+                        <button type="button" class="btn-speak-grammar-result text-slate-400 hover:text-sky-700 p-1 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" data-word="${r.quiz.answer}" title="正解の発音を聞く">
+                          🔊
+                        </button>
+                      ` : ''}
+                    </div>
                   </div>
                   <div class="font-bold text-slate-900 text-xs sm:text-sm">${r.quiz.question}</div>
                   <div>正解: <span class="font-bold text-sky-800 cyrillic-text">${r.quiz.answer}</span></div>
@@ -1007,6 +1010,7 @@ export class GrammarTestComponent {
     });
 
     // 音声再生
+    bindReviewToggleButtons(this.container);
     this.container.querySelectorAll('.btn-speak-grammar-result').forEach(btn => {
       btn.addEventListener('click', () => {
         const word = btn.getAttribute('data-word');

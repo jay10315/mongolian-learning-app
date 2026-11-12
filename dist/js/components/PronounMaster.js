@@ -5,7 +5,7 @@
 
 import { PRONOUN_CATEGORIES, PRONOUN_TABLES, pronounQuizzes } from '../data/pronounData.js';
 import { SpeechService } from '../services/speech.js';
-import { SoundEffects, shuffleArray, scrollToQuizTop, renderClickableWordsHTML, showUniversalWordModal, findWordInDictionary } from '../utils/helpers.js';
+import { SoundEffects, shuffleArray, scrollToQuizTop, renderClickableWordsHTML, showUniversalWordModal, findWordInDictionary, renderReviewToggleButtonHTML, bindReviewToggleButtons } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { StorageService } from '../services/storage.js';
 
@@ -815,6 +815,7 @@ export class PronounMasterComponent {
       </div>
     `;
 
+    bindReviewToggleButtons(this.container);
     const btnRetry = this.container.querySelector('#btn-retry-all');
     if (btnRetry) {
       btnRetry.addEventListener('click', () => this.startTesting());

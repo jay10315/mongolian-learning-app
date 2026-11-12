@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, renderChoiceExplanationsHTML, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR, isPronunciationCautionWord, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant, scrollToQuizTop } from '../utils/helpers.js';
+import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, renderChoiceExplanationsHTML, renderReviewToggleButtonHTML, bindReviewToggleButtons, shuffleArray, SoundEffects, SPECIAL_CYRILLIC_BAR, isPronunciationCautionWord, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant, scrollToQuizTop } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 
@@ -1011,9 +1011,12 @@ export class WordTestComponent {
                     `}
                     ${r.question.root ? `<div class="text-[11px] text-slate-400">語幹: ${r.question.root}</div>` : ''}
                   </div>
-                  <button type="button" class="btn-speak-word-result text-slate-400 hover:text-emerald-700 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer shrink-0" data-word="${r.question.mongolian}" title="発音を聞く">
-                    🔊
-                  </button>
+                  <div class="flex items-center gap-2 shrink-0">
+                    ${(typeof renderReviewToggleButtonHTML === 'function') ? renderReviewToggleButtonHTML({ id: r.question.id, wordId: r.question.id, question: (mode === 'mn_to_ja') ? r.question.mongolian : r.question.japanese, correctAnswer: r.expectedAnswer || r.question.mongolian, japanese: r.question.japanese, category: r.question.category, type: 'word' }) : ''}
+                    <button type="button" class="btn-speak-word-result text-slate-400 hover:text-emerald-700 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer" data-word="${r.question.mongolian}" title="発音を聞く">
+                      🔊
+                    </button>
+                  </div>
                 </div>
 
                 <!-- 4択問題の場合の選択肢全解説アコーディオン -->
@@ -1037,6 +1040,7 @@ export class WordTestComponent {
     });
 
     // 音声再生
+    bindReviewToggleButtons(this.container);
     this.container.querySelectorAll('.btn-speak-word-result, .btn-speak-choice-word').forEach(btn => {
       btn.addEventListener('click', () => {
         const word = btn.getAttribute('data-word');

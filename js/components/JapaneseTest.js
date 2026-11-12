@@ -742,12 +742,15 @@ export class JapaneseTestComponent {
               ${filteredResults.map(r => `
                 <div class="py-3 flex items-start justify-between gap-3 text-xs">
                   <div class="space-y-1 flex-1">
-                    <div class="flex items-center gap-2">
-                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${r.isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-                        ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
-                      </span>
-                      <span class="font-extrabold text-slate-900 text-sm cyrillic-text">${r.question.dictForm || r.question.mongolian}</span>
-                      ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(r.question) && r.question.pronunciation) ? `<span class="text-amber-700 font-bold text-xs ml-1">⚠️ [${r.question.pronunciation}]</span>` : ''}
+                    <div class="flex items-center justify-between gap-2 w-full">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${r.isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                          ${r.isCorrect ? '⭕ 正解' : '❌ 不正解'}
+                        </span>
+                        <span class="font-extrabold text-slate-900 text-sm cyrillic-text">${r.question.dictForm || r.question.mongolian}</span>
+                        ${(typeof isPronunciationCautionWord === 'function' && isPronunciationCautionWord(r.question) && r.question.pronunciation) ? `<span class="text-amber-700 font-bold text-xs ml-1">⚠️ [${r.question.pronunciation}]</span>` : ''}
+                      </div>
+                      ${(typeof renderReviewToggleButtonHTML === 'function') ? renderReviewToggleButtonHTML({ id: r.question.id, wordId: r.question.id, question: r.question.mongolian, correctAnswer: r.question.japanese, japanese: r.question.japanese, category: r.question.category, type: 'word' }) : ''}
                     </div>
                     <div class="text-slate-700 font-medium">
                       日本語訳: <span class="font-bold text-rose-800">${r.question.japanese}</span>

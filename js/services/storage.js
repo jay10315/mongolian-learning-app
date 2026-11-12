@@ -1652,6 +1652,57 @@ export class StorageService {
     localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
   }
 
+  /**
+   * ある単語や問題が「要復習（間違いノート）」に登録されているか判定
+   */
+  static isMistake(query) {
+    if (!query) return false;
+    const list = this.getMistakes();
+    if (!list || list.length === 0) return false;
+    const clean = (s) => (s || '').toString().toLowerCase().replace(/[\(\)（）\s.,!?:;«»"'\-]/g, '');
+
+    if (typeof query === 'string') {
+      const qClean = clean(query);
+      return list.some(m => !m.resolved && (
+        m.id === query ||
+        m.wordId === query ||
+        clean(m.correctAnswer) === qClean ||
+        clean(m.question) === qClean
+      ));
+    }
+
+    const id = query.id;
+    const wordId = query.wordId;
+    const cQ = clean(query.question || query.prompt);
+    const cAns = clean(query.correctAnswer || query.answer || query.mongolian || query.dictForm);
+
+    return list.some(m => !m.resolved && (
+      (id && m.id === id) ||
+      (wordId && (m.wordId === wordId || m.id === wordId)) ||
+      (cQ && cAns && clean(m.question) === cQ && clean(m.correctAnswer) === cAns) ||
+      (cAns && clean(m.correctAnswer) === cAns)
+    ));
+  }
+
+  /**
+   * 単語や問題を「要復習」に追加 / 解除をトグル
+   * @returns {boolean} true: 追加された, false: 削除された
+   */
+  static toggleMistake(mistakeData) {
+    if (!mistakeData) return false;
+    if (this.isMistake(mistakeData)) {
+      this.removeMistake(mistakeData.id, {
+        question: mistakeData.question || mistakeData.prompt,
+        correctAnswer: mistakeData.correctAnswer || mistakeData.answer || mistakeData.mongolian || mistakeData.dictForm,
+        wordId: mistakeData.wordId
+      });
+      return false;
+    } else {
+      this.recordMistake(mistakeData);
+      return true;
+    }
+  }
+
   // --- 学習履歴 ---
   static getHistory() {
     try {

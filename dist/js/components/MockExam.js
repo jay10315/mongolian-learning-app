@@ -52,6 +52,36 @@ export class MockExamComponent {
   // ------------------------------------------------------------
   // 1. スタート画面（問題数・ジャンル・難易度の設定）
   // ------------------------------------------------------------
+  
+  // 設問の確実な日本語訳を取得（キリル文字がそのまま残ることを防止）
+  getCleanQuestionJa(q) {
+    if (q.questionJa && !/^[\u0400-\u04FF\s.,!?«»""'']{8,}$/.test(q.questionJa.trim())) {
+      return q.questionJa;
+    }
+    // モンゴル語の問題文から和訳を生成
+    const txt = q.question || '';
+    if (txt.includes('гэдэг үг ямар утгатай вэ') || txt.includes('гэдэг үгийн утга юу вэ')) {
+      const match = txt.match(/[«"']?([\u0400-\u04FF]+)[»"']?/);
+      return `「${match ? match[1] : '下線部'}」という言葉の意味は何ですか？`;
+    }
+    if (txt.includes('эсрэг утгатай')) {
+      const match = txt.match(/[«"']?([\u0400-\u04FF]+)[»"']?/);
+      return `「${match ? match[1] : '下線部'}」の反対の意味の言葉（対義語）を選んでください。`;
+    }
+    if (txt.includes('ойролцоо утгатай')) {
+      const match = txt.match(/[«"']?([\u0400-\u04FF]+)[»"']?/);
+      return `「${match ? match[1] : '下線部'}」と最も近い意味の言葉（類義語）を選んでください。`;
+    }
+    if (txt.includes('үйл үг ямар утга')) {
+      const match = txt.match(/[«"']?([\u0400-\u04FF]+)[»"']?/);
+      return `「${match ? match[1] : '下線部'}」という動詞の意味を選んでください。`;
+    }
+    if (txt.includes('Цэгийн оронд тохирох')) {
+      return '空欄（___）に当てはまる適切な語尾・言葉を選んでください。';
+    }
+    return q.questionJa || '設問の意味を確認して、最も適切な選択肢を選んでください。';
+  }
+
   renderStart() {
     const allMistakes = StorageService.getMistakes();
     const mockMistakes = allMistakes.filter(m => m.type === 'mock_exam' && !m.resolved);
@@ -435,7 +465,7 @@ export class MockExamComponent {
                   <span>🇯🇵</span> 設問の日本語の意味（和訳）
                 </div>
                 <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                  ${q.questionJa || q.question}
+                  ${this.getCleanQuestionJa(q)}
                 </div>
               </div>
 
@@ -516,6 +546,17 @@ export class MockExamComponent {
         SpeechService.speak(q.question);
       });
     }
+
+    // 問題文中の単語タップで辞書＆「調べた単語帳」統合モーダルを表示
+    this.container.querySelectorAll('.clickable-cyrillic-word').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const word = el.getAttribute('data-word') || el.textContent;
+        if (typeof showUniversalWordModal === 'function') {
+          showUniversalWordModal(word, this.container);
+        }
+      });
+    });
 
     if (!this.state.hasAnswered) {
       const choiceBtns = this.container.querySelectorAll('.btn-mock-choice');
@@ -710,9 +751,12 @@ export class MockExamComponent {
                       ${r.question.questionJa ? `<div class="text-[11px] text-slate-500 font-normal mt-0.5">🇯🇵 ${r.question.questionJa}</div>` : ''}
                     </div>
                   </div>
-                  <span class="text-[10px] px-2 py-0.5 rounded-full ${r.isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'} font-bold shrink-0">
-                    ${r.isCorrect ? '正解' : '不正解'}
-                  </span>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-[10px] px-2 py-0.5 rounded-full ${r.isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'} font-bold">
+                      ${r.isCorrect ? '正解' : '不正解'}
+                    </span>
+                    ${(typeof renderReviewToggleButtonHTML === 'function') ? renderReviewToggleButtonHTML({ id: r.question.id, question: r.question.question, correctAnswer: r.question.answer, japanese: r.question.questionJa, category: '総合模試', type: 'mock_exam' }) : ''}
+                  </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px] pt-1">

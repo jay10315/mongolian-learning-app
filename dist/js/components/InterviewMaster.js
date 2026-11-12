@@ -1015,13 +1015,31 @@ export class InterviewMasterComponent {
                 <span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full">間違いノートに保存済</span>
               </div>
               <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
-                ${this.vocabMistakes.map(m => `
-                  <div class="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200 text-xs space-y-1">
-                    <div class="font-bold text-slate-700">🇯🇵 ${m.ja}</div>
-                    <div class="text-emerald-700 font-bold cyrillic-text">正解: ${m.mn} ${m.pron ? `[${m.pron}]` : ''}</div>
-                    <div class="text-rose-600">入力: <span class="line-through">${m.user}</span></div>
-                  </div>
-                `).join('')}
+                ${(this.vocabActiveList || []).map(w => {
+                const isMistake = (this.vocabMistakes || []).some(m => m.id === w.id);
+                return `
+                  <li class="p-3 bg-white dark:bg-slate-800/80 rounded-xl border ${isMistake ? 'border-rose-300 dark:border-rose-900 bg-rose-50/30' : 'border-slate-200 dark:border-slate-700'} flex items-center justify-between gap-3 text-xs">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <span class="text-sm">${isMistake ? '❌' : '⭕'}</span>
+                      <div class="min-w-0">
+                        <div class="font-black text-slate-900 dark:text-white cyrillic-text truncate">
+                          ${w.dictForm || w.mongolian}
+                          ${w.pronunciation ? `<span class="text-[11px] font-normal text-slate-500 ml-1.5">[${w.pronunciation}]</span>` : ''}
+                        </div>
+                        <div class="text-[11px] text-slate-600 dark:text-slate-400 truncate">
+                          ${w.japanese}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                      ${(typeof renderReviewToggleButtonHTML === 'function') ? renderReviewToggleButtonHTML({ id: w.id, wordId: w.id, question: w.mongolian, correctAnswer: w.japanese, japanese: w.japanese, category: '口頭試験', type: 'oral_vocab' }) : ''}
+                      <button type="button" class="btn-speak-iv-word text-slate-400 hover:text-teal-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" data-word="${w.dictForm || w.mongolian}">
+                        🔊
+                      </button>
+                    </div>
+                  </li>
+                `;
+              }).join('')}
               </div>
               <div class="flex flex-col sm:flex-row gap-2 pt-1">
                 <button type="button" id="btn-retry-vocab-mistakes" class="flex-1 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">

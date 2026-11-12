@@ -5032,15 +5032,19 @@ export function showUniversalWordModal({ wordInfo, passageTitle = '', onNavigate
       <!-- 似ている単語との違い・使い分けカード（要件準拠） -->
       ${(typeof getSimilarWordDistinctionHTML === 'function') ? getSimilarWordDistinctionHTML({ mongolian: wordInfo.rawWord, dictForm: wordInfo.dictForm, japanese: wordInfo.meaning }, wordInfo.rawWord) : ''}
 
-      <!-- 保存通知バッジ ＆ テストリンク -->
-      <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 rounded-xl p-2.5 flex items-center justify-between text-xs text-amber-900 dark:text-amber-200">
-        <div class="flex items-center gap-1.5 font-bold">
+      <!-- 調べた単語帳保存トグル ＆ テストリンク -->
+      <div class="bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 flex items-center justify-between text-xs">
+        <button type="button" id="btn-u-toggle-lookup" class="px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+          (typeof StorageService !== 'undefined' && StorageService.isWordLookedUp && StorageService.isWordLookedUp(wordInfo.dictForm || wordInfo.rawWord))
+            ? 'bg-amber-100 text-amber-900 border border-amber-300'
+            : 'bg-white text-slate-700 border border-slate-200 hover:border-amber-300 hover:text-amber-700'
+        }">
           <span>📌</span>
-          <span>「調べた単語帳」に保存しました！</span>
-        </div>
+          <span id="txt-u-lookup-status">${(typeof StorageService !== 'undefined' && StorageService.isWordLookedUp && StorageService.isWordLookedUp(wordInfo.dictForm || wordInfo.rawWord)) ? '「調べた単語帳」に保存済み' : '「調べた単語帳」に保存'}</span>
+        </button>
         ${onNavigate ? `
-          <button type="button" id="btn-u-goto-lookup" class="text-[11px] font-extrabold text-amber-800 dark:text-amber-400 underline cursor-pointer">
-            単語帳・テストを見る
+          <button type="button" id="btn-u-goto-lookup" class="text-[11px] font-extrabold text-slate-500 hover:text-slate-800 underline cursor-pointer">
+            単語帳を見る
           </button>
         ` : ''}
       </div>
@@ -5061,6 +5065,39 @@ export function showUniversalWordModal({ wordInfo, passageTitle = '', onNavigate
 
   modal.querySelector('#btn-u-close-modal')?.addEventListener('click', cleanup);
   modal.querySelector('#btn-u-modal-close-action')?.addEventListener('click', cleanup);
+  
+  // 調べた単語帳への手動保存・解除トグル
+  const toggleLookupBtn = modal.querySelector('#btn-u-toggle-lookup');
+  if (toggleLookupBtn) {
+    toggleLookupBtn.addEventListener('click', () => {
+      try {
+        if (typeof StorageService !== 'undefined') {
+          const key = wordInfo.dictForm || wordInfo.rawWord;
+          if (StorageService.isWordLookedUp && StorageService.isWordLookedUp(key)) {
+            if (StorageService.removeLookedUpWord) {
+              StorageService.removeLookedUpWord(key);
+            }
+            toggleLookupBtn.className = 'px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:border-amber-300 hover:text-amber-700';
+            toggleLookupBtn.querySelector('#txt-u-lookup-status').textContent = '「調べた単語帳」に保存';
+          } else {
+            if (StorageService.saveLookedUpWord) {
+              StorageService.saveLookedUpWord({
+                rawWord: wordInfo.rawWord,
+                dictForm: wordInfo.dictForm,
+                meaning: wordInfo.meaning,
+                pos: wordInfo.pos,
+                pron: wordInfo.pron,
+                passageTitle: passageTitle || ''
+              });
+            }
+            toggleLookupBtn.className = 'px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer bg-amber-100 text-amber-900 border border-amber-300';
+            toggleLookupBtn.querySelector('#txt-u-lookup-status').textContent = '「調べた単語帳」に保存済み';
+          }
+        }
+      } catch (_) {}
+    });
+  }
+
   modal.querySelector('#btn-u-modal-speak')?.addEventListener('click', () => {
     try {
       if (typeof SpeechService !== 'undefined' && SpeechService.speak) {
@@ -5077,6 +5114,90 @@ export function showUniversalWordModal({ wordInfo, passageTitle = '', onNavigate
 
   modal.addEventListener('click', (e) => {
     if (e.target === modal) cleanup();
+  });
+}
+
+/**
+ * 結果画面で単語・問題を「要復習（間違いノート）」に登録・解除できるトグルボタンHTML
+ */
+export function renderReviewToggleButtonHTML(item) {
+  if (!item) return '';
+  const id = item.id || '';
+  const wordId = item.wordId || item.question?.id || '';
+  const question = item.question?.question || item.question?.prompt || item.quiz?.question || item.quiz?.prompt || item.question || item.prompt || item.rawWord || '';
+  const correctAnswer = item.expectedAnswer || item.correctAnswer || item.quiz?.answer || item.answer || item.question?.mongolian || item.question?.dictForm || item.dictForm || item.mongolian || '';
+  const japanese = item.question?.japanese || item.japanese || item.quiz?.promptJa || item.meaning || '';
+  const category = item.category || item.question?.category || item.quiz?.category || '単語';
+  const type = item.type || (item.quiz ? 'grammar' : 'word');
+
+  let isRev = false;
+  try {
+    if (typeof StorageService !== 'undefined' && StorageService.isMistake) {
+      isRev = StorageService.isMistake({ id, wordId, question, correctAnswer });
+    }
+  } catch (_) {}
+
+  const safeAttr = (s) => (s || '').toString().replace(/"/g, '&quot;');
+
+  return `
+    <button type="button" class="btn-toggle-review-item px-2.5 py-1 rounded-lg text-2xs font-black transition-all flex items-center gap-1 cursor-pointer select-none shrink-0 ${
+      isRev
+        ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200 shadow-2xs'
+        : 'bg-white text-slate-500 border border-slate-200 hover:border-amber-300 hover:text-amber-700 shadow-2xs'
+    }" data-rev-id="${safeAttr(id)}" data-rev-word-id="${safeAttr(wordId)}" data-rev-q="${safeAttr(question)}" data-rev-ans="${safeAttr(correctAnswer)}" data-rev-ja="${safeAttr(japanese)}" data-rev-cat="${safeAttr(category)}" data-rev-type="${safeAttr(type)}" title="${isRev ? '要復習から外す' : '要復習リストに追加'}">
+      <span>${isRev ? '⭐' : '☆'}</span>
+      <span>${isRev ? '要復習' : '復習追加'}</span>
+    </button>
+  `;
+}
+
+/**
+ * 結果画面の「要復習」トグルボタンのイベントハンドラー一括登録
+ */
+export function bindReviewToggleButtons(container, onUpdate = null) {
+  if (!container) return;
+  container.querySelectorAll('.btn-toggle-review-item').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const id = btn.dataset.revId;
+      const wordId = btn.dataset.revWordId;
+      const question = btn.dataset.revQ;
+      const correctAnswer = btn.dataset.revAns;
+      const japanese = btn.dataset.revJa;
+      const category = btn.dataset.revCat;
+      const type = btn.dataset.revType || 'word';
+
+      if (typeof StorageService === 'undefined' || !StorageService.toggleMistake) return;
+
+      const isNowRecorded = StorageService.toggleMistake({
+        id: id || undefined,
+        wordId: wordId || undefined,
+        question: question || correctAnswer,
+        prompt: question,
+        correctAnswer: correctAnswer,
+        japanese: japanese,
+        category: category,
+        type: type,
+        date: new Date().toISOString()
+      });
+
+      if (isNowRecorded) {
+        btn.className = 'btn-toggle-review-item px-2.5 py-1 rounded-lg text-2xs font-black transition-all flex items-center gap-1 cursor-pointer select-none shrink-0 bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200 shadow-2xs';
+        btn.innerHTML = '<span>⭐</span><span>要復習</span>';
+        btn.title = '要復習から外す';
+        if (typeof SoundEffects !== 'undefined' && SoundEffects.playCorrect) {
+          SoundEffects.playCorrect();
+        }
+      } else {
+        btn.className = 'btn-toggle-review-item px-2.5 py-1 rounded-lg text-2xs font-black transition-all flex items-center gap-1 cursor-pointer select-none shrink-0 bg-white text-slate-500 border border-slate-200 hover:border-amber-300 hover:text-amber-700 shadow-2xs';
+        btn.innerHTML = '<span>☆</span><span>復習追加</span>';
+        btn.title = '要復習リストに追加';
+      }
+
+      if (typeof onUpdate === 'function') onUpdate(isNowRecorded, btn);
+    });
   });
 }
 
