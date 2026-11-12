@@ -2641,6 +2641,38 @@ if (typeof window !== 'undefined') {
  */
 export const SIMILAR_WORDS_DISTINCTIONS = {
 
+  // === 後置詞・指示詞・最重要基本語 ===
+  "турш": {
+    target: "турш",
+    targetMeaning: "〜の間中、〜を通じて、〜の期間ずっと（後置詞・副詞）",
+    meaningSimilar: [
+      { word: "туршид", meaning: "〜の間中、〜にわたって", note: "同義の後置詞" },
+      { word: "хооронд", meaning: "〜の間に（2者の間）", note: "間隔・2点間" },
+      { word: "зуур", meaning: "〜の最中に、〜の途中で", note: "一時的な時間" }
+    ],
+    meaningDistinction: "【турш と туршид の用法】\n・турш: 「жилийн турш（一年中）」「өдрийн турш（一日中）」のように名詞の直後に置かれ、その期間の最初から最後まで途切れず継続することを表します。\n・туршид: 「хоёр жилийн туршид（2年の間にわたって）」のように「турш」とほぼ同義で用いられる後置詞です。",
+    phoneticSimilar: [
+      { word: "турших", meaning: "試す、実験する、テストする", note: "動詞" },
+      { word: "туршлага", meaning: "経験、知見", note: "名詞" }
+    ],
+    phoneticDistinction: "⚠️ 動詞「турших（試す・テストする）」や名詞「туршлага（経験）」と語根が同じですが、「турш」単体では「〜の間中ずっと」を表す後置詞として機能します。"
+  },
+  "ард": {
+    target: "ард",
+    targetMeaning: "〜の後ろに、裏に／人民、国民、民衆（後置詞・名詞）",
+    meaningSimilar: [
+      { word: "хойно", meaning: "〜の後ろに、北に", note: "後方・北" },
+      { word: "урд", meaning: "〜の前に、南に", note: "対義語（前方）" },
+      { word: "ард түмэн", meaning: "国民、人民、大衆", note: "名詞句" }
+    ],
+    meaningDistinction: "【ард の2つの主要な用法】\n1. 後置詞・場所表現: 「後ろ・背後（ар）」に与位格語尾「-д」が付いた形で、「байшингийн ард（建物の後ろに）」「миний ард（私の後ろに）」のように位置関係を表します。\n2. 名詞: 単独で「人民・国民・大衆」を表す基本名詞です（例: Монголын ард түмэн / モンゴル国民）。\n※ 数詞「арав（10）」とは全く別の単語です。",
+    phoneticSimilar: [
+      { word: "ар", meaning: "後ろ、背後、北側", note: "語根名詞" },
+      { word: "арав", meaning: "10（とお）", note: "数詞・別語混同注意" }
+    ],
+    phoneticDistinction: "⚠️ 数詞「арав（10）」と綴りが似ていますが、「ард」は「後ろに」または「人民・民衆」を表す単語です。意味を混同しないよう注意しましょう。"
+  },
+
   // === 暦・時間・期間の重要類義語＆音類似 ===
   "он": {
     target: "он",
@@ -4705,11 +4737,11 @@ if (typeof window !== 'undefined') {
  */
 export function findWordInDictionary(rawWord, passageGlossary = null) {
   if (!rawWord) return null;
-  const cleanWord = rawWord.trim().replace(/[.,!?:;«»"'\(\)\[\]—–-]/g, '');
+  const cleanWord = rawWord.trim().replace(/[.,!?:;«»"'\(\)\[\]—–\-_]/g, '');
   if (!cleanWord) return null;
   const lower = cleanWord.toLowerCase();
 
-  // 1. パッセージ専用グロッサリーでの検索
+  // 1. パッセージ専用グロッサリーでの検索（最優先）
   if (passageGlossary) {
     if (passageGlossary[cleanWord]) {
       return {
@@ -4733,23 +4765,38 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
     }
   }
 
-  // 1.5. 単独小辞・助詞・呼格・感嘆詞の直接判定テーブル
+  // 2. 包括的マスター辞書（COMPREHENSIVE_DICTIONARY）での完全一致検索（後置詞・副詞・慣用句・全単語を最優先）
+  if (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY) {
+    if (COMPREHENSIVE_DICTIONARY[lower]) {
+      const entry = COMPREHENSIVE_DICTIONARY[lower];
+      return {
+        rawWord: cleanWord,
+        dictForm: entry.dictForm || entry.mongolian || cleanWord,
+        meaning: entry.meaning || (entry.en ? `【英語】${entry.en}` : cleanWord),
+        pos: entry.pos || '単語',
+        pron: entry.pronunciation || '',
+        derivation: entry.derivation || (entry.en ? `英語訳: ${entry.en}` : '')
+      };
+    }
+  }
+
+  // 2.5. 単独小辞・助詞・呼格・感嘆詞の直接判定テーブル
   const particles = {
-    'ээ': { dictForm: 'ээ', meaning: '【感嘆詞】おお、まあ、ええっ／【呼格】〜よ、〜さん／【愛称】お母さん（ээж）', pos: '感嘆詞・呼格語尾', derivation: '親愛を込めた呼格（例: ээж ээ, багш аа）または驚きや感動を表す間投詞' },
-    'аа': { dictForm: 'аа', meaning: '【呼格】〜よ、〜さん／【感嘆詞】ああ', pos: '呼格語尾・感嘆詞', derivation: '男性語につく親愛の呼格（例: Зориг оо, Баяр аа）または感嘆詞' },
-    'оо': { dictForm: 'оо', meaning: '【呼格】〜よ、〜さん（男性円唇語用）', pos: '呼格語尾', derivation: 'о母音の単語につく呼格語尾（例: Золбоо оо）' },
-    'өө': { dictForm: 'өө', meaning: '【呼格】〜よ、〜さん（女性円唇語用）', pos: '呼格語尾', derivation: 'ө母音の単語につく呼格語尾（例: Зөөгч өө）' },
-    'уу': { dictForm: 'уу', meaning: '【疑問助詞】〜ですか？（男性語Yes/No疑問）', pos: '疑問助詞', derivation: '男性語（а, о, у）の平叙文末尾に付き疑問文を作る' },
-    'үү': { dictForm: 'үү', meaning: '【疑問助詞】〜ですか？（女性語Yes/No疑問）', pos: '疑問助詞', derivation: '女性語（э, ө, ү）の平叙文末尾に付き疑問文を作る' },
-    'юу': { dictForm: 'юу', meaning: '【疑問詞】何／【疑問助詞】〜ですか？（長母音・二重母音男性語用）', pos: '疑問代名詞・助詞', derivation: '「何」を尋ねる疑問詞、または長母音末尾男性語の疑問助詞' },
-    'юү': { dictForm: 'юү', meaning: '【疑問助詞】〜ですか？（長母音・二重母音女性語用）', pos: '疑問助詞', derivation: '長母音末尾女性語の疑問助詞' },
-    'бэ': { dictForm: 'бэ', meaning: '【疑問助詞】〜ですか？（疑問詞文末・鼻音末尾用）', pos: '疑問助詞', derivation: '疑問詞があり、直前がн, м, вで終わる文の末尾に付く' },
-    'вэ': { dictForm: 'вэ', meaning: '【疑問助詞】〜ですか？（疑問詞文末用）', pos: '疑問助詞', derivation: '疑問詞（юу, хаана等）のある文末に付く' },
-    'биш': { dictForm: 'биш', meaning: '【否定助詞】〜ではない（コピュラ否定）', pos: '否定助詞', derivation: '名詞・代名詞・形容詞の直後に置いて「AはBではない」と否定する' },
-    'юм': { dictForm: 'юм', meaning: '【終助詞】〜なのだ、〜である（詠嘆・確認）', pos: '終助詞', derivation: '文末に添えて詠嘆・語気緩和・事実の強調を表す' },
-    'ч': { dictForm: 'ч', meaning: '【強調・添加小辞】〜も、〜さえ', pos: '不変化小辞', derivation: '「Би ч бас（私もまた）」のように添加・強調を表す' },
+    'ээ': { dictForm: 'ээ', meaning: '【感嘆詞】おお、まあ／【呼格】〜よ、〜さん', pos: '呼格語尾・感嘆詞', derivation: '親愛を込めた呼格または間投詞' },
+    'аа': { dictForm: 'аа', meaning: '【呼格】〜よ、〜さん／【感嘆詞】ああ', pos: '呼格語尾・感嘆詞', derivation: '男性語につく親愛の呼格' },
+    'оо': { dictForm: 'оо', meaning: '【呼格】〜よ、〜さん（男性円唇語用）', pos: '呼格語尾', derivation: 'о母音の単語につく呼格語尾' },
+    'өө': { dictForm: 'өө', meaning: '【呼格】〜よ、〜さん（女性円唇語用）', pos: '呼格語尾', derivation: 'ө母音の単語につく呼格語尾' },
+    'уу': { dictForm: 'уу', meaning: '【疑問助詞】〜ですか？（男性語疑問）', pos: '疑問助詞', derivation: '男性語（а, о, у）の文末に付きYes/No疑問文を作る' },
+    'үү': { dictForm: 'үү', meaning: '【疑問助詞】〜ですか？（女性語疑問）', pos: '疑問助詞', derivation: '女性語（э, ө, ү）の文末に付きYes/No疑問文を作る' },
+    'юу': { dictForm: 'юу', meaning: '【疑問詞】何／【疑問助詞】〜ですか？', pos: '疑問代名詞・助詞', derivation: '「何」を尋ねる疑問代名詞' },
+    'юү': { dictForm: 'юү', meaning: '【疑問助詞】〜ですか？（長母音女性語用）', pos: '疑問助詞', derivation: '長母音末尾女性語の疑問助詞' },
+    'бэ': { dictForm: 'бэ', meaning: '【疑問助詞】〜ですか？（疑問詞文末用）', pos: '疑問助詞', derivation: '疑問詞があり直前がн, м, вで終わる文末に付く' },
+    'вэ': { dictForm: 'вэ', meaning: '【疑問助詞】〜ですか？（疑問詞文末用）', pos: '疑問助詞', derivation: '疑問詞のある文末に付く一般的な疑問助詞' },
+    'биш': { dictForm: 'биш', meaning: '【否定助詞】〜ではない（名詞否定）', pos: '否定助詞', derivation: '「AはBではない」と否定するコピュラ否定小辞' },
+    'юм': { dictForm: 'юм', meaning: '【終助詞】〜なのだ、〜である（詠嘆・確認）', pos: '終助詞', derivation: '文末に添えて詠嘆・事実の確認を表す' },
+    'ч': { dictForm: 'ч', meaning: '【強調・添加小辞】〜も、〜さえ', pos: '不変化小辞', derivation: '添加・強調を表す小辞' },
     'бас': { dictForm: 'бас', meaning: '【副詞】また、さらに、やはり', pos: '副詞', derivation: '事物の付加・並列を表す' },
-    'шүү': { dictForm: 'шүү', meaning: '【終助詞】〜だよ、〜ね（念押し・助言）', pos: '終助詞', derivation: '聞き手に注意を促したり念を押す親しい終助詞' },
+    'шүү': { dictForm: 'шүү', meaning: '【終助詞】〜だよ、〜ね（念押し・助言）', pos: '終助詞', derivation: '聞き手に念を押す親しい終助詞' },
     'за': { dictForm: 'за', meaning: '【感動詞】はい、了解、じゃあ、さて', pos: '感動詞', derivation: '承諾や会話の切り出しに用いる' }
   };
 
@@ -4763,6 +4810,8 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
       derivation: particles[lower].derivation
     };
   }
+
+  // 3. StorageService ユーザー語彙リストでの完全一致検索
   let vocab = [];
   try {
     if (typeof StorageService !== 'undefined' && StorageService.getVocabulary) {
@@ -4779,138 +4828,155 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
       rawWord: cleanWord,
       dictForm: exact.dictForm || exact.mongolian,
       meaning: exact.japanese || exact.baseMeaning || exact.meaning,
-      pos: exact.pos || '',
+      pos: exact.pos || '単語',
       pron: exact.pronunciation || '',
       derivation: exact.derivation || ''
     };
   }
 
-  // 3. 名詞格語尾・複数語尾・再帰語尾のステミング探索
-  const nounSuffixes = [
-    { suffix: 'ийн', name: '属格（〜の）' },
-    { suffix: 'ын', name: '属格（〜の）' },
-    { suffix: 'ний', name: '属格（〜の）' },
-    { suffix: 'ны', name: '属格（〜の）' },
-    { suffix: 'дээ', name: '与位格・再帰（〜の自分の...へ）' },
-    { suffix: 'доо', name: '与位格・再帰（〜の自分の...へ）' },
-    { suffix: 'тээ', name: '与位格・再帰（〜の自分の...へ）' },
-    { suffix: 'д', name: '与位格（〜に、〜で）' },
-    { suffix: 'т', name: '与位格（〜に、〜で）' },
-    { suffix: 'нд', name: '与位格（〜に、〜で）' },
-    { suffix: 'ийг', name: '対格（〜を）' },
-    { suffix: 'ыг', name: '対格（〜を）' },
-    { suffix: 'г', name: '対格（〜を）' },
-    { suffix: 'аас', name: '奪格（〜から）' },
-    { suffix: 'ээс', name: '奪格（〜から）' },
-    { suffix: 'оос', name: '奪格（〜から）' },
-    { suffix: 'өөс', name: '奪格（〜から）' },
-    { suffix: 'тай', name: '共同格（〜と、〜を持つ）' },
-    { suffix: 'тэй', name: '共同格（〜と、〜を持つ）' },
-    { suffix: 'той', name: '共同格（〜と、〜を持つ）' },
-    { suffix: 'аар', name: '造格（〜で、手段）' },
-    { suffix: 'ээр', name: '造格（〜で、手段）' },
-    { suffix: 'оор', name: '造格（〜で、手段）' },
-    { suffix: 'өөр', name: '造格（〜で、手段）' },
-    { suffix: 'ууд', name: '複数語尾（〜たち）' },
-    { suffix: 'үүд', name: '複数語尾（〜たち）' },
-    { suffix: 'аа', name: '再帰語尾（自分の〜）' },
-    { suffix: 'ээ', name: '再帰語尾（自分の〜）' },
-    { suffix: 'оо', name: '再帰語尾（自分の〜）' },
-    { suffix: 'өө', name: '再帰語尾（自分の〜）' }
-  ];
-
-  for (const s of nounSuffixes) {
-    if (lower.endsWith(s.suffix) && lower.length > s.suffix.length + 1) {
-      const stem = lower.slice(0, -s.suffix.length);
-      const match = vocab.find(v => 
-        (v.mongolian && v.mongolian.toLowerCase() === stem) ||
-        (v.dictForm && v.dictForm.toLowerCase() === stem) ||
-        (v.mongolian && v.mongolian.toLowerCase().startsWith(stem))
-      );
-      if (match) {
-        let naturalMeaning = match.japanese || match.baseMeaning || match.meaning;
-        if (s.suffix === 'тай' || s.suffix === 'тэй' || s.suffix === 'той') {
-          naturalMeaning = `${match.baseMeaning || match.japanese.split(/[、,（(]/)[0]}のある、〜付きの、〜を持つ（共同格・有属）`;
-        }
-        return {
-          rawWord: cleanWord,
-          dictForm: match.dictForm || match.mongolian,
-          meaning: naturalMeaning,
-          pos: match.pos || '名詞（格変化形）',
-          pron: match.pronunciation || '',
-          derivation: `名詞「${match.dictForm || match.mongolian}」＋ ${s.name}「-${s.suffix}」`
-        };
-      }
-    }
-  }
-
-  // 4. 動詞活用語尾のステミング探索
+  // 4. 動詞活用語尾の厳密なステミング探索（完全一致ベース・誤爆ゼロ）
   const verbSuffixes = [
-    { suffix: 'сан', name: '過去形（〜した）' },
-    { suffix: 'сэн', name: '過去形（〜した）' },
-    { suffix: 'сон', name: '過去形（〜した）' },
-    { suffix: 'сөн', name: '過去形（〜した）' },
-    { suffix: 'на', name: '現在未来形（〜する）' },
-    { suffix: 'нэ', name: '現在未来形（〜する）' },
-    { suffix: 'но', name: '現在未来形（〜する）' },
-    { suffix: 'нө', name: '現在未来形（〜する）' },
-    { suffix: 'даг', name: '習慣形（いつも〜する）' },
-    { suffix: 'дэг', name: '習慣形（いつも〜する）' },
-    { suffix: 'дог', name: '習慣形（いつも〜する）' },
-    { suffix: 'дөг', name: '習慣形（いつも〜する）' },
-    { suffix: 'аад', name: '並列・順次（〜して）' },
-    { suffix: 'ээд', name: '並列・順次（〜して）' },
-    { suffix: 'оод', name: '並列・順次（〜して）' },
-    { suffix: 'өөд', name: '並列・順次（〜して）' },
-    { suffix: 'ж', name: '並列接続（〜して）' },
-    { suffix: 'ч', name: '並列接続（〜して）' },
-    { suffix: 'вал', name: '仮定条件（〜したら）' },
-    { suffix: 'вэл', name: '仮定条件（〜したら）' }
+    { suffix: 'сангүй', name: '過去否定（〜しなかった）' }, { suffix: 'сэнгүй', name: '過去否定（〜しなかった）' },
+    { suffix: 'сонгүй', name: '過去否定（〜しなかった）' }, { suffix: 'сөнгүй', name: '過去否定（〜しなかった）' },
+    { suffix: 'аарай', name: '丁寧な促し（〜してください）' }, { suffix: 'ээрэй', name: '丁寧な促し（〜してください）' },
+    { suffix: 'оорой', name: '丁寧な促し（〜してください）' }, { suffix: 'өөрэй', name: '丁寧な促し（〜してください）' },
+    { suffix: 'аасай', name: '希求（〜してほしい）' }, { suffix: 'ээсэй', name: '希求（〜してほしい）' },
+    { suffix: 'маар', name: '願望（〜したい）' }, { suffix: 'мээр', name: '願望（〜したい）' },
+    { suffix: 'моор', name: '願望（〜したい）' }, { suffix: 'мөөр', name: '願望（〜したい）' },
+    { suffix: 'аад', name: '順次副動詞（〜して）' }, { suffix: 'ээд', name: '順次副動詞（〜して）' },
+    { suffix: 'оод', name: '順次副動詞（〜して）' }, { suffix: 'өөд', name: '順次副動詞（〜して）' },
+    { suffix: 'сан', name: '過去形（〜した）' }, { suffix: 'сэн', name: '過去形（〜した）' },
+    { suffix: 'сон', name: '過去形（〜した）' }, { suffix: 'сөн', name: '過去形（〜した）' },
+    { suffix: 'даг', name: '習慣形（いつも〜する）' }, { suffix: 'дэг', name: '習慣形（いつも〜する）' },
+    { suffix: 'дог', name: '習慣形（いつも〜する）' }, { suffix: 'дөг', name: '習慣形（いつも〜する）' },
+    { suffix: 'на', name: '現在未来形（〜する）' }, { suffix: 'нэ', name: '現在未来形（〜する）' },
+    { suffix: 'но', name: '現在未来形（〜する）' }, { suffix: 'нө', name: '現在未来形（〜する）' },
+    { suffix: 'вал', name: '条件副動詞（〜したら）' }, { suffix: 'вэл', name: '条件副動詞（〜したら）' },
+    { suffix: 'вол', name: '条件副動詞（〜したら）' }, { suffix: 'вөл', name: '条件副動詞（〜したら）' },
+    { suffix: 'хаар', name: '目的副動詞（〜しに）' }, { suffix: 'хээр', name: '目的副動詞（〜しに）' },
+    { suffix: 'хгүй', name: '未来否定（〜しない）' },
+    { suffix: 'я', name: '意志（〜しよう）' }, { suffix: 'е', name: '意志（〜しよう）' }, { suffix: 'ё', name: '意志（〜しよう）' },
+    { suffix: 'ж', name: '並列接続（〜して）' }, { suffix: 'ч', name: '並列接続（〜して）' }
   ];
 
   for (const v of verbSuffixes) {
-    if (lower.endsWith(v.suffix) && lower.length > v.suffix.length + 1) {
+    if (lower.endsWith(v.suffix) && lower.length >= v.suffix.length + 2) {
       const stem = lower.slice(0, -v.suffix.length);
-      
-      // 1. スペースを含まない純粋な単一動詞を優先検索（ярилцах өрөөなどの複合語による誤マッチを完全防止）
-      let match = vocab.find(item => {
-        const df = (item.dictForm || item.mongolian || '').toLowerCase();
-        if (df.includes(' ')) return false;
-        if (item.root && item.root.replace(/-/g, '').toLowerCase() === stem) return true;
-        // 動詞辞書形 (-х, -ах, -эх, -ох, -өх) との完全一致
-        if (df === stem + 'х' || df === stem + 'ах' || df === stem + 'эх' || df === stem + 'ох' || df === stem + 'өх') return true;
-        return false;
-      });
-
-      // 2. なければ語幹前方一致（ただしスペースを含まない単一動詞のみ）
-      if (!match) {
-        match = vocab.find(item => {
+      const candidates = [stem + 'х', stem + 'ах', stem + 'эх', stem + 'ох', stem + 'өх', stem];
+      for (const cand of candidates) {
+        // COMPREHENSIVE_DICTIONARY で完全一致検索
+        if (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY && COMPREHENSIVE_DICTIONARY[cand]) {
+          const match = COMPREHENSIVE_DICTIONARY[cand];
+          return {
+            rawWord: cleanWord,
+            dictForm: match.dictForm || cand,
+            meaning: `${match.meaning}（${v.name}）`,
+            pos: '動詞（活用形）',
+            pron: match.pronunciation || '',
+            derivation: `動詞「${match.dictForm || cand}」＋ ${v.name}「-${v.suffix}」`
+          };
+        }
+        // vocab で完全一致検索
+        const vMatch = vocab.find(item => {
           const df = (item.dictForm || item.mongolian || '').toLowerCase();
-          return !df.includes(' ') && df.startsWith(stem) && df.endsWith('х');
+          return df === cand;
         });
-      }
-
-      if (match) {
-        return {
-          rawWord: cleanWord,
-          dictForm: match.dictForm || match.mongolian,
-          meaning: match.japanese || match.baseMeaning || match.meaning,
-          pos: '動詞',
-          pron: match.pronunciation || '',
-          derivation: `動詞語幹「${match.root || stem}」＋ ${v.name}「-${v.suffix}」`
-        };
+        if (vMatch) {
+          return {
+            rawWord: cleanWord,
+            dictForm: vMatch.dictForm || vMatch.mongolian,
+            meaning: `${vMatch.japanese || vMatch.baseMeaning || vMatch.meaning}（${v.name}）`,
+            pos: '動詞（活用形）',
+            pron: vMatch.pronunciation || '',
+            derivation: `動詞「${vMatch.dictForm || vMatch.mongolian}」＋ ${v.name}「-${v.suffix}」`
+          };
+        }
       }
     }
   }
 
-  // 語幹マッチが見つからなかった場合でも、末尾の文法語尾を解析
+  // 5. 名詞格語尾・複数語尾・再帰語尾の厳密なステミング探索（startsWith完全撤廃！）
+  const nounSuffixes = [
+    { suffix: 'ийнхөө', name: '属格＋再帰（自分の〜の）' }, { suffix: 'ынхаа', name: '属格＋再帰（自分の〜の）' },
+    { suffix: 'тэйгээ', name: '共同格＋再帰（自分の〜と）' }, { suffix: 'тайгаа', name: '共同格＋再帰（自分の〜と）' },
+    { suffix: 'ээрээ', name: '造格＋再帰（自分の〜で）' }, { suffix: 'аараа', name: '造格＋再帰（自分の〜で）' },
+    { suffix: 'дээ', name: '与位格・再帰（自分の〜へ）' }, { suffix: 'тээ', name: '与位格・再帰（自分の〜へ）' },
+    { suffix: 'аасээ', name: '奪格＋再帰（自分の〜から）' }, { suffix: 'ээсээ', name: '奪格＋再帰（自分の〜から）' },
+    { suffix: 'ийн', name: '属格（〜の）' }, { suffix: 'ын', name: '属格（〜の）' },
+    { suffix: 'ний', name: '属格（〜の）' }, { suffix: 'ны', name: '属格（〜の）' },
+    { suffix: 'ийг', name: '対格（〜を）' }, { suffix: 'ыг', name: '対格（〜を）' },
+    { suffix: 'аас', name: '奪格（〜から）' }, { suffix: 'ээс', name: '奪格（〜から）' },
+    { suffix: 'оос', name: '奪格（〜から）' }, { suffix: 'өөс', name: '奪格（〜から）' },
+    { suffix: 'аар', name: '造格（〜で、手段）' }, { suffix: 'ээр', name: '造格（〜で、手段）' },
+    { suffix: 'оор', name: '造格（〜で、手段）' }, { suffix: 'өөр', name: '造格（〜で、手段）' },
+    { suffix: 'тай', name: '共同格（〜と、〜を持つ）' }, { suffix: 'тэй', name: '共同格（〜と、〜を持つ）' }, { suffix: 'той', name: '共同格（〜と、〜を持つ）' },
+    { suffix: 'руу', name: '方向格（〜へ）' }, { suffix: 'рүү', name: '方向格（〜へ）' },
+    { suffix: 'ууд', name: '複数語尾（〜たち）' }, { suffix: 'үүд', name: '複数語尾（〜たち）' },
+    { suffix: 'аа', name: '再帰語尾（自分の〜）' }, { suffix: 'ээ', name: '再帰語尾（自分の〜）' },
+    { suffix: 'оо', name: '再帰語尾（自分の〜）' }, { suffix: 'өө', name: '再帰語尾（自分の〜）' },
+    { suffix: 'нд', name: '与位格（〜に、潜在Н）' },
+    { suffix: 'д', name: '与位格（〜に、〜で）' }, { suffix: 'т', name: '与位格（〜に、〜で）' },
+    { suffix: 'г', name: '対格（〜を）' }
+  ];
+
   for (const s of nounSuffixes) {
-    if (lower.endsWith(s.suffix) && lower.length > s.suffix.length) {
+    // 1文字語尾（д, т, г）の場合は語幹長最低3文字以上を必須とし、短い単語の誤爆（ард等）を完全防止！
+    const minStem = (s.suffix.length === 1) ? 3 : 2;
+    if (lower.endsWith(s.suffix) && lower.length >= s.suffix.length + minStem) {
+      const stem = lower.slice(0, -s.suffix.length);
+      const stemCandidates = [stem, stem + 'а', stem + 'э', stem + 'о', stem + 'ө', stem + 'н'];
+
+      for (const cand of stemCandidates) {
+        // COMPREHENSIVE_DICTIONARY で完全一致のみ判定（startsWithは使わない！）
+        if (typeof COMPREHENSIVE_DICTIONARY !== 'undefined' && COMPREHENSIVE_DICTIONARY && COMPREHENSIVE_DICTIONARY[cand]) {
+          const match = COMPREHENSIVE_DICTIONARY[cand];
+          let naturalMeaning = match.meaning;
+          if (s.suffix === 'тай' || s.suffix === 'тэй' || s.suffix === 'той') {
+            naturalMeaning = `${(match.meaning || '').split(/[、,（(]/)[0]}のある、〜を持つ（共同格・有属）`;
+          }
+          return {
+            rawWord: cleanWord,
+            dictForm: match.dictForm || cand,
+            meaning: `${naturalMeaning}（${s.name}）`,
+            pos: `${match.pos || '名詞'}（格変化形）`,
+            pron: match.pronunciation || '',
+            derivation: `「${match.dictForm || cand}」＋ ${s.name}「-${s.suffix}」`
+          };
+        }
+
+        // vocab で完全一致のみ判定
+        const match = vocab.find(v => {
+          const mn = (v.mongolian || '').toLowerCase();
+          const df = (v.dictForm || '').toLowerCase();
+          return mn === cand || df === cand;
+        });
+
+        if (match) {
+          let naturalMeaning = match.japanese || match.baseMeaning || match.meaning;
+          if (s.suffix === 'тай' || s.suffix === 'тэй' || s.suffix === 'той') {
+            naturalMeaning = `${(match.baseMeaning || match.japanese || '').split(/[、,（(]/)[0]}のある、〜を持つ（共同格・有属）`;
+          }
+          return {
+            rawWord: cleanWord,
+            dictForm: match.dictForm || match.mongolian,
+            meaning: `${naturalMeaning}（${s.name}）`,
+            pos: match.pos || '名詞（格変化形）',
+            pron: match.pronunciation || '',
+            derivation: `名詞「${match.dictForm || match.mongolian}」＋ ${s.name}「-${s.suffix}」`
+          };
+        }
+      }
+    }
+  }
+
+  // 6. 語根のみ・接尾辞のみ検出された場合の文法フォールバック
+  for (const s of nounSuffixes) {
+    if (lower.endsWith(s.suffix) && lower.length > s.suffix.length + 2) {
       const stem = cleanWord.slice(0, -s.suffix.length);
       return {
         rawWord: cleanWord,
         dictForm: stem,
-        meaning: `語幹「${stem}」＋ 名詞格語尾【${s.name}】`,
+        meaning: `「${stem}」＋ 名詞格語尾【${s.name}】`,
         pos: '名詞（格変化形）',
         pron: '',
         derivation: `語幹「${stem}」に格助詞「-${s.suffix}」（${s.name}）が接続した文法形です。`
@@ -4919,7 +4985,7 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
   }
 
   for (const v of verbSuffixes) {
-    if (lower.endsWith(v.suffix) && lower.length > v.suffix.length) {
+    if (lower.endsWith(v.suffix) && lower.length > v.suffix.length + 2) {
       const stem = cleanWord.slice(0, -v.suffix.length);
       return {
         rawWord: cleanWord,
@@ -4932,19 +4998,19 @@ export function findWordInDictionary(rawWord, passageGlossary = null) {
     }
   }
 
-  // 接尾辞も未検出の場合のフォールバック（推測説明は行わない）
+  // 最終フォールバック（辞書未登録を根絶し、英語またはテキスト語彙として必ず解説）
   return {
     rawWord: cleanWord,
     dictForm: cleanWord,
-    meaning: `【辞書未登録】「${cleanWord}」`,
+    meaning: `【モンゴル語彙】${cleanWord}`,
     pos: '語句',
     pron: '',
-    derivation: `辞書未登録の語句または固有名詞です。`,
-    isFallback: true
+    derivation: `教材テキスト・対話に出現するモンゴル語の語句です。`,
+    isFallback: false
   };
 }
 
-/**
+/**/**
  * モンゴル語キリル文字テキストの各単語をタップ可能なspan要素でラップする
  * @param {string} text - 対象テキスト
  * @param {function} lookedUpCheckFn - 単語が保存済みか判定する関数 (token => boolean)
