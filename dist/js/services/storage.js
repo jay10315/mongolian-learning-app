@@ -1,3 +1,4 @@
+import { spatialQuizzes } from '../data/spatialPostpositionData.js';
 import { WORD_FAMILIES_DATA } from '../data/wordFamiliesData.js';
 import { TEXTBOOK_CLASSIFICATION_DATA } from '../data/textbookClassificationData.js';
 const DEPRECATED_DUPLICATE_ID_MAP = {
@@ -45,6 +46,14 @@ const STORAGE_KEYS = {
 };
 
 export class StorageService {
+  static _cachedAllVocab = null;
+  static _cachedVocab = null;
+
+  static clearVocabCache() {
+    this._cachedAllVocab = null;
+    this._cachedVocab = null;
+  }
+
   // 初期データの初期化
   static init() {
     // 744語・48項目・152問・31イラスト問題の最新マスターデータを確実に同期
@@ -520,6 +529,9 @@ export class StorageService {
    * 全1439単語（教科書登場単語＋あとで覚える単語）をメタデータ付きで取得
    */
   static getAllVocabulary() {
+    if (this._cachedAllVocab && Array.isArray(this._cachedAllVocab)) {
+      return this._cachedAllVocab;
+    }
     let baseList = [];
     try {
       const data = localStorage.getItem(STORAGE_KEYS.VOCABULARY);
@@ -667,9 +679,11 @@ export class StorageService {
     if (options && options.includeAll) {
       return all;
     }
-    // 今覚える単語（教科書掲載単語、または「あとで覚える単語」から正式に追加登録され、後で覚えるへ退避されていない単語）
-    // item.textbookStatus === 'textbook' || item.isAddedToLearning (退避分を除く)
-    return all.filter(item => item.isActiveLearning);
+    if (this._cachedVocab && Array.isArray(this._cachedVocab)) {
+      return this._cachedVocab;
+    }
+    this._cachedVocab = all.filter(item => item.isActiveLearning);
+    return this._cachedVocab;
   }
 
   /**
@@ -737,6 +751,7 @@ export class StorageService {
   }
 
   static saveVocabulary(items) {
+    this.clearVocabCache();
     localStorage.setItem(STORAGE_KEYS.VOCABULARY, JSON.stringify(items));
   }
 
@@ -1299,6 +1314,34 @@ export class StorageService {
           m.resolvedAt = m.resolvedAt || new Date().toISOString();
           mutated = true;
         }
+
+        // 正解や解説が未設定の問題（空間・指示詞、文法、格変化など）を全自動で補完
+        if (!m.correctAnswer || !m.explanation || !m.options || m.options.length === 0) {
+          if (!m.correctAnswer && (m.mongolian || m.answer)) {
+            m.correctAnswer = m.mongolian || m.answer;
+            mutated = true;
+          }
+          const qText = (m.question || m.prompt || '').trim();
+          const sq = (typeof spatialQuizzes !== 'undefined' && spatialQuizzes) ? spatialQuizzes.find(x => x.id === m.id || (qText && x.prompt === qText)) : null;
+          if (sq) {
+            if (!m.correctAnswer) { m.correctAnswer = sq.answer; mutated = true; }
+            if (!m.explanation) { m.explanation = sq.explanation; mutated = true; }
+            if (!m.options || m.options.length === 0) { m.options = sq.options; mutated = true; }
+            if (!m.japanese) { m.japanese = sq.promptJa; mutated = true; }
+          }
+          const gq = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes) ? initialGrammarQuizzes.find(x => x.id === m.id || (qText && x.question === qText)) : null;
+          if (gq) {
+            if (!m.correctAnswer) { m.correctAnswer = gq.answer; mutated = true; }
+            if (!m.explanation) { m.explanation = gq.explanation; mutated = true; }
+            if (!m.options || m.options.length === 0) { m.options = gq.options || []; mutated = true; }
+          }
+          const dq = (typeof initialDeclensionQuizzes !== 'undefined' && initialDeclensionQuizzes) ? initialDeclensionQuizzes.find(x => x.id === m.id || (qText && x.question === qText)) : null;
+          if (dq) {
+            if (!m.correctAnswer) { m.correctAnswer = dq.answer; mutated = true; }
+            if (!m.explanation) { m.explanation = dq.explanation; mutated = true; }
+            if (!m.options || m.options.length === 0) { m.options = dq.options || []; mutated = true; }
+          }
+        }
       });
       if (mutated) {
         localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(list));
@@ -1311,13 +1354,44 @@ export class StorageService {
 
   static recordMistake(mistake) {
     if (!mistake) return null;
+    let resolvedAns = mistake.correctAnswer || mistake.answer || mistake.mongolian || '';
+    let resolvedExpl = mistake.explanation || '';
+    let resolvedOpts = mistake.options || [];
+    let resolvedPrompt = mistake.question || mistake.prompt || '';
+    let resolvedJa = mistake.japanese || mistake.promptJa || '';
+
+    if (!resolvedAns || !resolvedExpl) {
+      const qClean = (resolvedPrompt || '').trim();
+      const sq = (typeof spatialQuizzes !== 'undefined' && spatialQuizzes) ? spatialQuizzes.find(x => x.id === mistake.id || (qClean && x.prompt === qClean)) : null;
+      if (sq) {
+        if (!resolvedAns) resolvedAns = sq.answer;
+        if (!resolvedExpl) resolvedExpl = sq.explanation;
+        if (!resolvedOpts || resolvedOpts.length === 0) resolvedOpts = sq.options;
+        if (!resolvedJa) resolvedJa = sq.promptJa;
+      }
+      const gq = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes) ? initialGrammarQuizzes.find(x => x.id === mistake.id || (qClean && x.question === qClean)) : null;
+      if (gq) {
+        if (!resolvedAns) resolvedAns = gq.answer;
+        if (!resolvedExpl) resolvedExpl = gq.explanation;
+        if (!resolvedOpts || resolvedOpts.length === 0) resolvedOpts = gq.options || [];
+      }
+      const dq = (typeof initialDeclensionQuizzes !== 'undefined' && initialDeclensionQuizzes) ? initialDeclensionQuizzes.find(x => x.id === mistake.id || (qClean && x.question === qClean)) : null;
+      if (dq) {
+        if (!resolvedAns) resolvedAns = dq.answer;
+        if (!resolvedExpl) resolvedExpl = dq.explanation;
+        if (!resolvedOpts || resolvedOpts.length === 0) resolvedOpts = dq.options || [];
+      }
+    }
+
     const sanitizedMistake = {
       ...mistake,
-      question: cleanMongolianMojibake(mistake.question || ''),
-      prompt: cleanMongolianMojibake(mistake.prompt || ''),
-      correctAnswer: cleanMongolianMojibake(mistake.correctAnswer || ''),
+      question: cleanMongolianMojibake(resolvedPrompt),
+      prompt: cleanMongolianMojibake(resolvedPrompt),
+      correctAnswer: cleanMongolianMojibake(resolvedAns),
       userAnswer: cleanMongolianMojibake(mistake.userAnswer || ''),
-      explanation: cleanMongolianMojibake(mistake.explanation || '')
+      explanation: cleanMongolianMojibake(resolvedExpl),
+      options: resolvedOpts,
+      japanese: resolvedJa
     };
     let list = this.getMistakes();
     const newKey = this.getMistakeCanonicalKey(sanitizedMistake);

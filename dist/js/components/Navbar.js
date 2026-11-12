@@ -273,7 +273,7 @@ export class Navbar {
             ].filter(Boolean).map(t => {
               const isActive = this.currentTab === t.id;
               return `
-                <button type="button" class="mobile-tab-btn py-1 px-0.5 flex flex-col items-center justify-center rounded-lg transition-all ${
+                <button type="button" class="mobile-tab-btn py-1 px-0.5 flex flex-col items-center justify-center rounded-lg transition-all active:scale-90 cursor-pointer select-none ${
                   isActive ? 'text-emerald-700 font-bold bg-emerald-50/80' : 'text-slate-500 hover:text-slate-700'
                 }" data-tab="${t.id}">
                   <span class="text-lg leading-none mb-0.5">${t.icon}</span>

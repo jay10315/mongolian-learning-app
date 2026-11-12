@@ -1,3 +1,4 @@
+import { spatialQuizzes } from '../data/spatialPostpositionData.js';
 // 間違いノート・復習コンポーネント
 import { StorageService } from '../services/storage.js';
 import { SrsService } from '../services/srs.js';
@@ -269,13 +270,36 @@ export class ReviewNotebookComponent {
 
         <!-- 復習ノート一覧カード -->
         <div class="space-y-3">
-          ${filtered.length === 0 ? `
-            <div class="text-center py-10 text-slate-400 text-xs bg-white rounded-xl border border-slate-200">
-              該当する項目はありません。
-            </div>
-          ` : filtered.map(m => {
+          ${(() => {
+            if (filtered.length === 0) {
+              return `
+                <div class="text-center py-10 text-slate-400 text-xs bg-white rounded-xl border border-slate-200">
+                  該当する項目はありません。
+                </div>
+              `;
+            }
+            // 単語検索・パーサーの高速化インデックス（1回のみ事前構築）
+            const allWords = StorageService.getVocabulary();
+            const wordById = new Map();
+            const wordByAns = new Map();
+            const cleanKey = (str) => (str || '').toLowerCase().replace(/[\(\)\（\）\s.,!?-]/g, '');
+            allWords.forEach(w => {
+              if (w.id) wordById.set(w.id, w);
+              const mn = cleanKey(w.mongolian);
+              const df = cleanKey(w.dictForm);
+              const rt = cleanKey(w.root);
+              if (mn && !wordByAns.has(mn)) wordByAns.set(mn, w);
+              if (df && !wordByAns.has(df)) wordByAns.set(df, w);
+              if (rt && !wordByAns.has(rt)) wordByAns.set(rt, w);
+            });
+            const sortedWords = [...allWords].sort((a, b) => 
+              ((b.dictForm || b.mongolian || '').length) - ((a.dictForm || a.mongolian || '').length)
+            );
+            const vocabContext = { allWords, wordById, wordByAns, sortedWords };
+
+            return filtered.map(m => {
             const dateStr = new Date(m.lastWrongDate).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-            const parsed = ReviewNotebookComponent.parseReviewItem(m);
+            const parsed = ReviewNotebookComponent.parseReviewItem(m, vocabContext);
             const sourceBadge = m.sourceType === 'looked_up' 
               ? 'bg-amber-100 text-amber-900 border-amber-300' 
               : (m.sourceType === 'due_review' 
@@ -352,25 +376,35 @@ export class ReviewNotebookComponent {
                       <span class="font-semibold">${m.sourceLabel || '弱点復習'}</span>
                     </div>
                   `}
-                  <div class="p-2 bg-emerald-50/80 rounded-lg text-emerald-950">
-                    <span class="text-slate-400 text-[10px] block">${parsed.isExplicitNonWord ? '正解:' : '正しい解答（見出し語）:'}</span>
-                    <span class="font-bold cyrillic-text text-emerald-800">${m.correctAnswer}</span>
-                  </div>
+                  ${(() => {
+                    const displayAns = m.correctAnswer || m.answer || m.mongolian || (parsed && parsed.matchedWord ? (parsed.matchedWord.dictForm || parsed.matchedWord.mongolian) : '') || '';
+                    return `
+                      <div class="p-2 bg-emerald-50/80 rounded-lg text-emerald-950">
+                        <span class="text-slate-400 text-[10px] block">${parsed.isExplicitNonWord ? '正解:' : '正しい解答（見出し語）:'}</span>
+                        <span class="font-bold cyrillic-text text-emerald-800 correct-answer-text">${displayAns || '（正解確認中）'}</span>
+                      </div>
+                    `;
+                  })()}
                 </div>
 
-                <!-- 解説 -->
-                ${m.explanation ? `
-                  <div class="text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-100 leading-relaxed whitespace-pre-line">
-                    💡 ${m.explanation}
-                  </div>
-                ` : ''}
+                <!-- 解説（必ず表示・確認可能に） -->
+                ${(() => {
+                  const displayExpl = m.explanation || (parsed && parsed.matchedWord ? `${parsed.matchedWord.mongolian} = ${parsed.matchedWord.japanese}` : '');
+                  if (!displayExpl) return '';
+                  return `
+                    <div class="text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-100 leading-relaxed whitespace-pre-line">
+                      💡 ${displayExpl}
+                    </div>
+                  `;
+                })()}
 
                 <div class="text-[10px] text-slate-400 text-right">
                   記録日時: ${dateStr}
                 </div>
               </div>
             `;
-          }).join('')}
+          }).join('');
+          })()}
         </div>
 
       </div>
@@ -518,11 +552,24 @@ export class ReviewNotebookComponent {
   /**
    * 復習問題の出題内容を解析し、問題文から答えの漏洩を除去してクリーンに抽出する
    */
-  static parseReviewItem(item) {
+  static parseReviewItem(item, context = null) {
     if (!item) return { promptText: '', displayPrefix: '', categoryLabel: '', isCyrillicAnswer: false, placeholder: '正解を入力...', subHint: '', matchedWord: null, details: null, isVerb: false };
 
-    let rawQ = (item.question || '').trim();
-    let correctAns = (item.correctAnswer || '').trim();
+    let rawQ = (item.question || item.prompt || '').trim();
+    let correctAns = (item.correctAnswer || item.answer || item.mongolian || '').trim();
+
+    // 未設定の場合は空間・指示詞や各種クイズデータから検索して補完
+    if (!correctAns) {
+      const qText = rawQ;
+      const sq = (typeof spatialQuizzes !== 'undefined' && spatialQuizzes) ? spatialQuizzes.find(x => x.id === item.id || (qText && x.prompt === qText)) : null;
+      if (sq) {
+        correctAns = sq.answer;
+        item.correctAnswer = sq.answer;
+        if (!item.explanation) item.explanation = sq.explanation;
+        if (!item.options || item.options.length === 0) item.options = sq.options;
+        if (!item.japanese) item.japanese = sq.promptJa;
+      }
+    }
     // 辞書形・語幹などの不要な括弧指示を除去
     rawQ = rawQ.replace(/[（\(]\s*(辞書形|語幹)\s*[）\)]/g, '').trim();
     correctAns = correctAns.replace(/[（\(]\s*(辞書形|語幹)\s*[）\)]/g, '').trim();
@@ -540,33 +587,42 @@ export class ReviewNotebookComponent {
     const qClean = cleanKey(cleanRawQ);
     const aClean = cleanKey(cleanAns);
 
-    const allWords = StorageService.getVocabulary();
+    const allWords = context?.allWords || StorageService.getVocabulary();
 
     // 1. wordId / srsWordId による完全一致
     const targetWordId = item?.wordId || item?.srsWordId || (typeof item?.id === 'string' && item.id.startsWith('due_') ? item.id.replace(/^due_/, '') : null);
-    let matchedWord = targetWordId ? allWords.find(w => w.id === targetWordId) : null;
-
-    // 1. 正解キーの完全一致
-    if (aClean) {
-      matchedWord = allWords.find(w => {
-        const mnClean = cleanKey(w.mongolian);
-        const dfClean = cleanKey(w.dictForm);
-        const rtClean = cleanKey(w.root);
-        return aClean === mnClean || aClean === dfClean || aClean === rtClean;
-      });
+    let matchedWord = null;
+    if (context?.wordById && targetWordId) {
+      matchedWord = context.wordById.get(targetWordId) || null;
+    } else if (targetWordId) {
+      matchedWord = allWords.find(w => w.id === targetWordId) || null;
     }
 
-    // 2. 問題文内の日本語一致（単語マスターの日本語が問題文に含まれているか）
+    // 2. 正解キーの完全一致（インデックスマップ利用でO(1)）
+    if (!matchedWord && aClean) {
+      if (context?.wordByAns) {
+        matchedWord = context.wordByAns.get(aClean) || null;
+      } else {
+        matchedWord = allWords.find(w => {
+          const mnClean = cleanKey(w.mongolian);
+          const dfClean = cleanKey(w.dictForm);
+          const rtClean = cleanKey(w.root);
+          return aClean === mnClean || aClean === dfClean || aClean === rtClean;
+        }) || null;
+      }
+    }
+
+    // 3. 問題文内の日本語一致（単語マスターの日本語が問題文に含まれているか）
     if (!matchedWord && qClean) {
       matchedWord = allWords.find(w => {
         const jaClean = cleanKey(w.japanese);
         return jaClean && jaClean.length >= 2 && qClean.includes(jaClean);
-      });
+      }) || null;
     }
 
-    // 3. 問題文内のモンゴル語部分一致（長い単語・連語から順に優先マッチ）
+    // 4. 問題文内のモンゴル語部分一致（長い単語・連語から順に優先マッチ）
     if (!matchedWord && qClean) {
-      const sortedWords = [...allWords].sort((a, b) => 
+      const sortedWords = context?.sortedWords || [...allWords].sort((a, b) => 
         ((b.dictForm || b.mongolian || '').length) - ((a.dictForm || a.mongolian || '').length)
       );
       matchedWord = sortedWords.find(w => {
@@ -574,7 +630,7 @@ export class ReviewNotebookComponent {
         const dfClean = cleanKey(w.dictForm);
         return (mnClean && mnClean.length >= 3 && qClean.includes(mnClean)) ||
                (dfClean && dfClean.length >= 3 && qClean.includes(dfClean));
-      });
+      }) || null;
     }
 
     const details = matchedWord ? getWordGrammarDetails(matchedWord) : null;

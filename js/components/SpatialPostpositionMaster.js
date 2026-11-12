@@ -651,9 +651,13 @@ export class SpatialPostpositionMasterComponent {
           id: quiz.id,
           type: 'spatial_postposition',
           mongolian: quiz.answer,
+          correctAnswer: quiz.answer,
           japanese: quiz.promptJa,
           question: quiz.prompt,
           category: quiz.category,
+          explanation: quiz.explanation,
+          options: quiz.options || [],
+          userAnswer: selectedOption,
           date: new Date().toISOString()
         });
       } catch (_) {}
