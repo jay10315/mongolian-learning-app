@@ -3,7 +3,7 @@ import { StorageService } from '../services/storage.js';
 import { SrsService } from '../services/srs.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, getWordSynonymExplanation, SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant, scrollToQuizTop } from '../utils/helpers.js';
+import { isFuzzyMatch, isVerb, getWordGrammarDetails, isWordAnswerMatch, renderGrammarExplanationHTML, formatStructuredExplanationHTML, getWordSynonymExplanation, SoundEffects, shuffleArray, SPECIAL_CYRILLIC_BAR, renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant, scrollToQuizTop } from '../utils/helpers.js';
 
 export class ReviewNotebookComponent {
   static activeKeyHandler = null;
@@ -701,10 +701,26 @@ export class ReviewNotebookComponent {
           promptText = hasCyrA ? sideA : (hasCyrB ? sideB : sideB);
         }
       } else {
-        const prefixMatch = cleanRawQ.match(/^(【[^】]+】)\s*(.*)/);
-        if (prefixMatch) {
-          displayPrefix = prefixMatch[1];
-          promptText = prefixMatch[2].trim();
+        let currentRaw = cleanRawQ;
+        const leadingTags = [];
+        let tagMatch;
+        while ((tagMatch = currentRaw.match(/^【([^】]+)】\s*/))) {
+          leadingTags.push(tagMatch[1]);
+          currentRaw = currentRaw.slice(tagMatch[0].length);
+        }
+        currentRaw = currentRaw.replace(/^\n+|\n+$/g, '').trim();
+
+        if (leadingTags.length > 0) {
+          if (leadingTags.some(t => t.includes('疑問'))) {
+            displayPrefix = '【疑問文】';
+          } else if (leadingTags.some(t => t.includes('文法'))) {
+            displayPrefix = '【文法】';
+          } else if (leadingTags.some(t => t.includes('格変化') || t.includes('活用'))) {
+            displayPrefix = '【格変化・活用】';
+          } else {
+            displayPrefix = `【${leadingTags[0]}】`;
+          }
+          promptText = currentRaw;
         } else {
           const typePrefixMap = {
             grammar: '【文法】',
@@ -749,11 +765,15 @@ export class ReviewNotebookComponent {
         const hasBlank = /\[____\]|___|＿＿|（\s*）|\(\s*\)/.test(promptText);
         if (hasBlank) {
           categoryLabel = "空欄に入る適切な文法・語尾をキリル文字で入力してください";
+        } else if (displayPrefix.includes('疑問') || promptText.includes('疑問') || (correctAns && correctAns.includes('?'))) {
+          categoryLabel = "日本語の意味に合うモンゴル語（疑問文）をキリル文字で入力してください";
+        } else if (/問いかける|文にしなさい|表しなさい|作りなさい|訳しなさい/.test(promptText)) {
+          categoryLabel = "日本語の意味に合うモンゴル語の文をキリル文字で入力してください";
         } else {
           categoryLabel = "指示に従い、指定の単語に適切な語尾・格変化を付けた形をキリル文字で入力してください";
         }
         subHint = item.category ? `【文法項目: ${item.category}】` : '';
-        placeholder = "キリル文字で入力...";
+        placeholder = (displayPrefix.includes('疑問') || /問いかける|文にしなさい|表しなさい/.test(promptText)) ? "モンゴル語の文をキリル文字で入力..." : "キリル文字で入力...";
       } else if (item.type === 'declension_alt') {
         subHint = item.category ? `【対象: ${item.category}】` : '';
         placeholder = "キリル文字で入力...";
@@ -860,7 +880,7 @@ export class ReviewNotebookComponent {
         <!-- 問題カード（答えの漏洩を完全に排除） -->
         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm text-center">
           <div class="text-xs font-bold text-rose-600 mb-2">${parsed.categoryLabel}</div>
-          <div class="text-xl sm:text-2xl font-black text-slate-800 cyrillic-text leading-relaxed">
+          <div class="text-xl sm:text-2xl font-black text-slate-800 cyrillic-text leading-relaxed whitespace-pre-line">
             <span class="text-sm font-bold text-slate-400 mr-1">${parsed.displayPrefix}</span>
             <span>${parsed.promptText}</span>
           </div>
@@ -1031,10 +1051,19 @@ export class ReviewNotebookComponent {
                     })()}
 
                     ${item.explanation ? `
-                      <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
-                        <div class="font-bold text-slate-900 dark:text-slate-100 mb-1">💡 解説:</div>
-                        <div>${item.explanation}</div>
-                      </div>
+                      ${(typeof formatStructuredExplanationHTML === 'function')
+                        ? formatStructuredExplanationHTML(item.explanation, {
+                            isCorrect: this.state.isCorrect,
+                            userAnswer: this.state.userAnswer,
+                            correctAnswer: item.correctAnswer
+                          })
+                        : `
+                          <div class="p-3 bg-white/95 dark:bg-slate-950/90 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs">
+                            <div class="font-bold text-slate-900 dark:text-slate-100 mb-1">💡 解説:</div>
+                            <div class="whitespace-pre-line">${item.explanation}</div>
+                          </div>
+                        `
+                      }
                     ` : ''}
 
                     ${etymologyHTML}

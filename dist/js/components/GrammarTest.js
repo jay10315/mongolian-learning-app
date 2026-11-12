@@ -2,7 +2,7 @@
 import { StorageService } from '../services/storage.js';
 import { SpeechService } from '../services/speech.js';
 import { CyrillicKeyboard } from './CyrillicKeyboard.js';
-import { isFuzzyMatch, renderChoiceExplanationsHTML, shuffleArray, SoundEffects, scrollToQuizTop } from '../utils/helpers.js';
+import { isFuzzyMatch, renderChoiceExplanationsHTML, shuffleArray, SoundEffects, scrollToQuizTop, formatStructuredExplanationHTML } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
 import { grammarMatrixQuizzes, GRAMMAR_MATRIX_ROWS, GRAMMAR_MATRIX_COLS, GRAMMAR_MATRIX_DATA } from '../data/grammarMatrixData.js';
@@ -567,11 +567,20 @@ export class GrammarTestComponent {
                 ${(typeof getWordEtymologyHTML === 'function') ? getWordEtymologyHTML(null, q.answer) : ''}
                 ${(typeof getWordMnemonicHTML === 'function') ? getWordMnemonicHTML(null, q.answer) : ''}
 
-                <!-- 詳細解説（赤字注意点・格支配など） -->
-                <div class="mt-3 p-3.5 bg-white/90 rounded-xl border border-slate-200 text-slate-700 leading-relaxed text-xs sm:text-sm">
-                  <div class="font-bold text-sky-800 mb-1">📖 解説・文法規則:</div>
-                  <div class="whitespace-pre-line text-slate-800">${this.formatExplanation(q.explanation)}</div>
-                </div>
+                <!-- 構造化解説カード（なぜ正解か・なぜ間違いか・口語形） -->
+                ${(typeof formatStructuredExplanationHTML === 'function')
+                  ? formatStructuredExplanationHTML(q.explanation, {
+                      isCorrect: this.state.isCorrect,
+                      userAnswer: this.state.userAnswer,
+                      correctAnswer: q.answer
+                    })
+                  : `
+                    <div class="mt-3 p-3.5 bg-white/90 rounded-xl border border-slate-200 text-slate-700 leading-relaxed text-xs sm:text-sm">
+                      <div class="font-bold text-sky-800 mb-1">📖 解説・文法規則:</div>
+                      <div class="whitespace-pre-line text-slate-800">${this.formatExplanation(q.explanation)}</div>
+                    </div>
+                  `
+                }
               </div>
             </div>
 

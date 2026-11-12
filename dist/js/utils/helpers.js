@@ -4283,6 +4283,89 @@ if (typeof window !== 'undefined') {
 
 
 
+
+/**
+ * 文法・疑問文・格変化テスト用の構造化解説カード生成
+ * 「なぜ正解が正しいのか」「なぜ間違いなのか / よくある誤答」「別の言い方（二通りの言い方）」を視覚的に整理
+ */
+export function formatStructuredExplanationHTML(explanation, options = {}) {
+  if (!explanation) return '';
+  const isCorrect = options.isCorrect ?? false;
+  const userAnswer = options.userAnswer || '';
+  const correctAnswer = options.correctAnswer || '';
+  
+  // セクション分割（■ や 💡【二通り など）
+  const rawSections = explanation.split(/\n(?=■|💡\s*別の|💡【二通り|💡\s*口語|🔴)/);
+  
+  return `
+    <div class="space-y-2.5 text-xs sm:text-sm text-left my-2">
+      ${rawSections.map(sec => {
+        const s = sec.trim();
+        if (!s) return '';
+        if (s.startsWith('■ なぜ') && (s.includes('正しい') || s.includes('選ばれる'))) {
+          const lines = s.split('\n');
+          const header = lines[0].replace(/^■\s*/, '');
+          const body = lines.slice(1).join('\n').trim();
+          return `
+            <div class="p-3.5 bg-blue-50/95 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-xl space-y-1.5 shadow-2xs">
+              <div class="font-black text-blue-950 dark:text-blue-100 flex items-center gap-1.5 text-xs sm:text-sm">
+                <span>🎯</span> <span>${header}</span>
+              </div>
+              <div class="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line text-xs">
+                ${body}
+              </div>
+            </div>
+          `;
+        } else if (s.startsWith('■ なぜ') && (s.includes('間違い') || s.includes('誤答') || s.includes('落とし穴') || s.includes('ではないのか'))) {
+          const lines = s.split('\n');
+          const header = (!isCorrect && userAnswer)
+            ? `なぜ「${userAnswer}」は不適切なのか？（よくある誤答）`
+            : lines[0].replace(/^■\s*/, '');
+          const body = lines.slice(1).join('\n').trim();
+          return `
+            <div class="p-3.5 ${isCorrect ? 'bg-amber-50/95 border-amber-200 text-amber-950 dark:bg-amber-950/40 dark:border-amber-800 dark:text-amber-100' : 'bg-rose-50/95 border-rose-200 text-rose-950 dark:bg-rose-950/40 dark:border-rose-800 dark:text-rose-100'} border rounded-xl space-y-1.5 shadow-2xs">
+              <div class="font-black flex items-center gap-1.5 text-xs sm:text-sm ${isCorrect ? 'text-amber-900 dark:text-amber-200' : 'text-rose-900 dark:text-rose-200'}">
+                <span>${isCorrect ? '💡' : '⚠️'}</span> <span>${header}</span>
+              </div>
+              <div class="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line text-xs">
+                ${body}
+              </div>
+            </div>
+          `;
+        } else if (s.startsWith('💡 別の') || s.startsWith('💡【二通り') || s.includes('二通りの言い方') || s.includes('口語形')) {
+          const lines = s.split('\n');
+          const header = lines[0].replace(/^💡\s*/, '');
+          const body = lines.slice(1).join('\n').trim();
+          return `
+            <div class="p-3.5 bg-purple-50/95 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 rounded-xl space-y-1.5 shadow-2xs">
+              <div class="font-black text-purple-950 dark:text-purple-100 flex items-center gap-1.5 text-xs sm:text-sm">
+                <span>✨</span> <span>${header || '別の表現・口語形（どちらも正解）'}</span>
+              </div>
+              <div class="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line text-xs">
+                ${body}
+              </div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="p-3.5 bg-white/95 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line shadow-2xs text-xs">
+              <div class="font-bold text-slate-900 dark:text-slate-100 mb-1 flex items-center gap-1">
+                <span>📖</span> <span>文法ポイント・解説:</span>
+              </div>
+              <div>${s.replace(/🔴([^\n]+)/g, '<span class="text-rose-600 font-bold">🔴 $1</span>')}</div>
+            </div>
+          `;
+        }
+      }).join('')}
+    </div>
+  `;
+}
+
+if (typeof window !== 'undefined') {
+  window.formatStructuredExplanationHTML = formatStructuredExplanationHTML;
+}
+
+
 export function renderGrammarExplanationHTML({
   correctAnswer,
   userAnswer = '',
