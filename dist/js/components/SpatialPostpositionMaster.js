@@ -984,16 +984,25 @@ export class SpatialPostpositionMasterComponent {
                     </button>
                   </div>
 
-                  <!-- 接続ルール -->
-                  <div class="mt-2.5 px-2.5 py-1.5 bg-slate-50 rounded-lg border border-slate-100 text-2xs space-y-0.5">
-                    <span class="font-bold text-slate-500">接続ルール:</span>
-                    <span class="font-black text-slate-800">${item.caseRequirement}</span>
+                  <!-- 接続ルール（属格接続の要件をわかりやすくハイライト） -->
+                  <div class="mt-2.5 p-2.5 rounded-xl border text-xs leading-relaxed space-y-1 ${
+                    item.caseRequirement.includes('属格')
+                      ? 'bg-amber-50/90 border-amber-300 text-amber-950'
+                      : 'bg-slate-50 border-slate-200 text-slate-800'
+                  }">
+                    <div class="font-black text-2xs flex items-center justify-between">
+                      <span class="flex items-center gap-1"><span>📐</span> 接続ルール・格変化:</span>
+                      ${item.caseRequirement.includes('属格') ? '<span class="px-2 py-0.5 rounded-full text-3xs font-black bg-amber-200 text-amber-900 border border-amber-300">属格要件あり</span>' : ''}
+                    </div>
+                    <div class="font-bold text-2xs leading-normal">
+                      ${item.caseRequirement}
+                    </div>
                   </div>
 
-                  <!-- 意味・要点 -->
-                  <p class="text-2xs text-slate-600 mt-2 leading-relaxed">
+                  <!-- 意味・要点・詳しい文法使い分け -->
+                  <div class="text-2xs text-slate-700 mt-2.5 leading-relaxed whitespace-pre-line bg-slate-50/60 p-2.5 rounded-xl border border-slate-100">
                     ${item.explanation}
-                  </p>
+                  </div>
                 </div>
 
                 <!-- 例文エリア -->
