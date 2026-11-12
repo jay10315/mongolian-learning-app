@@ -164589,6 +164589,9 @@ class ReferenceGuideComponent {
   // ==========================================
   static renderGuide() {
     this.cleanupKeyHandler();
+    const container = this.container;
+    const onNavigate = this.onNavigate;
+    if (!container) return;
     const grammarList = StorageService.getGrammar();
 
     this.container.innerHTML = `
