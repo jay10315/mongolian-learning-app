@@ -5,6 +5,8 @@ import { CyrillicKeyboard } from './CyrillicKeyboard.js';
 import { isFuzzyMatch, renderChoiceExplanationsHTML, shuffleArray, SoundEffects, scrollToQuizTop } from '../utils/helpers.js';
 import { GamificationService } from '../services/gamification.js';
 import { PenguinMascot } from './PenguinMascot.js';
+import { grammarMatrixQuizzes, GRAMMAR_MATRIX_ROWS, GRAMMAR_MATRIX_COLS, GRAMMAR_MATRIX_DATA } from '../data/grammarMatrixData.js';
+import { renderCyrillicInputAssistantHTML, bindCyrillicInputAssistant } from '../utils/helpers.js';
 
 export class GrammarTestComponent {
   static activeKeyHandler = null;
@@ -15,11 +17,25 @@ export class GrammarTestComponent {
       this.activeKeyHandler = null;
     }
   }
+  // 外部から「表モード」を直接起動できるヘルパー
+  static startTableMode(answeringMode = 'choice', category = 'all') {
+    this.cleanupKeyHandler();
+    this.state.settings.type = 'table_matrix';
+    this.state.settings.tableAnswerMode = answeringMode || 'choice';
+    this.state.settings.tableCategory = category || 'all';
+    this.state.view = 'settings';
+    if (this.container) {
+      this.render(this.container, this.onNavigate);
+    }
+  }
+
   static state = {
     view: 'settings', // 'settings' | 'testing' | 'result'
     settings: {
       lessonGroup: 'all', // 'all' | 'handbook' | 'basic' | 'comprehensive'
-      type: 'all', // 'all' | 'reorder' | 'choice' | 'fill' | 'translation'
+      type: 'all', // 'all' | 'reorder' | 'choice' | 'fill' | 'translation' | 'table_matrix'
+      tableAnswerMode: 'choice', // 'choice' | 'input' | 'mixed'
+      tableCategory: 'all',
       count: 10
     },
     quizzes: [],
@@ -100,7 +116,53 @@ export class GrammarTestComponent {
               <option value="fill" ${this.state.settings.type === 'fill' ? 'selected' : ''}>疑問助詞・格語尾の空欄補充</option>
               <option value="choice" ${this.state.settings.type === 'choice' ? 'selected' : ''}>選択問題・誤り訂正</option>
               <option value="translation" ${this.state.settings.type === 'translation' ? 'selected' : ''}>日本語→モンゴル語 翻訳記述</option>
+              <option value="table_matrix" ${this.state.settings.type === 'table_matrix' ? 'selected' : ''}>📊 表モード（全48文法マトリクステスト・152問）</option>
             </select>
+          </div>
+
+          <!-- 📊 表モード専用設定エリア -->
+          <div id="table-mode-options" class="${this.state.settings.type === 'table_matrix' ? '' : 'hidden'} p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200 space-y-3 animate-fade-in">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-indigo-900 flex items-center gap-1.5">
+                <span>📊</span> 表モードの設定
+              </span>
+              <span class="text-[11px] bg-indigo-600 text-white px-2 py-0.5 rounded-full font-bold">
+                選択／書き込み両対応
+              </span>
+            </div>
+
+            <!-- 回答方法の選択（どう答えるか選べる） -->
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">どう答えるか（回答形式）</label>
+              <div class="grid grid-cols-3 gap-2 text-xs">
+                <label class="flex items-center justify-center p-2 rounded-lg border-2 cursor-pointer transition-all ${this.state.settings.tableAnswerMode === 'choice' ? 'border-indigo-600 bg-white font-black text-indigo-900 shadow-2xs' : 'border-slate-200 bg-white/70 text-slate-700 hover:bg-white'}">
+                  <input type="radio" name="tableAnswerMode" value="choice" ${this.state.settings.tableAnswerMode === 'choice' ? 'checked' : ''} class="hidden">
+                  <span>🔘 4択で選ぶ</span>
+                </label>
+                <label class="flex items-center justify-center p-2 rounded-lg border-2 cursor-pointer transition-all ${this.state.settings.tableAnswerMode === 'input' ? 'border-indigo-600 bg-white font-black text-indigo-900 shadow-2xs' : 'border-slate-200 bg-white/70 text-slate-700 hover:bg-white'}">
+                  <input type="radio" name="tableAnswerMode" value="input" ${this.state.settings.tableAnswerMode === 'input' ? 'checked' : ''} class="hidden">
+                  <span>✍️ 書き込んで答える</span>
+                </label>
+                <label class="flex items-center justify-center p-2 rounded-lg border-2 cursor-pointer transition-all ${this.state.settings.tableAnswerMode === 'mixed' ? 'border-indigo-600 bg-white font-black text-indigo-900 shadow-2xs' : 'border-slate-200 bg-white/70 text-slate-700 hover:bg-white'}">
+                  <input type="radio" name="tableAnswerMode" value="mixed" ${this.state.settings.tableAnswerMode === 'mixed' ? 'checked' : ''} class="hidden">
+                  <span>🔀 ランダム混合</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- 出題カテゴリ -->
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">表の出題カテゴリ</label>
+              <select id="select-table-category" class="w-full text-xs p-2 bg-white border border-indigo-200 rounded-lg text-slate-800 font-bold">
+                <option value="all" ${this.state.settings.tableCategory === 'all' ? 'selected' : ''}>全範囲からランダム（全152問）</option>
+                <option value="suffix_types" ${this.state.settings.tableCategory === 'suffix_types' ? 'selected' : ''}>🧩 語尾の種類・基本公式</option>
+                <option value="phonetics" ${this.state.settings.tableCategory === 'phonetics' ? 'selected' : ''}>⚡ 音韻・語尾変化（7の子音・9の子音・二重母音・長母音）</option>
+                <option value="syntax" ${this.state.settings.tableCategory === 'syntax' ? 'selected' : ''}>👑 接続ルール・格支配</option>
+                <option value="exceptions" ${this.state.settings.tableCategory === 'exceptions' ? 'selected' : ''}>⚠️ 例外・同化・脱落母音</option>
+                <option value="basic" ${this.state.settings.tableCategory === 'basic' ? 'selected' : ''}>💡 意味・機能・超シンプル解説</option>
+              </select>
+            </div>
+          </div>
           </div>
 
           <!-- 出題数（選択式 ＋ 自由入力欄） -->
@@ -145,9 +207,34 @@ export class GrammarTestComponent {
       });
     });
 
-    this.container.querySelector('#select-quiz-type').addEventListener('change', (e) => {
-      this.state.settings.type = e.target.value;
+    const selectType = this.container.querySelector('#select-quiz-type');
+    if (selectType) {
+      selectType.addEventListener('change', (e) => {
+        this.state.settings.type = e.target.value;
+        const tableOpts = this.container.querySelector('#table-mode-options');
+        if (tableOpts) {
+          if (e.target.value === 'table_matrix') {
+            tableOpts.classList.remove('hidden');
+          } else {
+            tableOpts.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    this.container.querySelectorAll('input[name="tableAnswerMode"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        this.state.settings.tableAnswerMode = e.target.value;
+        this.renderSettings();
+      });
     });
+
+    const teamTableCat = this.container.querySelector('#select-table-category');
+    if (teamTableCat) {
+      teamTableCat.addEventListener('change', (e) => {
+        this.state.settings.tableCategory = e.target.value;
+      });
+    }
 
     this.container.querySelectorAll('.btn-count').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -164,6 +251,39 @@ export class GrammarTestComponent {
 
   // --- 2. テストの準備 ---
   static startTest() {
+    if (this.state.settings.type === 'table_matrix') {
+      let matrixList = (typeof grammarMatrixQuizzes !== 'undefined' && Array.isArray(grammarMatrixQuizzes))
+        ? grammarMatrixQuizzes
+        : (window.grammarMatrixQuizzes || []);
+
+      if (this.state.settings.tableCategory && this.state.settings.tableCategory !== 'all') {
+        matrixList = matrixList.filter(q => q.category === this.state.settings.tableCategory);
+      }
+      if (!matrixList.length) matrixList = [...(window.grammarMatrixQuizzes || [])];
+      matrixList = shuffleArray(matrixList);
+
+      const modePref = this.state.settings.tableAnswerMode || 'choice';
+      matrixList = matrixList.map(q => ({
+        ...q,
+        type: 'table_matrix',
+        mode: (modePref === 'mixed') ? (Math.random() > 0.5 ? 'choice' : 'input') : modePref
+      }));
+
+      GamificationService.resetSessionCombo();
+      this.state.sessionScore = 0;
+      this.state.sessionXp = 0;
+      this.state.lastGameFeedback = null;
+      this.state.sessionResult = null;
+
+      const count = this.state.settings.count === 'all' ? matrixList.length : Math.min(this.state.settings.count, matrixList.length);
+      this.state.quizzes = matrixList.slice(0, count);
+      this.state.results = [];
+      this.loadQuiz(0);
+      this.state.view = 'testing';
+      this.renderTesting();
+      return;
+    }
+
     let list = [...StorageService.getGrammarQuizzes()];
 
     if (this.state.settings.lessonGroup === 'handbook') {
@@ -238,7 +358,8 @@ export class GrammarTestComponent {
       fill: '空欄補充',
       choice: '選択問題',
       correction: '間違い訂正',
-      translation: '文法翻訳'
+      translation: '文法翻訳',
+      table_matrix: '📊 表モード'
     };
 
     this.container.innerHTML = `
@@ -291,7 +412,50 @@ export class GrammarTestComponent {
         ${!this.state.hasAnswered ? `
           <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-4">
             
-            ${q.type === 'reorder' ? `
+            ${q.type === 'table_matrix' ? `
+              <!-- 📊 表モード 回答UI（選択式 または 書き込み式） -->
+              ${q.mode === 'choice' ? `
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200 flex items-center gap-1">
+                      <span>🔘</span> 4択から選んでください（1〜4キー対応）
+                    </span>
+                    <span class="text-slate-400 font-medium">マトリクス表クイズ</span>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    ${(q.options || []).map((opt, o_idx) => `
+                      <button type="button" class="btn-matrix-option text-left p-3.5 rounded-xl border-2 border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/60 text-slate-800 font-bold text-xs sm:text-sm transition-all active:scale-98 flex items-center justify-between cyrillic-text shadow-2xs group cursor-pointer" data-val="${opt}">
+                        <span class="flex items-center gap-2">
+                          <span class="w-5 h-5 rounded-full bg-slate-100 group-hover:bg-indigo-600 group-hover:text-white text-slate-600 font-bold text-[11px] flex items-center justify-center transition-colors">
+                            ${o_idx + 1}
+                          </span>
+                          <span>${opt}</span>
+                        </span>
+                        <span class="text-xs text-slate-400 group-hover:text-indigo-600">➔</span>
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+              ` : `
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200 flex items-center gap-1">
+                      <span>✍️</span> 書き込んで回答してください
+                    </span>
+                    <span class="text-slate-400 font-medium">キリル文字入力</span>
+                  </div>
+                  <input type="text" id="input-matrix-answer" 
+                    class="w-full text-base sm:text-lg p-3 rounded-xl border-2 border-indigo-300 focus:border-indigo-600 focus:outline-hidden text-center font-bold text-slate-800 cyrillic-text cyrillic-input shadow-xs" 
+                    placeholder="解答をキリル文字または語句で入力..." 
+                    data-cyrillic="true"
+                    autofocus autocomplete="off">
+                  ${renderCyrillicInputAssistantHTML('input-matrix-answer')}
+                  <button type="button" id="btn-submit-matrix-text" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black rounded-xl shadow-md transition-all active:scale-98 text-sm cursor-pointer flex items-center justify-center gap-2">
+                    <span>回答する（Enter）</span> ➔
+                  </button>
+                </div>
+              `}
+            ` : q.type === 'reorder' ? `
               <!-- 語順並び替えUI -->
               <div class="space-y-3">
                 <div class="text-xs text-slate-500 font-semibold">単語をタップして正しい順番に並べてください:</div>
@@ -361,6 +525,28 @@ export class GrammarTestComponent {
 
               <!-- 正解表示 -->
               <div class="space-y-2 text-xs sm:text-sm">
+                ${q.type === 'table_matrix' ? `
+                  <!-- 📊 表モード専用 詳細解説ブロック -->
+                  <div class="p-4 bg-white/95 rounded-xl border border-indigo-200 shadow-2xs space-y-2.5 text-xs text-left">
+                    <div class="flex items-center justify-between">
+                      <span class="font-black text-indigo-900 text-sm flex items-center gap-1.5">
+                        <span>📌</span> ${q.rulePoint || 'マトリクス表の該当規則'}
+                      </span>
+                      <button type="button" class="btn-speak-matrix-ans px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 text-[11px] font-bold border border-indigo-200 flex items-center gap-1" data-word="${q.answer}">
+                        <span>🔊</span> 発音
+                      </button>
+                    </div>
+
+                    <div class="text-slate-700 leading-relaxed font-medium">
+                      ${q.explanation}
+                    </div>
+
+                    <div class="text-[11px] text-slate-500 pt-1.5 border-t border-slate-100 flex items-center justify-between">
+                      <span>📖 表の該当箇所: <strong>${q.grammarRef}</strong></span>
+                      <span class="text-slate-400">Enterキーでも次へ進めます</span>
+                    </div>
+                  </div>
+                ` : ''}
                 <div>
                   <span class="text-slate-500 font-medium">正しい解答: </span>
                   <span class="font-extrabold text-base cyrillic-text text-emerald-800 correct-answer-text">${q.answer}</span>

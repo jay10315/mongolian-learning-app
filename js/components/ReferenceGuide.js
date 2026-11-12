@@ -1,5 +1,7 @@
 import { SpeechService } from '../services/speech.js';
 import { DeclensionTestComponent } from './DeclensionTest.js';
+import { GrammarTestComponent } from './GrammarTest.js';
+import { GRAMMAR_MATRIX_ROWS, GRAMMAR_MATRIX_COLS, GRAMMAR_MATRIX_DATA, grammarMatrixQuizzes } from '../data/grammarMatrixData.js';
 import { StorageService } from '../services/storage.js';
 import { grammarClozeQuizzes, GRAMMAR_CLOZE_CATEGORIES } from '../data/grammarClozeData.js';
 import {
@@ -1505,6 +1507,139 @@ export class ReferenceGuideComponent {
           </p>
         </div>
 
+        <!-- 🌟 全48文法 完全対比マトリクス大図鑑（添付表完全対応） -->
+        <div id="grammar-matrix-section" class="bg-white rounded-2xl p-5 border border-indigo-200 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-indigo-100 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-3xl p-2 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white shadow-xs">📊</span>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-base sm:text-lg font-black text-slate-900 tracking-wide">
+                    全48文法 構造対比マトリクス大図鑑
+                  </h3>
+                  <span class="text-[11px] bg-indigo-600 text-white px-2.5 py-0.5 rounded-full font-bold shadow-2xs">
+                    横断対比・完全版
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">
+                  全48文法 × 21項目（音韻・子音変化・接続条件・例外・例文等）を一覧対比。セルをタップして詳細確認できます。
+                </p>
+              </div>
+            </div>
+
+            <!-- 表モード特訓ボタン -->
+            <button type="button" id="btn-ref-start-matrix-test" class="px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl text-xs sm:text-sm font-black shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 shrink-0 cursor-pointer">
+              <span>📊</span> 表モードでテストする（全152問） →
+            </button>
+          </div>
+
+          <!-- フィルターバー（属性カテゴリ ＆ 文法番号範囲） -->
+          <div class="flex flex-wrap items-center justify-between gap-2.5 pt-1">
+            <!-- 属性カテゴリタブ -->
+            <div class="flex flex-wrap gap-1.5 text-xs">
+              <button type="button" class="btn-matrix-cat-filter px-3 py-1.5 rounded-lg font-black bg-indigo-600 text-white shadow-2xs cursor-pointer transition-all" data-cat="all">
+                すべて表示
+              </button>
+              <button type="button" class="btn-matrix-cat-filter px-3 py-1.5 rounded-lg font-bold bg-slate-100 text-slate-700 hover:bg-indigo-50 cursor-pointer transition-all" data-cat="phonetics">
+                ⚡ 音韻・子音規則
+              </button>
+              <button type="button" class="btn-matrix-cat-filter px-3 py-1.5 rounded-lg font-bold bg-slate-100 text-slate-700 hover:bg-indigo-50 cursor-pointer transition-all" data-cat="syntax">
+                👑 接続条件・格支配
+              </button>
+              <button type="button" class="btn-matrix-cat-filter px-3 py-1.5 rounded-lg font-bold bg-slate-100 text-slate-700 hover:bg-indigo-50 cursor-pointer transition-all" data-cat="exceptions">
+                ⚠️ 例外・隠れ文字
+              </button>
+              <button type="button" class="btn-matrix-cat-filter px-3 py-1.5 rounded-lg font-bold bg-slate-100 text-slate-700 hover:bg-indigo-50 cursor-pointer transition-all" data-cat="basic">
+                💡 意味・子供向け・例文
+              </button>
+            </div>
+
+            <!-- 文法範囲選択 -->
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="text-slate-500 font-bold text-[11px]">文法範囲:</span>
+              <select id="select-matrix-range" class="text-xs font-bold px-2.5 py-1.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="all">全48文法（No.1〜48）</option>
+                <option value="range1">基礎・格助詞（No.1〜15）</option>
+                <option value="range2">動詞の時制・活用（No.16〜30）</option>
+                <option value="range3">応用構文・複文（No.31〜48）</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- マトリクス大表コンテナ（横スクロール対応・Stickyヘッダー＆列） -->
+          <div class="border border-slate-200 rounded-xl overflow-hidden shadow-inner bg-slate-50/50">
+            <div class="overflow-x-auto max-h-[620px] scrollbar-thin scrollbar-thumb-indigo-200">
+              <table id="table-grammar-matrix" class="w-full text-xs text-left border-collapse min-w-[3200px]">
+                <thead class="bg-indigo-900 text-white sticky top-0 z-20 shadow-xs">
+                  <tr>
+                    <th class="p-3 sticky left-0 z-30 bg-indigo-950 min-w-[200px] border-r border-indigo-800 font-black text-center shadow-xs">
+                      項目 ＼ 文法
+                    </th>
+                    ${(GRAMMAR_MATRIX_COLS || []).map(col => `
+                      <th class="matrix-col-header p-3 border-r border-indigo-800 text-center font-bold min-w-[160px]" data-num="${col.num}">
+                        <div class="text-[11px] text-amber-300 font-mono">No.${col.num}</div>
+                        <div class="font-extrabold text-xs truncate" title="${col.title}">${col.title}</div>
+                        <div class="text-[10px] text-indigo-200 truncate cyrillic-text font-normal">${col.mnTitle || ''}</div>
+                      </th>
+                    `).join('')}
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                  ${(GRAMMAR_MATRIX_ROWS || []).map(row => `
+                    <tr class="matrix-row hover:bg-indigo-50/30 transition-colors" data-cat="${row.category}">
+                      <td class="p-2.5 sticky left-0 z-10 bg-slate-50/95 border-r border-slate-200 font-bold text-slate-800 shadow-2xs flex items-center gap-1.5 min-w-[200px]">
+                        <span>${row.icon || '📌'}</span>
+                        <span class="truncate" title="${row.label}">${row.label}</span>
+                      </td>
+                      ${(GRAMMAR_MATRIX_DATA || []).map(g => {
+                        const cellVal = (g.attributes && g.attributes[row.key]) ? g.attributes[row.key] : '×';
+                        const isCross = cellVal === '×';
+                        return `
+                          <td class="matrix-cell p-2.5 border-r border-slate-100 text-slate-700 min-w-[160px] align-top transition-colors cursor-pointer hover:bg-indigo-100/50 ${isCross ? 'text-slate-300 text-center bg-slate-50/40' : ''}" data-num="${g.num}" data-title="${g.title}" data-row="${row.label}" data-val="${cellVal.replace(/"/g, '&quot;')}">
+                            <div class="line-clamp-3 text-[11px] leading-relaxed cyrillic-text" title="${cellVal.replace(/"/g, '&quot;')}">
+                              ${cellVal}
+                            </div>
+                          </td>
+                        `;
+                      }).join('')}
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 flex items-center justify-between">
+            <span>💡 セルをクリックすると、その項目の完全な解説と例文がポップアップ表示されます。</span>
+            <span>左右にスクロールして全48文法を閲覧できます ➔</span>
+          </div>
+        </div>
+
+        <!-- マトリクスセル詳細モーダル用コンテナ -->
+        <div id="matrix-cell-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+          <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 relative">
+            <button type="button" id="btn-close-matrix-modal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
+            <div class="flex items-center gap-2">
+              <span class="text-2xl" id="modal-matrix-icon">📌</span>
+              <div>
+                <span class="text-xs font-bold text-indigo-600 block" id="modal-matrix-gnum">No.1 文法名</span>
+                <h4 class="text-base font-black text-slate-900" id="modal-matrix-rowname">項目名</h4>
+              </div>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-800 leading-relaxed font-medium whitespace-pre-wrap cyrillic-text" id="modal-matrix-content">
+              内容
+            </div>
+            <div class="flex items-center justify-between pt-2">
+              <button type="button" id="btn-modal-speak" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer">
+                <span>🔊</span> 発音を聴く
+              </button>
+              <button type="button" id="btn-modal-close-action" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 cursor-pointer">
+                閉じる
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- 4. 全48文法項目 完全構造解説カード（検索＆アコーディオン付き） -->
         <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -1711,6 +1846,111 @@ export class ReferenceGuideComponent {
             card.style.display = 'none';
           }
         });
+      });
+    }
+
+    // 📊 マトリクス表モードテスト開始ボタン
+    const startMatrixTestBtn = this.container.querySelector('#btn-ref-start-matrix-test');
+    if (startMatrixTestBtn) {
+      startMatrixTestBtn.addEventListener('click', () => {
+        GrammarTestComponent.startTableMode('choice', 'all');
+        if (this.onNavigate) this.onNavigate('grammar_test');
+      });
+    }
+
+    // 属性カテゴリフィルター
+    const catFilters = this.container.querySelectorAll('.btn-matrix-cat-filter');
+    const matrixRows = this.container.querySelectorAll('.matrix-row');
+    catFilters.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cat = btn.dataset.cat;
+        catFilters.forEach(b => {
+          b.className = 'btn-matrix-cat-filter px-3 py-1.5 rounded-lg font-bold bg-slate-100 text-slate-700 hover:bg-indigo-50 cursor-pointer transition-all';
+        });
+        btn.className = 'btn-matrix-cat-filter px-3 py-1.5 rounded-lg font-black bg-indigo-600 text-white shadow-2xs cursor-pointer transition-all';
+
+        matrixRows.forEach(row => {
+          const rowCat = row.dataset.cat;
+          if (cat === 'all' || rowCat === cat) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // 文法範囲セレクト
+    const rangeSelect = this.container.querySelector('#select-matrix-range');
+    const colHeaders = this.container.querySelectorAll('.matrix-col-header');
+    const allCells = this.container.querySelectorAll('.matrix-cell');
+    if (rangeSelect) {
+      rangeSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        let minNum = 1, maxNum = 48;
+        if (val === 'range1') { minNum = 1; maxNum = 15; }
+        else if (val === 'range2') { minNum = 16; maxNum = 30; }
+        else if (val === 'range3') { minNum = 31; maxNum = 48; }
+
+        colHeaders.forEach(th => {
+          const num = parseInt(th.dataset.num, 10);
+          th.style.display = (num >= minNum && num <= maxNum) ? '' : 'none';
+        });
+
+        allCells.forEach(td => {
+          const num = parseInt(td.dataset.num, 10);
+          td.style.display = (num >= minNum && num <= maxNum) ? '' : 'none';
+        });
+      });
+    }
+
+    // セルタップによる詳細モーダル表示
+    const modal = this.container.querySelector('#matrix-cell-modal');
+    const modalGnum = this.container.querySelector('#modal-matrix-gnum');
+    const modalRow = this.container.querySelector('#modal-matrix-rowname');
+    const modalContent = this.container.querySelector('#modal-matrix-content');
+    const modalSpeak = this.container.querySelector('#btn-modal-speak');
+    let currentCellText = '';
+
+    allCells.forEach(cell => {
+      cell.addEventListener('click', () => {
+        const val = cell.dataset.val;
+        if (!val || val === '×') return;
+        const gnum = cell.dataset.num;
+        const gtitle = cell.dataset.title;
+        const rowname = cell.dataset.row;
+        currentCellText = val;
+
+        if (modalGnum) modalGnum.textContent = `No.${gnum} ${gtitle}`;
+        if (modalRow) modalRow.textContent = rowname;
+        if (modalContent) modalContent.textContent = val;
+        if (modal) modal.classList.remove('hidden');
+      });
+    });
+
+    const closeModal = () => {
+      if (modal) modal.classList.add('hidden');
+    };
+    const closeBtn = this.container.querySelector('#btn-close-matrix-modal');
+    const closeActionBtn = this.container.querySelector('#btn-modal-close-action');
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (closeActionBtn) closeActionBtn.addEventListener('click', closeModal);
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+    }
+
+    if (modalSpeak) {
+      modalSpeak.addEventListener('click', () => {
+        if (currentCellText) {
+          const cyrillicMatch = currentCellText.match(/[А-Яа-яЁёӨөҮү]+/);
+          if (cyrillicMatch) {
+            SpeechService.speak(cyrillicMatch[0]);
+          } else {
+            SpeechService.speak(currentCellText);
+          }
+        }
       });
     }
 

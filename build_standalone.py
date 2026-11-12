@@ -16,6 +16,7 @@ files_order = [
     'js/data/initialGrammar.js',
     'js/data/grammarQuizzes.js',
     'js/data/grammarClozeData.js',
+    'js/data/grammarMatrixData.js',
     'js/data/declensionQuizzes.js',
     'js/data/illustrationQuizzes.js',
     'js/data/listeningQuizzes.js',
