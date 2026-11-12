@@ -144441,9 +144441,14 @@ class GrammarTestComponent {
       this.activeKeyHandler = null;
     }
   }
-  // 外部から「表モード」を直接起動できるヘルパー
+  // 外部から「表モード」を直接起動できるヘルパー（表形式インタラクティブ回答モードと連動）
   static startTableMode(answeringMode = 'choice', category = 'all') {
     this.cleanupKeyHandler();
+    if (typeof ReferenceGuideComponent !== 'undefined' && ReferenceGuideComponent.startTableMode) {
+      ReferenceGuideComponent.startTableMode(answeringMode, category);
+      if (this.onNavigate) this.onNavigate('reference');
+      return;
+    }
     this.state.settings.type = 'table_matrix';
     this.state.settings.tableAnswerMode = answeringMode || 'choice';
     this.state.settings.tableCategory = category || 'all';
@@ -169242,6 +169247,19 @@ class ReferenceGuideComponent {
     isCorrect: false,
     combo: 0,
     results: []
+  },
+    // 表形式インタラクティブ回答モード State
+    tableQuiz: {
+      answeringMode: 'choice', // 'choice' (選択式) | 'input' (入力式)
+      grammarRange: 'range1',  // 'range1' (1~15) | 'range2' (16~30) | 'range3' (31~48) | 'all' (1~48)
+      categoryFilter: 'major', // 'major' | 'all' | 'phonetics' | 'exceptions' | 'syntax' | 'grammar'
+      cells: {}, // key: `${grammarNum}_${rowKey}` -> { userAns: '', isCorrect: null, correctVal: '', title: '', rowLabel: '', explanation: '' }
+      activeCell: null, // { grammarNum, rowKey }
+      hasChecked: false,
+      score: 0,
+      totalAnswerable: 0,
+      correctCount: 0
+    },
   };
 
   // 外部から直接穴埋めモードを開始できるヘルパー
@@ -169271,6 +169289,12 @@ class ReferenceGuideComponent {
       this.renderClozeTesting();
     } else if (this.state.view === 'cloze_result') {
       this.renderClozeResult();
+    } else if (this.state.view === 'table_settings') {
+      this.renderTableSettings();
+    } else if (this.state.view === 'table_testing') {
+      this.renderTableTesting();
+    } else if (this.state.view === 'table_result') {
+      this.renderTableResult();
     } else {
       this.renderGuide();
     }
@@ -169324,9 +169348,14 @@ class ReferenceGuideComponent {
               </div>
             </div>
             
-            <button type="button" id="btn-start-cloze-all" class="px-5 py-3 bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-900 rounded-xl text-xs sm:text-sm font-black shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer">
-              <span>🎯</span> 穴埋めテストを始める（全48項目） →
-            </button>
+            <div class="flex flex-wrap sm:flex-col gap-2 shrink-0">
+              <button type="button" id="btn-start-cloze-all" class="px-4 py-2.5 bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-900 rounded-xl text-xs sm:text-sm font-black shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <span>🎯</span> 穴埋めテスト（全48項目） →
+              </button>
+              <button type="button" id="btn-start-table-hero" class="px-4 py-2.5 bg-white/20 hover:bg-white/30 active:scale-95 text-white rounded-xl text-xs sm:text-sm font-black shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer border border-white/25">
+                <span>📊</span> 表完成テスト（表形式回答） →
+              </button>
+            </div>
           </div>
 
           <!-- カテゴリ別クイックスタートボタン -->
@@ -171078,15 +171107,11 @@ class ReferenceGuideComponent {
       });
     }
 
-    // 📊 マトリクス表モードテスト開始ボタン
+    // 📊 マトリクス表モードテスト開始ボタン（表形式インタラクティブ回答モード）
     const startMatrixTestBtn = container.querySelector('#btn-ref-start-matrix-test');
     if (startMatrixTestBtn) {
       startMatrixTestBtn.addEventListener('click', () => {
-        if (typeof GrammarTestComponent !== 'undefined' && GrammarTestComponent.startTableMode) {
-          GrammarTestComponent.startTableMode('choice', 'all');
-        }
-        if (onNavigate) onNavigate('grammar_test');
-        else if (this.onNavigate) this.onNavigate('grammar_test');
+        this.startTableMode('choice', 'major', 'range1');
       });
     }
 
@@ -171191,6 +171216,13 @@ class ReferenceGuideComponent {
     if (startAllBtn) {
       startAllBtn.addEventListener('click', () => {
         this.startClozeTest('all');
+      });
+    }
+
+    const startTableHeroBtn = container.querySelector('#btn-start-table-hero');
+    if (startTableHeroBtn) {
+      startTableHeroBtn.addEventListener('click', () => {
+        this.startTableMode('choice', 'major', 'range1');
       });
     }
 
@@ -171786,6 +171818,1066 @@ class ReferenceGuideComponent {
       });
     }
   }
+
+  // ==========================================
+  // 5. 表形式インタラクティブ回答モード (Table Grid Quiz)
+  // ==========================================
+
+  // --- 5.1 設定・モード選択画面 ---
+  static renderTableSettings() {
+    this.cleanupKeyHandler();
+    const container = this.container || document.getElementById('main-content') || document.body;
+    this.container = container;
+
+    const tState = this.state.tableQuiz;
+
+    container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-5 space-y-6">
+        
+        <!-- 上部ヘッダー -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2">
+            <button type="button" id="btn-table-back-guide" class="px-2.5 py-1 text-xs font-bold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all">
+              ← ハンドブックへ戻る
+            </button>
+            <span class="text-xs text-slate-400">|</span>
+            <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full">
+              新機能：表形式インタラクティブ回答モード
+            </span>
+          </div>
+        </div>
+
+        <!-- ヒーロータイトルカード -->
+        <div class="bg-gradient-to-br from-indigo-700 via-purple-700 to-slate-900 text-white rounded-3xl p-6 shadow-md space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="text-4xl p-2.5 bg-white/10 rounded-2xl backdrop-blur-xs">📊</span>
+            <div>
+              <h2 class="text-xl sm:text-2xl font-black tracking-tight">文法マトリクス 表完成テスト</h2>
+              <p class="text-xs sm:text-sm text-indigo-200 font-medium mt-0.5">
+                表の空欄セルをクリックして埋めていき、文法表全体を完成させる実践特訓モード
+              </p>
+            </div>
+          </div>
+          <p class="text-xs text-indigo-100/90 leading-relaxed bg-white/10 p-3 rounded-xl border border-white/10">
+            💡 単なる選択クイズではなく、実際の文法表を見渡しながら各セルを埋めていきます。すべてのセルを回答した後に「答え合わせ」で全体の正答率や間違えたセルの詳細解説を確認できます。
+          </p>
+        </div>
+
+        <!-- 設定カード -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-6">
+          
+          <!-- ① 回答モード選択（重要要件：モードA選択式 vs モードB入力式） -->
+          <div class="space-y-3">
+            <label class="block text-sm font-black text-slate-800 flex items-center justify-between">
+              <span>🎯 1. 回答モードを選択</span>
+              <span class="text-2xs text-slate-500 font-normal">表の全セルに適用されます</span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- モードA: 選択式 -->
+              <div class="btn-select-answering-mode cursor-pointer p-4 rounded-xl border-2 transition-all flex flex-col justify-between ${
+                tState.answeringMode === 'choice'
+                  ? 'border-indigo-600 bg-indigo-50/50 shadow-xs ring-2 ring-indigo-500/20'
+                  : 'border-slate-200 bg-white hover:border-slate-300'
+              }" data-mode="choice">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="text-2xl">🔘</span>
+                    <span class="font-black text-sm text-slate-800">モードA：選択式</span>
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full ${
+                    tState.answeringMode === 'choice' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500'
+                  }">
+                    ${tState.answeringMode === 'choice' ? '選択中' : '選ぶ'}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                  セルをクリックすると<strong>4つの選択肢</strong>が表示されます。正しい答えを選ぶと自動的にセルに反映されます。
+                </p>
+              </div>
+
+              <!-- モードB: 入力式 -->
+              <div class="btn-select-answering-mode cursor-pointer p-4 rounded-xl border-2 transition-all flex flex-col justify-between ${
+                tState.answeringMode === 'input'
+                  ? 'border-indigo-600 bg-indigo-50/50 shadow-xs ring-2 ring-indigo-500/20'
+                  : 'border-slate-200 bg-white hover:border-slate-300'
+              }" data-mode="input">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="text-2xl">⌨️</span>
+                    <span class="font-black text-sm text-slate-800">モードB：入力式</span>
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full ${
+                    tState.answeringMode === 'input' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500'
+                  }">
+                    ${tState.answeringMode === 'input' ? '選択中' : '選ぶ'}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                  セルをクリックすると<strong>入力欄とキリル文字パレット</strong>が表示されます。キーボードまたは画面のボタンで回答を入力・決定します。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ② 文法範囲の選択 -->
+          <div class="space-y-3">
+            <label class="block text-sm font-black text-slate-800">
+              <span>📚 2. 表の文法範囲を選択</span>
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <button type="button" class="btn-select-grammar-range p-2.5 rounded-xl border-2 font-bold transition-all ${
+                tState.grammarRange === 'range1'
+                  ? 'border-indigo-600 bg-indigo-50 text-indigo-900 font-black'
+                  : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
+              }" data-range="range1">
+                基礎・格助詞<br><span class="text-2xs text-slate-500 font-normal">No.1〜15 (15項目)</span>
+              </button>
+
+              <button type="button" class="btn-select-grammar-range p-2.5 rounded-xl border-2 font-bold transition-all ${
+                tState.grammarRange === 'range2'
+                  ? 'border-indigo-600 bg-indigo-50 text-indigo-900 font-black'
+                  : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
+              }" data-range="range2">
+                動詞時制・活用<br><span class="text-2xs text-slate-500 font-normal">No.16〜30 (15項目)</span>
+              </button>
+
+              <button type="button" class="btn-select-grammar-range p-2.5 rounded-xl border-2 font-bold transition-all ${
+                tState.grammarRange === 'range3'
+                  ? 'border-indigo-600 bg-indigo-50 text-indigo-900 font-black'
+                  : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
+              }" data-range="range3">
+                応用構文・複文<br><span class="text-2xs text-slate-500 font-normal">No.31〜48 (18項目)</span>
+              </button>
+
+              <button type="button" class="btn-select-grammar-range p-2.5 rounded-xl border-2 font-bold transition-all ${
+                tState.grammarRange === 'all'
+                  ? 'border-indigo-600 bg-indigo-50 text-indigo-900 font-black'
+                  : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
+              }" data-range="all">
+                全48文法<br><span class="text-2xs text-slate-500 font-normal">No.1〜48 完全制覇</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ③ 属性行の選択 -->
+          <div class="space-y-3">
+            <label class="block text-sm font-black text-slate-800">
+              <span>📑 3. 出題する属性行を選択</span>
+            </label>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <button type="button" class="btn-select-cat-filter px-3 py-1.5 rounded-lg border font-bold transition-all ${
+                tState.categoryFilter === 'major'
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs font-black'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-indigo-50'
+              }" data-cat="major">
+                ⭐ 主要属性（意味・男女語幹・例外・代名詞・語尾）
+              </button>
+              <button type="button" class="btn-select-cat-filter px-3 py-1.5 rounded-lg border font-bold transition-all ${
+                tState.categoryFilter === 'phonetics'
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs font-black'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-indigo-50'
+              }" data-cat="phonetics">
+                ⚡ 音韻・子音規則 (6行)
+              </button>
+              <button type="button" class="btn-select-cat-filter px-3 py-1.5 rounded-lg border font-bold transition-all ${
+                tState.categoryFilter === 'exceptions'
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs font-black'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-indigo-50'
+              }" data-cat="exceptions">
+                ⚠️ 例外・隠れ文字 (4行)
+              </button>
+              <button type="button" class="btn-select-cat-filter px-3 py-1.5 rounded-lg border font-bold transition-all ${
+                tState.categoryFilter === 'syntax'
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs font-black'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-indigo-50'
+              }" data-cat="syntax">
+                🌱 構文・格支配・代名詞 (5行)
+              </button>
+              <button type="button" class="btn-select-cat-filter px-3 py-1.5 rounded-lg border font-bold transition-all ${
+                tState.categoryFilter === 'all'
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs font-black'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-indigo-50'
+              }" data-cat="all">
+                全属性 (22行)
+              </button>
+            </div>
+          </div>
+
+          <!-- テスト開始ボタン -->
+          <div class="pt-3 border-t border-slate-100">
+            <button type="button" id="btn-start-table-testing-now" class="w-full py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-700 hover:to-purple-800 text-white font-black text-base rounded-2xl shadow-md hover:shadow-lg transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer">
+              <span>🚀</span> 表完成テストを開始する（表を開く） →
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+    // イベント登録
+    container.querySelector('#btn-table-back-guide')?.addEventListener('click', () => {
+      this.state.view = 'guide';
+      this.renderGuide();
+    });
+
+    container.querySelectorAll('.btn-select-answering-mode').forEach(btn => {
+      btn.addEventListener('click', () => {
+        tState.answeringMode = btn.dataset.mode;
+        this.renderTableSettings();
+      });
+    });
+
+    container.querySelectorAll('.btn-select-grammar-range').forEach(btn => {
+      btn.addEventListener('click', () => {
+        tState.grammarRange = btn.dataset.range;
+        this.renderTableSettings();
+      });
+    });
+
+    container.querySelectorAll('.btn-select-cat-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        tState.categoryFilter = btn.dataset.cat;
+        this.renderTableSettings();
+      });
+    });
+
+    container.querySelector('#btn-start-table-testing-now')?.addEventListener('click', () => {
+      this.prepareTableTesting();
+    });
+  }
+
+  // --- 5.2 表テストの初期化準備 ---
+  static prepareTableTesting() {
+    const tState = this.state.tableQuiz;
+    const allData = (typeof GRAMMAR_MATRIX_DATA !== 'undefined' ? GRAMMAR_MATRIX_DATA : []);
+    const allRows = (typeof GRAMMAR_MATRIX_ROWS !== 'undefined' ? GRAMMAR_MATRIX_ROWS : []);
+
+    // 文法範囲の抽出
+    let minNum = 1, maxNum = 48;
+    if (tState.grammarRange === 'range1') { minNum = 1; maxNum = 15; }
+    else if (tState.grammarRange === 'range2') { minNum = 16; maxNum = 30; }
+    else if (tState.grammarRange === 'range3') { minNum = 31; maxNum = 48; }
+
+    const targetGrammars = allData.filter(g => g.num >= minNum && g.num <= maxNum);
+
+    // 属性行の抽出
+    let targetRows = [];
+    if (tState.categoryFilter === 'major') {
+      const majorKeys = ['meaning', 'male_vowel', 'female_vowel', 'exceptions', 'pronoun_form', 'suffix_types'];
+      targetRows = allRows.filter(r => majorKeys.includes(r.key));
+    } else if (tState.categoryFilter === 'all') {
+      targetRows = [...allRows];
+    } else {
+      targetRows = allRows.filter(r => r.category === tState.categoryFilter);
+    }
+
+    if (targetRows.length === 0) targetRows = allRows.slice(0, 6);
+
+    // 各セルの初期化
+    tState.cells = {};
+    let totalCount = 0;
+
+    targetGrammars.forEach(g => {
+      targetRows.forEach(r => {
+        const key = `${g.num}_${r.key}`;
+        const correctVal = (g.attributes && g.attributes[r.key]) ? g.attributes[r.key] : '×';
+        const isNotApplicable = (!correctVal || correctVal === '×');
+
+        tState.cells[key] = {
+          grammarNum: g.num,
+          grammarTitle: g.title,
+          rowKey: r.key,
+          rowLabel: r.label,
+          rowIcon: r.icon || '📌',
+          correctVal: correctVal,
+          isNotApplicable: isNotApplicable,
+          userAns: '',
+          isCorrect: null
+        };
+
+        if (!isNotApplicable) {
+          totalCount++;
+        }
+      });
+    });
+
+    tState.targetGrammars = targetGrammars;
+    tState.targetRows = targetRows;
+    tState.totalAnswerable = totalCount;
+    tState.hasChecked = false;
+    tState.activeCell = null;
+
+    this.state.view = 'table_testing';
+    this.renderTableTesting();
+  }
+
+  // --- 5.3 表形式インタラクティブ回答画面 (Table Grid Quiz View) ---
+  static renderTableTesting() {
+    this.cleanupKeyHandler();
+    const container = this.container || document.getElementById('main-content') || document.body;
+    this.container = container;
+
+    const tState = this.state.tableQuiz;
+    const targetGrammars = tState.targetGrammars || [];
+    const targetRows = tState.targetRows || [];
+
+    // 現在の回答進捗を計算
+    let answeredCount = 0;
+    Object.values(tState.cells || {}).forEach(c => {
+      if (!c.isNotApplicable && c.userAns && c.userAns.trim() !== '') {
+        answeredCount++;
+      }
+    });
+
+    const percent = tState.totalAnswerable > 0 ? Math.round((answeredCount / tState.totalAnswerable) * 100) : 0;
+
+    container.innerHTML = `
+      <div class="animate-fade-in max-w-7xl mx-auto px-2 sm:px-4 py-4 space-y-4">
+        
+        <!-- 上部コントロールバー -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            
+            <div class="flex items-center gap-2">
+              <button type="button" id="btn-abort-table-test" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
+                ✕ 中断して戻る
+              </button>
+              <span class="text-xs font-black px-2.5 py-1 rounded-full ${
+                tState.answeringMode === 'choice' ? 'bg-indigo-100 text-indigo-800' : 'bg-purple-100 text-purple-800'
+              }">
+                ${tState.answeringMode === 'choice' ? '🔘 モードA：選択式' : '⌨️ モードB：入力式'}
+              </span>
+            </div>
+
+            <!-- 進捗状況 ＆ 答え合わせボタン -->
+            <div class="flex items-center gap-3">
+              <div class="text-xs text-right">
+                <span class="font-bold text-slate-500">回答進捗:</span>
+                <span class="font-black text-indigo-600 text-sm ml-1">${answeredCount} / ${tState.totalAnswerable} セル (${percent}%)</span>
+              </div>
+              <button type="button" id="btn-submit-table-check" class="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs sm:text-sm rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer">
+                <span>✨</span> 答え合わせをする
+              </button>
+            </div>
+
+          </div>
+
+          <!-- 進行バー -->
+          <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 h-2 rounded-full transition-all duration-300" style="width: ${percent}%"></div>
+          </div>
+
+          <!-- ヘルプヒント -->
+          <div class="text-2xs text-slate-500 flex flex-wrap items-center justify-between gap-2">
+            <span>💡 セルをクリックして回答を入力・選択してください。回答済みのセルも再度クリックでいつでも変更できます。</span>
+            <span class="text-indigo-600 font-bold">横スクロールで表全体を見渡せます ↔️</span>
+          </div>
+        </div>
+
+        <!-- メイン：表（スプレッドシート・グリッド形式） -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto max-h-[72vh] relative">
+            <table class="w-full text-left border-collapse min-w-[700px]">
+              
+              <!-- 表ヘッダー：文法項目名 -->
+              <thead class="sticky top-0 z-20 bg-slate-800 text-white text-xs">
+                <tr>
+                  <th class="p-3 sticky left-0 z-30 bg-slate-900 border-r border-slate-700 font-black min-w-[180px] sm:min-w-[200px] shadow-sm">
+                    属性 \ 文法
+                  </th>
+                  ${targetGrammars.map(g => `
+                    <th class="p-3 border-r border-slate-700 font-bold text-center min-w-[150px] sm:min-w-[180px]">
+                      <div class="text-[11px] text-indigo-300 font-mono">No.${g.num}</div>
+                      <div class="font-black text-white text-xs truncate" title="${g.title}">${g.title}</div>
+                      ${g.mnTitle ? `<div class="text-[10px] text-slate-300 cyrillic-text font-normal truncate">${g.mnTitle}</div>` : ''}
+                    </th>
+                  `).join('')}
+                </tr>
+              </thead>
+
+              <!-- 表ボディ：各属性行 ＆ セル回答欄 -->
+              <tbody class="divide-y divide-slate-200 bg-white text-xs">
+                ${targetRows.map(row => `
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    
+                    <!-- 左列固定：属性名 -->
+                    <td class="p-3 sticky left-0 z-10 bg-slate-50/95 border-r border-slate-200 font-bold text-slate-800 shadow-2xs min-w-[180px] sm:min-w-[200px] align-middle">
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-base">${row.icon || '📌'}</span>
+                        <span class="font-black text-xs text-slate-900">${row.label}</span>
+                      </div>
+                    </td>
+
+                    <!-- 各セルの回答欄 -->
+                    ${targetGrammars.map(g => {
+                      const key = `${g.num}_${row.key}`;
+                      const cell = tState.cells[key] || {};
+                      
+                      if (cell.isNotApplicable) {
+                        return `
+                          <td class="p-2 border-r border-slate-100 bg-slate-100/40 text-slate-300 text-center select-none min-w-[150px] sm:min-w-[180px] align-middle">
+                            <span class="text-xs font-mono">-</span>
+                          </td>
+                        `;
+                      }
+
+                      const hasAns = Boolean(cell.userAns && cell.userAns.trim() !== '');
+                      const isCellActive = (tState.activeCell && tState.activeCell.key === key);
+
+                      let cellClasses = 'cursor-pointer transition-all min-w-[150px] sm:min-w-[180px] p-2.5 border-r border-slate-200 align-top ';
+                      if (isCellActive) {
+                        cellClasses += 'ring-2 ring-indigo-600 bg-indigo-50/90 shadow-xs z-10 ';
+                      } else if (hasAns) {
+                        cellClasses += 'bg-indigo-50/60 hover:bg-indigo-100/70 text-indigo-950 font-bold ';
+                      } else {
+                        cellClasses += 'bg-amber-50/30 hover:bg-amber-100/50 hover:border-amber-300 text-slate-400 ';
+                      }
+
+                      return `
+                        <td class="interactive-quiz-cell ${cellClasses}" data-key="${key}" data-num="${g.num}" data-row="${row.key}">
+                          <div class="flex flex-col justify-between h-full min-h-[64px] space-y-1">
+                            ${
+                              hasAns
+                                ? `
+                                  <div class="text-[11px] font-black text-indigo-900 cyrillic-text line-clamp-3 leading-tight">
+                                    ${cell.userAns}
+                                  </div>
+                                  <div class="flex items-center justify-between text-3xs text-indigo-500 pt-1 border-t border-indigo-200/50">
+                                    <span>✔ 入力済</span>
+                                    <span class="text-slate-400 font-normal">変更 ✎</span>
+                                  </div>
+                                `
+                                : `
+                                  <div class="flex flex-col items-center justify-center h-full py-2 text-slate-400 border border-dashed border-amber-300/80 rounded-lg bg-white/60 hover:bg-amber-50/80 transition-colors">
+                                    <span class="text-base text-amber-500">✍️</span>
+                                    <span class="text-3xs font-black text-amber-700 mt-0.5">タップして回答</span>
+                                  </div>
+                                `
+                            }
+                          </div>
+                        </td>
+                      `;
+                    }).join('')}
+
+                  </tr>
+                `).join('')}
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+
+        <!-- 下部アクションバー -->
+        <div class="flex items-center justify-between p-2">
+          <button type="button" id="btn-table-scroll-left" class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 shadow-2xs">
+            ← 左へスクロール
+          </button>
+          <button type="button" id="btn-submit-table-check-bottom" class="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-sm rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95">
+            ✨ すべての回答を採点する
+          </button>
+          <button type="button" id="btn-table-scroll-right" class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 shadow-2xs">
+            右へスクロール →
+          </button>
+        </div>
+
+        <!-- 回答入力用モーダル / ポップオーバー コンテナ -->
+        <div id="table-cell-modal-container"></div>
+
+      </div>
+    `;
+
+    // イベント登録
+    container.querySelector('#btn-abort-table-test')?.addEventListener('click', () => {
+      if (confirm('表テストを中断して文法まとめに戻りますか？（入力途中の回答は破棄されます）')) {
+        this.state.view = 'guide';
+        this.renderGuide();
+      }
+    });
+
+    const submitCheck = () => {
+      this.checkTableAnswers();
+    };
+
+    container.querySelector('#btn-submit-table-check')?.addEventListener('click', submitCheck);
+    container.querySelector('#btn-submit-table-check-bottom')?.addEventListener('click', submitCheck);
+
+    // スクロールボタン
+    const tableScrollBox = container.querySelector('.overflow-x-auto');
+    container.querySelector('#btn-table-scroll-left')?.addEventListener('click', () => {
+      tableScrollBox.scrollBy({ left: -300, behavior: 'smooth' });
+    });
+    container.querySelector('#btn-table-scroll-right')?.addEventListener('click', () => {
+      tableScrollBox.scrollBy({ left: 300, behavior: 'smooth' });
+    });
+
+    // セルクリックで回答モーダルを開く
+    container.querySelectorAll('.interactive-quiz-cell').forEach(cellEl => {
+      cellEl.addEventListener('click', () => {
+        const key = cellEl.dataset.key;
+        const gnum = parseInt(cellEl.dataset.num, 10);
+        const rkey = cellEl.dataset.row;
+        this.openCellAnswerModal(gnum, rkey, key);
+      });
+    });
+  }
+
+  // --- 5.4 セル回答用モーダル表示 (選択式・入力式両対応) ---
+  static openCellAnswerModal(grammarNum, rowKey, cellKey) {
+    const tState = this.state.tableQuiz;
+    const cell = tState.cells[cellKey];
+    if (!cell || cell.isNotApplicable) return;
+
+    tState.activeCell = { grammarNum, rowKey, key: cellKey };
+
+    const modalBox = this.container.querySelector('#table-cell-modal-container');
+    if (!modalBox) return;
+
+    const isChoice = tState.answeringMode === 'choice';
+
+    // 選択式の場合：正解＋同属性の他文法からダミー選択肢3つを生成
+    let options = [];
+    if (isChoice) {
+      options = this.generateChoiceOptions(grammarNum, rowKey, cell.correctVal);
+    }
+
+    // キリル文字パレット
+    const cyrLetters = ['ө', 'ү', 'н', 'г', 'р', 'с', 'д', 'т', 'а', 'э', 'о', 'у', 'и', 'й', 'ь', 'ъ', '-'];
+
+    modalBox.innerHTML = `
+      <div id="active-cell-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-2xs animate-fade-in">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
+          
+          <!-- モーダルヘッダー -->
+          <div class="flex items-start justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-3xl">${cell.rowIcon}</span>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded-full text-2xs font-black bg-indigo-100 text-indigo-800">No.${cell.grammarNum} ${cell.grammarTitle}</span>
+                  <span class="text-2xs font-bold text-slate-500">${isChoice ? '🔘 選択式' : '⌨️ 入力式'}</span>
+                </div>
+                <h3 class="text-base font-black text-slate-900 mt-0.5">${cell.rowLabel}</h3>
+              </div>
+            </div>
+            <button type="button" id="btn-close-cell-modal" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold flex items-center justify-center cursor-pointer transition-colors">
+              ✕
+            </button>
+          </div>
+
+          <!-- 現在の回答状況 -->
+          ${
+            cell.userAns
+              ? `
+                <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                  <div>
+                    <span class="text-slate-500 text-2xs block">現在の回答:</span>
+                    <span class="font-bold text-indigo-900 cyrillic-text">${cell.userAns}</span>
+                  </div>
+                  <button type="button" id="btn-clear-cell-ans" class="text-2xs text-rose-600 hover:text-rose-800 font-bold underline cursor-pointer">
+                    回答を消去
+                  </button>
+                </div>
+              `
+              : ''
+          }
+
+          <!-- 回答UIエリア -->
+          ${
+            isChoice
+              ? `
+                <!-- モードA：選択肢 (4択) -->
+                <div class="space-y-2">
+                  <label class="block text-xs font-bold text-slate-700">正しい答えをタップして選んでください：</label>
+                  <div class="grid grid-cols-1 gap-2.5">
+                    ${options.map((opt, idx) => `
+                      <button type="button" class="btn-cell-choice-option p-3.5 rounded-xl border-2 text-left font-bold text-xs sm:text-sm transition-all flex items-start gap-2.5 cursor-pointer ${
+                        cell.userAns === opt
+                          ? 'border-indigo-600 bg-indigo-50/80 text-indigo-950 font-black ring-2 ring-indigo-500/20'
+                          : 'border-slate-200 bg-white hover:border-indigo-400 hover:bg-indigo-50/30 text-slate-800'
+                      }" data-val="${opt.replace(/"/g, '&quot;')}">
+                        <span class="w-5 h-5 rounded-md bg-slate-100 text-slate-600 font-black text-2xs flex items-center justify-center shrink-0 mt-0.5">${idx + 1}</span>
+                        <span class="cyrillic-text leading-snug break-words">${opt}</span>
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+              `
+              : `
+                <!-- モードB：キーボード入力 ＆ キリル文字パレット -->
+                <div class="space-y-3">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">答えを入力してください（Enterで確定）：</label>
+                    <input type="text" id="input-cell-answer" class="w-full p-3.5 rounded-xl border-2 border-indigo-300 focus:border-indigo-600 focus:outline-hidden text-sm sm:text-base font-black text-slate-900 cyrillic-text bg-white shadow-2xs" placeholder="例: -тай, -на, надад..." value="${cell.userAns.replace(/"/g, '&quot;')}" autofocus autocomplete="off">
+                  </div>
+
+                  <!-- キリル文字入力アシスタントパレット -->
+                  <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                    <span class="text-3xs font-bold text-slate-500 uppercase tracking-wider block">キリル文字パレット（タップで入力）</span>
+                    <div class="flex flex-wrap gap-1.5">
+                      ${cyrLetters.map(ch => `
+                        <button type="button" class="btn-cyr-cell-letter w-7 h-7 rounded-lg bg-white hover:bg-indigo-100 border border-slate-200 font-black text-xs text-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95" data-char="${ch}">
+                          ${ch}
+                        </button>
+                      `).join('')}
+                    </div>
+                  </div>
+
+                  <button type="button" id="btn-submit-input-answer" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer">
+                    入力した答えをセルに反映する（Enter）
+                  </button>
+                </div>
+              `
+          }
+
+        </div>
+      </div>
+    `;
+
+    // モーダルを閉じる処理
+    const closeModal = () => {
+      modalBox.innerHTML = '';
+      tState.activeCell = null;
+    };
+
+    modalBox.querySelector('#btn-close-cell-modal')?.addEventListener('click', closeModal);
+    modalBox.querySelector('#active-cell-modal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'active-cell-modal') closeModal();
+    });
+
+    // 回答消去ボタン
+    modalBox.querySelector('#btn-clear-cell-ans')?.addEventListener('click', () => {
+      this.submitCellAnswer(grammarNum, rowKey, '');
+      closeModal();
+    });
+
+    // 選択肢クリック処理
+    if (isChoice) {
+      modalBox.querySelectorAll('.btn-cell-choice-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const val = btn.dataset.val;
+          this.submitCellAnswer(grammarNum, rowKey, val);
+          closeModal();
+        });
+      });
+    } else {
+      // 入力式処理
+      const inputEl = modalBox.querySelector('#input-cell-answer');
+      const submitBtn = modalBox.querySelector('#btn-submit-input-answer');
+
+      const doSubmit = () => {
+        if (!inputEl) return;
+        const val = inputEl.value.trim();
+        this.submitCellAnswer(grammarNum, rowKey, val);
+        closeModal();
+      };
+
+      submitBtn?.addEventListener('click', doSubmit);
+      inputEl?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          doSubmit();
+        }
+      });
+
+      // パレット文字クリック
+      modalBox.querySelectorAll('.btn-cyr-cell-letter').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!inputEl) return;
+          const char = btn.dataset.char;
+          inputEl.value += char;
+          inputEl.focus();
+        });
+      });
+    }
+  }
+
+  // --- 5.5 セル回答の反映 ---
+  static submitCellAnswer(grammarNum, rowKey, answer) {
+    const tState = this.state.tableQuiz;
+    const key = `${grammarNum}_${rowKey}`;
+    if (!tState.cells[key]) return;
+
+    tState.cells[key].userAns = answer;
+    this.renderTableTesting();
+  }
+
+  // --- 選択肢生成ヘルパー ---
+  static generateChoiceOptions(grammarNum, rowKey, correctVal) {
+    const allData = (typeof GRAMMAR_MATRIX_DATA !== 'undefined' ? GRAMMAR_MATRIX_DATA : []);
+    
+    // 他の文法から同じ属性の値を取得
+    let candidates = allData
+      .filter(g => g.num !== grammarNum && g.attributes && g.attributes[rowKey] && g.attributes[rowKey] !== '×')
+      .map(g => g.attributes[rowKey]);
+
+    // 重複を排除し、正解と異なるものを抽出
+    candidates = Array.from(new Set(candidates)).filter(val => val !== correctVal);
+
+    // シャッフルして3つ取得
+    candidates = shuffleArray(candidates).slice(0, 3);
+
+    // 4択にまとめる
+    const options = [correctVal, ...candidates];
+    return shuffleArray(options);
+  }
+
+  // --- 5.6 答え合わせ・採点処理 ---
+  static checkTableAnswers() {
+    const tState = this.state.tableQuiz;
+    let correctCount = 0;
+    let totalCount = 0;
+
+    Object.values(tState.cells || {}).forEach(cell => {
+      if (cell.isNotApplicable) return;
+      totalCount++;
+
+      const isCorr = this.isCellAnswerCorrect(cell.userAns, cell.correctVal);
+      cell.isCorrect = isCorr;
+      if (isCorr) correctCount++;
+    });
+
+    tState.hasChecked = true;
+    tState.totalAnswerable = totalCount;
+    tState.correctCount = correctCount;
+    tState.score = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
+
+    // Gamification 経験値加算
+    if (typeof GamificationService !== 'undefined' && GamificationService.addXP) {
+      GamificationService.addXP(correctCount * 5);
+    }
+
+    this.state.view = 'table_result';
+    this.renderTableResult();
+  }
+
+  // --- 正誤判定ロジック (柔軟かつ厳密) ---
+  static isCellAnswerCorrect(userAns, correctVal) {
+    if (!userAns || !correctVal) return false;
+    const u = userAns.trim().toLowerCase().replace(/\s+/g, ' ');
+    const c = correctVal.trim().toLowerCase().replace(/\s+/g, ' ');
+
+    if (u === c) return true;
+
+    // スラッシュや読点で区切られた複数語尾のチェック
+    const parts = c.split(/[\/,\n、・]/).map(p => p.trim()).filter(Boolean);
+    if (parts.includes(u)) return true;
+
+    // ユーザー入力が主要な語尾や語幹変化を含んでいるか
+    for (const part of parts) {
+      if (part.length >= 2 && u.includes(part)) return true;
+    }
+
+    return false;
+  }
+
+  // --- 5.7 答え合わせ・採点結果画面 (Table Result View) ---
+  static renderTableResult() {
+    this.cleanupKeyHandler();
+    const container = this.container || document.getElementById('main-content') || document.body;
+    this.container = container;
+
+    const tState = this.state.tableQuiz;
+    const targetGrammars = tState.targetGrammars || [];
+    const targetRows = tState.targetRows || [];
+
+    const isPerfect = tState.score === 100;
+    const hasMistakes = tState.correctCount < tState.totalAnswerable;
+
+    container.innerHTML = `
+      <div class="animate-fade-in max-w-7xl mx-auto px-2 sm:px-4 py-4 space-y-4">
+        
+        <!-- 上部スコアカード -->
+        <div class="bg-gradient-to-br ${
+          isPerfect ? 'from-emerald-600 via-teal-700 to-emerald-900' : 'from-indigo-700 via-purple-700 to-slate-900'
+        } text-white rounded-3xl p-6 shadow-md space-y-4">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="text-4xl p-2.5 bg-white/10 rounded-2xl backdrop-blur-xs">${isPerfect ? '👑' : '📊'}</span>
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full text-2xs font-black bg-white/20 uppercase tracking-wider">
+                  採点完了・結果発表
+                </span>
+                <h2 class="text-xl sm:text-2xl font-black tracking-tight mt-0.5">
+                  ${isPerfect ? '全問正解！完璧な文法マスターです！' : '表完成テスト 結果発表'}
+                </h2>
+              </div>
+            </div>
+
+            <!-- スコア表示 -->
+            <div class="flex items-center gap-4 bg-white/10 p-3 rounded-2xl border border-white/10">
+              <div class="text-center px-2">
+                <span class="text-2xs font-bold text-indigo-200 block">正答率</span>
+                <span class="text-2xl sm:text-3xl font-black text-amber-300">${tState.score}%</span>
+              </div>
+              <div class="h-8 w-px bg-white/20"></div>
+              <div class="text-center px-2">
+                <span class="text-2xs font-bold text-indigo-200 block">正解数</span>
+                <span class="text-xl sm:text-2xl font-black text-white">${tState.correctCount} / ${tState.totalAnswerable}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- アクションボタン群 -->
+          <div class="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-white/10">
+            <div class="flex flex-wrap gap-2">
+              ${
+                hasMistakes
+                  ? `
+                    <button type="button" id="btn-retry-table-mistakes" class="px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-amber-950 font-black text-xs sm:text-sm rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer">
+                      <span>🔁</span> 間違えたセルだけを再挑戦する
+                    </button>
+                  `
+                  : ''
+              }
+              <button type="button" id="btn-retry-table-all" class="px-4 py-2.5 bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer">
+                🔄 もう一度最初から挑戦
+              </button>
+            </div>
+
+            <button type="button" id="btn-return-guide-from-table" class="px-4 py-2.5 bg-white text-slate-800 hover:bg-slate-100 font-black text-xs sm:text-sm rounded-xl shadow-xs transition-all cursor-pointer">
+              📖 文法まとめハンドブックへ戻る
+            </button>
+          </div>
+
+        </div>
+
+        <!-- 採点後の表（色分け：緑正解、赤不正解） -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          
+          <div class="p-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between text-xs gap-2">
+            <div class="flex items-center gap-4">
+              <span class="flex items-center gap-1.5 font-bold text-emerald-800">
+                <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-3xs font-black">✔</span>
+                正解セル（緑）
+              </span>
+              <span class="flex items-center gap-1.5 font-bold text-rose-800">
+                <span class="w-3.5 h-3.5 rounded-full bg-rose-500 text-white flex items-center justify-center text-3xs font-black">✖</span>
+                不正解セル（赤）
+              </span>
+            </div>
+            <span class="text-2xs text-slate-500">💡 セルをクリックすると【正解と詳しい解説】を確認できます</span>
+          </div>
+
+          <div class="overflow-x-auto max-h-[72vh] relative">
+            <table class="w-full text-left border-collapse min-w-[700px]">
+              
+              <!-- 表ヘッダー -->
+              <thead class="sticky top-0 z-20 bg-slate-800 text-white text-xs">
+                <tr>
+                  <th class="p-3 sticky left-0 z-30 bg-slate-900 border-r border-slate-700 font-black min-w-[180px] sm:min-w-[200px] shadow-sm">
+                    属性 \ 文法
+                  </th>
+                  ${targetGrammars.map(g => `
+                    <th class="p-3 border-r border-slate-700 font-bold text-center min-w-[150px] sm:min-w-[180px]">
+                      <div class="text-[11px] text-indigo-300 font-mono">No.${g.num}</div>
+                      <div class="font-black text-white text-xs truncate">${g.title}</div>
+                    </th>
+                  `).join('')}
+                </tr>
+              </thead>
+
+              <!-- 表ボディ -->
+              <tbody class="divide-y divide-slate-200 bg-white text-xs">
+                ${targetRows.map(row => `
+                  <tr>
+                    <!-- 左列固定：属性名 -->
+                    <td class="p-3 sticky left-0 z-10 bg-slate-50/95 border-r border-slate-200 font-bold text-slate-800 shadow-2xs min-w-[180px] sm:min-w-[200px] align-middle">
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-base">${row.icon || '📌'}</span>
+                        <span class="font-black text-xs text-slate-900">${row.label}</span>
+                      </div>
+                    </td>
+
+                    <!-- セル採点結果 -->
+                    ${targetGrammars.map(g => {
+                      const key = `${g.num}_${row.key}`;
+                      const cell = tState.cells[key] || {};
+
+                      if (cell.isNotApplicable) {
+                        return `
+                          <td class="p-2 border-r border-slate-100 bg-slate-100/40 text-slate-300 text-center select-none min-w-[150px] sm:min-w-[180px] align-middle">
+                            <span class="text-xs font-mono">-</span>
+                          </td>
+                        `;
+                      }
+
+                      const isCorr = cell.isCorrect;
+                      const cellClasses = isCorr
+                        ? 'bg-emerald-50/80 border-r border-emerald-200 text-emerald-950 hover:bg-emerald-100/90 '
+                        : 'bg-rose-50/80 border-r border-rose-200 text-rose-950 hover:bg-rose-100/90 ';
+
+                      return `
+                        <td class="result-detail-cell cursor-pointer transition-colors p-2.5 min-w-[150px] sm:min-w-[180px] align-top ${cellClasses}" data-key="${key}">
+                          <div class="flex flex-col justify-between h-full min-h-[68px] space-y-1">
+                            <div class="flex items-center justify-between">
+                              <span class="text-2xs font-black px-1.5 py-0.2 rounded-md ${
+                                isCorr ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'
+                              }">
+                                ${isCorr ? '✔ 正解' : '✖ 不正解'}
+                              </span>
+                              <span class="text-3xs text-slate-400 font-bold">解説 ℹ️</span>
+                            </div>
+
+                            <div class="text-[11px] font-bold cyrillic-text line-clamp-2 ${
+                              isCorr ? 'text-emerald-900' : 'text-rose-900 line-through'
+                            }">
+                              ${cell.userAns || '（未回答）'}
+                            </div>
+
+                            ${
+                              !isCorr
+                                ? `
+                                  <div class="text-3xs font-black text-emerald-700 bg-white/70 px-1.5 py-0.5 rounded-md cyrillic-text line-clamp-1 border border-emerald-200">
+                                    正解: ${cell.correctVal}
+                                  </div>
+                                `
+                                : ''
+                            }
+                          </div>
+                        </td>
+                      `;
+                    }).join('')}
+
+                  </tr>
+                `).join('')}
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+
+        <!-- 採点結果セル詳細モーダル コンテナ -->
+        <div id="result-cell-modal-container"></div>
+
+      </div>
+    `;
+
+    // イベント登録
+    container.querySelector('#btn-retry-table-mistakes')?.addEventListener('click', () => {
+      this.retryTableMistakes();
+    });
+
+    container.querySelector('#btn-retry-table-all')?.addEventListener('click', () => {
+      this.prepareTableTesting();
+    });
+
+    container.querySelector('#btn-return-guide-from-table')?.addEventListener('click', () => {
+      this.state.view = 'guide';
+      this.renderGuide();
+    });
+
+    // 結果セルクリックで解説モーダル表示
+    container.querySelectorAll('.result-detail-cell').forEach(cellEl => {
+      cellEl.addEventListener('click', () => {
+        const key = cellEl.dataset.key;
+        this.openResultCellModal(key);
+      });
+    });
+  }
+
+  // --- 5.8 採点結果セル詳細モーダル ---
+  static openResultCellModal(cellKey) {
+    const tState = this.state.tableQuiz;
+    const cell = tState.cells[cellKey];
+    if (!cell) return;
+
+    const modalBox = this.container.querySelector('#result-cell-modal-container');
+    if (!modalBox) return;
+
+    modalBox.innerHTML = `
+      <div id="result-modal-backdrop" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-2xs animate-fade-in">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
+          
+          <div class="flex items-start justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-3xl">${cell.rowIcon}</span>
+              <div>
+                <span class="px-2 py-0.5 rounded-full text-2xs font-black bg-indigo-100 text-indigo-800">
+                  No.${cell.grammarNum} ${cell.grammarTitle}
+                </span>
+                <h3 class="text-base font-black text-slate-900 mt-0.5">${cell.rowLabel}</h3>
+              </div>
+            </div>
+            <button type="button" id="btn-close-result-modal" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold flex items-center justify-center cursor-pointer transition-colors">
+              ✕
+            </button>
+          </div>
+
+          <!-- 正誤バッジ -->
+          <div class="p-3 rounded-2xl flex items-center justify-between ${
+            cell.isCorrect ? 'bg-emerald-50 border border-emerald-200' : 'bg-rose-50 border border-rose-200'
+          }">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${cell.isCorrect ? '🎉' : '⚠️'}</span>
+              <div>
+                <span class="font-black text-sm ${cell.isCorrect ? 'text-emerald-900' : 'text-rose-900'}">
+                  ${cell.isCorrect ? '正解しました！' : '不正解'}
+                </span>
+                <span class="text-2xs text-slate-600 block">あなたの回答: ${cell.userAns || '（空欄・未回答）'}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 正しい答え -->
+          <div class="space-y-1">
+            <span class="text-2xs font-bold text-slate-500 uppercase tracking-wider">正解・公式ルール</span>
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 font-bold text-sm text-slate-900 cyrillic-text leading-relaxed">
+              ${cell.correctVal}
+            </div>
+          </div>
+
+          <!-- 発音再生ボタン ＆ 閉じる -->
+          <div class="flex items-center justify-between pt-2">
+            <button type="button" id="btn-speak-result-cell" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer">
+              <span>🔊</span> 発音を聴く
+            </button>
+            <button type="button" id="btn-action-close-result-modal" class="px-5 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition-all cursor-pointer">
+              閉じる
+            </button>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    const close = () => {
+      modalBox.innerHTML = '';
+    };
+
+    modalBox.querySelector('#btn-close-result-modal')?.addEventListener('click', close);
+    modalBox.querySelector('#btn-action-close-result-modal')?.addEventListener('click', close);
+    modalBox.querySelector('#result-modal-backdrop')?.addEventListener('click', (e) => {
+      if (e.target.id === 'result-modal-backdrop') close();
+    });
+
+    modalBox.querySelector('#btn-speak-result-cell')?.addEventListener('click', () => {
+      const match = cell.correctVal.match(/[А-Яа-яЁёӨөҮү]+/);
+      if (match) {
+        SpeechService.speak(match[0]);
+      } else {
+        SpeechService.speak(cell.correctVal);
+      }
+    });
+  }
+
+  // --- 5.9 間違えたセルだけを再挑戦する ---
+  static retryTableMistakes() {
+    const tState = this.state.tableQuiz;
+    Object.values(tState.cells || {}).forEach(cell => {
+      if (!cell.isNotApplicable && cell.isCorrect === false) {
+        cell.userAns = '';
+        cell.isCorrect = null;
+      }
+    });
+
+    tState.hasChecked = false;
+    tState.activeCell = null;
+    this.state.view = 'table_testing';
+    this.renderTableTesting();
+  }
+
 }
 
 

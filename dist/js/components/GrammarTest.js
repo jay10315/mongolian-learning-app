@@ -17,9 +17,14 @@ export class GrammarTestComponent {
       this.activeKeyHandler = null;
     }
   }
-  // 外部から「表モード」を直接起動できるヘルパー
+  // 外部から「表モード」を直接起動できるヘルパー（表形式インタラクティブ回答モードと連動）
   static startTableMode(answeringMode = 'choice', category = 'all') {
     this.cleanupKeyHandler();
+    if (typeof ReferenceGuideComponent !== 'undefined' && ReferenceGuideComponent.startTableMode) {
+      ReferenceGuideComponent.startTableMode(answeringMode, category);
+      if (this.onNavigate) this.onNavigate('reference');
+      return;
+    }
     this.state.settings.type = 'table_matrix';
     this.state.settings.tableAnswerMode = answeringMode || 'choice';
     this.state.settings.tableCategory = category || 'all';
