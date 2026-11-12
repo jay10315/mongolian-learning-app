@@ -81,7 +81,7 @@ export class Navbar {
       { id: 'flashcards', label: 'カード', icon: '🃏' },
       { id: 'review', label: '間違い復習', icon: '🔥' },
       { id: 'materials', label: '教材登録', icon: '📚' },
-      { id: 'reference', label: '文法まとめ', icon: '📖' }
+      { id: 'reference', label: '文法まとめ・穴埋め', icon: '📖' }
     ];
 
     if (headerContainer) {

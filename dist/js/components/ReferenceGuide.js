@@ -1,13 +1,89 @@
 import { SpeechService } from '../services/speech.js';
 import { DeclensionTestComponent } from './DeclensionTest.js';
-// モンゴル語文法リファレンス・付録まとめコンポーネント（全48項目完全対応）
 import { StorageService } from '../services/storage.js';
+import { grammarClozeQuizzes, GRAMMAR_CLOZE_CATEGORIES } from '../data/grammarClozeData.js';
+import {
+  renderClickableWordsHTML,
+  showUniversalWordModal,
+  findWordInDictionary,
+  SoundEffects,
+  scrollToQuizTop,
+  shuffleArray
+} from '../utils/helpers.js';
+import { GamificationService } from '../services/gamification.js';
+import { PenguinMascot } from './PenguinMascot.js';
+
 
 export class ReferenceGuideComponent {
+  static container = null;
+  static onNavigate = null;
+  static activeKeyHandler = null;
+
+  static cleanupKeyHandler() {
+    if (this.activeKeyHandler) {
+      window.removeEventListener('keydown', this.activeKeyHandler);
+      this.activeKeyHandler = null;
+    }
+  }
+
+  static state = {
+    view: 'guide', // 'guide' | 'cloze_settings' | 'cloze_testing' | 'cloze_result'
+    selectedCategory: 'all',
+    targetGrammarNum: null,
+    targetGrammarTitle: null,
+    questionCount: 10,
+    quizzes: [],
+    currentIndex: 0,
+    currentQuiz: null,
+    hasAnswered: false,
+    selectedOption: null,
+    isCorrect: false,
+    combo: 0,
+    results: []
+  };
+
+  // 外部から直接穴埋めモードを開始できるヘルパー
+  static startClozeTest(categoryOrNum = 'all', targetTitle = null) {
+    this.cleanupKeyHandler();
+    if (typeof categoryOrNum === 'number') {
+      this.state.targetGrammarNum = categoryOrNum;
+      this.state.targetGrammarTitle = targetTitle || `No.${categoryOrNum}`;
+      this.state.selectedCategory = 'specific';
+    } else {
+      this.state.targetGrammarNum = null;
+      this.state.targetGrammarTitle = null;
+      this.state.selectedCategory = categoryOrNum || 'all';
+    }
+    this.state.view = 'cloze_settings';
+    if (this.container) {
+      this.render(this.container, this.onNavigate);
+    }
+  }
+
   static render(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+
+    if (this.state.view === 'cloze_settings') {
+      this.renderClozeSettings();
+    } else if (this.state.view === 'cloze_testing') {
+      this.renderClozeTesting();
+    } else if (this.state.view === 'cloze_result') {
+      this.renderClozeResult();
+    } else {
+      this.renderGuide();
+    }
+  }
+
+  // ==========================================
+  // 1. 文法まとめハンドブック（メイン画面）
+  // ==========================================
+  static renderGuide() {
+    this.cleanupKeyHandler();
     const grammarList = StorageService.getGrammar();
 
-    container.innerHTML = `
+    this.container.innerHTML = `
+
       <div class="animate-fade-in max-w-4xl mx-auto px-4 py-4 space-y-6">
         
         <!-- ヘッダー -->
@@ -22,6 +98,45 @@ export class ReferenceGuideComponent {
           <button type="button" id="btn-back-home" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all">
             ✕ ホームへ戻る
           </button>
+        </div>
+
+        
+        <!-- 🌟 文法まとめ穴埋め特訓モード（選択式・全48項目対応） 特設セクション -->
+        <div id="grammar-cloze-hero-section" class="bg-gradient-to-br from-emerald-600 via-teal-700 to-sky-800 text-white rounded-2xl p-5 shadow-md space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="text-3xl p-2.5 rounded-2xl bg-white/10 backdrop-blur-xs text-white shadow-inner">🎯</span>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-base sm:text-lg font-black tracking-wide">文法穴埋めテスト（選択式・全48項目）</h3>
+                  <span class="text-[11px] bg-amber-400 text-slate-900 px-2.5 py-0.5 rounded-full font-black shadow-xs">
+                    新機能・選択式
+                  </span>
+                </div>
+                <p class="text-xs text-emerald-100 font-medium mt-1">
+                  全48文法の公式・例文・語尾の使い分けを4択の穴埋めでマスター！毎回答後に詳しい解説・公式付き。
+                </p>
+              </div>
+            </div>
+            
+            <button type="button" id="btn-start-cloze-all" class="px-5 py-3 bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-900 rounded-xl text-xs sm:text-sm font-black shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer">
+              <span>🎯</span> 穴埋めテストを始める（全48項目） →
+            </button>
+          </div>
+
+          <!-- カテゴリ別クイックスタートボタン -->
+          <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-white/15 text-xs">
+            <span class="text-emerald-200 font-bold text-[11px]">範囲別で特訓:</span>
+            <button type="button" class="btn-cloze-quick-cat px-3 py-1.5 rounded-lg font-bold bg-white/15 hover:bg-white/25 text-white transition-all cursor-pointer flex items-center gap-1.5" data-cat="basic">
+              <span>🟢</span> 基礎文法・格助詞（No.1〜15）
+            </button>
+            <button type="button" class="btn-cloze-quick-cat px-3 py-1.5 rounded-lg font-bold bg-white/15 hover:bg-white/25 text-white transition-all cursor-pointer flex items-center gap-1.5" data-cat="verb_tense">
+              <span>🔵</span> 動詞の時制・活用（No.16〜30）
+            </button>
+            <button type="button" class="btn-cloze-quick-cat px-3 py-1.5 rounded-lg font-bold bg-white/15 hover:bg-white/25 text-white transition-all cursor-pointer flex items-center gap-1.5" data-cat="advanced">
+              <span>🟣</span> 応用構文・複文（No.31〜48）
+            </button>
+          </div>
         </div>
 
         <!-- 🌟 隠れн・隠れг＆重要例外マスター完全攻略欄 -->
@@ -1502,6 +1617,13 @@ export class ReferenceGuideComponent {
                       ` : ''}
                     </div>
                   ` : ''}
+                
+                  <!-- この項目の穴埋めテストへ直接挑戦するボタン -->
+                  <div class="pt-2 border-t border-slate-100 flex items-center justify-end">
+                    <button type="button" class="btn-start-single-cloze px-3.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-black text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-2xs" data-num="${g.num}" data-title="${g.title}">
+                      <span>🎯</span> No.${g.num} の穴埋め問題を解く（選択式） →
+                    </button>
+                  </div>
                 </div>
               </div>
             `).join('')}
@@ -1511,7 +1633,8 @@ export class ReferenceGuideComponent {
       </div>
     `;
 
-    // イベントリスナー設定
+    // 既存イベントリスナーの登録
+// イベントリスナー設定
     const homeBtn = container.querySelector('#btn-back-home');
     if (homeBtn) {
       homeBtn.addEventListener('click', () => {
@@ -1588,6 +1711,606 @@ export class ReferenceGuideComponent {
             card.style.display = 'none';
           }
         });
+      });
+    }
+
+    // 穴埋め特訓モードの起動イベント
+    const startAllBtn = this.container.querySelector('#btn-start-cloze-all');
+    if (startAllBtn) {
+      startAllBtn.addEventListener('click', () => {
+        this.startClozeTest('all');
+      });
+    }
+
+    this.container.querySelectorAll('.btn-cloze-quick-cat').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cat = btn.dataset.cat;
+        this.startClozeTest(cat);
+      });
+    });
+
+    this.container.querySelectorAll('.btn-start-single-cloze').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const num = parseInt(btn.dataset.num, 10);
+        const title = btn.dataset.title;
+        this.startClozeTest(num, title);
+      });
+    });
+  }
+
+  // ==========================================
+  // 2. 穴埋めモード 設定画面
+  // ==========================================
+  static renderClozeSettings() {
+    this.cleanupKeyHandler();
+    const allQuizzes = (typeof grammarClozeQuizzes !== 'undefined' && Array.isArray(grammarClozeQuizzes))
+      ? grammarClozeQuizzes
+      : (window.grammarClozeQuizzes || []);
+
+    const isSpecific = this.state.selectedCategory === 'specific' && this.state.targetGrammarNum;
+    const catLabel = isSpecific
+      ? `No.${this.state.targetGrammarNum} ${this.state.targetGrammarTitle || ''}`
+      : (GRAMMAR_CLOZE_CATEGORIES.find(c => c.id === this.state.selectedCategory)?.label || '全48文法項目（ランダム総合演習）');
+
+    // 該当する問題数を計算
+    let matchedCount = 0;
+    if (isSpecific) {
+      matchedCount = allQuizzes.filter(q => q.grammarNum === this.state.targetGrammarNum).length;
+    } else if (this.state.selectedCategory === 'all') {
+      matchedCount = allQuizzes.length;
+    } else {
+      matchedCount = allQuizzes.filter(q => q.category === this.state.selectedCategory).length;
+    }
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-5 space-y-6">
+        <!-- 上部ナビゲーション -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🎯</span>
+            <div>
+              <h2 class="text-lg font-black text-slate-800">文法穴埋めテスト（選択式）</h2>
+              <p class="text-xs text-slate-500">文法ハンドブック完全連動・選択式クイズ</p>
+            </div>
+          </div>
+          <button type="button" id="btn-cloze-back-guide" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1">
+            <span>📖</span> 文法ハンドブックに戻る
+          </button>
+        </div>
+
+        <!-- カテゴリ選択カード -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-black text-slate-800 flex items-center gap-2">
+              <span>📚</span> 出題カテゴリ・範囲
+            </h3>
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              ${matchedCount} 問利用可能
+            </span>
+          </div>
+
+          ${isSpecific ? `
+            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between">
+              <div>
+                <span class="text-xs font-black text-emerald-900 block">📌 単一文法特化モード</span>
+                <span class="text-sm font-bold text-emerald-800">${catLabel}</span>
+              </div>
+              <button type="button" id="btn-switch-to-all-cats" class="text-xs text-emerald-700 underline font-bold hover:text-emerald-900">
+                全カテゴリ選択へ戻す
+              </button>
+            </div>
+          ` : `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              ${GRAMMAR_CLOZE_CATEGORIES.map(cat => `
+                <button type="button" class="btn-select-cloze-cat p-3 rounded-xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between ${this.state.selectedCategory === cat.id ? 'border-emerald-600 bg-emerald-50/80 shadow-xs ring-2 ring-emerald-500/20' : 'border-slate-200 hover:border-slate-300 bg-white'}" data-id="${cat.id}">
+                  <div class="font-bold text-xs sm:text-sm text-slate-800">${cat.label}</div>
+                  <div class="text-[11px] text-slate-500 mt-1">${cat.desc || ''}</div>
+                </button>
+              `).join('')}
+            </div>
+          `}
+        </div>
+
+        <!-- 出題数選択 -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+          <h3 class="text-sm font-black text-slate-800 flex items-center gap-2">
+            <span>🔢</span> 出題数を選択
+          </h3>
+          <div class="flex flex-wrap items-center gap-2">
+            ${[5, 10, 20, 50, 'all'].map(cnt => `
+              <button type="button" class="btn-cloze-count px-4 py-2 rounded-xl text-xs font-black border transition-all cursor-pointer ${this.state.questionCount === cnt ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'}" data-count="${cnt}">
+                ${cnt === 'all' ? '全問' : cnt + '問'}
+              </button>
+            `).join('')}
+            
+            <!-- 手入力ボックス -->
+            <div class="flex items-center gap-1.5 ml-auto">
+              <span class="text-xs font-bold text-slate-500">指定:</span>
+              <input type="number" id="input-cloze-custom-count" min="1" max="${matchedCount || 100}" value="${typeof this.state.questionCount === 'number' ? this.state.questionCount : 10}" class="w-16 px-2 py-1.5 text-xs text-center font-bold border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+              <span class="text-xs text-slate-500">問</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- テスト開始ボタン -->
+        <div class="pt-2">
+          <button type="button" id="btn-start-cloze-quiz-now" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-98 text-white rounded-xl text-sm font-black shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span>🎯</span> 穴埋めテストを開始する（選択式） →
+          </button>
+        </div>
+      </div>
+    `;
+
+    // イベントリスナー
+    const backBtn = this.container.querySelector('#btn-cloze-back-guide');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
+        this.state.view = 'guide';
+        this.renderGuide();
+      });
+    }
+
+    const switchAllBtn = this.container.querySelector('#btn-switch-to-all-cats');
+    if (switchAllBtn) {
+      switchAllBtn.addEventListener('click', () => {
+        this.state.selectedCategory = 'all';
+        this.state.targetGrammarNum = null;
+        this.renderClozeSettings();
+      });
+    }
+
+    this.container.querySelectorAll('.btn-select-cloze-cat').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.selectedCategory = btn.dataset.id;
+        this.renderClozeSettings();
+      });
+    });
+
+    this.container.querySelectorAll('.btn-cloze-count').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const c = btn.dataset.count;
+        this.state.questionCount = c === 'all' ? 'all' : parseInt(c, 10);
+        this.renderClozeSettings();
+      });
+    });
+
+    const customInput = this.container.querySelector('#input-cloze-custom-count');
+    if (customInput) {
+      customInput.addEventListener('change', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (val > 0) {
+          this.state.questionCount = val;
+          this.container.querySelectorAll('.btn-cloze-count').forEach(b => {
+            b.className = 'btn-cloze-count px-4 py-2 rounded-xl text-xs font-black border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100';
+          });
+        }
+      });
+    }
+
+    const startBtn = this.container.querySelector('#btn-start-cloze-quiz-now');
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        this.prepareClozeTesting();
+      });
+    }
+  }
+
+  // ==========================================
+  // テスト開始前準備
+  // ==========================================
+  static prepareClozeTesting() {
+    const allQuizzes = (typeof grammarClozeQuizzes !== 'undefined' && Array.isArray(grammarClozeQuizzes))
+      ? grammarClozeQuizzes
+      : (window.grammarClozeQuizzes || []);
+
+    let pool = [];
+    if (this.state.selectedCategory === 'specific' && this.state.targetGrammarNum) {
+      pool = allQuizzes.filter(q => q.grammarNum === this.state.targetGrammarNum);
+    } else if (this.state.selectedCategory === 'all') {
+      pool = [...allQuizzes];
+    } else {
+      pool = allQuizzes.filter(q => q.category === this.state.selectedCategory);
+    }
+
+    if (!pool.length) pool = [...allQuizzes];
+
+    pool = shuffleArray(pool);
+    const count = this.state.questionCount === 'all' ? pool.length : Math.min(pool.length, this.state.questionCount || 10);
+    this.state.quizzes = pool.slice(0, count);
+    this.state.currentIndex = 0;
+    this.state.results = [];
+    this.state.combo = 0;
+    this.state.view = 'cloze_testing';
+
+    this.renderClozeTesting();
+  }
+
+  // ==========================================
+  // 3. 穴埋めモード テスト実行画面
+  // ==========================================
+  static renderClozeTesting() {
+    this.cleanupKeyHandler();
+    const q = this.state.quizzes[this.state.currentIndex];
+    this.state.currentQuiz = q;
+    this.state.hasAnswered = false;
+    this.state.selectedOption = null;
+
+    const total = this.state.quizzes.length;
+    const current = this.state.currentIndex + 1;
+    const progressPct = Math.round((current / total) * 100);
+
+    // 穴埋め部分（_____）を目立たせるHTML
+    const questionHighlightedHTML = q.question.replace(/_(2,)/g, '<span class="inline-block px-3 py-0.5 mx-1 bg-amber-100 text-amber-900 border-b-4 border-amber-500 font-extrabold rounded-md shadow-2xs">______</span>');
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-4 space-y-4">
+        <!-- 上部バー（進捗・文法項目バッジ・コンボ・中断ボタン） -->
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-black text-[11px] shadow-2xs">
+              問 ${current} / ${total}
+            </span>
+            <span class="text-xs font-bold text-slate-600 hidden sm:inline-block">
+              📖 ${q.grammarRef || q.grammarTitle}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            ${this.state.combo >= 2 ? `
+              <span class="px-2.5 py-0.5 rounded-full bg-amber-500 text-white font-black text-[11px] animate-pulse shadow-xs">
+                🔥 ${this.state.combo}連続正解!
+              </span>
+            ` : ''}
+            <button type="button" id="btn-cloze-abort" class="text-slate-400 hover:text-rose-600 text-xs font-bold transition-colors cursor-pointer">
+              ✕ 中断
+            </button>
+          </div>
+        </div>
+
+        <!-- プログレスバー -->
+        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden shadow-inner">
+          <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full transition-all duration-300" style="width: ${progressPct}%"></div>
+        </div>
+
+        <!-- 問題カード -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md space-y-4 text-center">
+          <div class="inline-block px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200">
+            空欄に当てはまる最も適切な選択肢を選んでください
+          </div>
+
+          <!-- モンゴル語問題文 -->
+          <div class="text-xl sm:text-2xl font-black text-slate-900 cyrillic-text leading-relaxed tracking-wide pt-2">
+            ${questionHighlightedHTML}
+          </div>
+
+          <!-- 日本語訳 -->
+          <div class="text-sm font-bold text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100">
+            ${q.questionJa}
+          </div>
+
+          <!-- 単語タップ辞書ヒント -->
+          <div class="text-[11px] text-slate-400 flex items-center justify-center gap-1">
+            <span>💡</span> 単語をタップすると和訳を確認できます
+          </div>
+        </div>
+
+        <!-- 4択選択肢ボタン -->
+        <div id="cloze-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          ${q.options.map((opt, idx) => `
+            <button type="button" class="btn-cloze-option w-full p-4 rounded-xl border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 bg-white text-slate-900 font-black text-base sm:text-lg cyrillic-text transition-all active:scale-98 shadow-xs flex items-center justify-between cursor-pointer group" data-option="${opt}">
+              <span class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-slate-100 group-hover:bg-emerald-600 group-hover:text-white text-slate-600 font-bold text-xs flex items-center justify-center transition-colors">
+                  ${idx + 1}
+                </span>
+                <span class="opt-text">${opt}</span>
+              </span>
+              <span class="text-xs text-slate-400 group-hover:text-emerald-600 transition-colors">➔</span>
+            </button>
+          `).join('')}
+        </div>
+
+        <!-- 回答後解説コンテナ（回答後に即座に展開） -->
+        <div id="cloze-explanation-container" class="hidden animate-fade-in space-y-4"></div>
+      </div>
+    `;
+
+    // 単語タップ辞書イベント
+    this.container.querySelectorAll('.cyrillic-text').forEach(el => {
+      const words = el.innerText.split(/\s+/);
+      // 単語タップ可能にするため内部処理
+      el.addEventListener('click', (e) => {
+        const clickedWord = window.getSelection().toString().trim();
+        if (clickedWord) {
+          const info = findWordInDictionary(clickedWord);
+          if (info) {
+            showUniversalWordModal({ wordInfo: info, onNavigate: this.onNavigate });
+          }
+        }
+      });
+    });
+
+    // 中断ボタン
+    const abortBtn = this.container.querySelector('#btn-cloze-abort');
+    if (abortBtn) {
+      abortBtn.addEventListener('click', () => {
+        if (confirm('穴埋めテストを中断して文法まとめに戻りますか？')) {
+          this.state.view = 'guide';
+          this.renderGuide();
+        }
+      });
+    }
+
+    // 選択肢ボタンイベント
+    this.container.querySelectorAll('.btn-cloze-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (this.state.hasAnswered) return;
+        const opt = btn.dataset.option;
+        this.handleClozeAnswer(opt);
+      });
+    });
+
+    // キーボードショートカット (1-4)
+    this.activeKeyHandler = (e) => {
+      if (this.state.hasAnswered) {
+        if (e.key === 'Enter') {
+          const nextBtn = document.getElementById('btn-cloze-next');
+          if (nextBtn) nextBtn.click();
+        }
+        return;
+      }
+      if (['1', '2', '3', '4'].includes(e.key)) {
+        const idx = parseInt(e.key, 10) - 1;
+        const btns = this.container.querySelectorAll('.btn-cloze-option');
+        if (btns[idx]) btns[idx].click();
+      }
+    };
+    window.addEventListener('keydown', this.activeKeyHandler);
+  }
+
+  // ==========================================
+  // 回答処理 ＆ 詳しい解説の即時表示
+  // ==========================================
+  static handleClozeAnswer(chosenOption) {
+    this.state.hasAnswered = true;
+    this.state.selectedOption = chosenOption;
+    const q = this.state.currentQuiz;
+    const isCorrect = (chosenOption === q.answer);
+    this.state.isCorrect = isCorrect;
+
+    if (isCorrect) {
+      this.state.combo += 1;
+      GamificationService.addXP(10);
+      try { SoundEffects.play('correct'); } catch (e) {}
+    } else {
+      this.state.combo = 0;
+      try { SoundEffects.play('incorrect'); } catch (e) {}
+      // 要復習・忘却曲線へ自動記録
+      StorageService.recordMistake({
+        type: 'grammar_cloze',
+        question: q.question,
+        questionJa: q.questionJa,
+        userAnswer: chosenOption,
+        correctAnswer: q.answer,
+        grammarNum: q.grammarNum,
+        grammarTitle: q.grammarTitle,
+        explanation: q.explanation
+      });
+    }
+
+    this.state.results.push({
+      quiz: q,
+      chosenOption,
+      isCorrect
+    });
+
+    // 選択肢ボタンのスタイル更新
+    const optionBtns = this.container.querySelectorAll('.btn-cloze-option');
+    optionBtns.forEach(btn => {
+      const opt = btn.dataset.option;
+      btn.classList.remove('hover:border-emerald-500', 'hover:bg-emerald-50/50', 'active:scale-98');
+      if (opt === q.answer) {
+        btn.className = 'btn-cloze-option w-full p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-950 font-black text-base sm:text-lg cyrillic-text shadow-sm flex items-center justify-between';
+      } else if (opt === chosenOption && !isCorrect) {
+        btn.className = 'btn-cloze-option w-full p-4 rounded-xl border-2 border-rose-400 bg-rose-50 text-rose-950 font-black text-base sm:text-lg cyrillic-text shadow-xs flex items-center justify-between';
+      } else {
+        btn.className = 'btn-cloze-option w-full p-4 rounded-xl border-2 border-slate-100 bg-slate-50/60 text-slate-400 font-bold text-base sm:text-lg cyrillic-text flex items-center justify-between opacity-60';
+      }
+    });
+
+    // 詳しい解説カードの展開
+    const expContainer = this.container.querySelector('#cloze-explanation-container');
+    if (expContainer) {
+      expContainer.classList.remove('hidden');
+      const isLast = (this.state.currentIndex + 1 >= this.state.quizzes.length);
+
+      expContainer.innerHTML = `
+        <div class="rounded-2xl p-5 border-2 ${isCorrect ? 'border-emerald-400 bg-emerald-50/70' : 'border-amber-400 bg-amber-50/70'} shadow-md space-y-4">
+          <!-- 正誤判定バッジ ＆ 発音ボタン -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${isCorrect ? '🎉' : '⚠️'}</span>
+              <div>
+                <span class="text-sm font-black ${isCorrect ? 'text-emerald-900' : 'text-amber-900'}">
+                  ${isCorrect ? '正解！ та зөв хариуллаа' : 'おしい！ зөв хариулт биш байна'}
+                </span>
+                <span class="text-xs text-slate-600 block">
+                  正解: <strong class="text-slate-900 text-sm cyrillic-text font-black">${q.answer}</strong> ${q.pronunciation ? `[${q.pronunciation}]` : ''}
+                </span>
+              </div>
+            </div>
+
+            <button type="button" id="btn-cloze-speak-answer" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer">
+              <span>🔊</span> 発音を聴く
+            </button>
+          </div>
+
+          <!-- 📌 【文法公式・接続ルール】 -->
+          <div class="bg-white/90 rounded-xl p-3.5 border border-slate-200/80 space-y-1.5 text-xs">
+            <div class="font-black text-slate-800 flex items-center gap-1.5 text-xs sm:text-sm">
+              <span>📌</span> 公式・ルールポイント
+            </div>
+            <div class="text-slate-700 font-bold leading-relaxed">
+              ${q.rulePoint}
+            </div>
+          </div>
+
+          <!-- 💡 【詳しい文法解説】 -->
+          <div class="bg-white/90 rounded-xl p-3.5 border border-slate-200/80 space-y-1.5 text-xs">
+            <div class="font-black text-slate-800 flex items-center gap-1.5 text-xs sm:text-sm">
+              <span>💡</span> 詳しい文法解説
+            </div>
+            <div class="text-slate-700 leading-relaxed">
+              ${q.explanation}
+            </div>
+          </div>
+
+          <!-- 📖 文法まとめへのリファレンス -->
+          <div class="text-[11px] text-slate-500 flex items-center justify-between pt-1">
+            <span>📖 文法ハンドブック: <strong>${q.grammarRef}</strong></span>
+            <span class="text-slate-400">Enterキーでも次へ進めます</span>
+          </div>
+
+          <!-- 次の問題へボタン -->
+          <button type="button" id="btn-cloze-next" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 active:scale-98 text-white rounded-xl text-sm font-black shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span>${isLast ? '結果を見る' : '次の問題へ'}</span> ➔
+          </button>
+        </div>
+      `;
+
+      // 発音再生イベント
+      const speakBtn = expContainer.querySelector('#btn-cloze-speak-answer');
+      if (speakBtn) {
+        speakBtn.addEventListener('click', () => {
+          SpeechService.speak(q.answer.replace(/^-/, ''));
+        });
+      }
+
+      // 次へ進むボタン
+      const nextBtn = expContainer.querySelector('#btn-cloze-next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (isLast) {
+            this.state.view = 'cloze_result';
+            this.renderClozeResult();
+          } else {
+            this.state.currentIndex += 1;
+            this.renderClozeTesting();
+            scrollToQuizTop();
+          }
+        });
+      }
+
+      // 解説カードまでスクロール
+      expContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  // ==========================================
+  // 4. 穴埋めモード 結果画面
+  // ==========================================
+  static renderClozeResult() {
+    this.cleanupKeyHandler();
+    const total = this.state.results.length;
+    const correctCount = this.state.results.filter(r => r.isCorrect).length;
+    const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+    const earnedXp = correctCount * 10;
+
+    const mistakes = this.state.results.filter(r => !r.isCorrect);
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-6 space-y-6">
+        <!-- スコアカード -->
+        <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-3xl p-6 sm:p-8 text-center shadow-lg space-y-4">
+          <div class="text-4xl sm:text-5xl animate-bounce">
+            ${accuracy >= 80 ? '🎉' : (accuracy >= 50 ? '👍' : '💪')}
+          </div>
+          <div>
+            <h2 class="text-xl sm:text-2xl font-black">文法穴埋めテスト 完了！</h2>
+            <p class="text-xs sm:text-sm text-emerald-100 mt-1">
+              ${accuracy >= 80 ? '素晴らしい！文法公式がしっかり定着しています！' : 'お疲れ様でした！間違えた問題は要復習ノートに自動保存されました。'}
+            </p>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 max-w-md mx-auto pt-2">
+            <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-white/20">
+              <div class="text-[11px] text-emerald-100 font-bold">正解数</div>
+              <div class="text-lg sm:text-xl font-black">${correctCount} / ${total}</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-white/20">
+              <div class="text-[11px] text-emerald-100 font-bold">正解率</div>
+              <div class="text-lg sm:text-xl font-black">${accuracy}%</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-white/20">
+              <div class="text-[11px] text-emerald-100 font-bold">獲得XP</div>
+              <div class="text-lg sm:text-xl font-black">+${earnedXp}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 不正解問題の復習リスト -->
+        ${mistakes.length > 0 ? `
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+            <h3 class="text-sm font-black text-rose-800 flex items-center gap-2">
+              <span>⚠️</span> 要復習問題（${mistakes.length}問）
+            </h3>
+            <div class="space-y-3">
+              ${mistakes.map(m => `
+                <div class="p-3.5 bg-rose-50/50 rounded-xl border border-rose-200/80 space-y-2 text-xs">
+                  <div class="flex items-center justify-between text-[11px] text-slate-500">
+                    <span class="font-bold text-rose-700">📖 ${m.quiz.grammarRef}</span>
+                    <span>あなたの回答: <strong class="text-rose-600">${m.chosenOption}</strong></span>
+                  </div>
+                  <div class="font-black text-sm text-slate-800 cyrillic-text">
+                    ${m.quiz.question}
+                  </div>
+                  <div class="text-slate-600 font-bold">
+                    ${m.quiz.questionJa}
+                  </div>
+                  <div class="p-2.5 bg-white rounded-lg border border-rose-100 space-y-1">
+                    <div class="text-emerald-800 font-black">
+                      正解: ${m.quiz.answer} ${m.quiz.pronunciation ? `[${m.quiz.pronunciation}]` : ''}
+                    </div>
+                    <div class="text-slate-700 text-[11px]">
+                      ${m.quiz.explanation}
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : `
+          <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-200 text-center space-y-1">
+            <div class="text-xl">🏆 全問正解達成！</div>
+            <p class="text-xs text-emerald-800 font-bold">パーフェクトです！文法理解は完璧です！</p>
+          </div>
+        `}
+
+        <!-- アクションボタン -->
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button type="button" id="btn-cloze-retry" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white rounded-xl text-xs sm:text-sm font-black shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span>🔄</span> もう一度挑戦する
+          </button>
+          <button type="button" id="btn-cloze-return-guide" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 active:scale-98 text-slate-800 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 cursor-pointer border border-slate-200">
+            <span>📖</span> 文法ハンドブック一覧へ戻る
+          </button>
+        </div>
+      </div>
+    `;
+
+    // イベントリスナー
+    const retryBtn = this.container.querySelector('#btn-cloze-retry');
+    if (retryBtn) {
+      retryBtn.addEventListener('click', () => {
+        this.prepareClozeTesting();
+      });
+    }
+
+    const returnBtn = this.container.querySelector('#btn-cloze-return-guide');
+    if (returnBtn) {
+      returnBtn.addEventListener('click', () => {
+        this.state.view = 'guide';
+        this.renderGuide();
       });
     }
   }

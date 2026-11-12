@@ -525,6 +525,30 @@ export class HomeComponent {
               </div>
             </div>
 
+            <!-- 文法まとめ＆穴埋めモード -->
+            <div class="bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-cyan-500/10 rounded-xl p-5 border-2 border-emerald-400 hover:border-emerald-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="reference">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    📖
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
+                    🎯 穴埋め特訓対応
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-emerald-700 transition-colors flex items-center gap-1.5">
+                  文法まとめ・穴埋めモード
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  全48項目の公式ハンドブック解説 ＆ 選択式4択の「文法穴埋めテスト」を収録！毎回答後に詳しい解説付き。
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-emerald-200/60 flex items-center justify-between text-xs font-black text-emerald-700">
+                <span>まとめ・穴埋めを開く</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- 格変化・動詞活用テスト -->
             <div class="bg-white rounded-xl p-5 border border-slate-200 hover:border-amber-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="declension_test">
               <div>
