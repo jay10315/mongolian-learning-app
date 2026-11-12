@@ -106926,7 +106926,7 @@ const initialGrammar = [
       "assimilation": "語末が ь の場合、ь は и に変化して -ийн が接続する（例：хууль ➔ хуулийн）",
       "dropVowel": "2音節目の単母音（弱母音）は語尾接続時に脱落する（例：орон ➔ орны, нөхөр ➔ нөхрийн）"
     },
-    "notes": "語末の音（子音・単母音・長母音）によって -ын/-ийн/-ы/-ий/-н の使い分けが必要です。",
+    "notes": "語末の音によって使い分けます。\n【重要法則①: 語末のнと隠れг】歯茎鼻音（通常のn: он, хүн）は隠れгが出ず -ы/-ий（оны, хүний）。口の奥で鳴る軟口蓋鼻音（ng: сан, байшин）は隠れгが現れて -гийн（сангийн, байшингийн）になります。\n【重要法則②: 長母音名詞】人・親族・固有名詞（дүү, хүү, Токио）は〈г〉が入り -гийн（дүүгийн, Токиогийн）。物・場所・概念（ширээ, хөдөө, санаа）は隠れ〈н〉が入り -ний/-ны（ширээний, хөдөөний, санааны）になります。\n【重要法則③: 古語由来の隠れн 3大分類】自然・物質（ус, мод, нар, цас, чулуу）、身体（нүд, чих, шүд, гар）、道具・生活（хувцас, гэр, утас）は格語尾接続時に隠れн（-ны/-ний）が現れます。", 
     "forKids": "「だれのもの？」を教えてくれる「〜の」の言葉だよ！",
     "examples": {
       "affirmative": {
@@ -107014,7 +107014,7 @@ const initialGrammar = [
       "assimilation": "語末が ь の場合、ь は и に変化して -ид / -нд となる（例：морь ➔ моринд）",
       "dropVowel": "2音節目の単母音は通常保持されるが、一部の語幹で語尾接続に伴う調整が起こる"
     },
-    "notes": "語末が г, р, с で終わる名詞には「-т」が接続します（例: цэцэрлэг → цэцэрлэгт, өвөр → өвөрт, улс → улсад/улст）。また潜在Н名詞には「-нд」が付きます（例: уул → ууланд, ширээ → ширээнд）。語幹末尾の子音や母音脱落に伴う変化に注意してください。",
+    "notes": "語末が г, р, с で終わる名詞には「-т」が接続します（例: цэцэрлэг → цэцэрлэгт, өвөр → өвөрт, улс → улсад/улст）。また潜在Н名詞には「-нд」が付きます（例: уул → ууланд, ширээ → ширээнд）。語幹末尾の子音や母音脱落に伴う変化に注意してください。\n\n【📅 時間・日付・期間における与位格（-д/-т）の要否5大対比】\n⭕ 与位格が要る（-д/-т をつける）: ① - сар（ирэх сард） ② - долоо хоног（энэ долоо хоногт） ③ 年月日（2-р сард, 9-р сарын нэгэнд, 2014 онд） ④ - гараг（даваа гарагт） ⑤ 頻度・割合（өдөрт 3 удаа, 2 жилд нэг удаа, 1 сард 4 удаа）\n❌ 与位格が要らない（助詞不要・そのまま置く）: ① - жил（ирэх жил, энэ жил） ② - хэддэх өдөр（нэгдэх өдөр, хагас сайн өдөр） ③ 日常時称（өчигдөр, өнөөдөр, маргааш, өглөө, орой, үдээс өмнө/хойш） ④ - дараа / - өмнө（2 жилийн дараа, 1 сарын өмнө） ⑤ 期間（2 жил, 2 сар, 2 хоног, 3 өдөр）。" ,
     "forKids": "「どこどこに」「だれだれに」って、目じるしを指さす言葉だよ！",
     "examples": {
       "affirmative": {
@@ -113551,7 +113551,7 @@ const GRAMMAR_MATRIX_DATA = [
       "c9": "д ж з с т х ц ч ш: ах→ахын, хот→хотын。ж ч ш は -ийн: ээж→ээжийн, эмч→эмчийн, багш→багшийн。с д の一部は -ны: ус→усны, мод→модны",
       "hidden_g": "хүү→хүүгийн, эмээ→эмээгийн",
       "hidden_n": "ширээ→ширээний",
-      "exceptions": "代名詞: миний чиний түүний таны бидний тэдний",
+      "exceptions": "【語末нと隠れг】通常n(он)は-ы(оны)、口奥ng(сан, байшин)は-гийн(сангийн, байшингийн)！【長母音名詞】人・親族・固有名詞(дүү, хүү, Токио)は-гийн、物・場所・概念(ширээ, хөдөө, санаа)は-ний！【古語隠れн 3大分類】自然(ус, мод, нар, цас)、身体(нүд, чих, шүд, гар)、道具(хувцас, гэр, утас)は-ны/-ний！代名詞: миний, чиний, түүний/тэрний, таны, бидний, тэдний", 
       "dropped_vowels": "газар→газрын, ажил→ажлын, хүүхэд→хүүхдийн, цэцэг→цэцгийн",
       "attach_verb_stem": "×",
       "attach_verb_dict": "×",
@@ -113611,7 +113611,7 @@ const GRAMMAR_MATRIX_DATA = [
       "c9": "д ж з с т х ц ч ш: -т/-д＋連結母音: хот→хотод, багш→багшид, автобус→автобуст",
       "hidden_g": "×",
       "hidden_n": "ширээ→ширээнд",
-      "exceptions": "語末が г, р, с で終わる名詞には「-т」が接続する（例: цэцэрлэг → цэцэрлэгт, өвөр → өвөрт, улс → улсад/улст）。また潜在Н名詞には「-нд」が付く（例: уул → ууланд, ширээ → ширээнд）。語幹末尾の文字や母音脱落に伴う変化に注意。",
+      "exceptions": "語末が г, р, с で終わる名詞には「-т」が接続（цэцэрлэгт, өвөрт, улст）。潜在Н名詞には「-нд」が付く（ширээнд）。【📅 時間・日付の与位格要否5大分類】⭕要る: - сар(ирэх сард), - долоо хоног(энэ долоオ хоногт), 年月日(2-р сард, 9-р сарын нэгэнд, 2014 онд), - гараг(даваа гарагт), 頻度(өдөрт 3 удаа, 2 жилд 1 удаа)／❌要らない: - жил(ирэх жил), - хэддэх өдөр(нэгдэх өдөр, хагас сайн өдөр), 日常時称(өчигдөр, өнөөдөр, өглөө, орой, үдээス өмнө/хойш), - дараа/- өмнө(2 жилийн дараа, 1 сарын өмнө), 期間(2 жил, 2 сар, 3 өдөр)。", 
       "dropped_vowels": "母音は落とさない語が多い: газар→газарт, ажил→ажилд",
       "attach_verb_stem": "×",
       "attach_verb_dict": "×",
@@ -154366,9 +154366,9 @@ const PRONUNCIATION_SOUND_TIPS = {
   },
   'р': {
     symbol: '[r]（歯茎ふるえ音・巻き舌）',
-    title: '巻き舌音 р',
-    howTo: '舌先を上前歯の裏の歯茎に当て、息の勢いで舌先を「ルルルッ」と細かく震わせます。語尾では軽く息が抜ける無声化が起こることもあります。',
-    pitfall: '日本語のラ行のような1回だけのタップ（弾き音）ではなく、舌をリラックスさせて振動させます。'
+    title: '巻き舌音 р ＆ 語頭での発音ルール',
+    howTo: '舌先を上前歯の裏の歯茎に当て、息の勢いで舌先を「ルルルッ」と細かく震わせます。語尾では軽く息が抜ける無声化が起こることもあります。\n\n💡【語頭の「р」の重要発音ルール】\n・ルール: 語頭に「р」が来る場合、直前に弱い母音（主に直後の母音に引かれた「а」や「э」などの音）を伴うように発音します。\n・理由: 本来のモンゴル語（固有語）では語頭に「р」が立たないため、ロシア語などからの外来語（例：радио [ラジオ]、Орос [ロシア] ※口語でРから始まる場合など）を発音する際、巻き舌の準備として前に母音が挿入されます。',
+    pitfall: '日本語のラ行のような1回だけのタップではなく、舌をリラックスさせて振動させます。語頭の「р」は直前に母音を添えて発音するのが自然なネイティブ発音です。'
   },
   'ц': {
     symbol: '[ts]（無声歯茎破擦音）',
@@ -159938,6 +159938,35 @@ const railwayQuestions = [
 
 const suffixRuleCategories = [
   {
+    "id": "time_dative_rules",
+    "title": "文における月・日の使い方（与位格 -д/-т の要否）",
+    "shortRule": "「- сар」「- долоо хоног」「年月日」「- гараг」「頻度」は要る！「- жил」「- хэддэх өдөр」「日常時称」「- дараа/- өмнө」「期間」は助詞不要！",
+    "badge": "試験頻出 ⭐",
+    "description": "モンゴル語の時間表現では与位格（-д/-т）をつける表現と、助詞をつけてはいけない表現が明確に分かれています。月や曜日（гараг）、年月日は与位格をつけますが、年（жил）や日常時称副詞、期間には助詞をつけません。"
+  },
+  {
+    "id": "hidden_g_n_declension",
+    "title": "語末нと隠れг・長母音名詞のг/н・古語隠れн3大分類",
+    "shortRule": "歯茎鼻音nは隠れгなし、軟口蓋鼻音ngは-гийн！長母音の人・固有名詞は-гийн、物・場所は-ний！古語隠れнは自然・身体・道具！",
+    "badge": "音声学・格変化 ⭐",
+    "description": "語末のнの発音（通常のn vs 口の奥のng）による隠れгの出現、長母音終わり名詞の人（г）と物（н）の使い分け、古モンゴル語由来の隠れн名詞3大分類（自然・身体・生活道具）を完全マスター！"
+  },
+  {
+    "id": "noun_maker_uur",
+    "title": "道具・場所の名詞を作る語尾（-уур / -үүр）",
+    "shortRule": "動詞＋-уур/-үүр ＝ 道具・場所の名詞！（受け身の意味はない）",
+    "badge": "語形成 ⭐",
+    "description": "動詞の後ろにつくと、動詞が名詞（モノ・道具・場所）に変わります。英語の cook → cooker と同じで、受け身の意味はありません。例: дэлгэх（広げる）＋ -үүр ＝ дэлгүүр（店）、түлхэх（押す）＋ -үүр ＝ түлхүүр（鍵）、хутгах（かき混ぜる）＋ -уур ＝ хутгуур（マドラー）。"
+  },
+  {
+    "id": "causative_passive_diff",
+    "title": "使役（-уул/-лга）vs 受け身（-гд）の識別ルール",
+    "shortRule": "使役「〜させる」には必ず「л」が入る！受け身「〜される」は「г」と「д」の合体（-гд）！",
+    "badge": "態（ボイス）⭐",
+    "description": "使役（人に〜させる・〜してもらう）には必ず「л」が入ります（-уул/-үүл, -лга/-лгэ）。一方、受け身（〜される・〜られる）は「г」と「д」の合体（-гд）になります。"
+  },
+
+  {
     "id": "dative_dt",
     "title": "与位格（-д / -т）の法則",
     "shortRule": "語尾が【г, р, с】なら「-т」！ それ以外は「-д」！",
@@ -161290,6 +161319,383 @@ const suffixRuleQuizzes = [
   "exampleSentenceMn": "Би дүүдээ ном уншиж өгсөн.",
   "exampleSentenceJa": "私は弟に本を読んであげた。"
 }
+
+  // ==========================================
+  // 【新設】文における月・日の使い方（与位格 -д/-т の要否）
+  // ==========================================
+  {
+    "id": "sr_time_1",
+    "category": "time_dative_rules",
+    "categoryTitle": "文における月・日の使い方（与位格の要否）",
+    "prompt": "「私たちは来月家に帰省します」の空欄に入る正しい形を選んでください",
+    "targetWord": "Бид ирэх ___ гэртээ харина.",
+    "targetWordMeaning": "来月に（- сар は与位格が必要）",
+    "endLetter": "сар",
+    "options": [
+      "сард",
+      "сар",
+      "сарын",
+      "сараар"
+    ],
+    "answer": "сард",
+    "ruleTip": "「- сар（月）」は与位格「-д」が必要です！（ирэх сард、энэ сард、өнгөрсөн сард）",
+    "explanation": "「月（сар）」を表す時間表現（来月、今月、先月）には必ず与位格「-д」をつけます。一方、「年（жил）」には助詞をつけない（ирэх жил）ため、対比して覚えましょう！",
+    "exampleSentenceMn": "Бид ирэх сард гэртээ харина.",
+    "exampleSentenceJa": "私たちは来月に家に帰省します。"
+  },
+  {
+    "id": "sr_time_2",
+    "category": "time_dative_rules",
+    "categoryTitle": "文における月・日の使い方（与位格の要否）",
+    "prompt": "「皆さんは来年モンゴルに行きますよね」の空欄に入る正しい形を選んでください",
+    "targetWord": "Та нар ирэх ___ Монголд очно биз дээ.",
+    "targetWordMeaning": "来年（- жил は与位格が不要！）",
+    "endLetter": "жил",
+    "options": [
+      "жил",
+      "жилд",
+      "жилийн",
+      "жилээр"
+    ],
+    "answer": "жил",
+    "ruleTip": "「- жил（年）」は与位格「-д」を使いません！（ирэх жил、энэ жил、өнгөрсөн жил）",
+    "explanation": "「年（жил）」を表す時間表現（来年、今年、去年）は与位格助詞を伴わず、そのまま副詞的に用います（× ирэх жилд とは言いません）。※「1年に1回」のような頻度のときのみ「жилд」となります。",
+    "exampleSentenceMn": "Та нар ирэх жил Монголд очно биз дээ.",
+    "exampleSentenceJa": "皆さんは来年モンゴルに行きますよね。"
+  },
+  {
+    "id": "sr_time_3",
+    "category": "time_dative_rules",
+    "categoryTitle": "文における月・日の使い方（与位格の要否）",
+    "prompt": "「来週の月曜日に試験があります」の空欄に入る正しい形を選んでください",
+    "targetWord": "Ирэх долоо хоногийн даваа гараг___ шалгалттай.",
+    "targetWordMeaning": "月曜日に（- гараг は与位格が必要）",
+    "endLetter": "гараг",
+    "options": [
+      "гарагт",
+      "гараг",
+      "гарагаар",
+      "гарагтай"
+    ],
+    "answer": "гарагт",
+    "ruleTip": "「- гараг（曜日）」は与位格「-т」が必要です！（даваа гарагт、мягмар гарагт）",
+    "explanation": "曜日を「〜曜日に」と表す場合、「гараг」には与位格語尾「-т」（語末がгのため-т）をつけます（даваа гарагт）。一方、「нэгдэх өдөр」のような「- өдөр」で曜日を表す場合は助詞不要です。",
+    "exampleSentenceMn": "Ирэх долоо хоногийн даваа гарагт шалгалттай.",
+    "exampleSentenceJa": "来週の月曜日に試験があります。"
+  },
+  {
+    "id": "sr_time_4",
+    "category": "time_dative_rules",
+    "categoryTitle": "文における月・日の使い方（与位格の要否）",
+    "prompt": "「モンゴルのツァガーンサル（旧正月）は2月にあります」の空欄に入る正しい形を選んでください",
+    "targetWord": "Монголын Цагаан сар 2-р сар___ болно.",
+    "targetWordMeaning": "2月に（数字＋сар は与位格が必要）",
+    "endLetter": "сар",
+    "options":
+    [
+      "сард",
+      "сар",
+      "сараас",
+      "сартай"
+    ],
+    "answer": "сард",
+    "ruleTip": "数字の月（2-р сарなど）には与位格「-д」をつけます！（2-р сард）",
+    "explanation": "具体的な月名を表す「○-р сар」の後に与位格「-д」をつけて「○月に」と表します。例：2-р сард（2月に）、10-р сард（10月に）。",
+    "exampleSentenceMn": "Монголын Цагаан сар 2-р сард болно.",
+    "exampleSentenceJa": "モンゴルの旧正月は2月にあります。"
+  },
+  {
+    "id": "sr_time_5",
+    "category": "time_dative_rules",
+    "categoryTitle": "文における月・日の使い方（与位格の要否）",
+    "prompt": "「9月1日に新学期が始まります」の空欄に入る正しい形を選んでください",
+    "targetWord": "9-р сарын нэгэн___ хичээл эхэлдэг.",
+    "targetWordMeaning": "9月1日に（日付特定日は与位格が必要）",
+    "endLetter": "нэгэн",
+    "options": [
+      "нэгэнд",
+      "нэгэн",
+      "нэгнээс",
+      "нэгнээр"
+    ],
+    "answer": "нэгэнд",
+    "ruleTip": "日付特定日（1日など）には与位格「-д」をつけて「〜日に」とします！（нэгэнд）",
+    "explanation": "モンゴルでは日付の「1日に」を表す際、数詞「нэг」の隠れн形「нэгэн」に与位格「-д」を接続して「нэгэнд」と表現します。",
+    "exampleSentenceMn": "9-р сарын нэгэнд хичээл эхэлдэг.",
+    "exampleSentenceJa": "9月1日に新学期が始まります。"
+  },
+  {
+    "id": "sr_time_6",
+    "category": "time_dative_rules",
+    "categoryTitle": "文における月・日の使い方（与位格の要否）",
+    "prompt": "「皆さんはモンゴルで2年間働きます」の空欄に入る正しい形を選んでください",
+    "targetWord": "Та нар Монголд 2 ___ ажиллана.",
+    "targetWordMeaning": "2年間（期間 хугацаа は助詞不要！）",
+    "endLetter": "жил",
+    "options": [
+      "жил",
+      "жилд",
+      "жилээр",
+      "жилийн"
+    ],
+    "answer": "жил",
+    "ruleTip": "継続期間（2年間、2ヶ月間など）には与位格をつけません！（2 жил、2 сар）",
+    "explanation": "「2年間働きます」「2ヶ月間生活します」のように時間の長さを表す「期間（хугацаа）」には助詞をつけず、そのまま「2 жил」「2 сар」と置きます。",
+    "exampleSentenceMn": "Та нар Монголд 2 жил ажиллана.",
+    "exampleSentenceJa": "皆さんはモンゴルで2年間働きます。"
+  },
+  {
+    "id": "sr_time_7",
+    "category": "time_dative_rules",
+    "categoryTitle": "文における月・日の使い方（与位格の要否）",
+    "prompt": "「ここでは皆さんは1日に3回食事をとります」の空欄に入る正しい形を選んでください",
+    "targetWord": "Энд та нар өдөр___ 3 удаа хоол иддэг.",
+    "targetWordMeaning": "1日に〜回（頻度・割合は与位格が必要！）",
+    "endLetter": "өдөр",
+    "options": [
+      "өдөрт",
+      "өдөр",
+      "өдрийн",
+      "өдрөөр"
+    ],
+    "answer": "өдөрт",
+    "ruleTip": "頻度・割合を表す「1日に○回、年に○回」には与位格が必要です！（өдөрт、жилд、сард）",
+    "explanation": "「1日に3回（өдөрт 3 удаа）」「2年に1回（2 жилд нэг удаа）」「1ヶ月に4回（1 сард 4 удаа）」のように頻度・割合を表す基準単位には必ず与位格（-т/-д）がつきます。",
+    "exampleSentenceMn": "Энд та нар өдөрт 3 удаа хоол иддэг.",
+    "exampleSentenceJa": "ここでは皆さんは1日に3回食事をとります。"
+  },
+  {
+    "id": "sr_time_8",
+    "category": "time_dative_rules",
+    "categoryTitle": "文における月・日の使い方（与位格の要否）",
+    "prompt": "「皆さんは2年後にモンゴルから帰国します」の空欄に入る正しい形を選んでください",
+    "targetWord": "Та нар 2 жилийн дараа___ Монголоос буцаж ирнэ.",
+    "targetWordMeaning": "2年後に（- дараа は助詞不要！）",
+    "endLetter": "дараа",
+    "options": [
+      "дараа",
+      "дараад",
+      "дараагаар",
+      "дараа нь"
+    ],
+    "answer": "дараа",
+    "ruleTip": "「〜 дараа（〜後）」「〜 өмнө（〜前）」はそれ自体が副詞的後置詞のため与位格は不要です！",
+    "explanation": "「2 жилийн дараа（2年後に）」「1 сарын өмнө（1ヶ月前に）」は、後置詞「дараа」「өмнө」の直後に与位格「-д」をつける必要はありません。",
+    "exampleSentenceMn": "Та нар 2 жилийн дараа Монголоос буцаж ирнэ.",
+    "exampleSentenceJa": "皆さんは2年後にモンゴルから帰国します。"
+  },
+
+  // ==========================================
+  // 【新設】道具・場所の名詞を作る語尾（-уур / -үүр）
+  // ==========================================
+  {
+    "id": "sr_uur_1",
+    "category": "noun_maker_uur",
+    "categoryTitle": "道具・場所の名詞を作る語尾（-уур/-үүр）",
+    "prompt": "動詞「広げる（дэлгэх）」に語尾「-үүр」がついた名詞「дэлгүүр」の正しい意味を選んでください",
+    "targetWord": "дэлгэх（広げる）＋ -үүр ＝ дэлгүүр",
+    "targetWordMeaning": "広げる場所 ＝ 店",
+    "endLetter": "-үүр",
+    "options": [
+      "店（広げて商う場所）",
+      "広げられる（受け身）",
+      "広げさせる（使役）",
+      "広げた（過去）"
+    ],
+    "answer": "店（広げて商う場所）",
+    "ruleTip": "「-уур / -үүр」は動詞から「道具・場所の名詞」を作ります！（受け身ではありません）",
+    "explanation": "動詞「дэлгэх（広げる・陳列する）」に名詞化接尾辞「-үүр」がつくと、「品物を広げて並べる場所 ＝ 店（дэлгүүр）」という名詞になります。受け身の意味はありません。",
+    "exampleSentenceMn": "Бид дэлгүүр орж хүнс цуглуулсан.",
+    "exampleSentenceJa": "私たちは店に行って食料品を買い集めた。"
+  },
+  {
+    "id": "sr_uur_2",
+    "category": "noun_maker_uur",
+    "categoryTitle": "道具・場所の名詞を作る語尾（-уур/-үүр）",
+    "prompt": "動詞「押す（түлхэх）」に語尾「-үүр」がついた名詞「түлхүүр」の正しい意味を選んでください",
+    "targetWord": "түлхэх（押す）＋ -үүр ＝ түлхүүр",
+    "targetWordMeaning": "押して回す道具 ＝ 鍵",
+    "endLetter": "-үүр",
+    "options": [
+      "鍵（押して開ける道具）",
+      "押される（受け身）",
+      "押させる（使役）",
+      "ドア（名詞）"
+    ],
+    "answer": "鍵（押して開ける道具）",
+    "ruleTip": "英語の cook → cooker（調理器具）と同様に、動作をする「道具」を作ります！",
+    "explanation": "「түлхэх（押す）」＋「-үүр」＝「押して錠前を開ける道具 ＝ 鍵（түлхүүр）」となります。",
+    "exampleSentenceMn": "Хаалганы түлхүүрээ мартчихаж.",
+    "exampleSentenceJa": "ドアの鍵を忘れてしまった。"
+  },
+  {
+    "id": "sr_uur_3",
+    "category": "noun_maker_uur",
+    "categoryTitle": "道具・場所の名詞を作る語尾（-уур/-үүр）",
+    "prompt": "動詞「かき混ぜる（хутгах）」に語尾「-уур」がついた名詞「хутгуур」の正しい意味を選んでください",
+    "targetWord": "хутгах（かき混ぜる）＋ -уур ＝ хутгуур",
+    "targetWordMeaning": "かき混ぜる道具 ＝ マドラー・へら",
+    "endLetter": "-уур",
+    "options": [
+      "マドラー・かき混ぜべら",
+      "混ぜられる（受け身）",
+      "混ぜさせる（使役）",
+      "スープ（名詞）"
+    ],
+    "answer": "マドラー・かき混ぜべら",
+    "ruleTip": "男性語「хутгах」には男性母音の「-уур」がつき、かき混ぜる道具を表します！",
+    "explanation": "「хутгах（かき混ぜる）」に「-уур」がついて「かき混ぜるための道具（マドラー、調理用へら）」となります。",
+    "exampleSentenceMn": "Цайгаа хутгуураар хутгаарай.",
+    "exampleSentenceJa": "お茶をマドラーでかき混ぜてください。"
+  },
+
+  // ==========================================
+  // 【新設】使役（-уул/-лга）vs 受け身（-гд）の識別ルール
+  // ==========================================
+  {
+    "id": "sr_caus_pass_1",
+    "category": "causative_passive_diff",
+    "categoryTitle": "使役（-уул/-лга）vs 受け身（-гд）の識別",
+    "prompt": "動詞「行く（явах）」を使役（〜に行かせる）にする正しい形を選んでください",
+    "targetWord": "явах（行く）の使役形",
+    "targetWordMeaning": "行かせる（使役には必ず「л」が入る！）",
+    "endLetter": "-уул-",
+    "options": [
+      "явуулах",
+      "явагдах",
+      "явалцах",
+      "явчих"
+    ],
+    "answer": "явуулах",
+    "ruleTip": "使役（〜させる）には必ず【л】が入ります！（-уул / -үүл, -лга / -лгэ）",
+    "explanation": "「явах（行く）」に使役接尾辞「-уул-」が結合して「явуулах（行かせる、送る）」となります。使役語尾には必ず「л」が含まれるのが最大の識別ポイントです！",
+    "exampleSentenceMn": "Багш намайг номын сан руу явуулсан.",
+    "exampleSentenceJa": "先生は私を図書館へ行かせた。"
+  },
+  {
+    "id": "sr_caus_pass_2",
+    "category": "causative_passive_diff",
+    "categoryTitle": "使役（-уул/-лга）vs 受け身（-гд）の識別",
+    "prompt": "動詞「決める・解決する（шийдэх）」を受け身（解決される・決定される）にする正しい形を選んでください",
+    "targetWord": "шийдэх（決める）の受動形",
+    "targetWordMeaning": "解決される（受け身は「г」と「д」の合体！）",
+    "endLetter": "-гд-",
+    "options": [
+      "шийдэгдэх",
+      "шийдүүлэх",
+      "шийдэлцэх",
+      "шийдчих"
+    ],
+    "answer": "шийдэгдэх",
+    "ruleTip": "受け身（〜される）は必ず【г】と【д】の組み合わせ（-гд）になります！",
+    "explanation": "「шийдэх（決める・解決する）」に受動接尾辞「-гд-」がついて「шийдэгдэх（解決される・決定される）」となります。※「шийдүүлэх」は「л」が入っているため使役（解決してもらう）です！",
+    "exampleSentenceMn": "Энэ асуудал амархан шийдэгдлээ.",
+    "exampleSentenceJa": "この問題はあっさりと解決された。"
+  },
+  {
+    "id": "sr_caus_pass_3",
+    "category": "causative_passive_diff",
+    "categoryTitle": "使役（-уул/-лга）vs 受け身（-гд）の識別",
+    "prompt": "「読む（унших）」を使役（読ませる）にする形と、「見る（үзэх）」を受け身（見られる・目撃される）にする形の組み合わせとして正しいものを選んでください",
+    "targetWord": "使役 vs 受動の識別公式",
+    "targetWordMeaning": "使役＝л、受動＝гд",
+    "endLetter": "識別",
+    "options": [
+      "уншуулах（使役） / үзэгдэх（受動）",
+      "уншигдах（受動） / үзүүлэх（受動）",
+      "уншуулгах（受動） / үзэгдэх（使役）",
+      "уншуулах（受動） / үзэгдэх（使役）"
+    ],
+    "answer": "уншуулах（使役） / үзэгдэх（受動）",
+    "ruleTip": "使役＝必ず「л」が入る（уншуулах）、受動＝「гとд」の合体（үзэгдэх）！",
+    "explanation": "「уншуулах」は「л」が入っているので使役（読ませる）、「үзэгдэх」は「гとд（-гд）」の組み合わせなので受け身（見られる・姿を見せる）です。",
+    "exampleSentenceMn": "Хүүхдэд ном уншуулах, сайн тал нь үзэгдэх.",
+    "exampleSentenceJa": "子どもに本を読ませる、良い面が見受けられる。"
+  },
+
+  // ==========================================
+  // 【新設】語末нと隠れг・長母音名詞のг/н・古語隠れн3大分類
+  // ==========================================
+  {
+    "id": "sr_hgn_1",
+    "category": "hidden_g_n_declension",
+    "categoryTitle": "語末нと隠れг・長母音名詞のг/н・古語隠れн",
+    "prompt": "「年（он）」の属格（〜の）として正しい形を選んでください（語末нは歯茎鼻音・通常のn）",
+    "targetWord": "он（年）の属格",
+    "targetWordMeaning": "通常のn ＝ 隠れгは出ない！",
+    "endLetter": "н",
+    "options": [
+      "оны",
+      "онгийн",
+      "онний",
+      "онын"
+    ],
+    "answer": "оны",
+    "ruleTip": "舌先が前歯の裏につく通常のn（он、хүн）は隠れгが出ず「-ы / -ий」がつきます！",
+    "explanation": "「он（年）」の語末「н」は歯茎鼻音（通常のn）なので、隠れгは現れず「оны（年の）」となります。「хүн（人）」も同様に「хүний」となります。",
+    "exampleSentenceMn": "Шинэ оны баярын мэнд хүргэе!",
+    "exampleSentenceJa": "新年のご挨拶を申し上げます！"
+  },
+  {
+    "id": "sr_hgn_2",
+    "category": "hidden_g_n_declension",
+    "categoryTitle": "語末нと隠れг・長母音名詞のг/н・古語隠れн",
+    "prompt": "「建物（байшин）」の属格（〜の）として正しい形を選んでください（語末нは口の奥で鳴る軟口蓋鼻音 ng）",
+    "targetWord": "байшин（建物）の属格",
+    "targetWordMeaning": "軟口蓋鼻音ng ＝ 隠れгが現れる！",
+    "endLetter": "н",
+    "options": [
+      "байшингийн",
+      "байшины",
+      "байшинний",
+      "байшинын"
+    ],
+    "answer": "байшингийн",
+    "ruleTip": "舌の奥で「ング」と響く軟口蓋鼻音（байшин、сан）は隠れгが現れて「-гийн」になります！",
+    "explanation": "「байшин（建物）」や「сан（基金）」の「н」は軟口蓋鼻音（ng）のため、属格語尾がつくと隠れгが出現して「байшингийн」「сангийн」となります。",
+    "exampleSentenceMn": "Энэ байшингийн дээвэр цэнхэр өнгөтэй.",
+    "exampleSentenceJa": "この建物の屋根は青色です。"
+  },
+  {
+    "id": "sr_hgn_3",
+    "category": "hidden_g_n_declension",
+    "categoryTitle": "語末нと隠れг・長母音名詞のг/н・古語隠れн",
+    "prompt": "長母音で終わる名詞「弟・妹（дүү）」と「机（ширээ）」の属格（〜の）の組み合わせとして正しいものを選んでください",
+    "targetWord": "長母音終わりの名詞：人(г) vs 物(н)",
+    "targetWordMeaning": "人は-гийн、物は-ний！",
+    "endLetter": "長母音",
+    "options": [
+      "дүүгийн（人＝г） / ширээний（物＝н）",
+      "дүүний（人＝н） / ширээгийн（物＝г）",
+      "дүүгийн / ширээгийн",
+      "дүүний / ширээний"
+    ],
+    "answer": "дүүгийн（人＝г） / ширээний（物＝н）",
+    "ruleTip": "人・親族・固有名詞（дүү, хүү, Токио）は〈г〉！物・場所・概念（ширээ, хөдөө, санаа）は〈н〉！",
+    "explanation": "長母音・二重母音終わりの名詞に属格がつく場合、人・親族・固有名詞には「-гийн（дүүгийн、Токиогийн）」が、物・場所・抽象概念には「-ний / -ны（ширээний、хөдөөний）」がつきます！",
+    "exampleSentenceMn": "Дүүгийн ширээний дээр ном байна.",
+    "exampleSentenceJa": "弟の机の上に本があります。"
+  },
+  {
+    "id": "sr_hgn_4",
+    "category": "hidden_g_n_declension",
+    "categoryTitle": "語末нと隠れг・長母音名詞のг/н・古語隠れн",
+    "prompt": "古モンゴル語由来の隠れн名詞「水（ус）」と「目（нүд）」の属格として正しい形を選んでください",
+    "targetWord": "古語隠れн名詞（自然・身体・道具）",
+    "targetWordMeaning": "隠れнが現れて -ны / -ний",
+    "endLetter": "с / д",
+    "options": [
+      "усны / нүдний",
+      "усын / нүдий",
+      "усгийн / нүдгийн",
+      "усыг / нүдийг"
+    ],
+    "answer": "усны / нүдний",
+    "ruleTip": "自然・物質（ус, мод, нар）や身体（нүд, чих, шүд）は古語の隠れнが現れて「-ны/-ний」！",
+    "explanation": "「ус（水）」「мод（木）」「нүд（目）」「хувцас（服）」などは歴史的に隠れнを持っているため、属格では「усны」「модны」「нүдний」「хувцасны」と「н」が現れます。",
+    "exampleSentenceMn": "Цэвэр усны дусал, миний нүдний шил.",
+    "exampleSentenceJa": "きれいな水滴、私の眼鏡（目のガラス）。"
+  },
 ];
 
 const suffixRuleData = {
@@ -165625,6 +166031,68 @@ const etymologyCategories = [
 ];
 
 const etymologyCards = [
+  // 🌟 【新設】「-уур / -үүр」は道具・場所の名詞を作る語尾
+  {
+    id: "etym_noun_uur",
+    categoryId: "action_noun_suffixes",
+    suffix: "-уур / -үүр（道具・場所化接辞）",
+    title: "動詞から「道具・場所の名詞」を作る接尾辞（受け身ではない！）",
+    badge: "道具・場所化 ⭐",
+    coreExplanation: "動詞の後ろにつくと、動詞が名詞（モノ・道具・場所）に変わります。受け身の意味はありません！\n英語でいうと、cook［料理する］に -er をつけて cooker［調理器具］にするのとまったく同じ感覚です。\n・広げる（дэлгэх）＋ -үүр ＝ 広げる場所 ＝ 店（дэлгүүр）\n・押す（түлхэх）＋ -үүр ＝ 押して開ける道具 ＝ 鍵（түлхүүр）\n・かき混ぜる（хутгах）＋ -уур ＝ かき混ぜる道具 ＝ マドラー・へら（хутгуур）",
+    rootWord: "дэлгэх / түлхэх / хутгах",
+    rootMeaning: "広げる / 押す / かき混ぜる（動詞）",
+    derivedWord: "дэлгүүр / түлхүүр / хутгуур",
+    derivedMeaning: "店（場所） / 鍵（道具） / マドラー（道具）",
+    contrastExample: {
+      standardNegative: "дэлгэх（広げる）＋ -үүр ＝ дэлгүүр（店）",
+      archaicAdverbial: "түлхэх（押す）＋ -үүр ＝ түлхүүр（鍵）、хутгах ＋ -уур ＝ хутгуур（マドラー）"
+    },
+    examples: [
+      {
+        mn: "Бид дэлгүүрээс шинэ түлхүүр авсан.",
+        ja: "私たちは店で新しい鍵を買った。",
+        note: "дэлгүүр（店）も түлхүүр（鍵）もどちらも -үүр 派生名詞！"
+      },
+      {
+        mn: "Цайгаа хутгуураар хутгаж уугаарай.",
+        ja: "お茶をマドラーでかき混ぜて飲んでください。",
+        note: "хутгах（かき混ぜる）→ хутгуур（マドラー）"
+      }
+    ],
+    secretTip: "「-уур / -үүр は動詞を道具や場所に変える魔法の -er」と覚えましょう！"
+  },
+
+  // 🌟 【新設】受け身・使役を表す接尾辞の識別鉄則
+  {
+    id: "etym_causative_passive",
+    categoryId: "verb_modifiers",
+    suffix: "使役（-уул/-лга）vs 受動（-гд）",
+    title: "使役には必ず「л」が入る！受け身は「г」と「д」の合体！",
+    badge: "識別神公式 ⭐",
+    coreExplanation: "モンゴル語の動詞の態（ボイス）において、学習者が最も混同しやすい使役と受動は、以下の決定的な文字の法則で100%見分けられます！\n\n【使役（〜させる・〜してもらう）】\n語尾：-уул / -үүл または -лга / -лгэ\n👉 ★必ず『л』が入ります！\n例：явуулах（行かせる）、уншуулах（読ませる）、шийдүүлэх（解決してもらう・処理させる）\n\n【受け身（〜される・〜られる・自発）】\n語尾：-гд（-гдах / -гдэх / -гдох / -гдөх）\n👉 ★『г』と『д』の合体です！\n例：шийдэгдэх（解決される・決定される）、үзэгдэх（見られる・姿が見える）、баригдах（捕まる・建てられる）",
+    rootWord: "явах / унших / шийдэх / үзэх",
+    rootMeaning: "行く / 読む / 決める / 見る",
+    derivedWord: "явуулах (使役) / шийдэгдэх (受動)",
+    derivedMeaning: "行かせる（使役＝л） / 解決される（受動＝гд）",
+    contrastExample: {
+      standardNegative: "使役: -уул/-үүл, -лга/-лгэ（必ず л が入る）",
+      archaicAdverbial: "受動: -гд（必ず г と д の組み合わせ）"
+    },
+    examples: [
+      {
+        mn: "Багш хүүхдүүдэд ном уншуулсан.",
+        ja: "先生は子どもたちに本を読ませた。",
+        note: "уншуулах：使役「л」が入っている"
+      },
+      {
+        mn: "Асуудал бүрэн шийдэгдлээ.",
+        ja: "問題は完全に解決された。",
+        note: "шийдэгдэх：受動「гд」が入っている"
+      }
+    ],
+    secretTip: "「使役は依頼・命令で【L】が入る（-уул/-лга）、受動はガード【GD】される（-гд）」と覚えると一瞬で判定できます！"
+  },
+
   // 1. 語源の意外な秘密
   {
     id: "etym_ashgui",
@@ -217151,6 +217619,12 @@ class ReferenceGuideComponent {
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-dative-locative">
               🏛️ ⑮ 与位格（-д/-т）接続＆隠れ-н
             </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-time-dative">
+              📅 ⑯ 文における月・日の使い方（与位格 -д/-т の要否）
+            </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-derivative-suffixes">
+              🛠️ ⑰ 道具名詞(-уур) ＆ 使役(-уул/-лга) vs 受動(-гд)
+            </button>
           </div>
 
           <!-- タブ1: 隠れн (нууц н) -->
@@ -217189,6 +217663,96 @@ class ReferenceGuideComponent {
             </div>
 
             <!-- 隠れн 代表名詞一覧テーブル -->
+            
+            <!-- 🌟 手書きノート公式①: 語末が長母音・二重母音の名詞の格変化（<г> と <н> の使い分け） -->
+            <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 p-4 rounded-xl text-xs space-y-2.5 shadow-2xs">
+              <div class="font-black text-amber-950 text-sm flex items-center gap-2">
+                <span>⚡</span> 【重要法則】長母音・二重母音終わりの名詞：〈г〉と〈н〉の使い分け
+              </div>
+              <p class="text-slate-700 leading-relaxed">
+                長母音や二重母音で終わる名詞に属格（〜の）や対格（〜を）などの格語尾がつく際、間に<strong>「г」を入れるか「н」を入れるか</strong>は対象の意味によって明確に分かれます！
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                <!-- г が入るグループ -->
+                <div class="bg-white/90 p-3 rounded-xl border border-amber-200 space-y-1.5">
+                  <div class="font-black text-rose-900 flex items-center justify-between text-xs">
+                    <span>👑 「г」が入るグループ</span>
+                    <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-900 text-[10px]">人・親族・固有名詞</span>
+                  </div>
+                  <ul class="space-y-1 text-slate-700 text-[11px] list-disc list-inside">
+                    <li><strong>дүү</strong>（弟・妹）→ дүү<strong>г</strong>ийн（弟の）</li>
+                    <li><strong>хүү</strong>（息子・男の子）→ хүү<strong>г</strong>ийн（息子の）</li>
+                    <li><strong>Токио</strong>（東京・固有名詞）→ Токио<strong>г</strong>ийн（東京の）</li>
+                    <li><strong>өвөө</strong>（祖父）→ өвөө<strong>г</strong>өөс（祖父から）</li>
+                  </ul>
+                  <div class="text-[10px] text-rose-800 bg-rose-50 p-1.5 rounded-lg font-bold">
+                    💡 人名・親族名・国名・都市名などの「人・固有名詞」には〈г〉が接続！
+                  </div>
+                </div>
+                <!-- н が入るグループ -->
+                <div class="bg-white/90 p-3 rounded-xl border border-amber-200 space-y-1.5">
+                  <div class="font-black text-emerald-900 flex items-center justify-between text-xs">
+                    <span>📦 「н」が入るグループ</span>
+                    <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-[10px]">物・場所・抽象概念</span>
+                  </div>
+                  <ul class="space-y-1 text-slate-700 text-[11px] list-disc list-inside">
+                    <li><strong>ширээ</strong>（机・物）→ ширээ<strong>н</strong>ий（机の）</li>
+                    <li><strong>хөдөө</strong>（田舎・場所）→ хөдөө<strong>н</strong>ий（田舎の）</li>
+                    <li><strong>санаа</strong>（考え・概念）→ санаа<strong>н</strong>ы（考えの）</li>
+                    <li><strong>өрөө</strong>（部屋・場所）→ өрөө<strong>н</strong>өөс（部屋から）</li>
+                  </ul>
+                  <div class="text-[10px] text-emerald-800 bg-emerald-50 p-1.5 rounded-lg font-bold">
+                    💡 「物・場所・抽象概念」の長母音終わりは隠れ〈н〉が接続！
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 🌟 手書きノート公式②: 「隠れ н（不安定な н / тогтворгүй н）」を持つ古モンゴル語由来の名詞 3大分類 -->
+            <div class="bg-white border border-indigo-200 p-4 rounded-xl text-xs space-y-2.5 shadow-2xs">
+              <div class="font-black text-indigo-950 text-sm flex items-center gap-2">
+                <span>📜</span> 【古モンゴル語由来】隠れ н（不安定な н）を持つ名詞の3大カテゴリー
+              </div>
+              <p class="text-slate-700 leading-relaxed">
+                辞書形（主格）では「н」が見えないものの、格語尾がつく時や修飾語として前に置かれるときに「н」が現れる名詞は、モンゴル語の歴史上、以下の<strong>3大カテゴリー</strong>に集中しています。
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+                <div class="p-2.5 rounded-xl bg-sky-50 border border-sky-200 space-y-1">
+                  <div class="font-black text-sky-950 flex items-center gap-1 text-[11px]">
+                    <span>🌊</span> 自然・物質に関する語
+                  </div>
+                  <ul class="text-[11px] text-slate-700 space-y-0.5">
+                    <li>・<strong>ус</strong>（水）→ ус<strong>н</strong>ы / ус<strong>н</strong>аас</li>
+                    <li>・<strong>мод</strong>（木・森）→ мод<strong>н</strong>ы / мод<strong>н</strong>оос</li>
+                    <li>・<strong>нар</strong>（太陽）→ нар<strong>н</strong>ы</li>
+                    <li>・<strong>цас</strong>（雪）→ цас<strong>н</strong>ы</li>
+                    <li>・<strong>чулуу</strong>（石）→ чулуу<strong>н</strong>ы</li>
+                  </ul>
+                </div>
+                <div class="p-2.5 rounded-xl bg-purple-50 border border-purple-200 space-y-1">
+                  <div class="font-black text-purple-950 flex items-center gap-1 text-[11px]">
+                    <span>👁️</span> 身体の部位に関する語
+                  </div>
+                  <ul class="text-[11px] text-slate-700 space-y-0.5">
+                    <li>・<strong>нүд</strong>（目）→ нүд<strong>н</strong>ий / нүд<strong>н</strong>ээс</li>
+                    <li>・<strong>чих</strong>（耳）→ чих<strong>н</strong>ий</li>
+                    <li>・<strong>шүд</strong>（歯）→ шүд<strong>н</strong>ий</li>
+                    <li>・<strong>гар</strong>（手）→ гар<strong>н</strong>ы（※文脈）</li>
+                  </ul>
+                </div>
+                <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1">
+                  <div class="font-black text-emerald-950 flex items-center gap-1 text-[11px]">
+                    <span>👕</span> 身の回り・生活道具
+                  </div>
+                  <ul class="text-[11px] text-slate-700 space-y-0.5">
+                    <li>・<strong>хувцас</strong>（服）→ хувцас<strong>н</strong>ы / хувцас<strong>н</strong>аас</li>
+                    <li>・<strong>гэр</strong>（家・ゲル）→ гэр<strong>н</strong>ий（複合語等）</li>
+                    <li>・<strong>утас</strong>（糸・電話）→ утас<strong>н</strong>ы</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
             <div class="overflow-x-auto border border-indigo-200 rounded-xl bg-white shadow-2xs">
               <table class="w-full text-xs text-left">
                 <thead class="bg-indigo-50/80 text-indigo-950 font-bold border-b border-indigo-200">
@@ -217246,6 +217810,49 @@ class ReferenceGuideComponent {
 
           <!-- タブ2: 隠れг (нууц г) -->
           <div id="ref-tab-hidden-g" class="ref-subtab-pane hidden space-y-3">
+
+            <!-- 🌟 手書きノート公式: 語末の「н」と「隠れг（гの出現）」の法則 -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-300 p-4 rounded-xl text-xs space-y-2.5 shadow-2xs">
+              <div class="font-black text-blue-950 text-sm flex items-center gap-2">
+                <span>👅</span> 【調音点と音韻法則】語末の「н」と「隠れг」の出現ルール
+              </div>
+              <p class="text-slate-700 leading-relaxed">
+                モンゴル語の語末「н」には2種類の発音（歯茎鼻音 n vs 軟口蓋鼻音 ng）があり、<strong>どちらの音かによって属格変化した時に「г」が現れるかどうか</strong>が決まります！
+              </p>
+              <div class="overflow-x-auto border border-blue-200 rounded-xl bg-white">
+                <table class="w-full text-xs text-left">
+                  <thead class="bg-blue-100/70 text-blue-950 font-black border-b border-blue-200">
+                    <tr>
+                      <th class="p-2.5">種類</th>
+                      <th class="p-2.5">発音の特徴（調音点）</th>
+                      <th class="p-2.5 text-center">格変化時の「г」出現</th>
+                      <th class="p-2.5">具体例</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-blue-100 text-slate-800">
+                    <tr class="bg-white">
+                      <td class="p-2.5 font-black text-slate-900">歯茎鼻音<br><span class="text-3xs text-slate-500 font-normal">（通常の n）</span></td>
+                      <td class="p-2.5">舌先が上の前歯の裏につく明確な「ン」</td>
+                      <td class="p-2.5 text-center font-black text-rose-600 bg-rose-50/50">❌ 現れない<br><span class="text-3xs text-slate-500 font-normal">（-ы / -ий がつく）</span></td>
+                      <td class="p-2.5 font-bold font-mono">
+                        ・<strong>он</strong>（年）→ он<strong>ы</strong>（年の）<br>
+                        ・<strong>хүн</strong>（人）→ хүн<strong>ий</strong>（人の）
+                      </td>
+                    </tr>
+                    <tr class="bg-blue-50/40">
+                      <td class="p-2.5 font-black text-indigo-950">軟口蓋鼻音<br><span class="text-3xs text-indigo-600 font-normal">（ng [ŋ]）</span></td>
+                      <td class="p-2.5">舌の奥が持ち上がり、口の奥で「ング」と響かせる鼻音</td>
+                      <td class="p-2.5 text-center font-black text-emerald-700 bg-emerald-50/60">⭕ 現れる！<br><span class="text-3xs text-emerald-800 font-bold">（-гийн が出現）</span></td>
+                      <td class="p-2.5 font-bold font-mono text-indigo-950">
+                        ・<strong>сан</strong>（基金・庫）→ сан<strong>гийн</strong><br>
+                        ・<strong>байшин</strong>（建物）→ байшин<strong>гийн</strong>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             <div class="bg-sky-50 p-3.5 rounded-xl border border-sky-200 text-xs text-sky-950 space-y-2">
               <div class="font-black text-sm flex items-center gap-1.5 text-sky-900">
                 <span>💡</span> 隠れг（нууц г）の出現パターン
