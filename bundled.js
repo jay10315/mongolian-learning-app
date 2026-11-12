@@ -223332,6 +223332,9 @@ class ReferenceGuideComponent {
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-hidden-g">
               🔵 ② 隠れг (нууц г)
             </button>
+            <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-extrabold transition-all bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-xs hover:brightness-105" data-tab="ref-tab-compare-n-g">
+              ⚖️ 隠れн vs 隠れг 徹底比較表
+            </button>
             <button type="button" class="btn-ref-subtab px-3.5 py-1.5 rounded-lg font-bold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50" data-tab="ref-tab-dropping-vowel">
               🟣 ③ 落ちる母音
             </button>
@@ -223379,225 +223382,811 @@ class ReferenceGuideComponent {
             </button>
           </div>
 
-          <!-- タブ1: 隠れн (нууц н) -->
-          <div id="ref-tab-hidden-n" class="ref-subtab-pane space-y-3">
-            <div class="bg-indigo-100/60 p-3.5 rounded-xl border border-indigo-200 text-xs text-indigo-950 space-y-2">
-              <div class="font-black text-sm flex items-center gap-1.5 text-indigo-900">
-                <span>💡</span> 隠れн（нууц н）とは？
+                    <!-- タブ1: 隠れн (нууц н / тогтворгүй н) 完全解説 -->
+          <div id="ref-tab-hidden-n" class="ref-subtab-pane space-y-4">
+
+            <!-- クイックジャンプバナー -->
+            <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white p-4 rounded-2xl shadow-md flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div>
+                <span class="inline-block bg-indigo-500 text-white text-[11px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider mb-1">Grammar Master</span>
+                <h3 class="text-base font-black flex items-center gap-2">
+                  <span>🟢</span> 隠れн（нууц н / 不安定なн）完全解説ハンドブック
+                </h3>
+                <p class="text-xs text-indigo-200 mt-0.5">原形では隠れ、特定の格語尾（属格・与位格・奪格）で突如復活する歴史的子音の全貌</p>
               </div>
-              <p class="leading-relaxed">
-                原形（辞書形）では末尾に「н」が見えませんが、<strong>特定の格助詞（属格・与位格・奪格）が付く時に「н」が突如復活する名詞</strong>のことです。歴史的に語末にあった「н」が原形では脱落し、語尾接続時に再び姿を現します。
+              <button type="button" class="btn-jump-to-tab shrink-0 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow transition-all active:scale-95 flex items-center gap-1.5" data-target="ref-tab-compare-n-g">
+                <span>⚖️</span> 隠れн vs 隠れг 比較表を見る →
+              </button>
+            </div>
+
+            <!-- ① 隠れнとは何か -->
+            <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-indigo-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">1</span>
+                隠れн（нууц н / тогтворгүй н）とは何か
+              </h4>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                モンゴル語の名詞の中には、**辞書に載っている原形（主格）では語末に「н」が見えない**にもかかわらず、**特定の格助詞（属格・与位格・奪格）が付くときに突然「н」が復活して現れる**単語群があります。<br>
+                文法用語では「**тогтворгүй н**（不安定なн / 不定н）」または親しみやすく「**нууц н**（隠れн）」と呼ばれます。
               </p>
-              
-              <!-- 格ごとの出現ルール -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 font-sans">
-                <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg">
-                  <div class="font-bold text-emerald-900 flex items-center gap-1">
-                    <span>⭕</span> 隠れнが現れる格（重要！）
+            </div>
+
+            <!-- ② なぜ隠れнが存在するのか（歴史的背景） -->
+            <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-indigo-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">2</span>
+                なぜ隠れнが存在するのか（歴史的背景・音韻変化）
+              </h4>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                古代モンゴル語や古典モンゴル文語の時代には、これらの単語は本来**語末に「*n」を持っていました**（例：古代形 <code>modun</code>「木」、<code>usun</code>「水」、<code>mörün</code>「川」）。<br>
+                時代の変遷に伴い、現代の口語・ハルハ方言では単独で発音するときに語末の <code>-n</code> が脱落して <code>мод</code>, <code>ус</code>, <code>мөр</code> となりました。<br>
+                しかし、**後ろに母音や助詞が接続して1つの音調単位になるとき、元々あった語幹の「н」が休眠から目覚めて復活する**のです。
+              </p>
+            </div>
+
+            <!-- ③ どのような名詞に現れるのか -->
+            <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-indigo-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">3</span>
+                どのような名詞に現れるのか（代表的な隠れн名詞）
+              </h4>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                自然物・身体・日用品など、**基礎的で古い語彙**に集中しています。辞書の語形からは外見で判別できないため、単語ごとに「隠れнを持つ名詞」として覚える必要があります。
+              </p>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-xs">
+                <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                  <div class="font-bold text-slate-900">мод [mod]</div>
+                  <div class="text-[11px] text-slate-500">木・森林 (古代: modun)</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                  <div class="font-bold text-slate-900">ус [us]</div>
+                  <div class="text-[11px] text-slate-500">水 (古代: usun)</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                  <div class="font-bold text-slate-900">хөл [khöl]</div>
+                  <div class="text-[11px] text-slate-500">足 (古代: kölün)</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                  <div class="font-bold text-slate-900">гар [gar]</div>
+                  <div class="text-[11px] text-slate-500">手 (古代: garun)</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                  <div class="font-bold text-slate-900">зам [zam]</div>
+                  <div class="text-[11px] text-slate-500">道 (古代: zamun)</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                  <div class="font-bold text-slate-900">нар [nar]</div>
+                  <div class="text-[11px] text-slate-500">太陽 (古代: naran)</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                  <div class="font-bold text-slate-900">нэр [ner]</div>
+                  <div class="text-[11px] text-slate-500">名前 (古代: neren)</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                  <div class="font-bold text-slate-900">газар [gazar]</div>
+                  <div class="text-[11px] text-slate-500">土地・場所 (古代: gajaran)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ④ どのような条件でнが現れるのか（出現ルール） -->
+            <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-indigo-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">4</span>
+                どのような条件でнが現れるのか（出現条件の鉄則）
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1.5">
+                  <div class="font-black text-emerald-900 flex items-center gap-1.5">
+                    <span>⭕</span> 隠れнが【必ず現れる】3つの格助詞
                   </div>
-                  <ul class="list-disc list-inside mt-1 space-y-0.5 text-emerald-800 text-[11px]">
-                    <li><strong>属格（〜の）</strong>: -ны / -ний（例：мод → <strong>модны</strong>）</li>
-                    <li><strong>与位格（〜に/で）</strong>: -анд/-энд/-онд/-өнд（例：мод → <strong>модонд</strong>）</li>
-                    <li><strong>奪格（〜から）</strong>: -наас/-нээс/-ноос/-нөөс（例：мод → <strong>модноос</strong>）</li>
+                  <ul class="space-y-1 text-slate-700">
+                    <li>・<strong>属格（〜の）</strong>: <code>-ны / -ний</code>（例：<code>модны</code>, <code>хөлний</code>）</li>
+                    <li>・<strong>与位格（〜に/で）</strong>: 語幹にнが付き <code>-анд / -энд / -онд / -өнд</code>（語尾としては <code>-нд</code>。例：<code>модонд</code>, <code>хөлөнд</code>）</li>
+                    <li>・<strong>奪格（〜から）</strong>: <code>-наас / -нээс / -ноос / -нөөс</code>（例：<code>модноос</code>, <code>хөлнөөс</code>）</li>
+                    <li>・※名詞の連体修飾形（形容詞化）: <code>модон байшин</code>（木造の家）, <code>төмөрч</code> のような派生語</li>
                   </ul>
                 </div>
-                <div class="bg-rose-50 border border-rose-200 p-2.5 rounded-lg">
-                  <div class="font-bold text-rose-900 flex items-center gap-1">
-                    <span>❌</span> 隠れнが現れない格（超頻出ひっかけ！）
+                <div class="p-3 bg-rose-50 border border-rose-200 rounded-xl space-y-1.5">
+                  <div class="font-black text-rose-900 flex items-center gap-1.5">
+                    <span>❌</span> 隠れнが【絶対に出ない】3つの格助詞（超頻出罠）
                   </div>
-                  <ul class="list-disc list-inside mt-1 space-y-0.5 text-rose-800 text-[11px]">
-                    <li><strong>具格（〜で/手段）</strong>: -аар4（例：мод → <strong>модоор</strong> ◯ / модgоор ✕）</li>
-                    <li><strong>共格（〜と/所持）</strong>: -тай3（例：мод → <strong>модтой</strong> ◯ / модонтой ✕）</li>
-                    <li><strong>対格（〜を）</strong>: -ыг/-ийг（例：мод → <strong>модыг</strong> ◯）</li>
+                  <ul class="space-y-1 text-slate-700">
+                    <li>・<strong>具格（〜で/を使って）</strong>: 通常の長母音 <code>-аар⁴</code>（例：<code>модоор</code> ⭕ / <code>модноор</code> ❌）</li>
+                    <li>・<strong>共格（〜と/を持っている）</strong>: 通常の <code>-тай³</code>（例：<code>модтой</code> ⭕ / <code>модонтой</code> ❌）</li>
+                    <li>・<strong>対格（〜を）</strong>: 通常の <code>-ыг / -ийг</code>（例：<code>модыг</code> ⭕ / <code>модныг</code> ❌）</li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            <!-- 隠れн 代表名詞一覧テーブル -->
-            
-            <!-- 🌟 手書きノート公式①: 語末が長母音・二重母音の名詞の格変化（<г> と <н> の使い分け） -->
-            <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 p-4 rounded-xl text-xs space-y-2.5 shadow-2xs">
-              <div class="font-black text-amber-950 text-sm flex items-center gap-2">
-                <span>⚡</span> 【重要法則】長母音・二重母音終わりの名詞：〈г〉と〈н〉の使い分け
-              </div>
-              <p class="text-slate-700 leading-relaxed">
-                長母音や二重母音で終わる名詞に属格（〜の）や対格（〜を）などの格語尾がつく際、間に<strong>「г」を入れるか「н」を入れるか</strong>は対象の意味によって明確に分かれます！
+            <!-- ⑤＆⑥ 各格での変化・現れる格と現れない格の【全格網羅表】 -->
+            <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-indigo-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">5 & 6</span>
+                各格での変化一覧【全6格網羅マスターテーブル】
+              </h4>
+              <p class="text-xs text-slate-600">
+                隠れнを持つ代表名詞 <strong>мод</strong>（木・男性母音）および <strong>хөл</strong>（足・女性母音）の全格変化です。
               </p>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                <!-- г が入るグループ -->
-                <div class="bg-white/90 p-3 rounded-xl border border-amber-200 space-y-1.5">
-                  <div class="font-black text-rose-900 flex items-center justify-between text-xs">
-                    <span>👑 「г」が入るグループ</span>
-                    <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-900 text-[10px]">人・親族・固有名詞</span>
-                  </div>
-                  <ul class="space-y-1 text-slate-700 text-[11px] list-disc list-inside">
-                    <li><strong>дүү</strong>（弟・妹）→ дүү<strong>г</strong>ийн（弟の）</li>
-                    <li><strong>хүү</strong>（息子・男の子）→ хүү<strong>г</strong>ийн（息子の）</li>
-                    <li><strong>Токио</strong>（東京・固有名詞）→ Токио<strong>г</strong>ийн（東京の）</li>
-                    <li><strong>өвөө</strong>（祖父）→ өвөө<strong>г</strong>өөс（祖父から）</li>
-                  </ul>
-                  <div class="text-[10px] text-rose-800 bg-rose-50 p-1.5 rounded-lg font-bold">
-                    💡 人名・親族名・国名・都市名などの「人・固有名詞」には〈г〉が接続！
-                  </div>
-                </div>
-                <!-- н が入るグループ -->
-                <div class="bg-white/90 p-3 rounded-xl border border-amber-200 space-y-1.5">
-                  <div class="font-black text-emerald-900 flex items-center justify-between text-xs">
-                    <span>📦 「н」が入るグループ</span>
-                    <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-[10px]">物・場所・抽象概念</span>
-                  </div>
-                  <ul class="space-y-1 text-slate-700 text-[11px] list-disc list-inside">
-                    <li><strong>ширээ</strong>（机・物）→ ширээ<strong>н</strong>ий（机の）</li>
-                    <li><strong>хөдөө</strong>（田舎・場所）→ хөдөө<strong>н</strong>ий（田舎の）</li>
-                    <li><strong>санаа</strong>（考え・概念）→ санаа<strong>н</strong>ы（考えの）</li>
-                    <li><strong>өрөө</strong>（部屋・場所）→ өрөө<strong>н</strong>өөс（部屋から）</li>
-                  </ul>
-                  <div class="text-[10px] text-emerald-800 bg-emerald-50 p-1.5 rounded-lg font-bold">
-                    💡 「物・場所・抽象概念」の長母音終わりは隠れ〈н〉が接続！
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 🌟 手書きノート公式②: 「隠れ н（不安定な н / тогтворгүй н）」を持つ古モンゴル語由来の名詞 3大分類 -->
-            <div class="bg-white border border-indigo-200 p-4 rounded-xl text-xs space-y-2.5 shadow-2xs">
-              <div class="font-black text-indigo-950 text-sm flex items-center gap-2">
-                <span>📜</span> 【古モンゴル語由来】隠れ н（不安定な н）を持つ名詞の3大カテゴリー
-              </div>
-              <p class="text-slate-700 leading-relaxed">
-                辞書形（主格）では「н」が見えないものの、格語尾がつく時や修飾語として前に置かれるときに「н」が現れる名詞は、モンゴル語の歴史上、以下の<strong>3大カテゴリー</strong>に集中しています。
-              </p>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
-                <div class="p-2.5 rounded-xl bg-sky-50 border border-sky-200 space-y-1">
-                  <div class="font-black text-sky-950 flex items-center gap-1 text-[11px]">
-                    <span>🌊</span> 自然・物質に関する語
-                  </div>
-                  <ul class="text-[11px] text-slate-700 space-y-0.5">
-                    <li>・<strong>ус</strong>（水）→ ус<strong>н</strong>ы / ус<strong>н</strong>аас</li>
-                    <li>・<strong>мод</strong>（木・森）→ мод<strong>н</strong>ы / мод<strong>н</strong>оос</li>
-                    <li>・<strong>нар</strong>（太陽）→ нар<strong>н</strong>ы</li>
-                    <li>・<strong>цас</strong>（雪）→ цас<strong>н</strong>ы</li>
-                    <li>・<strong>чулуу</strong>（石）→ чулуу<strong>н</strong>ы</li>
-                  </ul>
-                </div>
-                <div class="p-2.5 rounded-xl bg-purple-50 border border-purple-200 space-y-1">
-                  <div class="font-black text-purple-950 flex items-center gap-1 text-[11px]">
-                    <span>👁️</span> 身体の部位に関する語
-                  </div>
-                  <ul class="text-[11px] text-slate-700 space-y-0.5">
-                    <li>・<strong>нүд</strong>（目）→ нүд<strong>н</strong>ий / нүд<strong>н</strong>ээс</li>
-                    <li>・<strong>чих</strong>（耳）→ чих<strong>н</strong>ий</li>
-                    <li>・<strong>шүд</strong>（歯）→ шүд<strong>н</strong>ий</li>
-                    <li>・<strong>гар</strong>（手）→ гар<strong>н</strong>ы（※文脈）</li>
-                  </ul>
-                </div>
-                <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1">
-                  <div class="font-black text-emerald-950 flex items-center gap-1 text-[11px]">
-                    <span>👕</span> 身の回り・生活道具
-                  </div>
-                  <ul class="text-[11px] text-slate-700 space-y-0.5">
-                    <li>・<strong>хувцас</strong>（服）→ хувцас<strong>н</strong>ы / хувцас<strong>н</strong>аас</li>
-                    <li>・<strong>гэр</strong>（家・ゲル）→ гэр<strong>н</strong>ий（複合語等）</li>
-                    <li>・<strong>утас</strong>（糸・電話）→ утас<strong>н</strong>ы</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="overflow-x-auto border border-indigo-200 rounded-xl bg-white shadow-2xs">
-              <table class="w-full text-xs text-left">
-                <thead class="bg-indigo-50/80 text-indigo-950 font-bold border-b border-indigo-200">
-                  <tr>
-                    <th class="p-2.5">原形（主格）</th>
-                    <th class="p-2.5">意味</th>
-                    <th class="p-2.5 text-emerald-800">属格 (-ны/-ний)</th>
-                    <th class="p-2.5 text-emerald-800">与位格 (-нд)</th>
-                    <th class="p-2.5 text-emerald-800">奪格 (-наас)</th>
-                    <th class="p-2.5 text-rose-800">具格（н非出現!）</th>
-                    <th class="p-2.5">頻出表現・熟語</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 text-slate-700">
-                  ${[
-                    { w: "мод", m: "木・林", gen: "модны", dat: "модонд", abl: "модноос", ins: "модоор", ex: "модны навч (木の葉)" },
-                    { w: "ус", m: "水", gen: "усны", dat: "усанд", abl: "уснаас", ins: "усаар", ex: "усны сав (水筒), усанд сэлэх (水泳)" },
-                    { w: "нар", m: "太陽・日", gen: "нарны", dat: "наранд", abl: "наcapture".replace("capture", "рнаас"), ins: "нараар", ex: "нарны шил (サングラス)" },
-                    { w: "сар", m: "月", gen: "сарны", dat: "саранд", abl: "сарнаас", ins: "сараар", ex: "сарны гэрэл (月光)" },
-                    { w: "гар", m: "手", gen: "гарны", dat: "гаранд", abl: "гарнаас", ins: "гараар", ex: "гарны үсэг (署名), гараар (手作業で)" },
-                    { w: "хөл", m: "足・脚", gen: "хөлний", dat: "хөлөнд", abl: "хөлнөөс", ins: "хөлөөр", ex: "хөлний өвчин (足の痛み)" },
-                    { w: "нүд", m: "目", gen: "нүдний", dat: "нүдэнд", abl: "нүднээс", ins: "нүдээр", ex: "нүдний шил (メガネ)" },
-                    { w: "шүд", m: "歯", gen: "шүдний", dat: "шүдэнд", abl: "шүднээс", ins: "шүдээр", ex: "шүдний оо (歯磨き粉)" },
-                    { w: "хэл", m: "言語・舌", gen: "хэлний", dat: "хэлэнд", abl: "хэлнээс", ins: "хэлээр", ex: "хэлний дүрэм (文法)" },
-                    { w: "нэр", m: "名前", gen: "нэрний", dat: "нэрэнд", abl: "нэрнээс", ins: "нэрээр", ex: "нэрний хуудас (名刺)" },
-                    { w: "цонх", m: "窓", gen: "цонхны", dat: "цонхонд", abl: "цонхноос", ins: "цонхоор", ex: "цонхны хөшиг (カーテン)" },
-                    { w: "өвс", m: "草", gen: "өвсний", dat: "өвсөнд", abl: "өвснөөс", ins: "өвсөөр", ex: "өвсний үнэр (草の匂い)" },
-                    { w: "гал", m: "火", gen: "галны", dat: "галанд", abl: "галнаас", ins: "галаар", ex: "галны машин (消防車)" },
-                    { w: "мах", m: "肉", gen: "махны", dat: "маханд", abl: "махнаас", ins: "махаар", ex: "махны дэлгүүр (精肉店)" },
-                    { w: "сүү", m: "牛乳", gen: "сүүний", dat: "сүүнд", abl: "сүүнээс", ins: "сүүгээр", ex: "сүүний цай (ミルクティー) ※長母音例外" },
-                    { w: "толгой", m: "頭", gen: "толгойны", dat: "толгойнд", abl: "толгойноос", ins: "толгойгоор", ex: "толгойны өвчин (頭痛)" },
-                    { w: "хашаа", m: "柵・庭", gen: "хашааны", dat: "хашаанд", abl: "хашаанаас", ins: "хашаагаар", ex: "хашаанд суух (庭にいる)" },
-                    { w: "хуруу", m: "指", gen: "хурууны", dat: "хуруунд", abl: "хуруунаас", ins: "хуруугаар", ex: "хурууны хээ (指紋)" }
-                  ].map((row, i) => `
-                    <tr class="${i % 2 === 1 ? 'bg-indigo-50/20' : ''} hover:bg-indigo-50/50 transition-colors">
-                      <td class="p-2.5 cyrillic-text font-bold text-slate-900">
-                        <button type="button" class="btn-ref-speak text-indigo-600 hover:text-indigo-800 mr-1" data-text="${row.w}" title="発音を聞く">🔊</button>
-                        ${row.w}
-                      </td>
-                      <td class="p-2.5 font-medium text-slate-600">${row.m}</td>
-                      <td class="p-2.5 cyrillic-text font-bold text-emerald-800">
-                        <button type="button" class="btn-ref-speak text-emerald-600 hover:text-emerald-800 mr-0.5" data-text="${row.gen}">🔊</button>
-                        ${row.gen}
-                      </td>
-                      <td class="p-2.5 cyrillic-text font-semibold text-emerald-700">${row.dat}</td>
-                      <td class="p-2.5 cyrillic-text font-semibold text-emerald-700">${row.abl}</td>
-                      <td class="p-2.5 cyrillic-text font-bold text-rose-700 bg-rose-50/40">${row.ins}</td>
-                      <td class="p-2.5 text-[11px] text-slate-500">${row.ex}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- タブ2: 隠れг (нууц г) -->
-          <div id="ref-tab-hidden-g" class="ref-subtab-pane hidden space-y-3">
-
-            <!-- 🌟 手書きノート公式: 語末の「н」と「隠れг（гの出現）」の法則 -->
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-300 p-4 rounded-xl text-xs space-y-2.5 shadow-2xs">
-              <div class="font-black text-blue-950 text-sm flex items-center gap-2">
-                <span>👅</span> 【調音点と音韻法則】語末の「н」と「隠れг」の出現ルール
-              </div>
-              <p class="text-slate-700 leading-relaxed">
-                モンゴル語の語末「н」には2種類の発音（歯茎鼻音 n vs 軟口蓋鼻音 ng）があり、<strong>どちらの音かによって属格変化した時に「г」が現れるかどうか</strong>が決まります！
-              </p>
-              <div class="overflow-x-auto border border-blue-200 rounded-xl bg-white">
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
                 <table class="w-full text-xs text-left">
-                  <thead class="bg-blue-100/70 text-blue-950 font-black border-b border-blue-200">
+                  <thead class="bg-indigo-50/80 text-indigo-950 font-black border-b border-indigo-100">
                     <tr>
-                      <th class="p-2.5">種類</th>
-                      <th class="p-2.5">発音の特徴（調音点）</th>
-                      <th class="p-2.5 text-center">格変化時の「г」出現</th>
-                      <th class="p-2.5">具体例</th>
+                      <th class="p-2.5">格（意味）</th>
+                      <th class="p-2.5">接続する語尾</th>
+                      <th class="p-2.5">辞書形</th>
+                      <th class="p-2.5">活用後（変化形）</th>
+                      <th class="p-2.5">隠れнの有無</th>
+                      <th class="p-2.5">注意点・解説</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-blue-100 text-slate-800">
-                    <tr class="bg-white">
-                      <td class="p-2.5 font-black text-slate-900">歯茎鼻音<br><span class="text-3xs text-slate-500 font-normal">（通常の n）</span></td>
-                      <td class="p-2.5">舌先が上の前歯の裏につく明確な「ン」</td>
-                      <td class="p-2.5 text-center font-black text-rose-600 bg-rose-50/50">❌ 現れない<br><span class="text-3xs text-slate-500 font-normal">（-ы / -ий がつく）</span></td>
-                      <td class="p-2.5 font-bold font-mono">
-                        ・<strong>он</strong>（年）→ он<strong>ы</strong>（年の）<br>
-                        ・<strong>хүн</strong>（人）→ хүн<strong>ий</strong>（人の）
+                  <tbody class="divide-y divide-slate-100 font-medium">
+                    <tr class="bg-emerald-50/40">
+                      <td class="p-2.5 font-bold text-slate-900">属格（〜の）</td>
+                      <td class="p-2.5 font-mono text-indigo-700">-ны / -ний</td>
+                      <td class="p-2.5 font-bold">мод / хөл</td>
+                      <td class="p-2.5 font-bold text-emerald-700">модны / хөлний</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">現れる ⭕</span></td>
+                      <td class="p-2.5 text-[11px] text-slate-600">通常子音名詞の -ын/-ийн ではなく -ны/-ний がつく</td>
+                    </tr>
+                    <tr class="bg-emerald-50/40">
+                      <td class="p-2.5 font-bold text-slate-900">与位格（〜に/で）</td>
+                      <td class="p-2.5 font-mono text-indigo-700">-нд (-анд/-энд)</td>
+                      <td class="p-2.5 font-bold">мод / хөл</td>
+                      <td class="p-2.5 font-bold text-emerald-700">модонд / хөлөнд</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">現れる ⭕</span></td>
+                      <td class="p-2.5 text-[11px] text-slate-600">語幹にнが結合し、つなぎ母音を伴って -нд となる</td>
+                    </tr>
+                    <tr class="bg-emerald-50/40">
+                      <td class="p-2.5 font-bold text-slate-900">奪格（〜から）</td>
+                      <td class="p-2.5 font-mono text-indigo-700">-наас⁴</td>
+                      <td class="p-2.5 font-bold">мод / хөл</td>
+                      <td class="p-2.5 font-bold text-emerald-700">модноос / хөлнөөс</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">現れる ⭕</span></td>
+                      <td class="p-2.5 text-[11px] text-slate-600">通常の -аас⁴ ではなく頭に н を伴う語尾となる</td>
+                    </tr>
+                    <tr class="bg-rose-50/30">
+                      <td class="p-2.5 font-bold text-slate-900">具格（〜で/手段）</td>
+                      <td class="p-2.5 font-mono text-indigo-700">-аар⁴</td>
+                      <td class="p-2.5 font-bold">мод / хөл</td>
+                      <td class="p-2.5 font-bold text-rose-700">модоор / хөлөөр</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-black">現れない ❌</span></td>
+                      <td class="p-2.5 text-[11px] text-rose-600 font-bold">⚠️ модноор, хөлнөөр は絶対に間違い！</td>
+                    </tr>
+                    <tr class="bg-rose-50/30">
+                      <td class="p-2.5 font-bold text-slate-900">共格（〜と/所持）</td>
+                      <td class="p-2.5 font-mono text-indigo-700">-тай³</td>
+                      <td class="p-2.5 font-bold">мод / хөл</td>
+                      <td class="p-2.5 font-bold text-rose-700">модтой / хөлтэй</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-black">現れない ❌</span></td>
+                      <td class="p-2.5 text-[11px] text-rose-600 font-bold">⚠️ модной, модонтой は間違い！</td>
+                    </tr>
+                    <tr class="bg-rose-50/30">
+                      <td class="p-2.5 font-bold text-slate-900">対格（〜を）</td>
+                      <td class="p-2.5 font-mono text-indigo-700">-ыг / -ийг</td>
+                      <td class="p-2.5 font-bold">мод / хөл</td>
+                      <td class="p-2.5 font-bold text-rose-700">модыг / хөлийг</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-black">現れない ❌</span></td>
+                      <td class="p-2.5 text-[11px] text-rose-600 font-bold">⚠️ модныг は間違い！通常の子音語尾と同じ</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ⑦ 辞書形から格変化するプロセス -->
+            <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-indigo-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">7</span>
+                辞書形から格変化するプロセス（音韻変化の仕組み）
+              </h4>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                隠れн名詞が変化する際、内部では次のような段階を経て語形が生成されます。
+              </p>
+              <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-2">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-800 w-24">【属格の例】</span>
+                  <span class="font-mono bg-white px-2 py-1 rounded border">мод</span>
+                  <span>＋</span>
+                  <span class="font-mono bg-indigo-50 px-2 py-1 rounded text-indigo-700">（隠れн復活）-н-</span>
+                  <span>＋</span>
+                  <span class="font-mono bg-indigo-50 px-2 py-1 rounded text-indigo-700">-ы</span>
+                  <span>＝</span>
+                  <span class="font-bold text-emerald-700 font-mono text-sm">модны</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-800 w-24">【与位格の例】</span>
+                  <span class="font-mono bg-white px-2 py-1 rounded border">мод</span>
+                  <span>＋</span>
+                  <span class="text-slate-500">子音連続回避の母音挿入 (-о-)</span>
+                  <span>＋</span>
+                  <span class="font-mono bg-indigo-50 px-2 py-1 rounded text-indigo-700">-нд</span>
+                  <span>＝</span>
+                  <span class="font-bold text-emerald-700 font-mono text-sm">модонд</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-800 w-24">【奪格の例】</span>
+                  <span class="font-mono bg-white px-2 py-1 rounded border">мод</span>
+                  <span>＋</span>
+                  <span class="font-mono bg-indigo-50 px-2 py-1 rounded text-indigo-700">-ноос</span>
+                  <span>＝</span>
+                  <span class="font-bold text-emerald-700 font-mono text-sm">модноос</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ⑧ 母音調和との関係 -->
+            <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-indigo-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">8</span>
+                母音調和との関係（男性語・女性語・円唇母音）
+              </h4>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                隠れнの語尾もモンゴル語の厳格な母音調和に従います。
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-lg space-y-1">
+                  <div class="font-bold text-amber-900">男性語（а, о, у）</div>
+                  <div class="text-slate-600 text-[11px]">
+                    ・мод (o) → 属: <code>модны</code> / 与: <code>модонд</code> / 奪: <code>модноос</code><br>
+                    ・ус (u) → 属: <code>усны</code> / 与: <code>усанд</code> / 奪: <code>уснаас</code>
+                  </div>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 p-2.5 rounded-lg space-y-1">
+                  <div class="font-bold text-blue-900">女性語（э, ө, ү）</div>
+                  <div class="text-slate-600 text-[11px]">
+                    ・хөл (ö) → 属: <code>хөлний</code> / 与: <code>хөлөнд</code> / 奪: <code>хөлнөөс</code><br>
+                    ・нэр (e) → 属: <code>нэрний</code> / 与: <code>нэрэнд</code> / 奪: <code>нэрнээс</code>
+                  </div>
+                </div>
+                <div class="bg-purple-50 border border-purple-200 p-2.5 rounded-lg space-y-1">
+                  <div class="font-bold text-purple-900">円唇母音調和（о / ө）</div>
+                  <div class="text-slate-600 text-[11px]">
+                    第1音節が о または ө の場合、与位格やつなぎ母音は必ず о / ө に引っ張られます（例：<code>модонд</code>, <code>хөлөнд</code>）。
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ⑨ 正しい具体例（文章・フレーズ） -->
+            <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-indigo-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">9</span>
+                正しい具体例（日常会話・実践例文）
+              </h4>
+              <div class="space-y-2 text-xs">
+                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                  <div class="font-bold text-slate-900">Би модонд авирсан.</div>
+                  <div class="text-slate-600 text-[11px]">私は木に登った。（мод ＋ 与位格 <code>-онд</code>）</div>
+                </div>
+                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                  <div class="font-bold text-slate-900">Усны дусал чулууг цоолно.</div>
+                  <div class="text-slate-600 text-[11px]">水の雫は石に穴をあける（ことわざ）。（ус ＋ 属格 <code>-ны</code>）</div>
+                </div>
+                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                  <div class="font-bold text-slate-900">Энэ ширээг модоор хийсэн.</div>
+                  <div class="text-slate-600 text-[11px]">この机は木で作られた。（具格はнが出ず <code>модоор</code>！）</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ⑩ 例外や注意点 -->
+            <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-indigo-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">10</span>
+                例外や注意点：連体形（形容詞化）との混同に注意！
+              </h4>
+              <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs space-y-1.5 text-slate-800">
+                <p>
+                  <strong>⚠️ 名詞修飾の「-н」（連体形）</strong><br>
+                  隠れн名詞が後ろの名詞を直接修飾するとき、語末に「н」をつけて形容詞のように機能します。<br>
+                  ・<code>модон ширээ</code>（木の机 / 木造の机）<br>
+                  ・<code>төмөр</code>（鉄）→ <code>төмөр зам</code>（鉄道）<br>
+                  これは<strong>具格（〜で作った）とは全く別の文法</strong>です。「木で作った」と言う場合は必ず <code>модоор хийсэн</code> となり、<code>модноор</code> とは言いません。
+                </p>
+              </div>
+            </div>
+
+            <!-- ⑪ 間違えやすいパターン（ワースト3） -->
+            <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-indigo-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">11</span>
+                学習者が間違えやすいパターン（ワースト3）
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-lg">
+                  <div class="font-bold text-rose-900">❌ 具格にнをつけてしまう</div>
+                  <div class="text-[11px] text-slate-600 mt-1">
+                    誤：<code>модноор</code><br>
+                    正：<strong class="text-emerald-700">модоор</strong><br>
+                    具格では隠れнは絶対に出ません！
+                  </div>
+                </div>
+                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-lg">
+                  <div class="font-bold text-rose-900">❌ 対格にнをつけてしまう</div>
+                  <div class="text-[11px] text-slate-600 mt-1">
+                    誤：<code>модныг</code><br>
+                    正：<strong class="text-emerald-700">модыг</strong><br>
+                    対格も通常の子音語尾と同じです。
+                  </div>
+                </div>
+                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-lg">
+                  <div class="font-bold text-rose-900">❌ 一般名詞に無差別適用</div>
+                  <div class="text-[11px] text-slate-600 mt-1">
+                    誤：<code>нохой</code> → <code>нохойны</code><br>
+                    正：<strong class="text-emerald-700">нохойн</strong><br>
+                    二重母音の一般名詞は隠れнではなく通常の短縮語尾です。
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- フッタージャンプ -->
+            <div class="text-center pt-2">
+              <button type="button" class="btn-jump-to-tab inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-rose-500 hover:brightness-110 text-white font-black px-6 py-2.5 rounded-xl text-xs shadow-md transition-all active:scale-95" data-target="ref-tab-compare-n-g">
+                <span>⚖️</span> 隠れн と 隠れг の違いを一発で理解する【徹底比較ページへ】 →
+              </button>
+            </div>
+
+          </div>
+
+          <!-- タブ2: 隠れг (нууц г) 完全解説 -->
+          <div id="ref-tab-hidden-g" class="ref-subtab-pane hidden space-y-4">
+
+            <!-- クイックジャンプバナー -->
+            <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white p-4 rounded-2xl shadow-md flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div>
+                <span class="inline-block bg-blue-500 text-white text-[11px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider mb-1">Phonetics Master</span>
+                <h3 class="text-base font-black flex items-center gap-2">
+                  <span>🔵</span> 隠れг（нууц г）完全解説ハンドブック
+                </h3>
+                <p class="text-xs text-blue-200 mt-0.5">軟口蓋鼻音 [ŋ] および長母音末尾名詞で現れる「г」の厳格な音韻ルール</p>
+              </div>
+              <button type="button" class="btn-jump-to-tab shrink-0 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow transition-all active:scale-95 flex items-center gap-1.5" data-target="ref-tab-compare-n-g">
+                <span>⚖️</span> 隠れг vs 隠れн 比較表を見る →
+              </button>
+            </div>
+
+            <!-- ① 隠れгとは何か -->
+            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-blue-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">1</span>
+                隠れг（нууц г）とは何か
+              </h4>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                モンゴル語において「**隠れг（нууц г）**」と呼ばれる現象には、実は**2つの全く異なる言語学的背景**が存在します。<br>
+                1つ目は**語末が軟口蓋鼻音 [ŋ]（ング音）の名詞**に母音語尾がつくとき、奥に潜んでいた閉鎖音「г」が表面化する現象。<br>
+                2つ目は**長母音・二重母音で終わる「人・親族・固有名詞」**に格語尾がつくとき、母音の衝突を防ぐために緩衝音として「г」が挿入される現象です。
+              </p>
+            </div>
+
+            <!-- ② なぜ隠れгが存在するのか（音韻論的理由） -->
+            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-blue-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">2</span>
+                なぜ隠れгが存在するのか（調音点と音韻ルール）
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                  <div class="font-bold text-slate-900">原因A：鼻音 [ŋ] の閉鎖性（歴史的 *g / *ŋ）</div>
+                  <p class="text-slate-600 text-[11px] leading-relaxed">
+                    軟口蓋鼻音 [ŋ] は舌の付け根を軟口蓋に押し当てて発音します。この調音点は「г [g/ɢ]」と全く同じ位置です。そのため後ろに母音が続くと、自然に舌が離れる瞬間に破裂・摩擦が起きて「г」の音が実体化します。
+                  </p>
+                </div>
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                  <div class="font-bold text-slate-900">原因B：母音衝突（Hiatus）の回避</div>
+                  <p class="text-slate-600 text-[11px] leading-relaxed">
+                    長母音で終わる名詞（例：<code>хүү</code>「息子」）に直接母音で始まる助詞（<code>-ийн</code> 等）をつけると母音同士がぶつかり発音不能になります。これを防ぐため、音節の境界に子音「г」を挟み込みます。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ③ どのような名詞に現れるのか -->
+            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-blue-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">3</span>
+                どのような名詞に現れるのか（対象グループ）
+              </h4>
+              <div class="space-y-2 text-xs">
+                <div class="p-3 bg-blue-50/60 rounded-xl border border-blue-200">
+                  <div class="font-bold text-blue-950 mb-1">グループ1：語末が軟口蓋鼻音 [ŋ] で終わる名詞</div>
+                  <p class="text-slate-700 text-[11px]">
+                    ・<code>сан</code> [saŋ]（基金・金庫）<br>
+                    ・<code>байшин</code> [baishiŋ]（建物）<br>
+                    ・<code>шувуун</code> [shuvuŋ]（鳥の〜 / 鳥）
+                  </p>
+                </div>
+                <div class="p-3 bg-indigo-50/60 rounded-xl border border-indigo-200">
+                  <div class="font-bold text-indigo-950 mb-1">グループ2：長母音・二重母音で終わる「人・親族・固有名詞」</div>
+                  <p class="text-slate-700 text-[11px]">
+                    ・親族・人：<code>хүү</code>（息子）, <code>дүү</code>（弟・妹）, <code>ээж</code>（母）<br>
+                    ・固有名詞（人名・地名）：<code>Бат</code>, <code>Болд</code>, <code>Токио</code>（東京）<br>
+                    ※一般の事物（<code>ширээ</code>「机」等）は「г」ではなく「н」が入るため、この区別が極めて重要です！
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ④ 隠れгが現れる条件（歯茎鼻音 n との決定的違い） -->
+            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-blue-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">4</span>
+                隠れгが現れる条件（調音点チェック：舌先 vs 舌の奥）
+              </h4>
+              <div class="overflow-x-auto rounded-xl border border-slate-200 text-xs">
+                <table class="w-full text-left">
+                  <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+                    <tr>
+                      <th class="p-2.5">音の種類</th>
+                      <th class="p-2.5">発音の調音点</th>
+                      <th class="p-2.5">代表単語</th>
+                      <th class="p-2.5">格変化時の「г」出現</th>
+                      <th class="p-2.5">実際の変化形</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100">
+                    <tr class="bg-rose-50/40">
+                      <td class="p-2.5 font-bold text-rose-900">歯茎鼻音 [n]</td>
+                      <td class="p-2.5 text-slate-600">舌先が上の前歯の裏につく</td>
+                      <td class="p-2.5 font-bold">он（年）, хүн（人）, охин（少女）</td>
+                      <td class="p-2.5 font-bold text-rose-700"><span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px]">絶対に現れない ❌</span></td>
+                      <td class="p-2.5 text-slate-800"><code>оны</code>, <code>хүний</code>, <code>охины</code>（×онгийн は完全な誤り）</td>
+                    </tr>
+                    <tr class="bg-emerald-50/40">
+                      <td class="p-2.5 font-bold text-emerald-900">軟口蓋鼻音 [ŋ]</td>
+                      <td class="p-2.5 text-slate-600">舌の奥が持ち上がり軟口蓋に付く</td>
+                      <td class="p-2.5 font-bold">сан（基金）, байшин（建物）</td>
+                      <td class="p-2.5 font-bold text-emerald-700"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px]">必ず現れる ⭕</span></td>
+                      <td class="p-2.5 text-slate-800"><code>сангийн</code>, <code>байшингийн</code></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ⑤＆⑥ 各格での変化・現れる格と現れない格の【全格網羅表】 -->
+            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-blue-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">5 & 6</span>
+                各格での変化一覧【全6格網羅マスターテーブル】
+              </h4>
+              <p class="text-xs text-slate-600">
+                軟口蓋鼻音名詞 <strong>сан</strong>（基金）および長母音親族名詞 <strong>хүү</strong>（息子）の全格変化です。
+              </p>
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-xs text-left">
+                  <thead class="bg-blue-50/80 text-blue-950 font-black border-b border-blue-100">
+                    <tr>
+                      <th class="p-2.5">格（意味）</th>
+                      <th class="p-2.5">接続する語尾</th>
+                      <th class="p-2.5">辞書形</th>
+                      <th class="p-2.5">活用後（変化形）</th>
+                      <th class="p-2.5">隠れгの有無</th>
+                      <th class="p-2.5">注意点・解説</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 font-medium">
+                    <tr class="bg-emerald-50/40">
+                      <td class="p-2.5 font-bold text-slate-900">属格（〜の）</td>
+                      <td class="p-2.5 font-mono text-blue-700">-гийн / -ийн</td>
+                      <td class="p-2.5 font-bold">сан / хүү</td>
+                      <td class="p-2.5 font-bold text-emerald-700">сангийн / хүүгийн</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">現れる ⭕</span></td>
+                      <td class="p-2.5 text-[11px] text-slate-600">母音調和により -гийн が接続する</td>
+                    </tr>
+                    <tr class="bg-rose-50/30">
+                      <td class="p-2.5 font-bold text-slate-900">与位格（〜に/で）</td>
+                      <td class="p-2.5 font-mono text-blue-700">-д / -т</td>
+                      <td class="p-2.5 font-bold">сан / хүү</td>
+                      <td class="p-2.5 font-bold text-rose-700">санд / хүүд</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-black">現れない ❌</span></td>
+                      <td class="p-2.5 text-[11px] text-rose-600 font-bold">子音 -д が直接付くため г は出現しない（×сангадは誤り）</td>
+                    </tr>
+                    <tr class="bg-emerald-50/40">
+                      <td class="p-2.5 font-bold text-slate-900">奪格（〜から）</td>
+                      <td class="p-2.5 font-mono text-blue-700">-аас⁴ / -гаас⁴</td>
+                      <td class="p-2.5 font-bold">сан / хүү</td>
+                      <td class="p-2.5 font-bold text-emerald-700">сангаас / хүүгээс</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">現れる ⭕</span></td>
+                      <td class="p-2.5 text-[11px] text-slate-600">母音で始まる奪格語尾の前に г が挟まる</td>
+                    </tr>
+                    <tr class="bg-emerald-50/40">
+                      <td class="p-2.5 font-bold text-slate-900">具格（〜で/手段）</td>
+                      <td class="p-2.5 font-mono text-blue-700">-аар⁴ / -гаар⁴</td>
+                      <td class="p-2.5 font-bold">сан / хүү</td>
+                      <td class="p-2.5 font-bold text-emerald-700">сангаар / хүүгээр</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">現れる ⭕</span></td>
+                      <td class="p-2.5 text-[11px] text-slate-600">具格語尾の前に г が出現する（隠れнと対照的！）</td>
+                    </tr>
+                    <tr class="bg-rose-50/30">
+                      <td class="p-2.5 font-bold text-slate-900">共格（〜と/所持）</td>
+                      <td class="p-2.5 font-mono text-blue-700">-тай³</td>
+                      <td class="p-2.5 font-bold">сан / хүү</td>
+                      <td class="p-2.5 font-bold text-rose-700">сантай / хүүтэй</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-black">現れない ❌</span></td>
+                      <td class="p-2.5 text-[11px] text-slate-600">子音 t で始まるため緩衝音 г は不要</td>
+                    </tr>
+                    <tr class="bg-emerald-50/40">
+                      <td class="p-2.5 font-bold text-slate-900">対格（〜を）</td>
+                      <td class="p-2.5 font-mono text-blue-700">-г / -ийг</td>
+                      <td class="p-2.5 font-bold">сан / хүү</td>
+                      <td class="p-2.5 font-bold text-emerald-700">санг / хүүг</td>
+                      <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">現れる ⭕</span></td>
+                      <td class="p-2.5 text-[11px] text-slate-600">対格語尾そのものが「-г」として付加される</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ⑦ 辞書形から格変化するプロセス -->
+            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-blue-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">7</span>
+                辞書形から格変化するプロセス（音韻変化の仕組み）
+              </h4>
+              <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-2">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-800 w-28">【軟口蓋鼻音 属格】</span>
+                  <span class="font-mono bg-white px-2 py-1 rounded border">байшин [ŋ]</span>
+                  <span>＋</span>
+                  <span class="font-mono bg-blue-50 px-2 py-1 rounded text-blue-700">-гийн</span>
+                  <span>＝</span>
+                  <span class="font-bold text-emerald-700 font-mono text-sm">байшингийн</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-800 w-28">【親族長母音 奪格】</span>
+                  <span class="font-mono bg-white px-2 py-1 rounded border">хүү [üü]</span>
+                  <span>＋</span>
+                  <span class="font-mono bg-blue-50 px-2 py-1 rounded text-blue-700">-г- (緩衝)</span>
+                  <span>＋</span>
+                  <span class="font-mono bg-blue-50 px-2 py-1 rounded text-blue-700">-ээс</span>
+                  <span>＝</span>
+                  <span class="font-bold text-emerald-700 font-mono text-sm">хүүгээс</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ⑧ 母音調和との関係 -->
+            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-blue-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">8</span>
+                母音調和との関係（属格・奪格・具格の語尾選択）
+              </h4>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                隠れгを伴う語尾は、先行する語幹の母音の種類（男性語・女性語・円唇）によって厳格に4変化します。<br>
+                ・<strong>属格</strong>: 常に <code>-гийн</code>（男性語でも女性語でも г の後は и が使われる規則）<br>
+                ・<strong>奪格</strong>: <code>-гаас / -гээс / -гоос / -гөөс</code><br>
+                ・<strong>具格</strong>: <code>-гаар / -гээр / -гоор / -гөөр</code>
+              </p>
+            </div>
+
+            <!-- ⑨ 正しい具体例（文章・フレーズ） -->
+            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-blue-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">9</span>
+                正しい具体例（日常会話・実践例文）
+              </h4>
+              <div class="space-y-2 text-xs">
+                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                  <div class="font-bold text-slate-900">Байшингийн дээвэр дээр шувуу сууж байна.</div>
+                  <div class="text-slate-600 text-[11px]">建物の屋根の上に鳥がとまっている。（байшин ＋ 属格 <code>-гийн</code>）</div>
+                </div>
+                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                  <div class="font-bold text-slate-900">Би хүүгээ сургуульд явуулсан.</div>
+                  <div class="text-slate-600 text-[11px]">私は息子を学校へ通わせた。（хүү ＋ 対格・再帰 <code>-гээ</code>）</div>
+                </div>
+                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                  <div class="font-bold text-slate-900">Токиогийн их сургууль.</div>
+                  <div class="text-slate-600 text-[11px]">東京大学。（固有名詞 Токио ＋ 属格 <code>-гийн</code>）</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ⑩ 例外や注意点 -->
+            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-blue-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">10</span>
+                例外や注意点：一般名詞の長母音末尾には「г」は入らない！
+              </h4>
+              <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs space-y-1 text-slate-800">
+                <p>
+                  <strong>⚠️ 最大の落とし穴：事物名詞 vs 親族・固有名詞</strong><br>
+                  同じ長母音末尾でも、**物・一般名詞**には「г」ではなく「**н**」が入ります！<br>
+                  ・<code>ширээ</code>（机）→ <code>ширээний</code> ⭕（<code>ширээгийн</code> ❌）<br>
+                  ・<code>нохой</code>（犬）→ <code>нохойн</code> ⭕<br>
+                  「г」が入るのは**人・親族・人名・地名**に限られるという原則を絶対に忘れないでください。
+                </p>
+              </div>
+            </div>
+
+            <!-- ⑪ 間違えやすいパターン（ワースト3） -->
+            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-2xs space-y-2">
+              <h4 class="font-black text-sm text-blue-950 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">11</span>
+                学習者が間違えやすいパターン（ワースト3）
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-lg">
+                  <div class="font-bold text-rose-900">❌ 歯茎鼻音 [n] に г をつけてしまう</div>
+                  <div class="text-[11px] text-slate-600 mt-1">
+                    誤：<code>онгийн</code>, <code>хүнгийн</code><br>
+                    正：<strong class="text-emerald-700">оны, хүний</strong><br>
+                    舌先が前歯につく音に г は絶対出ません！
+                  </div>
+                </div>
+                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-lg">
+                  <div class="font-bold text-rose-900">❌ 一般名詞に г をつけてしまう</div>
+                  <div class="text-[11px] text-slate-600 mt-1">
+                    誤：<code>ширээгийн</code>, <code>дээлийн</code><br>
+                    正：<strong class="text-emerald-700">ширээний</strong><br>
+                    親族・人名以外は「н」が入ります。
+                  </div>
+                </div>
+                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-lg">
+                  <div class="font-bold text-rose-900">❌ 与位格に г をつけてしまう</div>
+                  <div class="text-[11px] text-slate-600 mt-1">
+                    誤：<code>сангад</code><br>
+                    正：<strong class="text-emerald-700">санд</strong><br>
+                    与位格は子音 -д が直接接続します。
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- フッタージャンプ -->
+            <div class="text-center pt-2">
+              <button type="button" class="btn-jump-to-tab inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-rose-500 hover:brightness-110 text-white font-black px-6 py-2.5 rounded-xl text-xs shadow-md transition-all active:scale-95" data-target="ref-tab-compare-n-g">
+                <span>⚖️</span> 隠れг と 隠れн の違いを一発で理解する【徹底比較ページへ】 →
+              </button>
+            </div>
+
+          </div>
+
+          <!-- 新設タブ: 隠れн vs 隠れг 徹底比較表 -->
+          <div id="ref-tab-compare-n-g" class="ref-subtab-pane hidden space-y-4">
+
+            <!-- ヘッダーバナー -->
+            <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600 text-white p-4 rounded-2xl shadow-md">
+              <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div>
+                  <span class="inline-block bg-white/20 text-white text-[11px] font-black px-2.5 py-0.5 rounded-md uppercase tracking-wider mb-1">Decisive Comparison</span>
+                  <h3 class="text-base sm:text-lg font-black flex items-center gap-2">
+                    <span>⚖️</span> 隠れн (нууц н) vs 隠れг (нууц г) 徹底比較マスター表
+                  </h3>
+                  <p class="text-xs text-amber-100 mt-0.5">
+                    「いつ н が出て、いつ г が出るのか？」モンゴル語学習最大の難所を全10項目と実例で完全整理！
+                  </p>
+                </div>
+                <div class="flex gap-2">
+                  <button type="button" class="btn-jump-to-tab bg-indigo-900/80 hover:bg-indigo-900 text-white font-bold px-3 py-1.5 rounded-lg text-xs shadow transition active:scale-95" data-target="ref-tab-hidden-n">
+                    🟢 隠れн詳細へ
+                  </button>
+                  <button type="button" class="btn-jump-to-tab bg-blue-900/80 hover:bg-blue-900 text-white font-bold px-3 py-1.5 rounded-lg text-xs shadow transition active:scale-95" data-target="ref-tab-hidden-g">
+                    🔵 隠れг詳細へ
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 全10項目 比較対比表 -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+              <h4 class="font-black text-sm text-slate-900 flex items-center gap-2">
+                <span>📋</span> 【全10項目】隠れн と 隠れг の決定的相違点
+              </h4>
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-xs text-left">
+                  <thead class="bg-slate-100 text-slate-800 font-black border-b border-slate-200">
+                    <tr>
+                      <th class="p-2.5 w-28">比較項目</th>
+                      <th class="p-2.5 bg-indigo-50/60 text-indigo-950 w-1/2">🟢 隠れн（нууц н）</th>
+                      <th class="p-2.5 bg-blue-50/60 text-blue-950 w-1/2">🔵 隠れг（нууц г）</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 font-medium">
+                    <tr>
+                      <td class="p-2.5 font-bold text-slate-700 bg-slate-50">1. 基本的な仕組み</td>
+                      <td class="p-2.5 text-slate-800 leading-relaxed">
+                        原形（辞書形）では消えている語末の <code>*n</code> が、特定の格助詞接続時に復活する。
+                      </td>
+                      <td class="p-2.5 text-slate-800 leading-relaxed">
+                        軟口蓋鼻音 [ŋ] の閉鎖音が表面化するか、長母音連続を避ける緩衝音として「г」が入る。
                       </td>
                     </tr>
-                    <tr class="bg-blue-50/40">
-                      <td class="p-2.5 font-black text-indigo-950">軟口蓋鼻音<br><span class="text-3xs text-indigo-600 font-normal">（ng [ŋ]）</span></td>
-                      <td class="p-2.5">舌の奥が持ち上がり、口の奥で「ング」と響かせる鼻音</td>
-                      <td class="p-2.5 text-center font-black text-emerald-700 bg-emerald-50/60">⭕ 現れる！<br><span class="text-3xs text-emerald-800 font-bold">（-гийн が出現）</span></td>
-                      <td class="p-2.5 font-bold font-mono text-indigo-950">
-                        ・<strong>сан</strong>（基金・庫）→ сан<strong>гийн</strong><br>
-                        ・<strong>байшин</strong>（建物）→ байшин<strong>гийн</strong>
+                    <tr>
+                      <td class="p-2.5 font-bold text-slate-700 bg-slate-50">2. 出現する名詞</td>
+                      <td class="p-2.5 text-slate-800">
+                        基礎的固有語（<code>мод</code>, <code>ус</code>, <code>хөл</code>, <code>зам</code>, <code>гар</code> など）
+                      </td>
+                      <td class="p-2.5 text-slate-800">
+                        ① 軟口蓋鼻音末尾（<code>сан</code>, <code>байшин</code>）<br>
+                        ② 長母音親族・固有名詞（<code>хүү</code>, <code>дүү</code>, <code>Токио</code>）
+                      </td>
+                    </tr>
+                    <tr class="bg-indigo-50/20">
+                      <td class="p-2.5 font-bold text-indigo-900 bg-indigo-50/40">3. 属格（〜の）</td>
+                      <td class="p-2.5 font-bold text-emerald-700">
+                        現れる ⭕（<code>-ны / -ний</code>）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">мод → модны / хөл → хөлний</span>
+                      </td>
+                      <td class="p-2.5 font-bold text-emerald-700">
+                        現れる ⭕（<code>-гийн</code>）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">сан → сангийн / хүү → хүүгийн</span>
+                      </td>
+                    </tr>
+                    <tr class="bg-amber-50/30">
+                      <td class="p-2.5 font-bold text-amber-900 bg-amber-50/50">4. 与位格（〜に/で）</td>
+                      <td class="p-2.5 font-bold text-emerald-700">
+                        現れる ⭕（<code>-нд / -анд⁴</code>）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">мод → модонд / хөл → хөлөнд</span>
+                      </td>
+                      <td class="p-2.5 font-bold text-rose-700">
+                        現れない ❌（子音 <code>-д</code> が直接接続）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">сан → санд / хүү → хүүд</span>
+                      </td>
+                    </tr>
+                    <tr class="bg-indigo-50/20">
+                      <td class="p-2.5 font-bold text-indigo-900 bg-indigo-50/40">5. 奪格（〜から）</td>
+                      <td class="p-2.5 font-bold text-emerald-700">
+                        現れる ⭕（<code>-наас⁴</code>）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">мод → модноос / хөл → хөлнөөс</span>
+                      </td>
+                      <td class="p-2.5 font-bold text-emerald-700">
+                        現れる ⭕（<code>-гаас⁴</code>）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">сан → сангаас / хүү → хүүгээс</span>
+                      </td>
+                    </tr>
+                    <tr class="bg-amber-50/30">
+                      <td class="p-2.5 font-bold text-amber-900 bg-amber-50/50">6. 具格（〜で/手段）</td>
+                      <td class="p-2.5 font-bold text-rose-700">
+                        現れない ❌（<code>-аар⁴</code> のみ）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">мод → <strong>модоор</strong>（×модноор は完全誤り）</span>
+                      </td>
+                      <td class="p-2.5 font-bold text-emerald-700">
+                        現れる ⭕（<code>-гаар⁴</code>）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">сан → <strong>сангаар</strong> / хүү → <strong>хүүгээр</strong></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="p-2.5 font-bold text-slate-700 bg-slate-50">7. 共格（〜と）</td>
+                      <td class="p-2.5 font-bold text-rose-700">
+                        現れない ❌（<code>-тай³</code>）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">мод → модтой</span>
+                      </td>
+                      <td class="p-2.5 font-bold text-rose-700">
+                        現れない ❌（<code>-тай³</code>）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">сан → сантай / хүү → хүүтэй</span>
+                      </td>
+                    </tr>
+                    <tr class="bg-amber-50/30">
+                      <td class="p-2.5 font-bold text-amber-900 bg-amber-50/50">8. 対格（〜を）</td>
+                      <td class="p-2.5 font-bold text-rose-700">
+                        現れない ❌（<code>-ыг / -ийг</code>）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">мод → <strong>модыг</strong>（×модныг は誤り）</span>
+                      </td>
+                      <td class="p-2.5 font-bold text-emerald-700">
+                        現れる ⭕（語尾そのものが <code>-г</code>）<br>
+                        <span class="text-xs font-mono font-normal text-slate-600">сан → <strong>санг</strong> / хүү → <strong>хүүг</strong></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="p-2.5 font-bold text-slate-700 bg-slate-50">9. 最大の例外・罠</td>
+                      <td class="p-2.5 text-rose-700 leading-relaxed font-bold">
+                        形容詞化 <code>модон ширээ</code>（木の机）を具格（<code>модоор</code>）と混同して <code>модноор</code> と言ってしまうこと！
+                      </td>
+                      <td class="p-2.5 text-rose-700 leading-relaxed font-bold">
+                        歯茎鼻音 [n]（<code>он</code>, <code>хүн</code>）に г をつけたり、一般名詞長母音（<code>ширээ</code>）に г をつけること！
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="p-2.5 font-bold text-slate-700 bg-slate-50">10. 一発暗記のコツ</td>
+                      <td class="p-2.5 text-indigo-900 font-bold bg-indigo-50/40">
+                        「隠れн は【属格・与位格・奪格】の3つだけ！ 具格・対格には絶対出ない！」
+                      </td>
+                      <td class="p-2.5 text-blue-900 font-bold bg-blue-50/40">
+                        「ング音[ŋ] と 人の長母音に г！ 舌先 n と 机 ширээ に г は出ない！」
                       </td>
                     </tr>
                   </tbody>
@@ -223605,47 +224194,103 @@ class ReferenceGuideComponent {
               </div>
             </div>
 
-            <div class="bg-sky-50 p-3.5 rounded-xl border border-sky-200 text-xs text-sky-950 space-y-2">
-              <div class="font-black text-sm flex items-center gap-1.5 text-sky-900">
-                <span>💡</span> 隠れг（нууц г）の出現パターン
+            <!-- 同一条件での具体例語形比較 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <!-- 対決① 長母音末尾名詞 -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2.5">
+                <div class="flex items-center justify-between border-b pb-2">
+                  <h5 class="font-black text-sm text-slate-900 flex items-center gap-1.5">
+                    <span>⚔️</span> 対決①：長母音末尾名詞の格変化
+                  </h5>
+                  <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">重要度★★★</span>
+                </div>
+                <p class="text-xs text-slate-600">
+                  語末が長母音・二重母音のとき、**親族・人名**には「г」が入り、**事物・一般名詞**には「н」が入ります。
+                </p>
+                <div class="space-y-2 text-xs">
+                  <div class="p-2.5 bg-blue-50/70 border border-blue-200 rounded-lg">
+                    <div class="font-bold text-blue-950">【人・親族・固有名詞】例：хүү（息子）→ 「г」が入る！</div>
+                    <div class="grid grid-cols-3 gap-1 mt-1 text-[11px] font-mono text-blue-900">
+                      <div>属格: <strong>хүүгийн</strong></div>
+                      <div>対格: <strong>хүүг</strong></div>
+                      <div>奪格: <strong>хүүгээс</strong></div>
+                      <div>具格: <strong>хүүгээр</strong></div>
+                      <div>与位格: <strong>хүүд</strong></div>
+                      <div>共格: <strong>хүүтэй</strong></div>
+                    </div>
+                  </div>
+                  <div class="p-2.5 bg-indigo-50/70 border border-indigo-200 rounded-lg">
+                    <div class="font-bold text-indigo-950">【事物・一般名詞】例：ширээ（机）→ 「н」が入る！</div>
+                    <div class="grid grid-cols-3 gap-1 mt-1 text-[11px] font-mono text-indigo-900">
+                      <div>属格: <strong>ширээний</strong></div>
+                      <div>対格: <strong>ширээг</strong></div>
+                      <div>奪格: <strong>ширээнээс</strong></div>
+                      <div>具格: <strong>ширээгээр</strong></div>
+                      <div>与位格: <strong>ширээнд</strong></div>
+                      <div>共格: <strong>ширээтэй</strong></div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p class="leading-relaxed">
-                隠れг は主に<strong>「長母音・二重母音末尾名詞」</strong>や<strong>「子音н末尾名詞」</strong>の属格・奪格や、動詞接尾辞の接続時に出現します。
-              </p>
+
+              <!-- 対決② 語末子音・鼻音名詞 -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2.5">
+                <div class="flex items-center justify-between border-b pb-2">
+                  <h5 class="font-black text-sm text-slate-900 flex items-center gap-1.5">
+                    <span>⚔️</span> 対決②：語末子音・鼻音名詞の3極比較
+                  </h5>
+                  <span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">最頻出ひっかけ</span>
+                </div>
+                <p class="text-xs text-slate-600">
+                  隠れн名詞 <code>мод</code>、軟口蓋鼻音 <code>сан</code>、歯茎鼻音 <code>он</code> の属格・具格の比較です。
+                </p>
+                <div class="space-y-2 text-xs">
+                  <div class="p-2 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between">
+                    <div>
+                      <span class="font-bold text-slate-900">мод</span> (隠れн)
+                    </div>
+                    <div class="text-[11px] text-right font-mono">
+                      属: <strong class="text-emerald-700">модны</strong> (н出現) / 具: <strong class="text-rose-700">модоор</strong> (н不出現)
+                    </div>
+                  </div>
+                  <div class="p-2 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
+                    <div>
+                      <span class="font-bold text-slate-900">сан</span> (軟口蓋 [ŋ])
+                    </div>
+                    <div class="text-[11px] text-right font-mono">
+                      属: <strong class="text-blue-700">сангийн</strong> (г出現) / 具: <strong class="text-blue-700">сангаар</strong> (г出現)
+                    </div>
+                  </div>
+                  <div class="p-2 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-between">
+                    <div>
+                      <span class="font-bold text-slate-900">он</span> (歯茎 [n])
+                    </div>
+                    <div class="text-[11px] text-right font-mono">
+                      属: <strong class="text-purple-700">оны</strong> (гもнも出ない！) / 具: <strong class="text-purple-700">оноор</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div class="p-3.5 rounded-xl border border-sky-200 bg-white space-y-2">
-                <div class="font-black text-sky-900 flex items-center gap-1.5">
-                  <span>1️⃣</span> 長母音・二重母音終わりの名詞
-                </div>
-                <p class="text-slate-600 text-[11px]">
-                  属格で単なる「-н」ではなく、<strong>「-гийн / -гийн」</strong>が付きます。
-                </p>
-                <div class="bg-slate-50 p-2 rounded-lg space-y-1 font-mono text-[11px]">
-                  <div>・хүү（息子） → <strong class="text-sky-700">хүүгийн</strong>（息子の）</div>
-                  <div>・дүү（弟・妹） → <strong class="text-sky-700">дүүгийн</strong>（弟・妹の）</div>
-                  <div>・зураа（線） → <strong class="text-sky-700">зураагийн</strong></div>
-                </div>
-              </div>
-
-              <div class="p-3.5 rounded-xl border border-sky-200 bg-white space-y-2">
-                <div class="font-black text-sky-900 flex items-center gap-1.5">
-                  <span>2️⃣</span> 子音「н」終わりの名詞の属格
-                </div>
-                <p class="text-slate-600 text-[11px]">
-                  子音 н で終わる語には、属格で<strong>「-гийн / -гийн」</strong>が接続します。
-                </p>
-                <div class="bg-slate-50 p-2 rounded-lg space-y-1 font-mono text-[11px]">
-                  <div>・байшин（建物） → <strong class="text-sky-700">байшингийн</strong>（建物の）</div>
-                  <div>・номын сан（図書館） → <strong class="text-sky-700">номын сангийн</strong></div>
-                  <div>・奪格: номын сан → <strong class="text-sky-700">номын сангаас</strong>（図書館から）</div>
-                </div>
+            <!-- ナビゲーションフッター -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+              <span class="font-bold text-slate-700">各文字の詳細な音韻ルールと全活用例はこちら：</span>
+              <div class="flex gap-2 w-full sm:w-auto">
+                <button type="button" class="btn-jump-to-tab flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2 rounded-lg shadow-2xs transition active:scale-95" data-target="ref-tab-hidden-n">
+                  🟢 隠れнの詳細解説へ
+                </button>
+                <button type="button" class="btn-jump-to-tab flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg shadow-2xs transition active:scale-95" data-target="ref-tab-hidden-g">
+                  🔵 隠れгの詳細解説へ
+                </button>
               </div>
             </div>
+
           </div>
 
-          <!-- タブ3: 落ちる母音 (гээгдэх эгшиг) -->
+<!-- タブ3: 落ちる母音 (гээгдэх эгшиг) -->
           <div id="ref-tab-dropping-vowel" class="ref-subtab-pane hidden space-y-3">
             <div class="bg-purple-50 p-3.5 rounded-xl border border-purple-200 text-xs text-purple-950 space-y-2">
               <div class="font-black text-sm flex items-center gap-1.5 text-purple-900">
@@ -225362,6 +226007,20 @@ class ReferenceGuideComponent {
         if (onNavigate) onNavigate('spatial_postposition_master');
       });
     }
+
+    // 🔗 タブ間クイックジャンプボタン（隠れн ⇄ 隠れг ⇄ 徹底比較）
+    container.querySelectorAll('.btn-jump-to-tab').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetTabId = btn.dataset.target;
+        if (!targetTabId) return;
+        const targetBtn = container.querySelector(`.btn-ref-subtab[data-tab="${targetTabId}"]`);
+        if (targetBtn) {
+          targetBtn.click();
+          targetBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      });
+    });
 
     // 例外リファレンスサブタブ切り替え
     const subtabs = container.querySelectorAll('.btn-ref-subtab');
