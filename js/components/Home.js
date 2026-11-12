@@ -670,6 +670,30 @@ export class HomeComponent {
               </div>
             </div>
 
+            <!-- 指示詞・場所・時間マスター（イラスト特化特訓） -->
+            <div class="bg-gradient-to-br from-sky-500/10 via-blue-500/5 to-indigo-500/10 rounded-xl p-5 border-2 border-sky-400 hover:border-sky-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="spatial_postposition_master">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🧭
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-sky-600 text-white shadow-2xs">
+                    🎨 イラスト特化
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-sky-700 transition-colors flex items-center gap-1.5">
+                  指示詞・場所・時間マスター
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  「これ/あれ/ここ/あそこ/あちらへ」などの指示代名詞・方向詞と、「上/下/中/前/後/間/〜まで」などの空間・時間後置詞をかわいいイラスト図解で完全マスター！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-sky-200/60 flex items-center justify-between text-xs font-black text-sky-700">
+                <span>イラスト特訓を開始する</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- リスニング問題（新機能・穴埋め/ディクテーション/数字特化） -->
             <div class="bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-sky-500/10 rounded-xl p-5 border-2 border-teal-400 hover:border-teal-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="listening_test">
               <div>

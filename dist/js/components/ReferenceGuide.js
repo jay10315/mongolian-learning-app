@@ -612,6 +612,22 @@ export class ReferenceGuideComponent {
 
           <!-- タブ6: 集合数詞 ＆ 位置・時間後置詞 -->
           <div id="ref-tab-collective" class="ref-subtab-pane hidden space-y-3">
+            
+            <!-- 指示詞・場所・時間マスター特訓へのリンクボタン -->
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-600 text-white p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+              <div>
+                <div class="font-black text-sm flex items-center gap-1.5">
+                  <span>🧭</span> イラスト特化！指示詞・場所・時間マスター特訓
+                </div>
+                <p class="text-xs text-sky-100 mt-0.5">
+                  上・下・中・前・後・間などの後置詞と指示代名詞を、かわいいイラスト図解と4択クイズで特訓！
+                </p>
+              </div>
+              <button type="button" id="btn-ref-start-spatial-master" class="px-4 py-2 bg-white text-indigo-700 hover:bg-indigo-50 font-black rounded-lg text-xs shadow-xs transition-all whitespace-nowrap cursor-pointer">
+                イラスト特訓を開始する →
+              </button>
+            </div>
+
             <div class="bg-sky-50/80 p-3.5 rounded-xl border border-sky-200 text-xs text-sky-950 space-y-2">
               <div class="font-black text-sm flex items-center gap-1.5 text-sky-900">
                 <span>🔢</span> 集合数詞（〜人で）＆ 位置・方向・時間後置詞
@@ -1802,6 +1818,14 @@ export class ReferenceGuideComponent {
       startHiddenTestBtn.addEventListener('click', () => {
         DeclensionTestComponent.startWithCategory('hidden_n_g');
         if (onNavigate) onNavigate('declension_test');
+      });
+    }
+
+    // 指示詞・場所・時間マスター特訓開始ボタン
+    const startSpatialMasterBtn = container.querySelector('#btn-ref-start-spatial-master');
+    if (startSpatialMasterBtn) {
+      startSpatialMasterBtn.addEventListener('click', () => {
+        if (onNavigate) onNavigate('spatial_postposition_master');
       });
     }
 

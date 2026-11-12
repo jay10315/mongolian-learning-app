@@ -115681,6 +115681,2088 @@ const pronounQuizzes = [
 ];
 
 
+// === js/data/spatialPostpositionData.js ===
+// ============================================================
+// モンゴル語 指示代名詞・場所＆時間後置詞マスター データファイル
+// 豊富なインラインSVGイラスト・詳細解説・音声再生完全対応
+// ============================================================
+
+const SPATIAL_CATEGORIES = [
+  {
+    "id": "all",
+    "name": "すべて",
+    "icon": "🧭",
+    "desc": "指示代名詞・場所・時間後置詞の全問特訓"
+  },
+  {
+    "id": "spatial",
+    "name": "空間・場所の後置詞",
+    "icon": "📍",
+    "desc": "上(дээр)・下(доор)・中(дотор)・前(өмнө)・後(ард)・間(хооронд)など"
+  },
+  {
+    "id": "demonstrative",
+    "name": "指示代名詞・方向詞",
+    "icon": "👉",
+    "desc": "これ(энэ)・あれ(тэр)・ここ(энд)・あそこ(тэнд)・こちらへ(наашаа)など"
+  },
+  {
+    "id": "temporal",
+    "name": "時間・時代表現の後置詞",
+    "icon": "⏰",
+    "desc": "〜前(өмнө)・〜後(дараа)・〜まで(хүртэл)・〜の間中(турш)・〜以来(хойш)など"
+  }
+];
+
+const SPATIAL_SVGS = {
+  "box_on": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_on" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#dbeafe"/></linearGradient>
+    <linearGradient id="box_grad1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_on)"/>
+  <ellipse cx="80" cy="104" rx="55" ry="10" fill="#93c5fd" opacity="0.6"/>
+  <!-- Box Top/Body -->
+  <polygon points="40,65 80,48 120,65 80,82" fill="#60a5fa" stroke="#1e40af" stroke-width="2"/>
+  <polygon points="40,65 80,82 80,105 40,88" fill="#3b82f6" stroke="#1e40af" stroke-width="2"/>
+  <polygon points="120,65 80,82 80,105 120,88" fill="#2563eb" stroke="#1e40af" stroke-width="2"/>
+  <!-- Penguin sitting ON top -->
+  <ellipse cx="80" cy="42" rx="14" ry="18" fill="#1e293b"/>
+  <ellipse cx="80" cy="45" rx="9" ry="12" fill="#ffffff"/>
+  <ellipse cx="80" cy="27" rx="10" ry="10" fill="#1e293b"/>
+  <ellipse cx="80" cy="28" rx="6" ry="6" fill="#ffffff"/>
+  <circle cx="77" cy="27" r="1.5" fill="#0f172a"/><circle cx="83" cy="27" r="1.5" fill="#0f172a"/>
+  <polygon points="80,29 76,33 84,33" fill="#f59e0b"/>
+  <!-- Feet -->
+  <ellipse cx="73" cy="58" rx="4" ry="2" fill="#f59e0b"/>
+  <ellipse cx="87" cy="58" rx="4" ry="2" fill="#f59e0b"/>
+  <!-- Highlight Arrow pointing ON TOP -->
+  <path d="M 80,6 L 80,16 M 75,12 L 80,17 L 85,12" stroke="#ef4444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Label Badge -->
+  <rect x="52" y="3" width="56" height="18" rx="9" fill="#ef4444"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дээр (上)</text>
+</svg>`,
+  "box_under": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_under" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fdf4ff"/><stop offset="100%" stop-color="#fae8ff"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_under)"/>
+  <ellipse cx="80" cy="106" rx="55" ry="8" fill="#e9d5ff" opacity="0.6"/>
+  <!-- Penguin peeking UNDER the box -->
+  <ellipse cx="80" cy="94" rx="14" ry="14" fill="#1e293b"/>
+  <ellipse cx="80" cy="96" rx="9" ry="10" fill="#ffffff"/>
+  <circle cx="77" cy="92" r="1.8" fill="#0f172a"/><circle cx="83" cy="92" r="1.8" fill="#0f172a"/>
+  <polygon points="80,94 77,98 83,98" fill="#f59e0b"/>
+  <!-- Floating Box Above -->
+  <polygon points="35,42 80,25 125,42 80,59" fill="#c084fc" stroke="#6b21a8" stroke-width="2"/>
+  <polygon points="35,42 80,59 80,82 35,65" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+  <polygon points="125,42 80,59 80,82 125,65" fill="#9333ea" stroke="#6b21a8" stroke-width="2"/>
+  <!-- Arrow pointing down UNDER -->
+  <path d="M 80,68 L 80,84 M 76,80 L 80,85 L 84,80" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Badge -->
+  <rect x="52" y="3" width="56" height="18" rx="9" fill="#9333ea"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">доор (下)</text>
+</svg>`,
+  "box_inside": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_in" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ecfdf5"/><stop offset="100%" stop-color="#d1fae5"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_in)"/>
+  <ellipse cx="80" cy="104" rx="50" ry="10" fill="#a7f3d0" opacity="0.6"/>
+  <!-- Box Back Faces -->
+  <polygon points="40,50 80,35 120,50 80,65" fill="#6ee7b7" stroke="#047857" stroke-width="1.5"/>
+  <!-- Penguin INSIDE -->
+  <ellipse cx="80" cy="55" rx="14" ry="18" fill="#1e293b"/>
+  <ellipse cx="80" cy="58" rx="9" ry="12" fill="#ffffff"/>
+  <ellipse cx="80" cy="42" rx="9" ry="9" fill="#1e293b"/>
+  <circle cx="77" cy="42" r="1.5" fill="#0f172a"/><circle cx="83" cy="42" r="1.5" fill="#0f172a"/>
+  <polygon points="80,45 77,48 83,48" fill="#f59e0b"/>
+  <!-- Waving Wings inside box -->
+  <ellipse cx="64" cy="52" rx="4" ry="8" fill="#1e293b" transform="rotate(-30 64 52)"/>
+  <ellipse cx="96" cy="52" rx="4" ry="8" fill="#1e293b" transform="rotate(30 96 52)"/>
+  <!-- Box Front Cut Faces -->
+  <polygon points="40,50 80,65 80,95 40,80" fill="#10b981" stroke="#047857" stroke-width="2" opacity="0.95"/>
+  <polygon points="120,50 80,65 80,95 120,80" fill="#059669" stroke="#047857" stroke-width="2" opacity="0.95"/>
+  <!-- Heart icon -->
+  <path d="M 80,26 C 78,22 73,22 73,26 C 73,29 80,33 80,33 C 80,33 87,29 87,26 C 87,22 82,22 80,26 Z" fill="#ef4444"/>
+  <!-- Badge -->
+  <rect x="50" y="3" width="60" height="18" rx="9" fill="#059669"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дотор (中)</text>
+</svg>`,
+  "box_outside": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_out" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fffbeb"/><stop offset="100%" stop-color="#fef3c7"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_out)"/>
+  <ellipse cx="80" cy="105" rx="65" ry="10" fill="#fde68a" opacity="0.6"/>
+  <!-- Ger (House) on Right/Center -->
+  <path d="M 70,68 L 130,68 L 128,95 L 72,95 Z" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+  <path d="M 68,68 Q 100,45 132,68 Z" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+  <ellipse cx="100" cy="46" rx="12" ry="5" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+  <rect x="94" y="72" width="12" height="23" fill="#ef4444" rx="1"/>
+  <!-- Penguin Standing OUTSIDE on Left -->
+  <ellipse cx="42" cy="78" rx="12" ry="16" fill="#1e293b"/>
+  <ellipse cx="42" cy="80" rx="7" ry="10" fill="#ffffff"/>
+  <ellipse cx="42" cy="65" rx="8" ry="8" fill="#1e293b"/>
+  <circle cx="40" cy="64" r="1.5" fill="#0f172a"/><circle cx="45" cy="64" r="1.5" fill="#0f172a"/>
+  <polygon points="42,67 39,70 45,70" fill="#f59e0b"/>
+  <!-- Waving hand -->
+  <ellipse cx="30" cy="72" rx="3.5" ry="8" fill="#1e293b" transform="rotate(-40 30 72)"/>
+  <!-- Arrow from inside to outside -->
+  <path d="M 80,80 Q 62,80 56,78" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3,2"/>
+  <!-- Badge -->
+  <rect x="50" y="3" width="60" height="18" rx="9" fill="#d97706"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">гадна (外)</text>
+</svg>`,
+  "box_front": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_front" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f0fdf4"/><stop offset="100%" stop-color="#dcfce7"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_front)"/>
+  <!-- Building in background -->
+  <rect x="45" y="25" width="70" height="50" rx="4" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+  <polygon points="40,26 80,12 120,26" fill="#94a3b8" stroke="#64748b" stroke-width="1.5"/>
+  <rect x="55" y="35" width="14" height="14" fill="#93c5fd" stroke="#64748b" stroke-width="1"/>
+  <rect x="91" y="35" width="14" height="14" fill="#93c5fd" stroke="#64748b" stroke-width="1"/>
+  <rect x="73" y="55" width="14" height="20" fill="#78350f"/>
+  <!-- Pathway forward -->
+  <polygon points="65,75 95,75 110,112 50,112" fill="#cbd5e1" opacity="0.6"/>
+  <!-- Penguin standing in FRONT -->
+  <ellipse cx="80" cy="88" rx="16" ry="20" fill="#1e293b"/>
+  <ellipse cx="80" cy="91" rx="10" ry="14" fill="#ffffff"/>
+  <ellipse cx="80" cy="71" rx="11" ry="11" fill="#1e293b"/>
+  <circle cx="76" cy="70" r="1.8" fill="#0f172a"/><circle cx="84" cy="70" r="1.8" fill="#0f172a"/>
+  <polygon points="80,74 76,78 84,78" fill="#f59e0b"/>
+  <!-- Feet -->
+  <ellipse cx="73" cy="107" rx="5" ry="2.5" fill="#f59e0b"/>
+  <ellipse cx="87" cy="107" rx="5" ry="2.5" fill="#f59e0b"/>
+  <!-- Badge -->
+  <rect x="52" y="3" width="56" height="18" rx="9" fill="#16a34a"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">өмнө (前)</text>
+</svg>`,
+  "box_behind": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_behind" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#faf5ff"/><stop offset="100%" stop-color="#f3e8ff"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_behind)"/>
+  <!-- Penguin peeking from BEHIND building -->
+  <ellipse cx="108" cy="46" rx="13" ry="15" fill="#1e293b"/>
+  <ellipse cx="109" cy="47" rx="8" ry="10" fill="#ffffff"/>
+  <circle cx="106" cy="44" r="1.5" fill="#0f172a"/><circle cx="112" cy="44" r="1.5" fill="#0f172a"/>
+  <polygon points="108,48 105,51 111,51" fill="#f59e0b"/>
+  <!-- Waving wing from behind -->
+  <ellipse cx="122" cy="42" rx="4" ry="9" fill="#1e293b" transform="rotate(35 122 42)"/>
+  <!-- House in foreground -->
+  <rect x="35" y="45" width="70" height="55" rx="4" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+  <polygon points="30,46 70,28 110,46" fill="#a855f7" stroke="#475569" stroke-width="2"/>
+  <rect x="48" y="56" width="14" height="14" fill="#93c5fd" stroke="#475569" stroke-width="1"/>
+  <rect x="78" y="56" width="14" height="14" fill="#93c5fd" stroke="#475569" stroke-width="1"/>
+  <rect x="62" y="76" width="16" height="24" fill="#78350f"/>
+  <!-- Badge -->
+  <rect x="42" y="3" width="76" height="18" rx="9" fill="#7e22ce"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">ард / хойно (後)</text>
+</svg>`,
+  "box_between": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_bet" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff1f2"/><stop offset="100%" stop-color="#ffe4e6"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_bet)"/>
+  <ellipse cx="80" cy="106" rx="65" ry="8" fill="#fecdd3" opacity="0.6"/>
+  <!-- Left Box A -->
+  <rect x="18" y="50" width="34" height="46" rx="4" fill="#fb7185" stroke="#be123c" stroke-width="2"/>
+  <text x="35" y="78" fill="#ffffff" font-size="14" font-weight="black" text-anchor="middle">A</text>
+  <!-- Right Box B -->
+  <rect x="108" y="50" width="34" height="46" rx="4" fill="#fb7185" stroke="#be123c" stroke-width="2"/>
+  <text x="125" y="78" fill="#ffffff" font-size="14" font-weight="black" text-anchor="middle">B</text>
+  <!-- Penguin in the MIDDLE BETWEEN A and B -->
+  <ellipse cx="80" cy="74" rx="13" ry="17" fill="#1e293b"/>
+  <ellipse cx="80" cy="76" rx="8" ry="11" fill="#ffffff"/>
+  <ellipse cx="80" cy="60" rx="9" ry="9" fill="#1e293b"/>
+  <circle cx="77" cy="59" r="1.5" fill="#0f172a"/><circle cx="83" cy="59" r="1.5" fill="#0f172a"/>
+  <polygon points="80,62 77,65 83,65" fill="#f59e0b"/>
+  <!-- Outstretched wings -->
+  <ellipse cx="65" cy="72" rx="4" ry="9" fill="#1e293b" transform="rotate(-30 65 72)"/>
+  <ellipse cx="95" cy="72" rx="4" ry="9" fill="#1e293b" transform="rotate(30 95 72)"/>
+  <!-- Bidirectional arrow -->
+  <path d="M 54,42 L 106,42 M 58,38 L 54,42 L 58,46 M 102,38 L 106,42 L 102,46" stroke="#e11d48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Badge -->
+  <rect x="46" y="3" width="68" height="18" rx="9" fill="#e11d48"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">хооронд (間)</text>
+</svg>`,
+  "box_middle": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_mid" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f0fdfa"/><stop offset="100%" stop-color="#ccfbf1"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_mid)"/>
+  <!-- Surrounding crowd circles -->
+  <circle cx="40" cy="50" r="10" fill="#99f6e4" stroke="#0f766e" stroke-width="1.5"/>
+  <circle cx="120" cy="50" r="10" fill="#99f6e4" stroke="#0f766e" stroke-width="1.5"/>
+  <circle cx="45" cy="90" r="10" fill="#99f6e4" stroke="#0f766e" stroke-width="1.5"/>
+  <circle cx="115" cy="90" r="10" fill="#99f6e4" stroke="#0f766e" stroke-width="1.5"/>
+  <circle cx="80" cy="35" r="9" fill="#99f6e4" stroke="#0f766e" stroke-width="1.5"/>
+  <!-- Central Highlight Ring -->
+  <ellipse cx="80" cy="75" rx="22" ry="22" fill="#5eead4" opacity="0.4"/>
+  <!-- Penguin in the CENTER/AMIDST -->
+  <ellipse cx="80" cy="74" rx="13" ry="17" fill="#1e293b"/>
+  <ellipse cx="80" cy="76" rx="8" ry="11" fill="#ffffff"/>
+  <ellipse cx="80" cy="60" rx="9" ry="9" fill="#1e293b"/>
+  <circle cx="77" cy="59" r="1.5" fill="#0f172a"/><circle cx="83" cy="59" r="1.5" fill="#0f172a"/>
+  <polygon points="80,62 77,65 83,65" fill="#f59e0b"/>
+  <!-- Badge -->
+  <rect x="50" y="3" width="60" height="18" rx="9" fill="#0d9488"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дунд (真ん中)</text>
+</svg>`,
+  "box_beside": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_beside" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#dbeafe"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_beside)"/>
+  <ellipse cx="80" cy="106" rx="60" ry="8" fill="#bfdbfe" opacity="0.6"/>
+  <!-- Big Armchair / Desk on Left -->
+  <rect x="25" y="48" width="46" height="50" rx="6" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2"/>
+  <rect x="20" y="62" width="10" height="25" rx="3" fill="#60a5fa"/>
+  <rect x="66" y="62" width="10" height="25" rx="3" fill="#60a5fa"/>
+  <!-- Penguin standing right BESIDE / NEXT TO IT -->
+  <ellipse cx="105" cy="76" rx="14" ry="18" fill="#1e293b"/>
+  <ellipse cx="105" cy="79" rx="9" ry="12" fill="#ffffff"/>
+  <ellipse cx="105" cy="61" rx="10" ry="10" fill="#1e293b"/>
+  <circle cx="102" cy="60" r="1.5" fill="#0f172a"/><circle cx="108" cy="60" r="1.5" fill="#0f172a"/>
+  <polygon points="105,63 102,66 108,66" fill="#f59e0b"/>
+  <!-- Arrow indicating side -->
+  <path d="M 74,74 L 88,74 M 84,70 L 89,74 L 84,78" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Badge -->
+  <rect x="36" y="3" width="88" height="18" rx="9" fill="#2563eb"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дэргэд / хажууд (横)</text>
+</svg>`,
+  "box_opposite": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_opp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f8fafc"/><stop offset="100%" stop-color="#f1f5f9"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_opp)"/>
+  <!-- Road running down middle -->
+  <rect x="65" y="24" width="30" height="90" fill="#475569"/>
+  <line x1="80" y1="28" x2="80" y2="40" stroke="#fef08a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="80" y1="52" x2="80" y2="64" stroke="#fef08a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="80" y1="76" x2="80" y2="88" stroke="#fef08a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="80" y1="100" x2="80" y2="112" stroke="#fef08a" stroke-width="2" stroke-linecap="round"/>
+  <!-- Shop on Left -->
+  <rect x="12" y="45" width="42" height="45" rx="3" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+  <polygon points="8,46 33,32 58,46" fill="#38bdf8"/>
+  <rect x="22" y="62" width="14" height="28" fill="#ffffff"/>
+  <!-- Penguin across street on Right -->
+  <ellipse cx="128" cy="76" rx="13" ry="17" fill="#1e293b"/>
+  <ellipse cx="128" cy="78" rx="8" ry="11" fill="#ffffff"/>
+  <ellipse cx="128" cy="61" rx="9" ry="9" fill="#1e293b"/>
+  <circle cx="125" cy="60" r="1.5" fill="#0f172a"/><circle cx="131" cy="60" r="1.5" fill="#0f172a"/>
+  <polygon points="128,63 125,66 131,66" fill="#f59e0b"/>
+  <!-- Facing cross-arrow -->
+  <path d="M 58,68 L 110,68 M 62,64 L 58,68 L 62,72 M 106,64 L 110,68 L 106,72" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Badge -->
+  <rect x="42" y="3" width="76" height="18" rx="9" fill="#0284c7"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">эсрэг талд (向かい)</text>
+</svg>`,
+  "box_around": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_around" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fdf4ff"/><stop offset="100%" stop-color="#fae8ff"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_around)"/>
+  <!-- Tree / Lake in center -->
+  <ellipse cx="80" cy="70" rx="22" ry="14" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
+  <!-- Orbiting circular arrows -->
+  <path d="M 40,70 A 40,24 0 1,1 120,70 A 40,24 0 1,1 40,70" fill="none" stroke="#d946ef" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <!-- Penguin walking along circular path -->
+  <ellipse cx="116" cy="62" rx="10" ry="13" fill="#1e293b"/>
+  <ellipse cx="116" cy="64" rx="6" ry="8" fill="#ffffff"/>
+  <circle cx="114" cy="53" r="7" fill="#1e293b"/>
+  <circle cx="113" cy="52" r="1.2" fill="#ffffff"/><circle cx="116" cy="52" r="1.2" fill="#ffffff"/>
+  <polygon points="112,54 108,56 112,58" fill="#f59e0b"/>
+  <!-- Badge -->
+  <rect x="50" y="3" width="60" height="18" rx="9" fill="#c026d3"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">тойронд (周り)</text>
+</svg>`,
+  "dir_left": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_l" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#dbeafe"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_l)"/>
+  <!-- Center separator line -->
+  <line x1="80" y1="26" x2="80" y2="108" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <!-- Big Left Arrow -->
+  <path d="M 68,68 L 26,68 M 36,56 L 24,68 L 36,80" stroke="#2563eb" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Target Penguin on LEFT -->
+  <ellipse cx="44" cy="70" rx="12" ry="16" fill="#1e293b" opacity="0.3"/>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#2563eb"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">зүүн талд (左側)</text>
+</svg>`,
+  "dir_right": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#dbeafe"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_r)"/>
+  <!-- Center separator line -->
+  <line x1="80" y1="26" x2="80" y2="108" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <!-- Big Right Arrow -->
+  <path d="M 92,68 L 134,68 M 124,56 L 136,68 L 124,80" stroke="#f97316" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Target Penguin on RIGHT -->
+  <ellipse cx="116" cy="70" rx="12" ry="16" fill="#1e293b" opacity="0.3"/>
+  <!-- Badge -->
+  <rect x="42" y="3" width="76" height="18" rx="9" fill="#ea580c"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">баруун талд (右側)</text>
+</svg>`,
+  "point_this": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_this" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ecfdf5"/><stop offset="100%" stop-color="#d1fae5"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_this)"/>
+  <!-- Speaker Hand on Left, pointing CLOSE -->
+  <circle cx="35" cy="75" r="16" fill="#fbbf24"/>
+  <rect x="35" y="68" width="30" height="14" rx="7" fill="#fbbf24"/>
+  <text x="35" y="79" fill="#78350f" font-size="10" font-weight="bold" text-anchor="middle">私</text>
+  <!-- Short Distance Indicator [20cm] -->
+  <path d="M 68,75 L 88,75" stroke="#059669" stroke-width="2.5" stroke-dasharray="3,2"/>
+  <!-- Close Target Object (Apple) -->
+  <circle cx="106" cy="75" r="16" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/>
+  <path d="M 106,59 Q 110,50 114,54" fill="none" stroke="#15803d" stroke-width="2.5"/>
+  <ellipse cx="114" cy="56" rx="4" ry="2" fill="#22c55e"/>
+  <!-- Sparkling stars -->
+  <text x="126" y="60" fill="#f59e0b" font-size="14">✨</text>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#059669"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">энэ (これ・近)</text>
+</svg>`,
+  "point_that": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_that" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f0f9ff"/><stop offset="100%" stop-color="#e0f2fe"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_that)"/>
+  <!-- Speaker Hand on Left -->
+  <circle cx="28" cy="82" r="14" fill="#fbbf24"/>
+  <rect x="28" y="76" width="22" height="12" rx="6" fill="#fbbf24"/>
+  <text x="28" y="86" fill="#78350f" font-size="9" font-weight="bold" text-anchor="middle">私</text>
+  <!-- Long distance dotted line -->
+  <path d="M 52,80 L 118,48" stroke="#0284c7" stroke-width="2" stroke-dasharray="5,4"/>
+  <polygon points="120,46 110,48 114,54" fill="#0284c7"/>
+  <!-- Distant Target Object (Far mountain/Ger) -->
+  <path d="M 112,58 L 142,58 L 138,40 L 116,40 Z" fill="#e2e8f0" stroke="#0369a1" stroke-width="1.5"/>
+  <polygon points="112,40 127,28 142,40" fill="#38bdf8"/>
+  <text x="127" y="52" fill="#0369a1" font-size="8" text-anchor="middle">遠い</text>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#0284c7"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">тэр (あれ・遠)</text>
+</svg>`,
+  "point_these": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_these" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fdf4ff"/><stop offset="100%" stop-color="#fae8ff"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_these)"/>
+  <!-- Hand pointing near -->
+  <circle cx="32" cy="72" r="14" fill="#fbbf24"/>
+  <rect x="32" y="66" width="24" height="12" rx="6" fill="#fbbf24"/>
+  <!-- Multiple items clustered together close -->
+  <rect x="80" y="58" width="20" height="26" rx="2" fill="#a855f7" stroke="#6b21a8" stroke-width="1.5"/>
+  <rect x="104" y="54" width="20" height="26" rx="2" fill="#c084fc" stroke="#6b21a8" stroke-width="1.5"/>
+  <rect x="128" y="62" width="20" height="26" rx="2" fill="#e9d5ff" stroke="#6b21a8" stroke-width="1.5"/>
+  <text x="114" y="100" fill="#6b21a8" font-size="11" font-weight="bold" text-anchor="middle">複数の本 (手元)</text>
+  <!-- Badge -->
+  <rect x="42" y="3" width="76" height="18" rx="9" fill="#9333ea"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">эдгээр (これら)</text>
+</svg>`,
+  "point_those": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_those" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f8fafc"/><stop offset="100%" stop-color="#e2e8f0"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_those)"/>
+  <circle cx="26" cy="85" r="12" fill="#fbbf24"/>
+  <rect x="26" y="80" width="20" height="10" rx="5" fill="#fbbf24"/>
+  <!-- Arrow to distant multiple objects -->
+  <path d="M 48,82 L 95,54" stroke="#475569" stroke-width="2" stroke-dasharray="4,3"/>
+  <!-- Multiple distant mountains/horses -->
+  <ellipse cx="106" cy="50" rx="10" ry="7" fill="#64748b"/>
+  <ellipse cx="126" cy="46" rx="10" ry="7" fill="#64748b"/>
+  <ellipse cx="144" cy="52" rx="10" ry="7" fill="#64748b"/>
+  <text x="125" y="70" fill="#475569" font-size="10" font-weight="bold" text-anchor="middle">遠くの馬たち</text>
+  <!-- Badge -->
+  <rect x="42" y="3" width="76" height="18" rx="9" fill="#475569"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">тэдгээр (あれら)</text>
+</svg>`,
+  "point_here": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_here" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ecfdf5"/><stop offset="100%" stop-color="#d1fae5"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_here)"/>
+  <!-- Map Grid Tile under feet -->
+  <polygon points="30,80 80,60 130,80 80,100" fill="#a7f3d0" stroke="#059669" stroke-width="2"/>
+  <!-- Glowing target pulse -->
+  <ellipse cx="80" cy="80" rx="20" ry="10" fill="#34d399" opacity="0.4"/>
+  <!-- Big Red Location Pin 📍 right HERE -->
+  <path d="M 80,42 C 70,42 64,48 64,56 C 64,68 80,82 80,82 C 80,82 96,68 96,56 C 96,48 90,42 80,42 Z" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/>
+  <circle cx="80" cy="55" r="5" fill="#ffffff"/>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#059669"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">энд (ここ・足元)</text>
+</svg>`,
+  "point_there": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_there" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f0f9ff"/><stop offset="100%" stop-color="#e0f2fe"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_there)"/>
+  <!-- Distant Hill -->
+  <path d="M 70,105 Q 120,40 160,85 L 160,120 L 70,120 Z" fill="#bae6fd"/>
+  <!-- Location Pin on Far Hill -->
+  <path d="M 125,48 C 119,48 115,52 115,57 C 115,64 125,74 125,74 C 125,74 135,64 135,57 C 135,52 131,48 125,48 Z" fill="#0284c7" stroke="#0369a1" stroke-width="1.5"/>
+  <circle cx="125" cy="56" r="3" fill="#ffffff"/>
+  <!-- Speaker looking from Left -->
+  <ellipse cx="36" cy="92" rx="12" ry="15" fill="#1e293b"/>
+  <ellipse cx="36" cy="78" rx="8" ry="8" fill="#1e293b"/>
+  <path d="M 52,78 L 105,60" stroke="#0284c7" stroke-width="2" stroke-dasharray="3,3"/>
+  <!-- Badge -->
+  <rect x="42" y="3" width="76" height="18" rx="9" fill="#0284c7"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">тэнд (あそこ・遠)</text>
+</svg>`,
+  "arrow_towards": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_toward" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#dbeafe"/></linearGradient>
+    <linearGradient id="arrow_grad_in" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_toward)"/>
+  <!-- Big 3D Arrow coming toward screen/speaker -->
+  <polygon points="65,30 95,30 95,65 115,65 80,105 45,65 65,65" fill="url(#arrow_grad_in)" stroke="#1e40af" stroke-width="2.5"/>
+  <!-- Ripple lines at bottom -->
+  <ellipse cx="80" cy="108" rx="36" ry="6" fill="#3b82f6" opacity="0.3"/>
+  <!-- Badge -->
+  <rect x="36" y="3" width="88" height="18" rx="9" fill="#1d4ed8"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">наашаа (こちらへ)</text>
+</svg>`,
+  "arrow_away": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_away" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fdf2f8"/><stop offset="100%" stop-color="#fce7f3"/></linearGradient>
+    <linearGradient id="arrow_grad_out" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#f472b6"/><stop offset="100%" stop-color="#be185d"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_away)"/>
+  <!-- Big 3D Arrow shooting AWAY into horizon -->
+  <polygon points="65,100 95,100 95,65 115,65 80,25 45,65 65,65" fill="url(#arrow_grad_out)" stroke="#9d174d" stroke-width="2.5"/>
+  <!-- Badge -->
+  <rect x="36" y="3" width="88" height="18" rx="9" fill="#be185d"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">цаашаа (あちらへ)</text>
+</svg>`,
+  "arrow_up": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_up" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ecfeff"/><stop offset="100%" stop-color="#cffafe"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_up)"/>
+  <!-- Stairs leading UP -->
+  <path d="M 25,100 L 50,100 L 50,80 L 75,80 L 75,60 L 100,60 L 100,40 L 125,40" fill="none" stroke="#0891b2" stroke-width="3" stroke-linecap="round"/>
+  <!-- Arrow UP -->
+  <path d="M 40,88 Q 75,45 115,30 M 102,28 L 118,29 L 115,44" fill="none" stroke="#06b6d4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Badge -->
+  <rect x="46" y="3" width="68" height="18" rx="9" fill="#0891b2"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дээшээ (上へ)</text>
+</svg>`,
+  "arrow_down": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_down" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff7ed"/><stop offset="100%" stop-color="#ffedd5"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_down)"/>
+  <!-- Stairs leading DOWN -->
+  <path d="M 25,40 L 50,40 L 50,60 L 75,60 L 75,80 L 100,80 L 100,100 L 125,100" fill="none" stroke="#ea580c" stroke-width="3" stroke-linecap="round"/>
+  <!-- Arrow DOWN -->
+  <path d="M 38,32 Q 78,75 118,92 M 106,94 L 120,93 L 118,78" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Badge -->
+  <rect x="46" y="3" width="68" height="18" rx="9" fill="#c2410c"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">доошоо (下へ)</text>
+</svg>`,
+  "shape_like_this": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_this_shape" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#ede9fe"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_this_shape)"/>
+  <!-- Sample A and Sample B of identical shape -->
+  <circle cx="48" cy="68" r="18" fill="#8b5cf6" stroke="#5b21b6" stroke-width="2"/>
+  <text x="48" y="73" fill="#ffffff" font-weight="bold" font-size="13" text-anchor="middle">★</text>
+  <text x="80" y="74" fill="#7c3aed" font-weight="black" font-size="20" text-anchor="middle">=</text>
+  <circle cx="112" cy="68" r="18" fill="#a78bfa" stroke="#5b21b6" stroke-width="2"/>
+  <text x="112" y="73" fill="#ffffff" font-weight="bold" font-size="13" text-anchor="middle">★</text>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#6d28d9"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">ийм (このような)</text>
+</svg>`,
+  "shape_like_that": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_that_shape" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fffbeb"/><stop offset="100%" stop-color="#fef3c7"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_that_shape)"/>
+  <!-- Giant glowing star admiring from afar -->
+  <polygon points="115,35 122,50 138,52 126,64 129,80 115,72 101,80 104,64 92,52 108,50" fill="#f59e0b" stroke="#b45309" stroke-width="2"/>
+  <!-- Admiring eyes / exclamation -->
+  <text x="45" y="75" fill="#b45309" font-size="14" font-weight="black">あんなに?!</text>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#b45309"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">тийм (あのような)</text>
+</svg>`,
+  "time_before": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_t_bef" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#dbeafe"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_t_bef)"/>
+  <!-- Timeline horizontal axis -->
+  <line x1="20" y1="72" x2="140" y2="72" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="144,72 136,68 136,76" fill="#64748b"/>
+  <!-- Center Marker (Event/Now) -->
+  <circle cx="95" cy="72" r="5" fill="#0284c7"/>
+  <text x="95" y="90" fill="#0369a1" font-size="10" font-weight="bold" text-anchor="middle">基準の時</text>
+  <!-- Left Target Highlight (BEFORE) -->
+  <circle cx="48" cy="72" r="8" fill="#ef4444"/>
+  <path d="M 85,55 L 55,55 M 62,49 L 52,55 L 62,61" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="48" y="90" fill="#dc2626" font-size="10" font-weight="bold" text-anchor="middle">〜の前</text>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#dc2626"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">өмнө (〜の前)</text>
+</svg>`,
+  "time_after": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_t_aft" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ecfdf5"/><stop offset="100%" stop-color="#d1fae5"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_t_aft)"/>
+  <!-- Timeline horizontal axis -->
+  <line x1="20" y1="72" x2="140" y2="72" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="144,72 136,68 136,76" fill="#64748b"/>
+  <!-- Center Marker (Event/Now) -->
+  <circle cx="55" cy="72" r="5" fill="#059669"/>
+  <text x="55" y="90" fill="#047857" font-size="10" font-weight="bold" text-anchor="middle">基準の時</text>
+  <!-- Right Target Highlight (AFTER) -->
+  <circle cx="112" cy="72" r="8" fill="#10b981"/>
+  <path d="M 68,55 L 102,55 M 95,49 L 105,55 L 95,61" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="112" y="90" fill="#059669" font-size="10" font-weight="bold" text-anchor="middle">〜の後</text>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#059669"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дараа (〜の後)</text>
+</svg>`,
+  "time_until": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_t_until" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fffbeb"/><stop offset="100%" stop-color="#fef3c7"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_t_until)"/>
+  <!-- Span arrow from start to finish -->
+  <line x1="25" y1="75" x2="115" y2="75" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="25" cy="75" r="5" fill="#d97706"/>
+  <!-- Goal Flag at End 🚩 -->
+  <line x1="118" y1="40" x2="118" y2="85" stroke="#78350f" stroke-width="2.5"/>
+  <polygon points="118,42 142,50 118,58" fill="#ef4444"/>
+  <text x="118" y="98" fill="#b45309" font-size="10" font-weight="bold" text-anchor="middle">終了点 (17:00)</text>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#d97706"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">хүртэл (〜まで)</text>
+</svg>`,
+  "time_throughout": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_t_thru" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#ede9fe"/></linearGradient>
+    <linearGradient id="bar_grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#ec4899"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_t_thru)"/>
+  <!-- Entire span filled block -->
+  <rect x="25" y="55" width="110" height="26" rx="13" fill="url(#bar_grad)"/>
+  <text x="80" y="72" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">期間ずっと（1年間等）</text>
+  <path d="M 22,90 L 138,90" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
+  <!-- Badge -->
+  <rect x="42" y="3" width="76" height="18" rx="9" fill="#7c3aed"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">турш (〜の間中)</text>
+</svg>`,
+  "time_since": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_t_since" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#dbeafe"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_t_since)"/>
+  <!-- Flag in past -->
+  <line x1="36" y1="46" x2="36" y2="85" stroke="#1e3a8a" stroke-width="2"/>
+  <polygon points="36,48 54,54 36,60" fill="#2563eb"/>
+  <text x="36" y="98" fill="#1e40af" font-size="9" font-weight="bold" text-anchor="middle">過去の起点</text>
+  <!-- Arrow continuing from past to NOW -->
+  <path d="M 40,70 L 126,70 M 118,64 L 128,70 L 118,76" stroke="#2563eb" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="130" cy="70" r="5" fill="#ef4444"/>
+  <text x="130" y="98" fill="#dc2626" font-size="9" font-weight="bold" text-anchor="middle">現在</text>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#1d4ed8"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">хойш (〜以来)</text>
+</svg>`,
+  "time_when": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_t_when" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f0fdf4"/><stop offset="100%" stop-color="#dcfce7"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_t_when)"/>
+  <!-- Wall clock -->
+  <circle cx="80" cy="66" r="28" fill="#ffffff" stroke="#16a34a" stroke-width="3"/>
+  <circle cx="80" cy="66" r="3" fill="#15803d"/>
+  <line x1="80" y1="66" x2="80" y2="48" stroke="#15803d" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="80" y1="66" x2="94" y2="66" stroke="#15803d" stroke-width="2" stroke-linecap="round"/>
+  <!-- Stars -->
+  <text x="122" y="52" fill="#eab308" font-size="14">✨</text>
+  <text x="32" y="75" fill="#eab308" font-size="14">✨</text>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#16a34a"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">үед (〜の時)</text>
+</svg>`,
+  "time_while": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_t_while" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#faf5ff"/><stop offset="100%" stop-color="#f3e8ff"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_t_while)"/>
+  <!-- Hourglass ⏳ in center -->
+  <polygon points="65,40 95,40 80,65 95,90 65,90 80,65" fill="#e9d5ff" stroke="#9333ea" stroke-width="2"/>
+  <polygon points="72,82 88,82 80,68" fill="#a855f7"/>
+  <line x1="80" y1="58" x2="80" y2="66" stroke="#a855f7" stroke-width="2" stroke-dasharray="2,2"/>
+  <text x="80" y="105" fill="#7e22ce" font-size="9" font-weight="bold" text-anchor="middle">〜の合間に</text>
+  <!-- Badge -->
+  <rect x="44" y="3" width="72" height="18" rx="9" fill="#9333ea"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">зуур (〜の間に)</text>
+</svg>`,
+  "time_first": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+  <defs>
+    <linearGradient id="bg_t_first" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff7ed"/><stop offset="100%" stop-color="#ffedd5"/></linearGradient>
+  </defs>
+  <rect width="160" height="120" rx="16" fill="url(#bg_t_first)"/>
+  <!-- Number 1 Podium / Flag -->
+  <rect x="55" y="55" width="50" height="42" rx="4" fill="#f97316" stroke="#c2410c" stroke-width="2"/>
+  <circle cx="80" cy="42" r="16" fill="#facc15" stroke="#ca8a04" stroke-width="2"/>
+  <text x="80" y="48" fill="#78350f" font-size="16" font-weight="black" text-anchor="middle">1</text>
+  <!-- Badge -->
+  <rect x="40" y="3" width="80" height="18" rx="9" fill="#ea580c"/>
+  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">эхлээд (まず初めに)</text>
+</svg>`,
+};
+
+const SPATIAL_ITEMS = [
+  {
+    "id": "post_deer",
+    "word": "дээр",
+    "cyrillic": "дээр",
+    "pronunciation": "デーレ",
+    "japanese": "〜の上、〜の上に",
+    "category": "spatial",
+    "caseRequirement": "名詞の直接接続（または子音末尾名詞）",
+    "summary": "物体の上部表面や接触している場所を示します。",
+    "explanation": "「机の上」「ベッドの上」「草原の上」など、面の上に存在・接触している状態を表します。空間だけでなく「〜に関して（тухай）」の意味で用いられることもあります。",
+    "example": "Ширээн дээр ном, дэвтэр байна.",
+    "exampleJa": "机の上に本とノートがあります。",
+    "svgKey": "box_on",
+    "ruleTip": "名詞の末尾に直接「дээр」をつけます（例：ширээн дээр, ор дээр）。"
+  },
+  {
+    "id": "post_door",
+    "word": "доор",
+    "cyrillic": "доор",
+    "pronunciation": "ドール",
+    "japanese": "〜の下、〜の下に",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн) または直接接続",
+    "summary": "物体の下側や覆われている空間を示します。",
+    "explanation": "「椅子の下」「木の下」「橋の下」など、基準となる物の下部空間を表します。反意語は「дээр」です。",
+    "example": "Сандлын доор жижигхэн муур унтаж байна.",
+    "exampleJa": "椅子の下で小さな猫が眠っています。",
+    "svgKey": "box_under",
+    "ruleTip": "「сандлын доор (椅子の下)」「модны доор (木の下)」のように属格と結びつくのが標準的です。"
+  },
+  {
+    "id": "post_dotor",
+    "word": "дотор",
+    "cyrillic": "дотор",
+    "pronunciation": "ドトル",
+    "japanese": "〜の中、〜の中に",
+    "category": "spatial",
+    "caseRequirement": "名詞の直接接続（または隠れн）",
+    "summary": "囲まれた空間・容器・建物などの内部を示します。",
+    "explanation": "「部屋の中」「箱の中」「カバンの中」「国の中」など内部を表します。「гадагш / гадна (外)」の対義語です。",
+    "example": "Өрөөн дотор хэн ч байхгүй, чимээгүй байна.",
+    "exampleJa": "部屋の中には誰もいなくて静かです。",
+    "svgKey": "box_inside",
+    "ruleTip": "「цүнхэн дотор (カバンの中)」「хайрцаг дотор (箱の中)」のように使います。"
+  },
+  {
+    "id": "post_gadna",
+    "word": "гадна",
+    "cyrillic": "гадна",
+    "pronunciation": "ガドナ",
+    "japanese": "〜の外、〜の外に / 〜のほかに",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн) または直接接続",
+    "summary": "空間の外部を表すほか、「〜に加えて」「〜の他に」の意味も持ちます。",
+    "explanation": "「家の外」「建物の外」という空間的な外部を示すだけでなく、「энэ номноос гадна (この本のほかに)」のように除外・追加表現でも多用されます。",
+    "example": "Байшингийн гадна том мод болон машин байна.",
+    "exampleJa": "家の外に大きな木と車があります。",
+    "svgKey": "box_outside",
+    "ruleTip": "空間の「外」は「байшингийн гадна」、除外の「〜の他に」は「үүний гадна」などで使われます。"
+  },
+  {
+    "id": "post_omno_sp",
+    "word": "өмнө",
+    "cyrillic": "өмнө",
+    "pronunciation": "オムヌ",
+    "japanese": "〜の前、〜の前に [空間]",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн)",
+    "summary": "建物の正面や、人の真正面など、前方空間を示します。",
+    "explanation": "「学校の前」「駅の前」など正面の位置を表します。※時間表現の「〜前（5年前など）」にも全く同じ単語「өмнө」が使われます。",
+    "example": "Манай сургуулийн өмнө сайхан цэцэрлэгт хүрээлэн бий.",
+    "exampleJa": "私たちの学校の前に美しい公園があります。",
+    "svgKey": "box_front",
+    "ruleTip": "「сургуулийн өмнө (学校の前)」のように、前に置く名詞は属格をとります。"
+  },
+  {
+    "id": "post_ard",
+    "word": "ард",
+    "cyrillic": "ард",
+    "pronunciation": "アルド",
+    "japanese": "〜の後ろ、〜の裏に",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн)",
+    "summary": "建物の裏手、背後、後方を示します。",
+    "explanation": "「ар талд」とも言います。「өмнө (前)」の対義語で、物体の背後・裏側を示します。（※なお単独の名詞「ард」は「人民・民衆」の意味もあります）。",
+    "example": "Номын сангийн ард хүүхдийн тоглоомын талбай байна.",
+    "exampleJa": "図書館の裏に子供の遊び場（公園）があります。",
+    "svgKey": "box_behind",
+    "ruleTip": "「номын сангийн ард (図書館の裏)」のように属格名詞の後ろに置きます。"
+  },
+  {
+    "id": "post_khoino_sp",
+    "word": "хойно",
+    "cyrillic": "хойно",
+    "pronunciation": "ホイノ",
+    "japanese": "〜の後ろに、〜の北に",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн)",
+    "summary": "後方または北の方角を示します（モンゴルの伝統方位で北＝後ろ）。",
+    "explanation": "ゲル（移動式住居）の構造上、南に入り口があり北（奥）が上座・後ろにあたるため、「хойно」は「後ろ」と「北」の両方を意味します。",
+    "example": "Ширээний хойно багш зогсож байна.",
+    "exampleJa": "机の後ろに先生が立っています。",
+    "svgKey": "box_behind",
+    "ruleTip": "方角の「北」としても使われます（Улаанбаатарын хойно ＝ ウランバートルの北に）。"
+  },
+  {
+    "id": "post_derged",
+    "word": "дэргэд",
+    "cyrillic": "дэргэд",
+    "pronunciation": "デルゲド",
+    "japanese": "〜のそばに、〜の隣に",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн) または人称代名詞属格",
+    "summary": "すぐ近くのそば、傍ら、隣接した場所を示します。",
+    "explanation": "「хажууд」とほぼ同義で使われます。「миний дэргэд (私のそばに)」のように人称代名詞ともよく結びつきます。",
+    "example": "Та манай найзын дэргэд суугаарай.",
+    "exampleJa": "私の友達の隣（そば）に座ってください。",
+    "svgKey": "box_beside",
+    "ruleTip": "「миний дэргэд (私のそばに)」「буудлын дэргэд (バス停のそばに)」のように使います。"
+  },
+  {
+    "id": "post_khajuud",
+    "word": "хажууд",
+    "cyrillic": "хажууд",
+    "pronunciation": "ハジュード",
+    "japanese": "〜の横、〜の隣に",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн)",
+    "summary": "物理的な側面、横、隣の場所を示します。",
+    "explanation": "「хажуу (側面・横)」の与位格形から派生した後置詞で、対象のすぐ横・隣の位置を表します。",
+    "example": "Дэлгүүрийн хажууд эмийн сан байрладаг.",
+    "exampleJa": "店の横（隣）に薬局があります。",
+    "svgKey": "box_beside",
+    "ruleTip": "「дэлгүүрийн хажууд」のように属格の後に置かれます。"
+  },
+  {
+    "id": "post_khoorond",
+    "word": "хооронд",
+    "cyrillic": "хооронд",
+    "pronunciation": "ホーフロンド",
+    "japanese": "〜の間 [2者・2地点の間]",
+    "category": "spatial",
+    "caseRequirement": "2つの名詞を並べる、または複数形属格",
+    "summary": "2つの物体・地点・人物の「あいだ（挟まれた空間）」を示します。",
+    "explanation": "「A ба B-ийн хооронд (AとBの間)」「хоёр байшингийн хооронд (2つの家の間)」のように、はっきりと2者の間を指す時に使います（3者以上の集団の真ん中は「дунд」）。",
+    "example": "Япон ба Монгол хоёр улсын хооронд найрамдалт харилцаа бий.",
+    "exampleJa": "日本とモンゴル両国の間には友好関係があります。",
+    "svgKey": "box_between",
+    "ruleTip": "【超重要】2者の間なら「хооронд」、多数・群衆の中なら「дунд」を使います！"
+  },
+  {
+    "id": "post_dund",
+    "word": "дунд",
+    "cyrillic": "дунд",
+    "pronunciation": "ドンド",
+    "japanese": "〜の真ん中、〜の中で [3者以上・集団]",
+    "category": "spatial",
+    "caseRequirement": "複数名詞属格 または 集合名詞",
+    "summary": "多数の物・人・群衆の「真ん中・中心・渦中」を示します。",
+    "explanation": "「хүмүүсийн дунд (人々の中で)」「ой модон дунд (森の真ん中で)」のように、周りを取り囲まれている中心を表します。",
+    "example": "Тэр олон хүний дунд зогсож байсан.",
+    "exampleJa": "彼は大勢の人々の真ん中に立っていました。",
+    "svgKey": "box_middle",
+    "ruleTip": "「2つの間」は хооронд、「3つ以上の群れの中」は дунд と使い分けます。"
+  },
+  {
+    "id": "post_esreg",
+    "word": "эсрэг талд",
+    "cyrillic": "эсрэг талд",
+    "pronunciation": "エスレグ タルド",
+    "japanese": "〜の向かい側、反対側に",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн)",
+    "summary": "道路や広場などを挟んで正面に対面している向かい側を示します。",
+    "explanation": "「эсрэг (反対・向かい)」＋「тал (側)」＋「-д (与位格)」から成る表現で、道向かいの建物などを指す時に頻出します。",
+    "example": "Галт тэрэгний буудлын эсрэг талд том зочид буудал бий.",
+    "exampleJa": "駅の向かい側に大きなホテルがあります。",
+    "svgKey": "box_opposite",
+    "ruleTip": "「буудлын эсрэг талд (駅の向かい側に)」のように属格を取ります。"
+  },
+  {
+    "id": "post_toirond",
+    "word": "тойронд",
+    "cyrillic": "тойронд",
+    "pronunciation": "トイロンド",
+    "japanese": "〜の周り、周囲に",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн)",
+    "summary": "物体の周囲、円を描くような周辺空間を示します。",
+    "explanation": "「эргэн тойронд」とも言います。「нуурын тойронд (湖の周りに)」「ширээний тойронд (机の周りに)」のように使います。",
+    "example": "Сайхан нуурын тойронд ногоон моднууд ургаж байна.",
+    "exampleJa": "美しい湖の周りに緑の木々が生えています。",
+    "svgKey": "box_around",
+    "ruleTip": "「эргэн тойронд」と「тойронд」は同義で、取り囲む円周上を指します。"
+  },
+  {
+    "id": "post_zuun",
+    "word": "зүүн талд",
+    "cyrillic": "зүүн талд",
+    "pronunciation": "ズーヌ タルド",
+    "japanese": "〜の左側に、〜の東側に",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн)",
+    "summary": "左側、または方角の東側を示します（南を向いた伝統視点で左＝東）。",
+    "explanation": "モンゴル語では「зүүн」が「左」と「東」の2つの意味を持ちます。「ゲルから南を向いて立つ」という遊牧文化に由来します。",
+    "example": "Зургийн зүүн талд миний найз зогсож байна.",
+    "exampleJa": "写真の左側に私の友達が立っています。",
+    "svgKey": "dir_left",
+    "ruleTip": "「зүүн」＝「左」かつ「東」！対義語は「баруун（右・西）」です。"
+  },
+  {
+    "id": "post_baruun",
+    "word": "баруун талд",
+    "cyrillic": "баруун талд",
+    "pronunciation": "バルーヌ タルド",
+    "japanese": "〜の右側に、〜の西側に",
+    "category": "spatial",
+    "caseRequirement": "名詞の属格 (-ын / -ийн)",
+    "summary": "右側、または方角の西側を示します（南を向いた視点で右＝西）。",
+    "explanation": "モンゴル語で「баруун」は「右」と「西」を意味します。ゲルは南向きに建てるため、右手側が常に西になります。",
+    "example": "Ширээний баруун талд компьютер тавиарай.",
+    "exampleJa": "机の右側にパソコンを置いてください。",
+    "svgKey": "dir_right",
+    "ruleTip": "「баруун」＝「右」かつ「西」！「зүүн」の反対語です。"
+  },
+  {
+    "id": "dem_ene",
+    "word": "энэ",
+    "cyrillic": "энэ",
+    "pronunciation": "エネ",
+    "japanese": "これ、この [近称]",
+    "category": "demonstrative",
+    "caseRequirement": "名詞の前に置く（限定詞）または単独で主語・補語",
+    "summary": "話者のすぐ手元・至近距離にある物や人を指します。",
+    "explanation": "日本語の「これ」「この」に相当する近称指示詞です。名詞の前につけると「この〜（энэ ном = この本）」、単独では「これ（Энэ юу вэ? = これは何ですか？）」になります。",
+    "example": "Энэ бол миний Японоос авчирсан бэлэг юм.",
+    "exampleJa": "これは私が日本から持ってきたプレゼントです。",
+    "svgKey": "point_this",
+    "ruleTip": "話者の手元にある身近なものはすべて「энэ」です。"
+  },
+  {
+    "id": "dem_ter",
+    "word": "тэр",
+    "cyrillic": "тэр",
+    "pronunciation": "テレ",
+    "japanese": "あれ、それ、あの、その [遠称・既知]",
+    "category": "demonstrative",
+    "caseRequirement": "名詞の前に置く、または単独代名詞",
+    "summary": "離れた対象、または話題にのぼっている既知の対象を指します。",
+    "explanation": "モンゴル語には日本語のような「これ・それ・あれ」の3区分がなく、「энэ (近称)」と「тэр (遠称)」の2大区分が基本です。相手の近くのものも「тэр」で表します。",
+    "example": "Тэр уулын орой дээр цас орсон байна.",
+    "exampleJa": "あの山の頂上に雪が降っています。",
+    "svgKey": "point_that",
+    "ruleTip": "モンゴル語は「これ(энэ)」と「あれ/それ(тэр)」の2分法が基本！"
+  },
+  {
+    "id": "dem_edgeer",
+    "word": "эдгээр",
+    "cyrillic": "эдгээр",
+    "pronunciation": "エドゲール",
+    "japanese": "これら、これらの [近称複数]",
+    "category": "demonstrative",
+    "caseRequirement": "名詞の前に置く、または単独複数主語",
+    "summary": "手元にある複数の物や人をまとめて指します。",
+    "explanation": "「энэ」の複数形から派生した指示詞で、「これらの〜（эдгээр ном = これらの本）」のように使われます。",
+    "example": "Эдгээр дасгалыг өнөөдөр заавал хийж дуусгаарай.",
+    "exampleJa": "これらの練習問題を今日必ずやり終えてください。",
+    "svgKey": "point_these",
+    "ruleTip": "手元の「複数の対象」を指すときは「эдгээр」を使います。"
+  },
+  {
+    "id": "dem_tedgeer",
+    "word": "тэдгээр",
+    "cyrillic": "тэдгээр",
+    "pronunciation": "テドゲール",
+    "japanese": "あれら、それら、あの〜たち [遠称複数]",
+    "category": "demonstrative",
+    "caseRequirement": "名詞の前に置く、または単独複数主語",
+    "summary": "離れた場所にある複数の対象、または話題の複数のものを指します。",
+    "explanation": "「тэр」の複数形から派生した指示詞で、「あれらの〜（тэдгээр хүмүүс = あの人々）」のように遠くの複数を指します。",
+    "example": "Тэдгээр морьд тал нутагт эрх чөлөөтэй давхиж байна.",
+    "exampleJa": "あの馬たちは大草原を自由に疾走しています。",
+    "svgKey": "point_those",
+    "ruleTip": "遠くの「複数の対象」を指すときは「тэдгээр」を使います。"
+  },
+  {
+    "id": "dem_end",
+    "word": "энд",
+    "cyrillic": "энд",
+    "pronunciation": "エンド",
+    "japanese": "ここ、ここで [場所近称]",
+    "category": "demonstrative",
+    "caseRequirement": "場所の副詞（文中で述語を修飾）",
+    "summary": "話者が今いる場所、足元、この地点を示します。",
+    "explanation": "「энэ」に場所の格語尾がついた形で、「ここで（at here）」または「ここへ（to here）」の意味で幅広く使われます。",
+    "example": "Та энд түр хүлээгээрэй, би удахгүй ирнэ.",
+    "exampleJa": "ここで少し待っていてください、すぐに戻ります。",
+    "svgKey": "point_here",
+    "ruleTip": "「энд」＝「ここ（で）」。「Энд суу (ここに座って)」のように使います。"
+  },
+  {
+    "id": "dem_tend",
+    "word": "тэнд",
+    "cyrillic": "тэнд",
+    "pronunciation": "テンド",
+    "japanese": "あそこ、そこで [場所遠称]",
+    "category": "demonstrative",
+    "caseRequirement": "場所の副詞",
+    "summary": "話者から離れた場所、あちらの地点を示します。",
+    "explanation": "「тэр」に対応する場所の指示詞です。「あそこで（at there）」または「あそこへ（to there）」を表します。",
+    "example": "Тэнд маш амттай хоолтой монгол ресторан бий.",
+    "exampleJa": "あそこにとてもおいしい料理があるモンゴル料理店があります。",
+    "svgKey": "point_there",
+    "ruleTip": "「энд (ここ)」の対義語が「тэнд (あそこ・そこ)」です。"
+  },
+  {
+    "id": "dem_naashaa",
+    "word": "наашаа",
+    "cyrillic": "наашаа",
+    "pronunciation": "ナーシャー",
+    "japanese": "こちらへ、手前へ [方向近称]",
+    "category": "demonstrative",
+    "caseRequirement": "方向を表す副詞（移動動詞と共起）",
+    "summary": "話者のいる手前の方向へ向かってくる動きを示します。",
+    "explanation": "「нааш (こちらへ)」の方向格（-аа⁴）が付いた形で、「Наашаа ир! (こっちにおいで！)」のように移動動詞とセットで非常に良く使われます。",
+    "example": "Наашаа сууж, хамтдаа халуун цай ууя.",
+    "exampleJa": "こちらに座って、一緒に温かいお茶を飲みましょう。",
+    "svgKey": "arrow_towards",
+    "ruleTip": "「こちらへ向かう動き」は「наашаа」！「Наашаа хүрээд ир (こっちにおいで)」"
+  },
+  {
+    "id": "dem_tsaashaa",
+    "word": "цаашаа",
+    "cyrillic": "цаашаа",
+    "pronunciation": "ツァーシャー",
+    "japanese": "あちらへ、向こうへ [方向遠称]",
+    "category": "demonstrative",
+    "caseRequirement": "方向を表す副詞（移動動詞と共起）",
+    "summary": "話者から離れて向こう側・奥へ進んでいく動きを示します。",
+    "explanation": "「наашаа (こちらへ)」の対義語です。「Цаашаа яв (あっちへ行け・向こうへ進め)」や「もっと奥へ」の意味を表します。",
+    "example": "Замаар цаашаа чигээрээ явбал эмнэлэг харагдана.",
+    "exampleJa": "この道をあちらへ真っ直ぐ行くと病院が見えます。",
+    "svgKey": "arrow_away",
+    "ruleTip": "「あちらへ・向こうへ」離れる方向は「цаашаа」です。"
+  },
+  {
+    "id": "dem_deeshee",
+    "word": "дээшээ",
+    "cyrillic": "дээшээ",
+    "pronunciation": "デーシェー",
+    "japanese": "上へ、上方に",
+    "category": "demonstrative",
+    "caseRequirement": "方向を表す副詞",
+    "summary": "上方・階段の上・山の上などへ向かう動きを示します。",
+    "explanation": "「дээш」の方向格で、「上へ上がる（дээшээ гарах）」「上を見る（дээшээ харах）」のように使います。",
+    "example": "Хоёр давхар луу шатаар дээшээ гараарай.",
+    "exampleJa": "階段で2階へ上へ上がってください。",
+    "svgKey": "arrow_up",
+    "ruleTip": "「上へ」は「дээшээ」、対義語の「下へ」は「доошоо」です。"
+  },
+  {
+    "id": "dem_dooshoo",
+    "word": "доошоо",
+    "cyrillic": "доошоо",
+    "pronunciation": "ドーショー",
+    "japanese": "下へ、下方に",
+    "category": "demonstrative",
+    "caseRequirement": "方向を表す副詞",
+    "summary": "下方・地面・階段の下などへ向かう動きを示します。",
+    "explanation": "「доош」の方向格で、「下へ降りる（доошоо буух）」「下にしゃがむ（доошоо суух）」などで使います。",
+    "example": "Лифтээр нэг давхар луу доошоо бууя.",
+    "exampleJa": "エレベーターで1階へ下へ降りましょう。",
+    "svgKey": "arrow_down",
+    "ruleTip": "「下へ」は「доошоо」です。"
+  },
+  {
+    "id": "dem_iim",
+    "word": "ийм",
+    "cyrillic": "ийм",
+    "pronunciation": "イーム",
+    "japanese": "このような、こんな",
+    "category": "demonstrative",
+    "caseRequirement": "名詞の前を修飾（連体形）",
+    "summary": "手元にあるものと同様の性質・状態・様態を示します。",
+    "explanation": "「ийм ном (こんな本)」「ийм том (こんなに大きい)」のように、手近な例や自分側の様態を指します。",
+    "example": "Би ийм гоё амттай монгол хоол анх удаа идэж байна.",
+    "exampleJa": "私はこんなに美味しいモンゴル料理を初めて食べています。",
+    "svgKey": "shape_like_this",
+    "ruleTip": "「こんな・このような」＝「ийм」。「あんな・そんな」＝「тийм」です。"
+  },
+  {
+    "id": "dem_tiim",
+    "word": "тийм",
+    "cyrillic": "тийм",
+    "pronunciation": "ティーム",
+    "japanese": "あのような、そんな、あんな / そうです",
+    "category": "demonstrative",
+    "caseRequirement": "名詞の前を修飾、または返事の「はい」",
+    "summary": "離れた対象の性質・様態を示すほか、肯定の相槌「そうです」にも使われます。",
+    "explanation": "「тийм хүн (あんな人)」「тийм ээ (そうです)」のように、様態指示詞と相槌の両面で最重要語彙です。",
+    "example": "Тийм том уулыг өмнө нь хэзээ ч харж байгаагүй.",
+    "exampleJa": "あんなに大きな山は以前一度も見たことがありませんでした。",
+    "svgKey": "shape_like_that",
+    "ruleTip": "様態指示「あのような」だけでなく「Тийм (はい/そうです)」の返答でも頻出！"
+  },
+  {
+    "id": "temp_omno",
+    "word": "өмнө",
+    "cyrillic": "өмнө",
+    "pronunciation": "オムヌ",
+    "japanese": "〜の前に [時間]",
+    "category": "temporal",
+    "caseRequirement": "名詞・時間詞（属格または直接接続）、動名詞（-хын/-хийн өмнө）",
+    "summary": "ある出来事や基準時よりも過去・事前の時点を示します。",
+    "explanation": "「хоёр жилийн өмнө (2年前)」「хоол идэхийн өмнө (食事をする前に)」のように、時間の前を表す最重要語です。",
+    "example": "Хоол идэхийн өмнө гараа заавал сайн угаагаарай.",
+    "exampleJa": "ご飯を食べる前に必ず手をよく洗いましょう。",
+    "svgKey": "time_before",
+    "ruleTip": "動詞につけるときは「動詞語幹 ＋ -хын/-хийн өмнө (〜する前に)」の形になります！"
+  },
+  {
+    "id": "temp_daraa",
+    "word": "дараа",
+    "cyrillic": "дараа",
+    "pronunciation": "ダラー",
+    "japanese": "〜の後に、〜の次に [時間]",
+    "category": "temporal",
+    "caseRequirement": "名詞の属格 (-ын / -ийн)、動名詞（-сны/-сний дараа）",
+    "summary": "ある出来事の終了後、事後の時点を示します。",
+    "explanation": "「хичээлийн дараа (授業の後に)」「хоол идсэний дараа (ご飯を食べた後に)」のように用います。",
+    "example": "Хичээл тарсны дараа хамтдаа номын сан явъя.",
+    "exampleJa": "授業が終わった後に一緒に図書館へ行きましょう。",
+    "svgKey": "time_after",
+    "ruleTip": "動詞につけるときは過去形動名詞「-сны/-сний дараа (〜した後に)」が基本形です！"
+  },
+  {
+    "id": "temp_khurtel",
+    "word": "хүртэл",
+    "cyrillic": "хүртэл",
+    "pronunciation": "フルテル",
+    "japanese": "〜まで [時間・空間の限界・終点]",
+    "category": "temporal",
+    "caseRequirement": "名詞・時間詞の直接接続、または動詞（-тал⁴/-тэл⁴ хүртэл）",
+    "summary": "時間や場所の終点・限度「〜まで」を示します。",
+    "explanation": "「таван цаг хүртэл (5時まで)」「маргааш хүртэл (明日まで)」「Улаанбаатар хүртэл (ウランバートルまで)」のように時間と場所の両方に使えます。",
+    "example": "Би оройн зургаан цаг хүртэл энд хичээлээ хийнэ.",
+    "exampleJa": "私は夕方6時までここで勉強をします。",
+    "svgKey": "time_until",
+    "ruleTip": "「〜から〜まで」は「-аас⁴ ... хүртэл (例: 9 цагаас 17 цаг хүртэл)」のペアで頻出！"
+  },
+  {
+    "id": "temp_tursh",
+    "word": "турш",
+    "cyrillic": "турш",
+    "pronunciation": "トルシ",
+    "japanese": "〜の間中、〜ずっと [期間全体]",
+    "category": "temporal",
+    "caseRequirement": "期間を表す名詞の直接接続（または再帰属格）",
+    "summary": "ある時間・期間の最初から最後まで途切れず継続することを示します。",
+    "explanation": "「жилийн турш (1年間ずっと)」「бүтэн өдрийн турш (一日中ずっと)」「амралтынхаа турш (休暇の間ずっと)」のように使います。",
+    "example": "Тэр бүтэн жилийн турш монгол хэл хичээнгүйлэн сурсан.",
+    "exampleJa": "彼は丸一年の間ずっと熱心にモンゴル語を勉強しました。",
+    "svgKey": "time_throughout",
+    "ruleTip": "「期間の最初から最後までずっと」継続するニュアンスを持ちます。"
+  },
+  {
+    "id": "temp_khoish",
+    "word": "хойш",
+    "cyrillic": "хойш",
+    "pronunciation": "ホイシ",
+    "japanese": "〜以来、〜からずっと [過去起点]",
+    "category": "temporal",
+    "caseRequirement": "名詞の奪格 (-аас⁴ / -оос⁴ / -өөс⁴ / -ээс⁴) ＋ хойш",
+    "summary": "過去の特定時点から現在に至るまでの継続を示します。",
+    "explanation": "必ず「奪格（-аас⁴）」とセットで使われます。「Монголд ирснээс хойш (モンゴルに来て以来)」「өглөөнөөс хойш (朝からずっと)」のように使います。",
+    "example": "Монголд ирснээс хойш хоёр сар өнгөрсөн байна.",
+    "exampleJa": "モンゴルに来て以来、2ヶ月が過ぎました。",
+    "svgKey": "time_since",
+    "ruleTip": "【超重要公式】必ず「奪格（-аас⁴）＋ хойш」の組み合わせになります！"
+  },
+  {
+    "id": "temp_ued",
+    "word": "үед",
+    "cyrillic": "үед",
+    "pronunciation": "ウェド",
+    "japanese": "〜の時に、〜の頃に",
+    "category": "temporal",
+    "caseRequirement": "名詞の属格、または動名詞（-х үед, -сан үед）",
+    "summary": "ある出来事が発生した「時点」「時期」「時代」を示します。",
+    "explanation": "「үе (時・時代)」の与位格形です。「хүүхэд байх үедээ (子供の頃に)」「чөлөөт цагаараа / завтай үедээ (暇な時に)」のように用います。",
+    "example": "Би бага байх үедээ төгөлдөр хуур тоглодог байсан.",
+    "exampleJa": "私は幼かった頃、ピアノを弾いていました。",
+    "svgKey": "time_when",
+    "ruleTip": "「〜する時」＝「-х үед」、「〜した時」＝「-сан⁴ үед」で表します。"
+  },
+  {
+    "id": "temp_zuur",
+    "word": "зуур",
+    "cyrillic": "зуур",
+    "pronunciation": "ズール",
+    "japanese": "〜の合間に、〜している間に",
+    "category": "temporal",
+    "caseRequirement": "動名詞（-х зуур / -х зуураа）",
+    "summary": "ある動作を行っている最中のわずかな時間や合間を示します。",
+    "explanation": "「цай уух зуураа (お茶を飲んでいる合間に)」「амарч суух зуур (休んでいる間に)」のように、別の行動の最中の時間的隙間を表します。",
+    "example": "Кофе уух зуураа бид сонин сайхан зүйл ярилцсан.",
+    "exampleJa": "コーヒーを飲む合間に、私たちは近況や面白い話を取り交わしました。",
+    "svgKey": "time_while",
+    "ruleTip": "「動作の合間に別のことをする」ニュアンスで使われます。"
+  },
+  {
+    "id": "temp_ekhleed",
+    "word": "эхлээд",
+    "cyrillic": "эхлээд",
+    "pronunciation": "エフレード",
+    "japanese": "まず初めに、最初に",
+    "category": "temporal",
+    "caseRequirement": "文頭・文中の副詞",
+    "summary": "複数の順序の中で「まず第一に」行う行動を示します。",
+    "explanation": "「эхлэх (始まる)」の副動詞形（-аад⁴）から副詞化したもので、「Эхлээд ..., дараа нь ... (まず初めに〜、その後に〜)」という手順説明で定番です。",
+    "example": "Эхлээд гараа угаагаад, дараа нь хоолоо иднэ үү.",
+    "exampleJa": "まず初めに手を洗って、その後に食事をしてください。",
+    "svgKey": "time_first",
+    "ruleTip": "「эхлээд (まず最初に) → дараа нь (その後に)」の順序コンボが鉄板です！"
+  }
+];
+
+const spatialQuizzes = [
+  {
+    "id": "sq_1",
+    "category": "spatial",
+    "svgKey": "box_on",
+    "prompt": "Ширээн ___ шинэ ном, дэвтэр байна.",
+    "promptJa": "机の___新しい本とノートがあります。（机の上に）",
+    "options": [
+      "дээр",
+      "доор",
+      "дотор",
+      "гадна"
+    ],
+    "answer": "дээр",
+    "explanation": "【正解: дээр (〜の上)】\nイラストのように、机の上面に接触して物が載っている状態を表すため「дээр」が正解です。\n・доор: 〜の下\n・дотор: 〜の中\n・гадна: 〜の外"
+  },
+  {
+    "id": "sq_2",
+    "category": "spatial",
+    "svgKey": "box_under",
+    "prompt": "Сандлын ___ хөөрхөн жижигхэн муур унтаж байна.",
+    "promptJa": "椅子の___可愛い小さな猫が眠っています。（椅子の下に）",
+    "options": [
+      "доор",
+      "дээр",
+      "өмнө",
+      "хооронд"
+    ],
+    "answer": "доор",
+    "explanation": "【正解: доор (〜の下)】\nイラストのように、椅子の下側の空間に入って眠っているため「доор (下)」が正解です。\n・дээр: 上\n・өмнө: 前\n・хооронд: （2者の）間"
+  },
+  {
+    "id": "sq_3",
+    "category": "spatial",
+    "svgKey": "box_inside",
+    "prompt": "Цүнхэн ___ миний түлхүүр болон гар утас байна.",
+    "promptJa": "バッグの___私の鍵と携帯電話があります。（バッグの中に）",
+    "options": [
+      "дотор",
+      "гадна",
+      "дээр",
+      "ард"
+    ],
+    "answer": "дотор",
+    "explanation": "【正解: дотор (〜の中)】\nカバンや箱など、閉じた入れ物や空間の「内部」に入っている時は「дотор」を用います。\n・гадна: 外\n・дээр: 上\n・ард: 後ろ"
+  },
+  {
+    "id": "sq_4",
+    "category": "spatial",
+    "svgKey": "box_outside",
+    "prompt": "Байшингийн ___ цас орж, хүйтэн салхи салхилж байна.",
+    "promptJa": "家の___雪が降り、冷たい風が吹いています。（家の外で）",
+    "options": [
+      "гадна",
+      "дотор",
+      "дээр",
+      "дунд"
+    ],
+    "answer": "гадна",
+    "explanation": "【正解: гадна (〜の外)】\nイラストのように建物の外側の空間を表すため「гадна」が正解です。\n・дотор: 中\n・дээр: 上\n・дунд: 真ん中"
+  },
+  {
+    "id": "sq_5",
+    "category": "spatial",
+    "svgKey": "box_front",
+    "prompt": "Сургуулийн ___ том мод болон сайхан цэцэгс ургажээ.",
+    "promptJa": "学校の___大きな木と美しい花々が生えています。（学校の前に）",
+    "options": [
+      "өмнө",
+      "хойно",
+      "доор",
+      "дээр"
+    ],
+    "answer": "өмнө",
+    "explanation": "【正解: өмнө (〜の前)】\nイラストのように建物の正面（前）を表す位置関係は「өмнө」です。\n・хойно: 後ろ\n・доор: 下\n・дээр: 上"
+  },
+  {
+    "id": "sq_6",
+    "category": "spatial",
+    "svgKey": "box_behind",
+    "prompt": "Номын сангийн ___ хүүхдүүдийн тоглох сагсан бөмбөгийн талбай бий.",
+    "promptJa": "図書館の___子供たちが遊ぶバスケットボール場があります。（図書館の裏・後ろに）",
+    "options": [
+      "ард",
+      "өмнө",
+      "дотор",
+      "дээр"
+    ],
+    "answer": "ард",
+    "explanation": "【正解: ард (〜の後ろ・裏)】\nイラストのように建物の背後・裏側を示すのは「ард（または ар талд）」です。\n・өмнө: 前\n・дотор: 中\n・дээр: 上"
+  },
+  {
+    "id": "sq_7",
+    "category": "spatial",
+    "svgKey": "box_between",
+    "prompt": "Хоёр байшингийн ___ нарийхан жим зам байна.",
+    "promptJa": "2つの家の___細い小道があります。（2つの家の間に）",
+    "options": [
+      "хооронд",
+      "дунд",
+      "дээр",
+      "гадна"
+    ],
+    "answer": "хооронд",
+    "explanation": "【正解: хооронд (2者の間)】\n「Хоёр байшин (2つの家)」のように、はっきりと【2つの対象に挟まれた間】を指すときは「хооронд」を使います！\n※3者以上の群集や集団の真ん中なら「дунд」になります。"
+  },
+  {
+    "id": "sq_8",
+    "category": "spatial",
+    "svgKey": "box_middle",
+    "prompt": "Тэр олон хүмүүсийн ___ зогсоод инээмсэглэж байв.",
+    "promptJa": "彼は大勢の人々の___立って微笑んでいました。（人々の真ん中で）",
+    "options": [
+      "дунд",
+      "хооронд",
+      "доор",
+      "гадна"
+    ],
+    "answer": "дунд",
+    "explanation": "【正解: дунд (〜の真ん中・中)】\nイラストのように、「олон хүмүүс (大勢の人々)」という多数の群衆・集団に取り囲まれた中心・真ん中は「дунд」を使います。\n※2者の間は「хооронд」です。"
+  },
+  {
+    "id": "sq_9",
+    "category": "spatial",
+    "svgKey": "box_beside",
+    "prompt": "Миний ___ суугаад, энэ зургийг хамт хараарай.",
+    "promptJa": "私の___座って、この写真を一緒に見てください。（私の隣・そばに）",
+    "options": [
+      "дэргэд",
+      "доор",
+      "ард",
+      "хооронд"
+    ],
+    "answer": "дэргэд",
+    "explanation": "【正解: дэргэд (〜のそば・隣)】\nイラストのようにすぐ横・傍らに並ぶ位置関係は「дэргэд（または хажууд）」です。\n・миний дэргэд: 私の隣に / 私のそばに"
+  },
+  {
+    "id": "sq_10",
+    "category": "spatial",
+    "svgKey": "box_opposite",
+    "prompt": "Замын ___ шинэ эмийн сан нээгдсэн байна.",
+    "promptJa": "道路の___新しい薬局がオープンしています。（道路の向かい側に）",
+    "options": [
+      "эсрэг талд",
+      "дотор",
+      "дээр",
+      "хооронд"
+    ],
+    "answer": "эсрэг талд",
+    "explanation": "【正解: эсрэг талд (〜の向かい側・反対側に)】\n道路や広場などを挟んで正面に対面している位置関係を表すため「эсрэг талд」が正解です。"
+  },
+  {
+    "id": "sq_11",
+    "category": "spatial",
+    "svgKey": "box_around",
+    "prompt": "Сайхан нуурын ___ олон ногоон мод ургажээ.",
+    "promptJa": "美しい湖の___たくさんの緑の木が生えています。（湖の周りに）",
+    "options": [
+      "тойронд",
+      "дотор",
+      "хооронд",
+      "доор"
+    ],
+    "answer": "тойронд",
+    "explanation": "【正解: тойронд (〜の周り・周囲に)】\nイラストのように対象の周囲をぐるりと取り囲む円周上の位置関係は「тойронд（または эргэн тойронд）」です。"
+  },
+  {
+    "id": "sq_12",
+    "category": "spatial",
+    "svgKey": "dir_left",
+    "prompt": "Ширээний ___ талд номын тавиур байна.",
+    "promptJa": "机の___側に本棚があります。（左側に）",
+    "options": [
+      "зүүн",
+      "дээр",
+      "дотор",
+      "хооронд"
+    ],
+    "answer": "зүүн",
+    "explanation": "【正解: зүүн (左 / 東)】\n左側を表すモンゴル語は「зүүн」です（зүүн талд ＝ 左側に）。\n※モンゴルの伝統方位では南を向いて立つため「зүүн」は「左」と「東」の両方を意味します。"
+  },
+  {
+    "id": "sq_13",
+    "category": "spatial",
+    "svgKey": "dir_right",
+    "prompt": "Зургийн ___ талд байгаа хүн бол манай аав юм.",
+    "promptJa": "写真の___側にいる人は私の父です。（右側に）",
+    "options": [
+      "баруун",
+      "зүүн",
+      "дотор",
+      "гадна"
+    ],
+    "answer": "баруун",
+    "explanation": "【正解: баруун (右 / 西)】\n右側を表す単語は「баруун」です（баруун талд ＝ 右側に）。\n※方角の「西」の意味も持ちます。"
+  },
+  {
+    "id": "sq_14",
+    "category": "demonstrative",
+    "svgKey": "point_this",
+    "prompt": "___ ном маш сонирхолтой тул би өдөр бүр уншдаг.",
+    "promptJa": "___本はとても面白いので、私は毎日読んでいます。（この本は [手元]）",
+    "options": [
+      "Энэ",
+      "Тэр",
+      "Тэнд",
+      "Цаашаа"
+    ],
+    "answer": "Энэ",
+    "explanation": "【正解: Энэ (これ / この)】\n話者の手元にある身近な対象を指す近称指示詞は「Энэ」です。\n・Тэр: あれ / あの\n・Тэнд: あそこで\n・Цаашаа: あちらへ"
+  },
+  {
+    "id": "sq_15",
+    "category": "demonstrative",
+    "svgKey": "point_that",
+    "prompt": "___ алсын цэнхэр уулыг хар даа, ямар сайхан бэ!",
+    "promptJa": "___遠くの青い山をごらん、なんて美しいのでしょう！（あの山を [遠方]）",
+    "options": [
+      "Тэр",
+      "Энэ",
+      "Энд",
+      "Наашаа"
+    ],
+    "answer": "Тэр",
+    "explanation": "【正解: Тэр (あれ / あの)】\n遠く離れた対象を指す遠称指示詞は「Тэр」です。\n・Энэ: これ / この\n・Энд: ここで\n・Наашаа: こちらへ"
+  },
+  {
+    "id": "sq_16",
+    "category": "demonstrative",
+    "svgKey": "point_these",
+    "prompt": "___ шинэ үгсийг цээжилбэл шалгалтад тустай.",
+    "promptJa": "___新しい単語たちを暗記すれば試験に役立ちます。（これらの単語を [手元の複数]）",
+    "options": [
+      "Эдгээр",
+      "Тэдгээр",
+      "Тэр",
+      "Тэнд"
+    ],
+    "answer": "Эдгээр",
+    "explanation": "【正解: Эдгээр (これら / これらの)】\n手元にある「複数の対象」をまとめて指す近称複数指示詞は「Эдгээр」です。\n・Тэдгээр: あれら / それら"
+  },
+  {
+    "id": "sq_17",
+    "category": "demonstrative",
+    "svgKey": "point_those",
+    "prompt": "Тал нутагт бэлчиж буй ___ олон адууг хараарай.",
+    "promptJa": "草原で草を食んでいる___たくさんの馬たちをごらん。（あの馬たちを [遠くの複数]）",
+    "options": [
+      "тэдгээр",
+      "эдгээр",
+      "энэ",
+      "энд"
+    ],
+    "answer": "тэдгээр",
+    "explanation": "【正解: тэдгээр (あれら / それら / あの〜たち)】\n遠くにある複数の対象を指す遠称複数指示詞は「тэдгээр」です。"
+  },
+  {
+    "id": "sq_18",
+    "category": "demonstrative",
+    "svgKey": "point_here",
+    "prompt": "Би одоо ___ амьдарч байна. Чи хэзээ ирэх вэ?",
+    "promptJa": "私は今___住んでいます。あなたはいつ来ますか？（ここに）",
+    "options": [
+      "энд",
+      "тэнд",
+      "наашаа",
+      "цаашаа"
+    ],
+    "answer": "энд",
+    "explanation": "【正解: энд (ここ / ここで)】\n話者の現在地・足元の場所を指すのは「энд」です。\n・тэнд: あそこ（で）\n・наашаа: こちらへ（方向）\n・цаашаа: あちらへ（方向）"
+  },
+  {
+    "id": "sq_19",
+    "category": "demonstrative",
+    "svgKey": "point_there",
+    "prompt": "___ нэг том банк болон шуудангийн газар бий.",
+    "promptJa": "___ひとつの大きな銀行と郵便局があります。（あそこに）",
+    "options": [
+      "Тэнд",
+      "Энд",
+      "Ийм",
+      "Дээшээ"
+    ],
+    "answer": "Тэнд",
+    "explanation": "【正解: Тэнд (あそこ / そこ / あそこで)】\n離れた場所を指す場所遠称指示詞は「Тэнд」です。"
+  },
+  {
+    "id": "sq_20",
+    "category": "demonstrative",
+    "svgKey": "arrow_towards",
+    "prompt": "Цаг агаар хүйтэн байна, ___ гэрт ороод дулаац.",
+    "promptJa": "天気が寒いです、___家の中に入って暖まって。（こちらへ）",
+    "options": [
+      "наашаа",
+      "цаашаа",
+      "тэнд",
+      "доошоо"
+    ],
+    "answer": "наашаа",
+    "explanation": "【正解: наашаа (こちらへ / 手前へ)】\n話者のいる方向に向かってくる動きを表すのは「наашаа」です。\n対義語は「цаашаа (あちらへ)」です。"
+  },
+  {
+    "id": "sq_21",
+    "category": "demonstrative",
+    "svgKey": "arrow_away",
+    "prompt": "Энэ замаар ___ явбал цэцэрлэгт хүрээлэн байгаа.",
+    "promptJa": "この道を___行けば、公園があります。（あちらへ / 先へ）",
+    "options": [
+      "цаашаа",
+      "наашаа",
+      "энд",
+      "доошоо"
+    ],
+    "answer": "цаашаа",
+    "explanation": "【正解: цаашаа (あちらへ / 向こうへ)】\n話者から遠ざかって奥や先へ進む方向を示すのは「цаашаа」です。"
+  },
+  {
+    "id": "sq_22",
+    "category": "demonstrative",
+    "svgKey": "arrow_up",
+    "prompt": "Шат өөд ___ гараад баруун тийшээ эргээрэй.",
+    "promptJa": "階段を___上がって、右へ曲がってください。（上へ）",
+    "options": [
+      "дээшээ",
+      "доошоо",
+      "наашаа",
+      "энд"
+    ],
+    "answer": "дээшээ",
+    "explanation": "【正解: дээшээ (上へ)】\n上方に向かう動きを示すのは「дээшээ」です。\n対義語は「доошоо (下へ)」です。"
+  },
+  {
+    "id": "sq_23",
+    "category": "demonstrative",
+    "svgKey": "arrow_down",
+    "prompt": "Уулнаас болгоомжтой ___ буугаарай, хальтиргаатай байна.",
+    "promptJa": "山から気をつけて___降りてください、滑りやすいです。（下へ）",
+    "options": [
+      "доошоо",
+      "дээшээ",
+      "энд",
+      "ийм"
+    ],
+    "answer": "доошоо",
+    "explanation": "【正解: доошоо (下へ)】\n下方に向かう動きを示すのは「доошоо」です。"
+  },
+  {
+    "id": "sq_24",
+    "category": "demonstrative",
+    "svgKey": "shape_like_this",
+    "prompt": "Би ___ хөөрхөн бэлэг авсандаа маш их баярласан.",
+    "promptJa": "私は___可愛いプレゼントをもらってとても嬉しかったです。（こんな・このような）",
+    "options": [
+      "ийм",
+      "энд",
+      "наашаа",
+      "дээр"
+    ],
+    "answer": "ийм",
+    "explanation": "【正解: ийм (このような / こんな)】\n手元にある対象の性質・状態を指す様態指示詞は「ийм」です。\n・ийм бэлэг: こんなプレゼント"
+  },
+  {
+    "id": "sq_25",
+    "category": "demonstrative",
+    "svgKey": "shape_like_that",
+    "prompt": "___ хэцүү ажлыг ганцаараа хийж чадах уу?",
+    "promptJa": "___難しい仕事を一人でやり遂げられますか？（あんな・そんな）",
+    "options": [
+      "Тийм",
+      "Энд",
+      "Тэнд",
+      "Дээр"
+    ],
+    "answer": "Тийм",
+    "explanation": "【正解: Тийм (あのような / そんな / あんな)】\n話題の対象や離れた物事の様態を示すのは「Тийм」です。\n・Тийм хэцүү ажил: そんなに難しい仕事"
+  },
+  {
+    "id": "sq_26",
+    "category": "temporal",
+    "svgKey": "time_before",
+    "prompt": "Би гурван жилийн ___ Монгол улсад анх удаа ирсэн.",
+    "promptJa": "私は3年の___モンゴル国に初めて来ました。（3年前に）",
+    "options": [
+      "өмнө",
+      "дараа",
+      "хүртэл",
+      "турш"
+    ],
+    "answer": "өмнө",
+    "explanation": "【正解: өмнө (〜の前に)】\n時間の過去の時点（〜年前など）を表すのは「өмнө」です。\n・гурван жилийн өмнө: 3年前に\n・дараа: 〜後に\n・хүртэл: 〜まで\n・турш: 〜の間中"
+  },
+  {
+    "id": "sq_27",
+    "category": "temporal",
+    "svgKey": "time_after",
+    "prompt": "Хичээл тарсны ___ бид хамтдаа хоолонд орцгооё.",
+    "promptJa": "授業が終わった___私たちは一緒に食事に行きましょう。（終わった後に）",
+    "options": [
+      "дараа",
+      "өмнө",
+      "хүртэл",
+      "зуур"
+    ],
+    "answer": "дараа",
+    "explanation": "【正解: дараа (〜の後に)】\n動作の終了後の時間を表すのは「-сны/-сний дараа (〜した後に)」です。\n・өмнө: 〜の前に\n・хүртэл: 〜まで\n・зуур: 〜の合間に"
+  },
+  {
+    "id": "sq_28",
+    "category": "temporal",
+    "svgKey": "time_until",
+    "prompt": "Маргааш өглөөний арван цаг ___ энэ даалгаврыг явуулаарай.",
+    "promptJa": "明日の朝10時___この課題を送ってください。（10時までに）",
+    "options": [
+      "хүртэл",
+      "дараа",
+      "өмнө",
+      "турш"
+    ],
+    "answer": "хүртэл",
+    "explanation": "【正解: хүртэл (〜まで)】\n時間や期限の終点を示すのは「хүртэл」です。\n・арван цаг хүртэл: 10時まで"
+  },
+  {
+    "id": "sq_29",
+    "category": "temporal",
+    "svgKey": "time_throughout",
+    "prompt": "Зуны амралтынхаа ___ би олон сонирхолтой ном уншсан.",
+    "promptJa": "夏休みの___私はたくさんの面白い本を読みました。（夏休みの間ずっと）",
+    "options": [
+      "турш",
+      "хүртэл",
+      "дараа",
+      "өмнө"
+    ],
+    "answer": "турш",
+    "explanation": "【正解: турш (〜の間中 / ずっと)】\n期間の最初から最後まで継続したことを表すのは「турш」です。\n・амралтынхаа турш: 休暇の間ずっと"
+  },
+  {
+    "id": "sq_30",
+    "category": "temporal",
+    "svgKey": "time_since",
+    "prompt": "Японоос ирснээс ___ би өдөр бүр монгол хоол идэж байна.",
+    "promptJa": "日本から来て___私は毎日モンゴル料理を食べています。（来て以来・来てからずっと）",
+    "options": [
+      "хойш",
+      "өмнө",
+      "хүртэл",
+      "турш"
+    ],
+    "answer": "хойш",
+    "explanation": "【正解: хойш (〜以来 / 〜からずっと)】\n奪格（-аас⁴）とセットで、過去の時点から現在まで継続していることを表すのは「-аас хойш」です。\n・ирснээс хойш: 来て以来"
+  },
+  {
+    "id": "sq_31",
+    "category": "temporal",
+    "svgKey": "time_when",
+    "prompt": "Бага насны хүүхэд байх ___ би их сахилгагүй байсан.",
+    "promptJa": "幼い子供であった___私はとてもやんちゃでした。（子供の頃に / 子供の時に）",
+    "options": [
+      "үед",
+      "хүртэл",
+      "турш",
+      "дараа"
+    ],
+    "answer": "үед",
+    "explanation": "【正解: үед (〜の時に / 〜の頃に)】\n特定の時代や時点を表す名詞「үе」の与位格形「үед」が正解です。\n・хүүхэд байх үед: 子供の頃に"
+  },
+  {
+    "id": "sq_32",
+    "category": "temporal",
+    "svgKey": "time_while",
+    "prompt": "Замдаа явах ___ би найзтайгаа утсаар ярилаа.",
+    "promptJa": "道を行く___私は友達と電話で話しました。（行く合間に / 移動している間に）",
+    "options": [
+      "зуур",
+      "дараа",
+      "өмнө",
+      "хүртэл"
+    ],
+    "answer": "зуур",
+    "explanation": "【正解: зуур (〜の合間に / 〜している間に)】\nある動作を行っている隙間の時間を表すのは「зуур（または зуураа）」です。\n・явах зуур: 行く合間に"
+  },
+  {
+    "id": "sq_33",
+    "category": "temporal",
+    "svgKey": "time_first",
+    "prompt": "___ гараа угаагаад, дараа нь хоолоо идээрэй.",
+    "promptJa": "___手を洗って、その後にご飯を食べてください。（まず初めに）",
+    "options": [
+      "Эхлээд",
+      "Сүүлд",
+      "Турш",
+      "Хойш"
+    ],
+    "answer": "Эхлээд",
+    "explanation": "【正解: Эхлээд (まず初めに / 最初に)】\n順序として「まず第一に」行う行動を表すのは「Эхлээд」です。\n対句の「дараа нь (その後に)」とセットで非常によく使われます。"
+  },
+  {
+    "id": "sq_34",
+    "category": "spatial",
+    "svgKey": "box_on",
+    "prompt": "Ор ___ миний дулаахан хөнжил байна.",
+    "promptJa": "ベッドの___私の温かい毛布があります。（ベッドの上に）",
+    "options": [
+      "дээр",
+      "доор",
+      "гадна",
+      "хооронд"
+    ],
+    "answer": "дээр",
+    "explanation": "【正解: дээр (〜の上)】\nベッドの上面にあるため「ор дээр (ベッドの上に)」が自然です。"
+  },
+  {
+    "id": "sq_35",
+    "category": "spatial",
+    "svgKey": "box_under",
+    "prompt": "Модны ___ сэрүүн сүүдэрт суугаад амарцгаая.",
+    "promptJa": "木の___涼しい日陰に座って休みましょう。（木の下の）",
+    "options": [
+      "доор",
+      "дээр",
+      "дотор",
+      "гадна"
+    ],
+    "answer": "доор",
+    "explanation": "【正解: доор (〜の下)】\n木の下側・日陰に入るため「модны доор」が正解です。"
+  },
+  {
+    "id": "sq_36",
+    "category": "spatial",
+    "svgKey": "box_inside",
+    "prompt": "Хөргөгч ___ сүү, тараг, жимс байна.",
+    "promptJa": "冷蔵庫の___牛乳、ヨーグルト、果物があります。（冷蔵庫の中に）",
+    "options": [
+      "дотор",
+      "дээр",
+      "ард",
+      "гадна"
+    ],
+    "answer": "дотор",
+    "explanation": "【正解: дотор (〜の中)】\n冷蔵庫という密閉容器の内部にあるため「дотор」が正解です。"
+  },
+  {
+    "id": "sq_37",
+    "category": "spatial",
+    "svgKey": "box_outside",
+    "prompt": "Гадаа хүйтэн байна, үүдний ___ удаан зогсож болохгүй.",
+    "promptJa": "外は寒いです、玄関の___長く立っていてはいけません。（玄関の外に）",
+    "options": [
+      "гадна",
+      "дотор",
+      "дээр",
+      "доор"
+    ],
+    "answer": "гадна",
+    "explanation": "【正解: гадна (〜の外)】\n玄関の外側を表すため「үүдний гадна」が正解です。"
+  },
+  {
+    "id": "sq_38",
+    "category": "spatial",
+    "svgKey": "box_front",
+    "prompt": "Эмнэлгийн ___ олон түргэн тусламжийн машин зогсож байна.",
+    "promptJa": "病院の___多くの救急車が停まっています。（病院の前に）",
+    "options": [
+      "өмнө",
+      "хойно",
+      "доор",
+      "хооронд"
+    ],
+    "answer": "өмнө",
+    "explanation": "【正解: өмнө (〜の前)】\n建物の正面・前方を指すため「өмнө」が正解です。"
+  },
+  {
+    "id": "sq_39",
+    "category": "spatial",
+    "svgKey": "box_behind",
+    "prompt": "Цэцэрлэгийн ___ өндөр уул сүндэрлэж харагдана.",
+    "promptJa": "幼稚園・公園の___高い山がそびえて見えます。（裏・後ろに）",
+    "options": [
+      "ард",
+      "дотор",
+      "дээр",
+      "хооронд"
+    ],
+    "answer": "ард",
+    "explanation": "【正解: ард (〜の裏・後ろ)】\n公園の後方に山がそびえている位置関係は「ард」です。"
+  },
+  {
+    "id": "sq_40",
+    "category": "spatial",
+    "svgKey": "box_between",
+    "prompt": "Ширээ, сандал хоёрын ___ миний үзэг уначихжээ.",
+    "promptJa": "机と椅子の2つの___私のペンが落ちてしまいました。（間に）",
+    "options": [
+      "хооронд",
+      "дунд",
+      "дээр",
+      "гадна"
+    ],
+    "answer": "хооронд",
+    "explanation": "【正解: хооронд (2者の間)】\n机と椅子という【2つの物の間】に落ちているため「хооронд」です。"
+  },
+  {
+    "id": "sq_41",
+    "category": "spatial",
+    "svgKey": "box_middle",
+    "prompt": "Цэцэгсийн ___ нэгэн үзэсгэлэнтэй эрвээхэй нисэж байна.",
+    "promptJa": "たくさんの花々の___一匹の美しい蝶が飛んでいます。（花々の真ん中で）",
+    "options": [
+      "дунд",
+      "хооронд",
+      "доор",
+      "гадна"
+    ],
+    "answer": "дунд",
+    "explanation": "【正解: дунд (〜の真ん中・中)】\n無数の花に囲まれた群れの真ん中は「дунд」を使います。"
+  },
+  {
+    "id": "sq_42",
+    "category": "spatial",
+    "svgKey": "box_beside",
+    "prompt": "Манай байрны ___ нэг жижигхэн кофе шоп бий.",
+    "promptJa": "私たちのアパートの___小さなカフェがあります。（すぐ横・隣に）",
+    "options": [
+      "хажууд",
+      "дотор",
+      "дээр",
+      "хооронд"
+    ],
+    "answer": "хажууд",
+    "explanation": "【正解: хажууд (〜の横・隣)】\n建物のすぐ横・隣接した位置は「хажууд（または дэргэд）」です。"
+  },
+  {
+    "id": "sq_43",
+    "category": "spatial",
+    "svgKey": "box_opposite",
+    "prompt": "Их дэлгүүрийн ___ талд том зогсоол байдаг.",
+    "promptJa": "ノミンデパートの___側に大きな駐車場があります。（向かい側に）",
+    "options": [
+      "эсрэг",
+      "дотор",
+      "дээр",
+      "хооронд"
+    ],
+    "answer": "эсрэг",
+    "explanation": "【正解: эсрэг (向かい)】\n道路を挟んで向かい側は「эсрэг талд」と言います。"
+  },
+  {
+    "id": "sq_44",
+    "category": "demonstrative",
+    "svgKey": "point_this",
+    "prompt": "___ асуултыг би сайн ойлгохгүй байна, зааж өгнө үү.",
+    "promptJa": "___質問を私はよく理解できません、教えてください。（この質問を [手元]）",
+    "options": [
+      "Энэ",
+      "Тэр",
+      "Тэнд",
+      "Цаашаа"
+    ],
+    "answer": "Энэ",
+    "explanation": "【正解: Энэ (この)】\n目の前にある問題・質問を指すので「Энэ」です。"
+  },
+  {
+    "id": "sq_45",
+    "category": "demonstrative",
+    "svgKey": "point_that",
+    "prompt": "___ барилга хэдэн онд баригдсан бэ?",
+    "promptJa": "___建物は何年に建てられたのですか？（あの・その建物は）",
+    "options": [
+      "Тэр",
+      "Энд",
+      "Наашаа",
+      "Дээшээ"
+    ],
+    "answer": "Тэр",
+    "explanation": "【正解: Тэр (あの / その)】\n離れた場所にある建物や話題の建物を指す遠称指示詞は「Тэр」です。"
+  },
+  {
+    "id": "sq_46",
+    "category": "demonstrative",
+    "svgKey": "point_here",
+    "prompt": "Манай гэр бүл ___ гурван жил амьдарч байна.",
+    "promptJa": "私たちの家族は___3年間住んでいます。（ここに / ここで）",
+    "options": [
+      "энд",
+      "наашаа",
+      "цаашаа",
+      "тийм"
+    ],
+    "answer": "энд",
+    "explanation": "【正解: энд (ここ / ここで)】\n話者の現住所・現在地を指す場所副詞は「энд」です。"
+  },
+  {
+    "id": "sq_47",
+    "category": "demonstrative",
+    "svgKey": "point_there",
+    "prompt": "Багш одоо ___ хичээл зааж байгаа тул битгий чимээ гарга.",
+    "promptJa": "先生は今___授業を教えているので、音を立てないで。（あそこで）",
+    "options": [
+      "тэнд",
+      "энд",
+      "ийм",
+      "наашаа"
+    ],
+    "answer": "тэнд",
+    "explanation": "【正解: тэнд (あそこで / そこで)】\n離れた別の教室・場所を指すので「тэнд」です。"
+  },
+  {
+    "id": "sq_48",
+    "category": "demonstrative",
+    "svgKey": "arrow_towards",
+    "prompt": "Бүгдээрээ ___ ирээд дугуйрч суугаарай.",
+    "promptJa": "みんな___来て円になって座ってください。（こちらへ）",
+    "options": [
+      "наашаа",
+      "цаашаа",
+      "тэнд",
+      "доошоо"
+    ],
+    "answer": "наашаа",
+    "explanation": "【正解: наашаа (こちらへ)】\n話者のいる方向へ集まる呼びかけなので「наашаа」です。"
+  },
+  {
+    "id": "sq_49",
+    "category": "demonstrative",
+    "svgKey": "arrow_away",
+    "prompt": "Бид маргааш хөдөө тийшээ ___ явна.",
+    "promptJa": "私たちは明日田舎の方へ___行きます。（あちらへ / 向こうへ）",
+    "options": [
+      "цаашаа",
+      "наашаа",
+      "энд",
+      "доор"
+    ],
+    "answer": "цаашаа",
+    "explanation": "【正解: цаашаа (あちらへ / 向こうへ)】\n都市から田舎へ離れていく方向なので「цаашаа」が自然です。"
+  },
+  {
+    "id": "sq_50",
+    "category": "demonstrative",
+    "svgKey": "arrow_up",
+    "prompt": "Тэнгэр өөд ___ харвал олон түмэн од гялалзаж байна.",
+    "promptJa": "空に向かって___見上げると、無数の星が輝いています。（上を）",
+    "options": [
+      "дээшээ",
+      "доошоо",
+      "наашаа",
+      "энд"
+    ],
+    "answer": "дээшээ",
+    "explanation": "【正解: дээшээ (上へ)】\n空を見上げる動作は「дээшээ харах」です。"
+  },
+  {
+    "id": "sq_51",
+    "category": "demonstrative",
+    "svgKey": "arrow_down",
+    "prompt": "Нүх рүү ___ битгий шагайгаарай, аюултай.",
+    "promptJa": "穴へ向かって___覗き込まないでください、危ないです。（下を）",
+    "options": [
+      "доошоо",
+      "дээшээ",
+      "энд",
+      "ийм"
+    ],
+    "answer": "доошоо",
+    "explanation": "【正解: доошоо (下へ)】\n穴の下方を見下ろす方向なので「доошоо」です。"
+  },
+  {
+    "id": "sq_52",
+    "category": "demonstrative",
+    "svgKey": "shape_like_this",
+    "prompt": "Японд ___ төрлийн цахилгаан хэрэгсэл маш их зарагддаг.",
+    "promptJa": "日本で___種類の電化製品がとてもよく売れています。（このような・こんな）",
+    "options": [
+      "ийм",
+      "энд",
+      "наашаа",
+      "дээр"
+    ],
+    "answer": "ийм",
+    "explanation": "【正解: ийм (このような)】\n手元で提示している種類の様態を示すので「ийм」です。"
+  },
+  {
+    "id": "sq_53",
+    "category": "demonstrative",
+    "svgKey": "shape_like_that",
+    "prompt": "Тэр үед тийм сайхан байшин ховор байсан.",
+    "promptJa": "当時、あのような美しい家は珍しかった。",
+    "options": [
+      "тийм",
+      "ийм",
+      "энд",
+      "наашаа"
+    ],
+    "answer": "тийм",
+    "explanation": "【正解: тийм (あのような / そんな)】\n過去の話題や離れた対象の様態を回想して述べるので「тийм」が適切です。"
+  },
+  {
+    "id": "sq_54",
+    "category": "temporal",
+    "svgKey": "time_before",
+    "prompt": "Монгол явахын ___ би монгол бичиг бага зэрэг сурсан.",
+    "promptJa": "モンゴルへ行く___私はモンゴル文字を少し勉強しました。（行く前に）",
+    "options": [
+      "өмнө",
+      "дараа",
+      "хүртэл",
+      "турш"
+    ],
+    "answer": "өмнө",
+    "explanation": "【正解: өмнө (〜の前に)】\n「-хын өмнө (〜する前に)」という未来の行動の前の事前段階を表します。"
+  },
+  {
+    "id": "sq_55",
+    "category": "temporal",
+    "svgKey": "time_after",
+    "prompt": "Уулзсаны ___ би чам руу зурвас илгээнэ.",
+    "promptJa": "会った___私はあなたにメッセージを送ります。（会った後に）",
+    "options": [
+      "дараа",
+      "өмнө",
+      "хүртэл",
+      "зуур"
+    ],
+    "answer": "дараа",
+    "explanation": "【正解: дараа (〜の後に)】\n「-сны дараа (〜した後に)」という動作の完了後を表します。"
+  },
+  {
+    "id": "sq_56",
+    "category": "temporal",
+    "svgKey": "time_until",
+    "prompt": "Бид нар орой болтол буюу нар жаргах ___ ажилласан.",
+    "promptJa": "私たちは日が暮れる___働きました。（日が沈むまで）",
+    "options": [
+      "хүртэл",
+      "дараа",
+      "өмнө",
+      "турш"
+    ],
+    "answer": "хүртэл",
+    "explanation": "【正解: хүртэл (〜まで)】\n行動の限界・終点を表すのは「хүртэл」です。"
+  },
+  {
+    "id": "sq_57",
+    "category": "temporal",
+    "svgKey": "time_throughout",
+    "prompt": "Өвлийн ___ Монголд маш хүйтэн байдаг.",
+    "promptJa": "冬の___モンゴルはとても寒いです。（冬の間ずっと）",
+    "options": [
+      "турш",
+      "хүртэл",
+      "дараа",
+      "өмнө"
+    ],
+    "answer": "турш",
+    "explanation": "【正解: турш (〜の間中)】\n冬という季節全体を通して継続する状態を表すので「турш」です。"
+  },
+  {
+    "id": "sq_58",
+    "category": "temporal",
+    "svgKey": "time_since",
+    "prompt": "Тэр үеэс ___ би монгол хэлээ тасралтгүй сурч байгаа.",
+    "promptJa": "その時___私はモンゴル語を途切れることなく学び続けている。（その時以来・その時からずっと）",
+    "options": [
+      "хойш",
+      "өмнө",
+      "хүртэл",
+      "зуур"
+    ],
+    "answer": "хойш",
+    "explanation": "【正解: хойш (〜以来 / 〜からずっと)】\n奪格「-ээс」と呼応して過去の起点からの継続を示すので「хойш」です。"
+  },
+  {
+    "id": "sq_59",
+    "category": "temporal",
+    "svgKey": "time_when",
+    "prompt": "Оюутан байх ___ олон гадаад найзтай болсон.",
+    "promptJa": "学生であった___たくさんの外国人の友達ができました。（学生だった頃に・時に）",
+    "options": [
+      "үед",
+      "хүртэл",
+      "турш",
+      "дараа"
+    ],
+    "answer": "үед",
+    "explanation": "【正解: үед (〜の時に / 〜の頃に)】\n学生時代という時期を表すので「үед」です。"
+  },
+  {
+    "id": "sq_60",
+    "category": "temporal",
+    "svgKey": "time_first",
+    "prompt": "Шалгалт эхлэхэд ___ нэрээ бичээрэй.",
+    "promptJa": "試験が始まったら___自分の名前を書きなさい。（まず最初に）",
+    "options": [
+      "эхлээд",
+      "сүүлд",
+      "турш",
+      "хойш"
+    ],
+    "answer": "эхлээд",
+    "explanation": "【正解: эхлээд (まず最初に)】\n最初に行う行動を指示しているので「эхлээд」です。"
+  }
+];
+
+
 // === js/data/etymologySuffixData.js ===
 // モンゴル語 語源・接尾辞（エティモロジー・神接尾辞）マスターデータ
 // 語根＋接尾辞の体系的理解で語彙力を飛躍的に高めるデータベース
@@ -135909,6 +137991,30 @@ class HomeComponent {
               </div>
               <div class="mt-4 pt-3 border-t border-indigo-200/60 flex items-center justify-between text-xs font-black text-indigo-700">
                 <span>特訓を開始する</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <!-- 指示詞・場所・時間マスター（イラスト特化特訓） -->
+            <div class="bg-gradient-to-br from-sky-500/10 via-blue-500/5 to-indigo-500/10 rounded-xl p-5 border-2 border-sky-400 hover:border-sky-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="spatial_postposition_master">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    🧭
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-sky-600 text-white shadow-2xs">
+                    🎨 イラスト特化
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-sky-700 transition-colors flex items-center gap-1.5">
+                  指示詞・場所・時間マスター
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  「これ/あれ/ここ/あそこ/あちらへ」などの指示代名詞・方向詞と、「上/下/中/前/後/間/〜まで」などの空間・時間後置詞をかわいいイラスト図解で完全マスター！
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-sky-200/60 flex items-center justify-between text-xs font-black text-sky-700">
+                <span>イラスト特訓を開始する</span>
                 <span class="group-hover:translate-x-1 transition-transform">→</span>
               </div>
             </div>
@@ -158236,6 +160342,1073 @@ class PronounMasterComponent {
 }
 
 
+// === js/components/SpatialPostpositionMaster.js ===
+// ============================================================
+// モンゴル語 指示代名詞・場所＆時間後置詞マスター特訓コンポーネント (SpatialPostpositionMaster)
+// 豊富なインラインSVGイラスト図解・4択特訓・詳細解説・音声・図解リファレンスシート
+// ============================================================
+
+
+
+
+
+
+
+
+class SpatialPostpositionMasterComponent {
+  static container = null;
+  static onNavigate = null;
+  static keydownHandler = null;
+
+  static state = {
+    view: 'menu', // 'menu' | 'testing' | 'result' | 'cheatsheet'
+    activeCategory: 'all',
+    questionCount: 10,
+    customCountInput: '10',
+    quizzes: [],
+    currentIndex: 0,
+    currentQuiz: null,
+    shuffledOptions: [],
+    selectedOption: null,
+    hasAnswered: false,
+    isCorrect: false,
+    score: 0,
+    combo: 0,
+    maxCombo: 0,
+    xpEarned: 0,
+    results: [],
+    activeCheatTab: 'all', // 'all' | 'spatial' | 'demonstrative' | 'temporal'
+    cheatSearch: ''
+  };
+
+  static render(container, onNavigate) {
+    this.container = container;
+    this.onNavigate = onNavigate;
+
+    // キーボードショートカットの登録
+    if (!this.keydownHandler) {
+      this.keydownHandler = (e) => this.handleKeyDown(e);
+      window.addEventListener('keydown', this.keydownHandler);
+    }
+
+    if (this.state.view === 'menu') {
+      this.renderMenu();
+    } else if (this.state.view === 'testing') {
+      this.renderTesting();
+    } else if (this.state.view === 'result') {
+      this.renderResult();
+    } else if (this.state.view === 'cheatsheet') {
+      this.renderCheatsheet();
+    }
+  }
+
+  // ============================================================
+  // 1. メニュー画面 (Menu View)
+  // ============================================================
+  static renderMenu() {
+    const totalAllCount = spatialQuizzes.length;
+
+    // カテゴリごとの問題数カウント
+    const categoryCounts = {};
+    spatialQuizzes.forEach(q => {
+      categoryCounts[q.category] = (categoryCounts[q.category] || 0) + 1;
+    });
+
+    const activeCatData = SPATIAL_CATEGORIES.find(c => c.id === this.state.activeCategory) || SPATIAL_CATEGORIES[0];
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-4xl mx-auto px-4 py-5 space-y-6">
+        
+        <!-- ヘッダーナビゲーション -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-3xl">🧭</span>
+            <div>
+              <h2 class="text-xl font-black text-slate-900 tracking-tight">指示詞・場所・時間マスター</h2>
+              <p class="text-xs text-slate-500 font-bold">かわいいイラスト図解で指示代名詞＆空間・時間後置詞を完全攻略！</p>
+            </div>
+          </div>
+          <button id="btn-back-home" class="px-3.5 py-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all flex items-center gap-1">
+            <span>🏠</span>
+            <span>ホームへ</span>
+          </button>
+        </div>
+
+        <!-- ヒーロー紹介バナー -->
+        <div class="bg-gradient-to-br from-indigo-600 via-sky-600 to-teal-600 rounded-2xl p-5 text-white shadow-md relative overflow-hidden">
+          <div class="relative z-10 space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-2xs font-black uppercase tracking-wider bg-white/20 backdrop-blur-xs text-white border border-white/30">
+                🎨 イラスト特化モード (全${totalAllCount}問)
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full text-2xs font-black bg-amber-400 text-amber-950">
+                ⭐ 毎回詳しい解説付き
+              </span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-black tracking-tight">
+              「これ・あれ・ここ・あそこ」＆「上・下・中・前・後・間・〜まで」
+            </h3>
+            <p class="text-xs text-sky-100 max-w-2xl leading-relaxed">
+              日本語とモンゴル語で対応関係が混乱しやすい指示代名詞（энэ / тэр / энд / тэнд / наашаа / цаашаа）と、
+              位置・空間・時間を表す必須後置詞（дээр / доор / дотор / өмнө / хойно / хооронд / дунд / хүртэл / турш）を、
+              かわいいペンギンのイラスト図解付きで直感的に覚えられる特訓モードです。
+            </p>
+            
+            <div class="pt-2 flex flex-wrap gap-2.5">
+              <button id="btn-open-cheatsheet-hero" class="px-4 py-2 bg-white text-indigo-700 hover:bg-indigo-50 font-black rounded-xl text-xs shadow-sm transition-all flex items-center gap-1.5 hover:scale-105">
+                <span>📖</span>
+                <span>イラスト図解シートを見る (${SPATIAL_ITEMS.length}項目)</span>
+              </button>
+              <button id="btn-quick-start-all" class="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-amber-950 font-black rounded-xl text-xs shadow-sm transition-all flex items-center gap-1.5 hover:scale-105">
+                <span>⚡</span>
+                <span>すぐ始める (ランダム10問)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- クイック特訓カード (4分野) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          ${SPATIAL_CATEGORIES.map(cat => {
+            const count = cat.id === 'all' ? totalAllCount : (categoryCounts[cat.id] || 0);
+            const isSelected = this.state.activeCategory === cat.id;
+            return `
+              <div class="btn-category-card cursor-pointer p-4 rounded-xl border-2 transition-all flex flex-col justify-between ${
+                isSelected
+                  ? 'border-indigo-600 bg-indigo-50/70 shadow-sm ring-2 ring-indigo-500/20'
+                  : 'border-slate-200 bg-white hover:border-indigo-300 hover:bg-slate-50/80 shadow-2xs'
+              }" data-cat="${cat.id}">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-2xl">${cat.icon}</span>
+                    <span class="text-xs font-black px-2 py-0.5 rounded-full ${
+                      isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'
+                    }">
+                      ${count}問
+                    </span>
+                  </div>
+                  <h4 class="font-black text-sm text-slate-800">${cat.name}</h4>
+                  <p class="text-2xs text-slate-500 mt-1 leading-normal line-clamp-2">${cat.desc}</p>
+                </div>
+                <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-2xs font-bold ${
+                  isSelected ? 'text-indigo-600' : 'text-slate-400'
+                }">
+                  <span>${isSelected ? '選択中' : '選択する'}</span>
+                  <span>→</span>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- 出題設定パネル -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-5">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <span class="text-lg">⚙️</span>
+            <h3 class="font-black text-sm text-slate-800">出題オプション</h3>
+          </div>
+
+          <!-- 問題数選択 -->
+          <div>
+            <label class="block text-xs font-black text-slate-700 mb-2">出題数を選択</label>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              ${[5, 10, 20, 'all', 'custom'].map(cnt => {
+                let label = cnt === 'all' ? `全問 (${this.getMaxQuestionsForActiveCategory()}問)` : cnt === 'custom' ? 'カスタム指定' : `${cnt}問`;
+                const isSelected = (cnt === 'all' && this.state.questionCount === 'all') ||
+                                   (cnt === 'custom' && this.state.questionCount === 'custom') ||
+                                   (this.state.questionCount === cnt);
+                return `
+                  <button type="button" class="btn-question-count py-2.5 px-3 rounded-xl border-2 font-bold text-xs transition-all ${
+                    isSelected
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700 shadow-2xs'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                  }" data-count="${cnt}">
+                    ${label}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- カスタム問題数入力欄 -->
+            <div id="custom-count-wrapper" class="${this.state.questionCount === 'custom' ? '' : 'hidden'} mt-3 flex items-center gap-2">
+              <span class="text-xs text-slate-500 font-bold">問題数を指定:</span>
+              <input type="number" id="input-custom-count" min="1" max="${totalAllCount}" value="${this.state.customCountInput}" class="w-20 px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-bold text-center focus:ring-2 focus:ring-indigo-500 focus:outline-hidden" />
+              <span class="text-xs text-slate-500 font-bold">問 (最大 ${totalAllCount}問)</span>
+            </div>
+          </div>
+
+          <!-- スタートボタン -->
+          <div class="pt-2">
+            <button id="btn-start-quiz" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-700 hover:to-sky-700 text-white font-black text-sm rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98">
+              <span>🚀</span>
+              <span>特訓を開始する (「${activeCatData.name}」)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3分野の早見イラスト紹介バナー -->
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">👀</span>
+              <h4 class="text-xs font-black text-slate-800">マスターできるイラスト図解の例</h4>
+            </div>
+            <button id="btn-open-cheatsheet-bottom" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">
+              <span>全${SPATIAL_ITEMS.length}項目の図解シートを開く</span>
+              <span>→</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            ${[
+              { key: 'box_on', label: 'дээр (上)', cat: '空間' },
+              { key: 'box_under', label: 'доор (下)', cat: '空間' },
+              { key: 'point_this', label: 'энэ (これ)', cat: '指示詞' },
+              { key: 'time_before', label: 'өмнө (前)', cat: '時間' }
+            ].map(item => `
+              <div class="bg-white rounded-xl border border-slate-200 p-2.5 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all">
+                <div class="w-full h-20 sm:h-24 flex items-center justify-center overflow-hidden rounded-lg">
+                  ${SPATIAL_SVGS[item.key] || ''}
+                </div>
+                <div class="mt-2">
+                  <span class="text-2xs font-black px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">${item.cat}</span>
+                  <div class="text-xs font-black text-slate-800 mt-0.5">${item.label}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    // イベントリスナー設定
+    this.container.querySelector('#btn-back-home').addEventListener('click', () => {
+      if (this.onNavigate) this.onNavigate('home');
+    });
+
+    const openCheatsheet = () => {
+      this.state.view = 'cheatsheet';
+      this.renderCheatsheet();
+    };
+
+    const heroCheatBtn = this.container.querySelector('#btn-open-cheatsheet-hero');
+    if (heroCheatBtn) heroCheatBtn.addEventListener('click', openCheatsheet);
+
+    const bottomCheatBtn = this.container.querySelector('#btn-open-cheatsheet-bottom');
+    if (bottomCheatBtn) bottomCheatBtn.addEventListener('click', openCheatsheet);
+
+    this.container.querySelector('#btn-quick-start-all').addEventListener('click', () => {
+      this.startQuiz('all', 10);
+    });
+
+    // カテゴリカード選択
+    this.container.querySelectorAll('.btn-category-card').forEach(card => {
+      card.addEventListener('click', () => {
+        this.state.activeCategory = card.dataset.cat;
+        this.renderMenu();
+      });
+    });
+
+    // 問題数選択ボタン
+    this.container.querySelectorAll('.btn-question-count').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cnt = btn.dataset.count;
+        if (cnt === 'all') {
+          this.state.questionCount = 'all';
+        } else if (cnt === 'custom') {
+          this.state.questionCount = 'custom';
+        } else {
+          this.state.questionCount = parseInt(cnt, 10);
+        }
+        this.renderMenu();
+      });
+    });
+
+    // カスタム問題数入力
+    const customInput = this.container.querySelector('#input-custom-count');
+    if (customInput) {
+      customInput.addEventListener('input', (e) => {
+        this.state.customCountInput = e.target.value;
+      });
+    }
+
+    // スタートボタン
+    this.container.querySelector('#btn-start-quiz').addEventListener('click', () => {
+      let count = this.state.questionCount;
+      if (count === 'custom') {
+        const val = parseInt(this.state.customCountInput, 10);
+        count = isNaN(val) || val < 1 ? 10 : val;
+      }
+      this.startQuiz(this.state.activeCategory, count);
+    });
+  }
+
+  static getMaxQuestionsForActiveCategory() {
+    if (this.state.activeCategory === 'all') {
+      return spatialQuizzes.length;
+    }
+    return spatialQuizzes.filter(q => q.category === this.state.activeCategory).length;
+  }
+
+  // ============================================================
+  // 2. クイズ開始処理 (Start Quiz)
+  // ============================================================
+  static startQuiz(category = 'all', count = 10, customList = null) {
+    let pool = [];
+    if (customList && customList.length > 0) {
+      pool = customList;
+    } else if (category === 'all') {
+      pool = [...spatialQuizzes];
+    } else {
+      pool = spatialQuizzes.filter(q => q.category === category);
+    }
+
+    if (pool.length === 0) {
+      alert('選択したカテゴリの問題がありません。');
+      return;
+    }
+
+    // シャッフル
+    const shuffled = shuffleArray([...pool]);
+
+    let finalCount = pool.length;
+    if (count !== 'all') {
+      finalCount = Math.min(parseInt(count, 10) || 10, shuffled.length);
+    }
+
+    this.state.quizzes = shuffled.slice(0, finalCount);
+    this.state.currentIndex = 0;
+    this.state.score = 0;
+    this.state.combo = 0;
+    this.state.maxCombo = 0;
+    this.state.xpEarned = 0;
+    this.state.results = [];
+    this.state.view = 'testing';
+
+    this.prepareQuestion();
+    this.renderTesting();
+  }
+
+  static prepareQuestion() {
+    const quiz = this.state.quizzes[this.state.currentIndex];
+    this.state.currentQuiz = quiz;
+    this.state.shuffledOptions = shuffleArray([...quiz.options]);
+    this.state.selectedOption = null;
+    this.state.hasAnswered = false;
+    this.state.isCorrect = false;
+  }
+
+  // ============================================================
+  // 3. テスト画面 (Testing View)
+  // ============================================================
+  static renderTesting() {
+    scrollToQuizTop(this.container);
+
+    const quiz = this.state.currentQuiz;
+    const total = this.state.quizzes.length;
+    const current = this.state.currentIndex + 1;
+    const progressPercent = Math.round((current / total) * 100);
+
+    // カテゴリバッジ
+    let catBadge = '';
+    if (quiz.category === 'spatial') {
+      catBadge = '<span class="px-2 py-0.5 rounded-full text-2xs font-black bg-blue-100 text-blue-700">📍 空間・場所の後置詞</span>';
+    } else if (quiz.category === 'demonstrative') {
+      catBadge = '<span class="px-2 py-0.5 rounded-full text-2xs font-black bg-purple-100 text-purple-700">👉 指示代名詞・方向詞</span>';
+    } else if (quiz.category === 'temporal') {
+      catBadge = '<span class="px-2 py-0.5 rounded-full text-2xs font-black bg-emerald-100 text-emerald-700">⏰ 時間の後置詞</span>';
+    }
+
+    // SVGイラスト
+    const svgCode = SPATIAL_SVGS[quiz.svgKey] || `
+      <div class="w-full h-full flex items-center justify-center bg-slate-100 rounded-xl text-4xl">
+        🧭
+      </div>
+    `;
+
+    // 穴埋め文（空白は強調表示）
+    const highlightedPrompt = quiz.prompt.replace(
+      '___',
+      '<span class="inline-block px-3 py-0.5 mx-1 border-b-2 border-indigo-600 bg-indigo-50 text-indigo-700 font-black rounded-sm min-w-16 text-center">？</span>'
+    );
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-4 space-y-4">
+        
+        <!-- トップバー (進行バー・コンボ・中断) -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-500">
+            <button id="btn-abort-test" class="text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors">
+              <span>✕</span>
+              <span>終了</span>
+            </button>
+            <div class="flex items-center gap-3">
+              <span class="text-slate-700 font-black">第 ${current} 問 / 全 ${total} 問</span>
+              ${
+                this.state.combo >= 2
+                  ? `<span class="px-2 py-0.5 rounded-full text-2xs font-black bg-amber-100 text-amber-800 animate-pulse">🔥 ${this.state.combo} 連続正解！</span>`
+                  : ''
+              }
+              <span class="text-indigo-600 font-black">+${this.state.xpEarned} XP</span>
+            </div>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-500 to-sky-500 h-2 rounded-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+          </div>
+        </div>
+
+        <!-- イラスト表示カード -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col items-center space-y-3">
+          <div class="flex items-center justify-between w-full">
+            <div>${catBadge}</div>
+            <button id="btn-speak-prompt" class="px-2.5 py-1 text-xs font-bold text-slate-600 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 rounded-lg transition-all flex items-center gap-1">
+              <span>🔊</span>
+              <span>音声</span>
+            </button>
+          </div>
+
+          <!-- メインSVGグラフィックイラスト -->
+          <div class="w-full max-w-sm h-44 sm:h-52 rounded-xl overflow-hidden flex items-center justify-center p-1 bg-slate-50/50">
+            ${svgCode}
+          </div>
+
+          <!-- モンゴル語問題文 -->
+          <div class="w-full text-center space-y-1.5 pt-1">
+            <div class="text-base sm:text-lg font-black text-slate-900 tracking-wide leading-relaxed">
+              ${highlightedPrompt}
+            </div>
+            <div class="text-xs sm:text-sm font-bold text-slate-500">
+              ${quiz.promptJa}
+            </div>
+          </div>
+        </div>
+
+        <!-- 選択肢ボタン (4択) -->
+        <div id="spatial-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          ${this.state.shuffledOptions.map((opt, idx) => {
+            let btnStyle = 'border-slate-200 bg-white hover:border-indigo-400 hover:bg-indigo-50/50 text-slate-800';
+            let icon = `<span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold flex items-center justify-center">${idx + 1}</span>`;
+
+            if (this.state.hasAnswered) {
+              if (opt === quiz.answer) {
+                btnStyle = 'border-emerald-500 bg-emerald-50 text-emerald-900 font-black ring-2 ring-emerald-400/40 shadow-xs';
+                icon = '<span class="w-6 h-6 rounded-lg bg-emerald-500 text-white text-xs font-bold flex items-center justify-center">✓</span>';
+              } else if (opt === this.state.selectedOption) {
+                btnStyle = 'border-rose-400 bg-rose-50 text-rose-900 line-through';
+                icon = '<span class="w-6 h-6 rounded-lg bg-rose-500 text-white text-xs font-bold flex items-center justify-center">✕</span>';
+              } else {
+                btnStyle = 'border-slate-200 bg-slate-50 text-slate-400 opacity-60';
+              }
+            }
+
+            return `
+              <button type="button" class="btn-spatial-option w-full py-3 px-4 rounded-xl border-2 font-black text-sm text-left transition-all flex items-center gap-3 ${btnStyle}" data-option="${opt}" ${
+                this.state.hasAnswered ? 'disabled' : ''
+              }>
+                ${icon}
+                <span class="flex-1 text-base cyrillic-text">${opt}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- 回答後の詳細解説エリア -->
+        <div id="spatial-explanation-area" class="${this.state.hasAnswered ? '' : 'hidden'} animate-fade-in space-y-3">
+          <div class="p-4 rounded-2xl border ${
+            this.state.isCorrect
+              ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950'
+              : 'bg-rose-50/90 border-rose-300 text-rose-950'
+          } shadow-xs space-y-3">
+            
+            <div class="flex items-center justify-between border-b ${
+              this.state.isCorrect ? 'border-emerald-200' : 'border-rose-200'
+            } pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">${this.state.isCorrect ? '🎉' : '❌'}</span>
+                <div>
+                  <h4 class="font-black text-sm">
+                    ${this.state.isCorrect ? '正解です！' : `不正解... 正解は「${quiz.answer}」`}
+                  </h4>
+                  <p class="text-2xs font-bold opacity-80">
+                    ${this.state.isCorrect ? '+15 XP 獲得！' : '解説を確認してマスターしましょう'}
+                  </p>
+                </div>
+              </div>
+
+              <button id="btn-speak-answer" class="px-3 py-1 bg-white/80 hover:bg-white text-slate-800 rounded-lg text-xs font-black shadow-2xs transition-all flex items-center gap-1">
+                <span>🔊</span>
+                <span>正解を発音</span>
+              </button>
+            </div>
+
+            <!-- 解説文 -->
+            <div class="text-xs font-medium leading-relaxed whitespace-pre-line text-slate-800 bg-white/70 rounded-xl p-3 border ${
+              this.state.isCorrect ? 'border-emerald-200/60' : 'border-rose-200/60'
+            }">
+              ${quiz.explanation}
+            </div>
+
+            <!-- 次へ進むボタン -->
+            <div class="pt-1">
+              <button id="btn-next-question" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 active:scale-98">
+                <span>次の問題へ (Enter)</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    // 単語タップ辞書モーダル
+    this.container.querySelectorAll('.cyrillic-text').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const text = e.target.textContent.trim();
+        const info = findWordInDictionary(text);
+        if (info) {
+          showUniversalWordModal({ wordInfo: info, onNavigate: this.onNavigate });
+        }
+      });
+    });
+
+    // 中断ボタン
+    this.container.querySelector('#btn-abort-test').addEventListener('click', () => {
+      if (confirm('特訓を中断してメニューに戻りますか？')) {
+        this.state.view = 'menu';
+        this.renderMenu();
+      }
+    });
+
+    // 問題文音声再生
+    const speakPromptBtn = this.container.querySelector('#btn-speak-prompt');
+    if (speakPromptBtn) {
+      speakPromptBtn.addEventListener('click', () => {
+        // ___ を正解単語に置き換えて自然に再生
+        const cleanText = quiz.prompt.replace('___', quiz.answer);
+        SpeechService.speak(cleanText);
+      });
+    }
+
+    // 選択肢クリック
+    this.container.querySelectorAll('.btn-spatial-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (this.state.hasAnswered) return;
+        this.handleAnswer(btn.dataset.option);
+      });
+    });
+
+    // 正解音声再生
+    const speakAnsBtn = this.container.querySelector('#btn-speak-answer');
+    if (speakAnsBtn) {
+      speakAnsBtn.addEventListener('click', () => {
+        SpeechService.speak(quiz.answer);
+      });
+    }
+
+    // 次へボタン
+    const nextBtn = this.container.querySelector('#btn-next-question');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        this.goToNext();
+      });
+    }
+  }
+
+  // ============================================================
+  // 4. 回答処理 (Answer Handler)
+  // ============================================================
+  static handleAnswer(selectedOption) {
+    if (this.state.hasAnswered) return;
+
+    const quiz = this.state.currentQuiz;
+    const isCorrect = selectedOption === quiz.answer;
+
+    this.state.hasAnswered = true;
+    this.state.selectedOption = selectedOption;
+    this.state.isCorrect = isCorrect;
+
+    if (isCorrect) {
+      SoundEffects.playCorrect();
+      this.state.score += 1;
+      this.state.combo += 1;
+      if (this.state.combo > this.state.maxCombo) {
+        this.state.maxCombo = this.state.combo;
+      }
+      const earned = 15 + Math.min(this.state.combo * 2, 10);
+      this.state.xpEarned += earned;
+      try {
+        GamificationService.addXp(earned, 'spatial_master');
+      } catch (_) {}
+    } else {
+      SoundEffects.playIncorrect();
+      this.state.combo = 0;
+      // 苦手ノート・ミスリストへの記録
+      try {
+        StorageService.recordMistake({
+          id: quiz.id,
+          type: 'spatial_postposition',
+          mongolian: quiz.answer,
+          japanese: quiz.promptJa,
+          question: quiz.prompt,
+          category: quiz.category,
+          date: new Date().toISOString()
+        });
+      } catch (_) {}
+    }
+
+    this.state.results.push({
+      quiz: quiz,
+      userAnswer: selectedOption,
+      isCorrect: isCorrect
+    });
+
+    // 画面再描画（解説を表示）
+    this.renderTesting();
+  }
+
+  static goToNext() {
+    this.state.currentIndex += 1;
+    if (this.state.currentIndex < this.state.quizzes.length) {
+      this.prepareQuestion();
+      this.renderTesting();
+    } else {
+      this.state.view = 'result';
+      this.renderResult();
+    }
+  }
+
+  // ============================================================
+  // 5. 結果画面 (Result View)
+  // ============================================================
+  static renderResult() {
+    scrollToQuizTop(this.container);
+
+    const total = this.state.quizzes.length;
+    const score = this.state.score;
+    const accuracy = Math.round((score / total) * 100);
+    const mistakes = this.state.results.filter(r => !r.isCorrect);
+
+    let mood = 'idle';
+    let comment = '';
+    if (accuracy === 100) {
+      mood = 'celebrate';
+      comment = '完璧です！全問正解！指示代名詞と空間・時間後置詞を完全に使いこなせています！🎉';
+    } else if (accuracy >= 80) {
+      mood = 'happy';
+      comment = '素晴らしい成績です！位置関係や時間表現の感覚がしっかり身についています！✨';
+    } else if (accuracy >= 60) {
+      mood = 'nod';
+      comment = 'よく頑張りました！間違えた項目をイラスト図解シートで復習して完璧にしましょう！💪';
+    } else {
+      mood = 'study';
+      comment = '伸びしろがたくさんあります！イラスト図解を見ながらもう一度挑戦してみましょう！';
+    }
+
+    const penguinSvg = PenguinMascot.renderSVG ? PenguinMascot.renderSVG(mood, 110) : '';
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-2xl mx-auto px-4 py-6 space-y-6">
+        
+        <!-- 結果サマリーカード -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm text-center space-y-4">
+          
+          <!-- ペンギンマスコット -->
+          <div class="w-28 h-28 mx-auto flex items-center justify-center">
+            ${penguinSvg}
+          </div>
+
+          <div class="space-y-1">
+            <span class="text-xs font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+              特訓完了！
+            </span>
+            <h3 class="text-2xl font-black text-slate-900 mt-2">
+              ${score} / ${total} 問正解 (${accuracy}%)
+            </h3>
+            <p class="text-xs font-bold text-slate-600 max-w-md mx-auto pt-1">
+              ${comment}
+            </p>
+          </div>
+
+          <!-- スコア・XPバッジ -->
+          <div class="grid grid-cols-3 gap-2.5 pt-2 max-w-sm mx-auto">
+            <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-100">
+              <div class="text-2xs font-bold text-slate-500">正解数</div>
+              <div class="text-base font-black text-slate-800">${score} <span class="text-xs font-normal">/ ${total}</span></div>
+            </div>
+            <div class="bg-amber-50 rounded-xl p-2.5 border border-amber-100">
+              <div class="text-2xs font-bold text-amber-700">最大コンボ</div>
+              <div class="text-base font-black text-amber-800">${this.state.maxCombo} 連続</div>
+            </div>
+            <div class="bg-indigo-50 rounded-xl p-2.5 border border-indigo-100">
+              <div class="text-2xs font-bold text-indigo-700">獲得XP</div>
+              <div class="text-base font-black text-indigo-800">+${this.state.xpEarned}</div>
+            </div>
+          </div>
+
+          <!-- アクションボタン -->
+          <div class="pt-3 flex flex-wrap gap-2.5 justify-center">
+            <button id="btn-retry-all" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 active:scale-98">
+              <span>🔄</span>
+              <span>もう一度挑戦</span>
+            </button>
+            ${
+              mistakes.length > 0
+                ? `
+                <button id="btn-retry-mistakes" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 active:scale-98">
+                  <span>❌</span>
+                  <span>間違えた${mistakes.length}問だけ復習</span>
+                </button>
+              `
+                : ''
+            }
+            <button id="btn-result-cheatsheet" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs rounded-xl transition-all flex items-center gap-1.5">
+              <span>📖</span>
+              <span>イラスト図解シートを見る</span>
+            </button>
+            <button id="btn-result-home" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs rounded-xl transition-all flex items-center gap-1.5">
+              <span>🏠</span>
+              <span>ホームへ</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 振り返りリスト -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📋</span>
+              <h4 class="font-black text-sm text-slate-800">問題の振り返り</h4>
+            </div>
+            <div class="flex items-center gap-1 text-xs">
+              <button id="filter-all-results" class="px-2.5 py-1 rounded-lg font-bold bg-indigo-600 text-white text-2xs">すべて (${total})</button>
+              ${
+                mistakes.length > 0
+                  ? `<button id="filter-mistakes-results" class="px-2.5 py-1 rounded-lg font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 text-2xs">ミスのみ (${mistakes.length})</button>`
+                  : ''
+              }
+            </div>
+          </div>
+
+          <div id="results-list-container" class="space-y-3">
+            ${this.renderResultListItems(this.state.results)}
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    this.container.querySelector('#btn-retry-all').addEventListener('click', () => {
+      this.startQuiz(this.state.activeCategory, this.state.quizzes.length);
+    });
+
+    const retryMistakesBtn = this.container.querySelector('#btn-retry-mistakes');
+    if (retryMistakesBtn) {
+      retryMistakesBtn.addEventListener('click', () => {
+        const mistakeQuizzes = mistakes.map(m => m.quiz);
+        this.startQuiz('all', mistakeQuizzes.length, mistakeQuizzes);
+      });
+    }
+
+    this.container.querySelector('#btn-result-cheatsheet').addEventListener('click', () => {
+      this.state.view = 'cheatsheet';
+      this.renderCheatsheet();
+    });
+
+    this.container.querySelector('#btn-result-home').addEventListener('click', () => {
+      if (this.onNavigate) this.onNavigate('home');
+    });
+
+    const filterAll = this.container.querySelector('#filter-all-results');
+    const filterMis = this.container.querySelector('#filter-mistakes-results');
+
+    if (filterAll) {
+      filterAll.addEventListener('click', () => {
+        filterAll.className = 'px-2.5 py-1 rounded-lg font-bold bg-indigo-600 text-white text-2xs';
+        if (filterMis) filterMis.className = 'px-2.5 py-1 rounded-lg font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 text-2xs';
+        this.container.querySelector('#results-list-container').innerHTML = this.renderResultListItems(this.state.results);
+        this.attachResultListEvents();
+      });
+    }
+
+    if (filterMis) {
+      filterMis.addEventListener('click', () => {
+        filterMis.className = 'px-2.5 py-1 rounded-lg font-bold bg-rose-600 text-white text-2xs';
+        if (filterAll) filterAll.className = 'px-2.5 py-1 rounded-lg font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 text-2xs';
+        this.container.querySelector('#results-list-container').innerHTML = this.renderResultListItems(mistakes);
+        this.attachResultListEvents();
+      });
+    }
+
+    this.attachResultListEvents();
+  }
+
+  static renderResultListItems(list) {
+    if (list.length === 0) {
+      return '<div class="text-center py-6 text-xs text-slate-400">該当する問題はありません。</div>';
+    }
+
+    return list.map((item, idx) => {
+      const q = item.quiz;
+      const svgThumb = SPATIAL_SVGS[q.svgKey] || '🧭';
+      return `
+        <div class="p-3 rounded-xl border ${
+          item.isCorrect ? 'border-slate-200 bg-white' : 'border-rose-200 bg-rose-50/40'
+        } space-y-2">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-2.5 flex-1">
+              <span class="text-sm font-black ${item.isCorrect ? 'text-emerald-600' : 'text-rose-600'}">
+                ${item.isCorrect ? '✓' : '✕'}
+              </span>
+              <div class="space-y-1 flex-1">
+                <div class="text-xs font-black text-slate-800 leading-snug">
+                  ${q.prompt.replace('___', `【${q.answer}】`)}
+                </div>
+                <div class="text-2xs text-slate-500 font-bold">
+                  ${q.promptJa}
+                </div>
+              </div>
+            </div>
+
+            <!-- SVGサムネイル -->
+            <div class="w-14 h-12 flex-shrink-0 rounded-lg overflow-hidden border border-slate-100 bg-slate-50">
+              ${svgThumb}
+            </div>
+          </div>
+
+          <div class="pt-1.5 border-t border-slate-100 flex items-center justify-between text-2xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-slate-500">あなたの回答:</span>
+              <span class="font-black ${item.isCorrect ? 'text-emerald-700' : 'text-rose-700 line-through'}">
+                ${item.userAnswer}
+              </span>
+              ${
+                !item.isCorrect
+                  ? `<span class="font-bold text-slate-500 ml-1">正解:</span> <span class="font-black text-emerald-700">${q.answer}</span>`
+                  : ''
+              }
+            </div>
+
+            <button class="btn-speak-result-item text-slate-400 hover:text-indigo-600 font-bold flex items-center gap-1" data-phrase="${q.prompt.replace('___', q.answer)}">
+              <span>🔊</span>
+              <span>再生</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  static attachResultListEvents() {
+    this.container.querySelectorAll('.btn-speak-result-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const phrase = btn.dataset.phrase;
+        if (phrase) SpeechService.speak(phrase);
+      });
+    });
+  }
+
+  // ============================================================
+  // 6. イラスト図解シート (Cheatsheet View)
+  // ============================================================
+  static renderCheatsheet() {
+    scrollToQuizTop(this.container);
+
+    const activeTab = this.state.activeCheatTab;
+    const query = (this.state.cheatSearch || '').toLowerCase().trim();
+
+    // フィルタリング
+    const filteredItems = SPATIAL_ITEMS.filter(item => {
+      const matchTab = activeTab === 'all' || item.category === activeTab;
+      const matchSearch =
+        !query ||
+        item.word.toLowerCase().includes(query) ||
+        item.japanese.toLowerCase().includes(query) ||
+        item.pronunciation.toLowerCase().includes(query) ||
+        item.summary.toLowerCase().includes(query);
+      return matchTab && matchSearch;
+    });
+
+    this.container.innerHTML = `
+      <div class="animate-fade-in max-w-4xl mx-auto px-4 py-5 space-y-6">
+        
+        <!-- ヘッダー -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-3xl">🎨</span>
+            <div>
+              <h2 class="text-xl font-black text-slate-900 tracking-tight">イラスト図解シート</h2>
+              <p class="text-xs text-slate-500 font-bold">全${SPATIAL_ITEMS.length}項目の空間・指示詞・時間表現をビジュアル解説！</p>
+            </div>
+          </div>
+          <button id="btn-close-cheatsheet" class="px-3.5 py-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-all flex items-center gap-1">
+            <span>←</span>
+            <span>メニューに戻る</span>
+          </button>
+        </div>
+
+        <!-- サブタブ ＆ 検索バー -->
+        <div class="space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+              ${[
+                { id: 'all', label: 'すべて (35)' },
+                { id: 'spatial', label: '📍 空間・場所 (15)' },
+                { id: 'demonstrative', label: '👉 指示詞・方向 (12)' },
+                { id: 'temporal', label: '⏰ 時間表現 (8)' }
+              ].map(t => `
+                <button type="button" class="btn-cheat-subtab px-3.5 py-1.5 rounded-lg text-xs font-black transition-all ${
+                  activeTab === t.id
+                    ? 'bg-indigo-600 text-white shadow-2xs'
+                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                }" data-tab="${t.id}">
+                  ${t.label}
+                </button>
+              `).join('')}
+            </div>
+
+            <!-- 検索インプット -->
+            <div class="relative w-full sm:w-64">
+              <input type="text" id="input-cheat-search" placeholder="単語・日本語で検索..." value="${this.state.cheatSearch}" class="w-full pl-8 pr-3 py-1.5 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-hidden" />
+              <span class="absolute left-2.5 top-2 text-xs text-slate-400">🔍</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- カード一覧グリッド -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${filteredItems.map(item => {
+            const svgCode = SPATIAL_SVGS[item.svgKey] || '🧭';
+            return `
+              <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-3 group">
+                
+                <!-- SVGイラストヘッダー -->
+                <div>
+                  <div class="w-full h-36 rounded-xl overflow-hidden bg-slate-50 p-1 flex items-center justify-center border border-slate-100 group-hover:scale-102 transition-transform">
+                    ${svgCode}
+                  </div>
+
+                  <!-- 見出し・読み・音声 -->
+                  <div class="mt-3 flex items-start justify-between">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-lg font-black text-slate-900 cyrillic-text">${item.word}</span>
+                        <span class="text-2xs font-bold text-slate-400">[${item.pronunciation}]</span>
+                      </div>
+                      <div class="text-xs font-black text-indigo-700 mt-0.5">
+                        ${item.japanese}
+                      </div>
+                    </div>
+
+                    <button class="btn-cheat-speak w-8 h-8 rounded-lg bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 text-xs font-bold flex items-center justify-center transition-all shadow-2xs" data-word="${item.word}">
+                      🔊
+                    </button>
+                  </div>
+
+                  <!-- 接続ルール -->
+                  <div class="mt-2.5 px-2.5 py-1.5 bg-slate-50 rounded-lg border border-slate-100 text-2xs space-y-0.5">
+                    <span class="font-bold text-slate-500">接続ルール:</span>
+                    <span class="font-black text-slate-800">${item.caseRequirement}</span>
+                  </div>
+
+                  <!-- 意味・要点 -->
+                  <p class="text-2xs text-slate-600 mt-2 leading-relaxed">
+                    ${item.explanation}
+                  </p>
+                </div>
+
+                <!-- 例文エリア -->
+                <div class="pt-2 border-t border-slate-100 space-y-1">
+                  <div class="text-2xs font-bold text-slate-800 leading-snug cyrillic-text">
+                    ${item.example}
+                  </div>
+                  <div class="text-2xs text-slate-500">
+                    ${item.exampleJa}
+                  </div>
+                </div>
+
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+      </div>
+    `;
+
+    // メニューに戻る
+    this.container.querySelector('#btn-close-cheatsheet').addEventListener('click', () => {
+      this.state.view = 'menu';
+      this.renderMenu();
+    });
+
+    // サブタブ切り替え
+    this.container.querySelectorAll('.btn-cheat-subtab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.state.activeCheatTab = btn.dataset.tab;
+        this.renderCheatsheet();
+      });
+    });
+
+    // 検索入力
+    const searchInput = this.container.querySelector('#input-cheat-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        this.state.cheatSearch = e.target.value;
+        this.renderCheatsheet();
+      });
+    }
+
+    // 音声再生
+    this.container.querySelectorAll('.btn-cheat-speak').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const word = btn.dataset.word;
+        if (word) SpeechService.speak(word);
+      });
+    });
+  }
+
+  // ============================================================
+  // 7. キーボードショートカット (Keyboard Controls)
+  // ============================================================
+  static handleKeyDown(e) {
+    if (this.state.view !== 'testing') return;
+
+    // 1-4キーで選択
+    if (!this.state.hasAnswered) {
+      const num = parseInt(e.key, 10);
+      if (num >= 1 && num <= this.state.shuffledOptions.length) {
+        e.preventDefault();
+        this.handleAnswer(this.state.shuffledOptions[num - 1]);
+        return;
+      }
+    }
+
+    // Enterキーで次へ
+    if (this.state.hasAnswered && e.key === 'Enter') {
+      e.preventDefault();
+      this.goToNext();
+      return;
+    }
+
+    // VキーまたはSpaceキーで音声再生
+    if (e.key === 'v' || e.key === 'V') {
+      if (this.state.currentQuiz) {
+        e.preventDefault();
+        SpeechService.speak(this.state.currentQuiz.answer);
+      }
+    }
+  }
+
+  static cleanupKeyHandler() {
+    if (this.keydownHandler) {
+      window.removeEventListener('keydown', this.keydownHandler);
+      this.keydownHandler = null;
+    }
+  }
+}
+
+
 // === js/components/EtymologyMaster.js ===
 // 語源・神接尾辞マスターコンポーネント
 // 語根と接尾辞のレゴブロック構造を理解し、語彙を体系的に倍増させる特訓モジュール
@@ -165119,6 +168292,22 @@ class ReferenceGuideComponent {
 
           <!-- タブ6: 集合数詞 ＆ 位置・時間後置詞 -->
           <div id="ref-tab-collective" class="ref-subtab-pane hidden space-y-3">
+            
+            <!-- 指示詞・場所・時間マスター特訓へのリンクボタン -->
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-600 text-white p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+              <div>
+                <div class="font-black text-sm flex items-center gap-1.5">
+                  <span>🧭</span> イラスト特化！指示詞・場所・時間マスター特訓
+                </div>
+                <p class="text-xs text-sky-100 mt-0.5">
+                  上・下・中・前・後・間などの後置詞と指示代名詞を、かわいいイラスト図解と4択クイズで特訓！
+                </p>
+              </div>
+              <button type="button" id="btn-ref-start-spatial-master" class="px-4 py-2 bg-white text-indigo-700 hover:bg-indigo-50 font-black rounded-lg text-xs shadow-xs transition-all whitespace-nowrap cursor-pointer">
+                イラスト特訓を開始する →
+              </button>
+            </div>
+
             <div class="bg-sky-50/80 p-3.5 rounded-xl border border-sky-200 text-xs text-sky-950 space-y-2">
               <div class="font-black text-sm flex items-center gap-1.5 text-sky-900">
                 <span>🔢</span> 集合数詞（〜人で）＆ 位置・方向・時間後置詞
@@ -166312,6 +169501,14 @@ class ReferenceGuideComponent {
       });
     }
 
+    // 指示詞・場所・時間マスター特訓開始ボタン
+    const startSpatialMasterBtn = container.querySelector('#btn-ref-start-spatial-master');
+    if (startSpatialMasterBtn) {
+      startSpatialMasterBtn.addEventListener('click', () => {
+        if (onNavigate) onNavigate('spatial_postposition_master');
+      });
+    }
+
     // 例外リファレンスサブタブ切り替え
     const subtabs = container.querySelectorAll('.btn-ref-subtab');
     const panes = container.querySelectorAll('.ref-subtab-pane');
@@ -167107,6 +170304,7 @@ class ReferenceGuideComponent {
 
 
 
+
 class App {
   static currentTab = 'home';
 
@@ -167385,6 +170583,9 @@ class App {
         break;
       case 'pronoun_master':
         PronounMasterComponent.render(mainContainer, onNavigate);
+        break;
+      case 'spatial_postposition_master':
+        SpatialPostpositionMasterComponent.render(mainContainer, onNavigate);
         break;
       case 'etymology_master':
         EtymologyMasterComponent.render(mainContainer, onNavigate);
