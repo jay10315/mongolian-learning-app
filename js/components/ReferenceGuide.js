@@ -2283,9 +2283,15 @@ export class ReferenceGuideComponent {
             ${questionHighlightedHTML}
           </div>
 
-          <!-- 日本語訳 -->
-          <div class="text-sm font-bold text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100">
-            ${q.questionJa}
+          <!-- 日本語訳ヒント（押すまで隠す） -->
+          <div class="pt-1">
+            <button type="button" id="btn-toggle-cloze-hint" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600 transition-all cursor-pointer shadow-2xs active:scale-95">
+              <span>💡</span>
+              <span id="cloze-hint-toggle-text">${(this.state.isClozeHintRevealed || this.state.hasAnswered) ? 'ヒント（日本語訳）を閉じる ▲' : 'ヒントを見る ▼'}</span>
+            </button>
+            <div id="cloze-hint-container" class="${(this.state.isClozeHintRevealed || this.state.hasAnswered) ? '' : 'hidden'} mt-2 text-sm font-bold text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 animate-fade-in">
+              ${q.questionJa}
+            </div>
           </div>
 
           <!-- 単語タップ辞書ヒント -->

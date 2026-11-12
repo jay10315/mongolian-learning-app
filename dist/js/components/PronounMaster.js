@@ -26,6 +26,7 @@ export class PronounMasterComponent {
     selectedOption: null,
     hasAnswered: false,
     isCorrect: false,
+    isHintRevealed: false,
     score: 0,
     combo: 0,
     maxCombo: 0,
@@ -319,6 +320,7 @@ export class PronounMasterComponent {
     this.state.selectedOption = null;
     this.state.hasAnswered = false;
     this.state.isCorrect = false;
+    this.state.isHintRevealed = false;
   }
 
   // ============================================================
@@ -419,10 +421,17 @@ export class PronounMasterComponent {
             </p>
           </div>
 
-          <!-- 日本語の文脈・設問指示 -->
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium">
-            <span class="font-bold text-slate-900 dark:text-slate-100 mr-2">🇯🇵 日本語の意味:</span>
-            <span>${q.questionJa}</span>
+          <!-- 日本語の文脈・設問指示（ヒントを見るを押さない限り見えないように隠す） -->
+          <div class="space-y-2">
+            <button type="button" id="btn-toggle-pronoun-hint" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-all cursor-pointer shadow-2xs active:scale-95">
+              <span>💡</span>
+              <span id="pronoun-hint-toggle-text">${(this.state.isHintRevealed || this.state.hasAnswered) ? 'ヒント（日本語の意味）を閉じる ▲' : 'ヒントを見る ▼'}</span>
+            </button>
+
+            <div id="pronoun-hint-container" class="${(this.state.isHintRevealed || this.state.hasAnswered) ? '' : 'hidden'} p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-all animate-fade-in">
+              <span class="font-bold text-slate-900 dark:text-slate-100 mr-2">🇯🇵 日本語の意味:</span>
+              <span>${q.questionJa}</span>
+            </div>
           </div>
 
           <!-- 4択選択肢 -->
@@ -584,6 +593,25 @@ export class PronounMasterComponent {
         this.handleAnswer(chosen);
       });
     });
+
+    // ヒントトグルボタン（押すまで日本語の意味を隠す）
+    const btnToggleHint = this.container.querySelector('#btn-toggle-pronoun-hint');
+    const hintBox = this.container.querySelector('#pronoun-hint-container');
+    const hintText = this.container.querySelector('#pronoun-hint-toggle-text');
+    if (btnToggleHint && hintBox) {
+      btnToggleHint.addEventListener('click', () => {
+        const isCurrentlyHidden = hintBox.classList.contains('hidden');
+        if (isCurrentlyHidden) {
+          hintBox.classList.remove('hidden');
+          this.state.isHintRevealed = true;
+          if (hintText) hintText.textContent = 'ヒント（日本語の意味）を閉じる ▲';
+        } else {
+          hintBox.classList.add('hidden');
+          this.state.isHintRevealed = false;
+          if (hintText) hintText.textContent = 'ヒントを見る ▼';
+        }
+      });
+    }
 
     const btnNext = this.container.querySelector('#btn-next-question');
     if (btnNext) {

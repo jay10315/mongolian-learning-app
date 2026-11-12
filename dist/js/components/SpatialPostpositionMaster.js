@@ -433,8 +433,15 @@ export class SpatialPostpositionMasterComponent {
             <div class="text-base sm:text-lg font-black text-slate-900 tracking-wide leading-relaxed">
               ${highlightedPrompt}
             </div>
-            <div class="text-xs sm:text-sm font-bold text-slate-500">
-              ${quiz.promptJa}
+            <!-- 日本語訳ヒント（押すまで隠す） -->
+            <div class="pt-1">
+              <button type="button" id="btn-toggle-spatial-hint" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600 transition-all cursor-pointer shadow-2xs active:scale-95">
+                <span>💡</span>
+                <span id="spatial-hint-toggle-text">${(this.state.isHintRevealed || this.state.hasAnswered) ? 'ヒント（日本語訳）を閉じる ▲' : 'ヒントを見る ▼'}</span>
+              </button>
+              <div id="spatial-hint-container" class="${(this.state.isHintRevealed || this.state.hasAnswered) ? '' : 'hidden'} mt-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 animate-fade-in">
+                ${quiz.promptJa}
+              </div>
             </div>
           </div>
         </div>
@@ -563,6 +570,25 @@ export class SpatialPostpositionMasterComponent {
         // ___ を正解単語に置き換えて自然に再生
         const cleanText = quiz.prompt.replace('___', quiz.answer);
         SpeechService.speak(cleanText);
+      });
+    }
+
+    // ヒントトグルボタン
+    const btnToggleSpatialHint = this.container.querySelector('#btn-toggle-spatial-hint');
+    const spatialHintBox = this.container.querySelector('#spatial-hint-container');
+    const spatialHintText = this.container.querySelector('#spatial-hint-toggle-text');
+    if (btnToggleSpatialHint && spatialHintBox) {
+      btnToggleSpatialHint.addEventListener('click', () => {
+        const isCurrentlyHidden = spatialHintBox.classList.contains('hidden');
+        if (isCurrentlyHidden) {
+          spatialHintBox.classList.remove('hidden');
+          this.state.isHintRevealed = true;
+          if (spatialHintText) spatialHintText.textContent = 'ヒント（日本語訳）を閉じる ▲';
+        } else {
+          spatialHintBox.classList.add('hidden');
+          this.state.isHintRevealed = false;
+          if (spatialHintText) spatialHintText.textContent = 'ヒントを見る ▼';
+        }
       });
     }
 

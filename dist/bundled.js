@@ -160700,6 +160700,7 @@ class PronounMasterComponent {
     selectedOption: null,
     hasAnswered: false,
     isCorrect: false,
+    isHintRevealed: false,
     score: 0,
     combo: 0,
     maxCombo: 0,
@@ -160993,6 +160994,7 @@ class PronounMasterComponent {
     this.state.selectedOption = null;
     this.state.hasAnswered = false;
     this.state.isCorrect = false;
+    this.state.isHintRevealed = false;
   }
 
   // ============================================================
@@ -161093,10 +161095,17 @@ class PronounMasterComponent {
             </p>
           </div>
 
-          <!-- 日本語の文脈・設問指示 -->
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium">
-            <span class="font-bold text-slate-900 dark:text-slate-100 mr-2">🇯🇵 日本語の意味:</span>
-            <span>${q.questionJa}</span>
+          <!-- 日本語の文脈・設問指示（ヒントを見るを押さない限り見えないように隠す） -->
+          <div class="space-y-2">
+            <button type="button" id="btn-toggle-pronoun-hint" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-all cursor-pointer shadow-2xs active:scale-95">
+              <span>💡</span>
+              <span id="pronoun-hint-toggle-text">${(this.state.isHintRevealed || this.state.hasAnswered) ? 'ヒント（日本語の意味）を閉じる ▲' : 'ヒントを見る ▼'}</span>
+            </button>
+
+            <div id="pronoun-hint-container" class="${(this.state.isHintRevealed || this.state.hasAnswered) ? '' : 'hidden'} p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-all animate-fade-in">
+              <span class="font-bold text-slate-900 dark:text-slate-100 mr-2">🇯🇵 日本語の意味:</span>
+              <span>${q.questionJa}</span>
+            </div>
           </div>
 
           <!-- 4択選択肢 -->
@@ -161258,6 +161267,25 @@ class PronounMasterComponent {
         this.handleAnswer(chosen);
       });
     });
+
+    // ヒントトグルボタン（押すまで日本語の意味を隠す）
+    const btnToggleHint = this.container.querySelector('#btn-toggle-pronoun-hint');
+    const hintBox = this.container.querySelector('#pronoun-hint-container');
+    const hintText = this.container.querySelector('#pronoun-hint-toggle-text');
+    if (btnToggleHint && hintBox) {
+      btnToggleHint.addEventListener('click', () => {
+        const isCurrentlyHidden = hintBox.classList.contains('hidden');
+        if (isCurrentlyHidden) {
+          hintBox.classList.remove('hidden');
+          this.state.isHintRevealed = true;
+          if (hintText) hintText.textContent = 'ヒント（日本語の意味）を閉じる ▲';
+        } else {
+          hintBox.classList.add('hidden');
+          this.state.isHintRevealed = false;
+          if (hintText) hintText.textContent = 'ヒントを見る ▼';
+        }
+      });
+    }
 
     const btnNext = this.container.querySelector('#btn-next-question');
     if (btnNext) {
@@ -162271,8 +162299,15 @@ class SpatialPostpositionMasterComponent {
             <div class="text-base sm:text-lg font-black text-slate-900 tracking-wide leading-relaxed">
               ${highlightedPrompt}
             </div>
-            <div class="text-xs sm:text-sm font-bold text-slate-500">
-              ${quiz.promptJa}
+            <!-- 日本語訳ヒント（押すまで隠す） -->
+            <div class="pt-1">
+              <button type="button" id="btn-toggle-spatial-hint" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600 transition-all cursor-pointer shadow-2xs active:scale-95">
+                <span>💡</span>
+                <span id="spatial-hint-toggle-text">${(this.state.isHintRevealed || this.state.hasAnswered) ? 'ヒント（日本語訳）を閉じる ▲' : 'ヒントを見る ▼'}</span>
+              </button>
+              <div id="spatial-hint-container" class="${(this.state.isHintRevealed || this.state.hasAnswered) ? '' : 'hidden'} mt-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 animate-fade-in">
+                ${quiz.promptJa}
+              </div>
             </div>
           </div>
         </div>
@@ -162401,6 +162436,25 @@ class SpatialPostpositionMasterComponent {
         // ___ を正解単語に置き換えて自然に再生
         const cleanText = quiz.prompt.replace('___', quiz.answer);
         SpeechService.speak(cleanText);
+      });
+    }
+
+    // ヒントトグルボタン
+    const btnToggleSpatialHint = this.container.querySelector('#btn-toggle-spatial-hint');
+    const spatialHintBox = this.container.querySelector('#spatial-hint-container');
+    const spatialHintText = this.container.querySelector('#spatial-hint-toggle-text');
+    if (btnToggleSpatialHint && spatialHintBox) {
+      btnToggleSpatialHint.addEventListener('click', () => {
+        const isCurrentlyHidden = spatialHintBox.classList.contains('hidden');
+        if (isCurrentlyHidden) {
+          spatialHintBox.classList.remove('hidden');
+          this.state.isHintRevealed = true;
+          if (spatialHintText) spatialHintText.textContent = 'ヒント（日本語訳）を閉じる ▲';
+        } else {
+          spatialHintBox.classList.add('hidden');
+          this.state.isHintRevealed = false;
+          if (spatialHintText) spatialHintText.textContent = 'ヒントを見る ▼';
+        }
       });
     }
 
@@ -171488,9 +171542,15 @@ class ReferenceGuideComponent {
             ${questionHighlightedHTML}
           </div>
 
-          <!-- 日本語訳 -->
-          <div class="text-sm font-bold text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100">
-            ${q.questionJa}
+          <!-- 日本語訳ヒント（押すまで隠す） -->
+          <div class="pt-1">
+            <button type="button" id="btn-toggle-cloze-hint" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600 transition-all cursor-pointer shadow-2xs active:scale-95">
+              <span>💡</span>
+              <span id="cloze-hint-toggle-text">${(this.state.isClozeHintRevealed || this.state.hasAnswered) ? 'ヒント（日本語訳）を閉じる ▲' : 'ヒントを見る ▼'}</span>
+            </button>
+            <div id="cloze-hint-container" class="${(this.state.isClozeHintRevealed || this.state.hasAnswered) ? '' : 'hidden'} mt-2 text-sm font-bold text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 animate-fade-in">
+              ${q.questionJa}
+            </div>
           </div>
 
           <!-- 単語タップ辞書ヒント -->
