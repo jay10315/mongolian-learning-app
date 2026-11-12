@@ -31675,12 +31675,17 @@ export const COMPREHENSIVE_DICTIONARY = {
   },
   "тэрнээс": {
     "mongolian": "тэрнээс",
-    "dictForm": "тэрнээс",
-    "meaning": "тэрнээс（モンゴル語テキスト語彙）",
-    "pos": "語句",
-    "pronunciation": "",
-    "derivation": "教材文脈に出現する語句",
-    "en": "Mongolian vocabulary item: тэрнээс"
+    "dictForm": "тэр",
+    "partOfSpeech": "代名詞",
+    "translation": "彼（彼女）から【口語形】",
+    "derivation": "3人称代名詞「тэр」の奪格口語形（標準正書法: түүнээс と同義）",
+    "exampleMn": "Би тэрнээс асуусан.",
+    "exampleJa": "私は彼に尋ねた。",
+    "pronunciation": "テルネース",
+    "synonyms": [
+      "түүнээс"
+    ],
+    "en": "from him/her (colloquial)"
   },
   "гийн": {
     "mongolian": "гийн",
@@ -46756,5 +46761,61 @@ export const COMPREHENSIVE_DICTIONARY = {
     "pronunciation": "",
     "derivation": "教材文脈に出現する語句",
     "en": "Mongolian vocabulary item: болтол"
+  },
+  "тэрэнтэй": {
+    "mongolian": "тэрэнтэй",
+    "dictForm": "тэр",
+    "partOfSpeech": "代名詞",
+    "translation": "彼（彼女）と【口語形】",
+    "derivation": "3人称代名詞「тэр」の共同格口語形（標準正書法: түүнтэй と同義）",
+    "exampleMn": "Би маргааш тэрэнтэй уулзана.",
+    "exampleJa": "私は明日彼と会います。",
+    "pronunciation": "テレンテイ",
+    "synonyms": [
+      "түүнтэй"
+    ],
+    "en": "with him/her (colloquial)"
+  },
+  "тэрэнд": {
+    "mongolian": "тэрэнд",
+    "dictForm": "тэр",
+    "partOfSpeech": "代名詞",
+    "translation": "彼（彼女）に【口語形】",
+    "derivation": "3人称代名詞「тэр」の与位置格口語形（標準正書法: түүнд と同義）",
+    "exampleMn": "Би тэрэнд хэлсэн.",
+    "exampleJa": "私は彼に言った。",
+    "pronunciation": "テレンド",
+    "synonyms": [
+      "түүнд"
+    ],
+    "en": "to him/her (colloquial)"
+  },
+  "тэрний": {
+    "mongolian": "тэрний",
+    "dictForm": "тэр",
+    "partOfSpeech": "代名詞",
+    "translation": "彼（彼女）の【口語形】",
+    "derivation": "3人称代名詞「тэр」の属格口語形（標準正書法: түүний と同義）",
+    "exampleMn": "Энэ тэрний ном.",
+    "exampleJa": "これは彼の本です。",
+    "pronunciation": "テルニー",
+    "synonyms": [
+      "түүний"
+    ],
+    "en": "his/her (colloquial)"
+  },
+  "тэрнийг": {
+    "mongolian": "тэрнийг",
+    "dictForm": "тэр",
+    "partOfSpeech": "代名詞",
+    "translation": "彼（彼女）を【口語形】",
+    "derivation": "3人称代名詞「тэр」の対格口語形（標準正書法: түүнийг と同義）",
+    "exampleMn": "Би тэрнийг харсан.",
+    "exampleJa": "私は彼を見た。",
+    "pronunciation": "テルニーグ",
+    "synonyms": [
+      "түүнийг"
+    ],
+    "en": "him/her (acc., colloquial)"
   }
 };
