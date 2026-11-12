@@ -31,6 +31,7 @@ import { PenguinExpeditionComponent } from './components/PenguinExpedition.js';
 import { SpellingGameComponent } from './components/SpellingGame.js';
 import { ExerciseNotebookTestComponent } from './components/ExerciseNotebookTest.js';
 import { SuffixRuleDojoComponent } from './components/SuffixRuleDojo.js';
+import { PronounMasterComponent } from './components/PronounMaster.js';
 import { EtymologyMasterComponent } from './components/EtymologyMaster.js';
 import { MockExamComponent } from './components/MockExam.js';
 import { InterviewMasterComponent } from './components/InterviewMaster.js';
@@ -311,6 +312,9 @@ class App {
         break;
       case 'suffix_dojo':
         SuffixRuleDojoComponent.render(mainContainer, onNavigate);
+        break;
+      case 'pronoun_master':
+        PronounMasterComponent.render(mainContainer, onNavigate);
         break;
       case 'etymology_master':
         EtymologyMasterComponent.render(mainContainer, onNavigate);

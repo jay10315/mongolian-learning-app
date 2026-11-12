@@ -622,6 +622,30 @@ export class HomeComponent {
               </div>
             </div>
 
+            <!-- 人称代名詞特訓（文頭独立代名詞・文中人称小詞・再帰語尾） -->
+            <div class="bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-pink-500/10 rounded-xl p-5 border-2 border-indigo-400 hover:border-indigo-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="pronoun_master">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-xl font-bold shadow-xs">
+                    👤
+                  </div>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full bg-indigo-600 text-white shadow-2xs">
+                    👤 人称特訓
+                  </span>
+                </div>
+                <h4 class="text-base font-black text-slate-900 group-hover:text-indigo-700 transition-colors flex items-center gap-1.5">
+                  人称代名詞・所属小詞特訓
+                </h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  文頭の独立代名詞（全7格）、名詞につく文中の所属小詞（-маань, -минь, -чинь等）、主語と同一を示す再帰語尾（-аа⁴）を完全攻略！毎回詳しい解説付き。
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-indigo-200/60 flex items-center justify-between text-xs font-black text-indigo-700">
+                <span>特訓を開始する</span>
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
             <!-- リスニング問題（新機能・穴埋め/ディクテーション/数字特化） -->
             <div class="bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-sky-500/10 rounded-xl p-5 border-2 border-teal-400 hover:border-teal-500 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between" data-target="listening_test">
               <div>
