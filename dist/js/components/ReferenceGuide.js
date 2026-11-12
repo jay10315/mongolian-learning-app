@@ -2,6 +2,7 @@ import { SpeechService } from '../services/speech.js';
 import { DeclensionTestComponent } from './DeclensionTest.js';
 import { GrammarTestComponent } from './GrammarTest.js';
 import { GRAMMAR_MATRIX_ROWS, GRAMMAR_MATRIX_COLS, GRAMMAR_MATRIX_DATA, grammarMatrixQuizzes } from '../data/grammarMatrixData.js';
+import { GRAMMAR_EXCEPTIONS_DATA } from '../data/grammarExceptionsData.js';
 import { StorageService } from '../services/storage.js';
 import { grammarClozeQuizzes, GRAMMAR_CLOZE_CATEGORIES } from '../data/grammarClozeData.js';
 import {
@@ -55,6 +56,20 @@ export class ReferenceGuideComponent {
       correctCount: 0
     },
   };
+
+  // 外部から「表完成テスト（表形式回答モード）」を直接開始できるヘルパー
+  static startTableMode(answeringMode = 'choice', categoryFilter = 'major', grammarRange = 'range1') {
+    this.cleanupKeyHandler();
+    this.state.view = 'table_settings';
+    if (!this.state.tableQuiz) {
+      this.state.tableQuiz = {};
+    }
+    this.state.tableQuiz.answeringMode = answeringMode || 'choice';
+    this.state.tableQuiz.categoryFilter = categoryFilter || 'major';
+    this.state.tableQuiz.grammarRange = grammarRange || 'range1';
+    const activeCont = this.container || document.getElementById('main-content') || document.querySelector('#app-container') || document.body;
+    this.render(activeCont, this.onNavigate);
+  }
 
   // 外部から直接穴埋めモードを開始できるヘルパー
   static startClozeTest(categoryOrNum = 'all', targetTitle = null) {
@@ -2089,6 +2104,82 @@ export class ReferenceGuideComponent {
                       ` : ''}
                     </div>
                   ` : ''}
+
+                  <!-- ⚠️ 例外・隠れ文字・音韻変化の完全マスター表（全48文法完全網羅） -->
+                  ${(() => {
+                    const excData = (typeof GRAMMAR_EXCEPTIONS_DATA !== 'undefined' && GRAMMAR_EXCEPTIONS_DATA) ? GRAMMAR_EXCEPTIONS_DATA[g.num] : null;
+                    if (!excData || !excData.exceptions || excData.exceptions.length === 0) return '';
+                    return `
+                      <div class="p-3.5 bg-amber-50/60 rounded-xl border border-amber-200/90 shadow-2xs space-y-3">
+                        <div class="flex items-center justify-between border-b border-amber-200 pb-2">
+                          <div class="font-black text-amber-950 text-xs sm:text-sm flex items-center gap-1.5">
+                            <span>⚠️</span> 例外・隠れ文字・音韻変化の完全マスター表
+                          </div>
+                          <span class="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full font-bold shadow-2xs">
+                            必須暗記
+                          </span>
+                        </div>
+
+                        <!-- 通常の規則 -->
+                        <div class="p-2.5 bg-white rounded-lg border border-amber-200 text-[11px] text-slate-800 space-y-0.5">
+                          <div class="font-bold text-amber-900 flex items-center gap-1">
+                            <span>📘</span> 通常の規則（基本ルール）:
+                          </div>
+                          <div class="leading-relaxed text-slate-700 font-medium pl-4">
+                            ${excData.standardRule}
+                          </div>
+                        </div>
+
+                        <!-- 例外項目リスト（標準化テーブル形式） -->
+                        <div class="space-y-2.5">
+                          ${excData.exceptions.map((exc, eIdx) => `
+                            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-2 text-[11px]">
+                              <div class="font-bold text-rose-800 text-xs flex items-center justify-between border-b border-slate-100 pb-1.5">
+                                <span class="flex items-center gap-1.5">
+                                  <span class="w-4 h-4 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center text-[10px] font-black">${eIdx + 1}</span>
+                                  <span>${exc.category}</span>
+                                </span>
+                              </div>
+
+                              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700 pt-0.5">
+                                <div class="p-1.5 rounded-lg bg-slate-50 border border-slate-100">
+                                  <span class="font-bold text-slate-900 block text-[10px] text-slate-500 uppercase">例外の条件</span>
+                                  <span>${exc.condition}</span>
+                                </div>
+                                <div class="p-1.5 rounded-lg bg-indigo-50/60 border border-indigo-100">
+                                  <span class="font-bold text-indigo-900 block text-[10px] uppercase">接続する語尾・助詞</span>
+                                  <span class="font-black cyrillic-text text-indigo-800">${exc.suffix}</span>
+                                </div>
+                                <div class="sm:col-span-2 p-1.5 rounded-lg bg-slate-50 border border-slate-100">
+                                  <span class="font-bold text-slate-900 block text-[10px] text-slate-500 uppercase">変化の仕組み（音韻・語彙規則）</span>
+                                  <span class="leading-relaxed">${exc.mechanism}</span>
+                                </div>
+                              </div>
+
+                              <!-- 具体例（複数） ＆ 日本語訳 -->
+                              <div class="p-2 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1.5">
+                                <span class="font-bold text-slate-600 text-[10px] block">具体例（複数） ＆ 日本語訳:</span>
+                                <div class="space-y-1">
+                                  ${exc.examples.map(ex => `
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 p-1 bg-white rounded border border-slate-100 text-[11px]">
+                                      <span class="font-black text-slate-900 cyrillic-text pl-1">${ex.mn}</span>
+                                      <span class="text-emerald-700 font-semibold text-[10px] pr-1">${ex.ja}</span>
+                                    </div>
+                                  `).join('')}
+                                </div>
+                              </div>
+
+                              <!-- 注意点 -->
+                              <div class="p-2 bg-amber-50 rounded-lg border border-amber-200 text-amber-950 text-[11px] leading-relaxed">
+                                <span class="font-bold text-amber-800">⚠️ 要注意ポイント: </span>
+                                <span>${exc.caution}</span>
+                              </div>
+                            </div>
+                          `).join('')}
+                        </div>
+                      </div>
+                    `;
+                  })()}
                 
                   <!-- この項目の穴埋めテストへ直接挑戦するボタン -->
                   <div class="pt-2 border-t border-slate-100 flex items-center justify-end">
@@ -2337,6 +2428,8 @@ export class ReferenceGuideComponent {
   // ==========================================
   static renderClozeSettings() {
     this.cleanupKeyHandler();
+    const container = this.container || document.getElementById('main-content') || document.querySelector('#app-container') || document.body;
+    this.container = container;
     const allQuizzes = (typeof grammarClozeQuizzes !== 'undefined' && Array.isArray(grammarClozeQuizzes))
       ? grammarClozeQuizzes
       : (window.grammarClozeQuizzes || []);
@@ -2524,6 +2617,8 @@ export class ReferenceGuideComponent {
   // ==========================================
   static renderClozeTesting() {
     this.cleanupKeyHandler();
+    const container = this.container || document.getElementById('main-content') || document.querySelector('#app-container') || document.body;
+    this.container = container;
     const q = this.state.quizzes[this.state.currentIndex];
     this.state.currentQuiz = q;
     this.state.hasAnswered = false;
@@ -2671,6 +2766,7 @@ export class ReferenceGuideComponent {
   // 回答処理 ＆ 詳しい解説の即時表示
   // ==========================================
   static handleClozeAnswer(chosenOption) {
+    const container = this.container || document.getElementById('main-content') || document.querySelector('#app-container') || document.body;
     this.state.hasAnswered = true;
     this.state.selectedOption = chosenOption;
     const q = this.state.currentQuiz;
@@ -2810,6 +2906,8 @@ export class ReferenceGuideComponent {
   // ==========================================
   static renderClozeResult() {
     this.cleanupKeyHandler();
+    const container = this.container || document.getElementById('main-content') || document.querySelector('#app-container') || document.body;
+    this.container = container;
     const total = this.state.results.length;
     const correctCount = this.state.results.filter(r => r.isCorrect).length;
     const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
@@ -3425,7 +3523,9 @@ export class ReferenceGuideComponent {
 
     tState.activeCell = { grammarNum, rowKey, key: cellKey };
 
-    const modalBox = this.container.querySelector('#table-cell-modal-container');
+    const container = this.container || document.getElementById('main-content') || document.querySelector('#app-container') || document.body;
+    this.container = container;
+    const modalBox = container.querySelector('#table-cell-modal-container');
     if (!modalBox) return;
 
     const isChoice = tState.answeringMode === 'choice';
@@ -3878,7 +3978,9 @@ export class ReferenceGuideComponent {
     const cell = tState.cells[cellKey];
     if (!cell) return;
 
-    const modalBox = this.container.querySelector('#result-cell-modal-container');
+    const container = this.container || document.getElementById('main-content') || document.querySelector('#app-container') || document.body;
+    this.container = container;
+    const modalBox = container.querySelector('#result-cell-modal-container');
     if (!modalBox) return;
 
     modalBox.innerHTML = `

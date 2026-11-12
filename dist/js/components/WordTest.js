@@ -904,6 +904,7 @@ export class WordTestComponent {
   // --- 4. テスト結果画面 ---
   static renderResult() {
     this.cleanupKeyHandler();
+    const mode = this.state.settings.mode;
     const total = this.state.questions.length;
     const correct = this.state.results.filter(r => r.isCorrect).length;
     const wrong = total - correct;

@@ -29,6 +29,16 @@ body {
   font-feature-settings: "kern" 1;
 }
 
+/* モバイル・タブレットのタップ遅延(300ms)完全解消 ＆ 即時タップ反応 */
+html, body, button, a, input, select, textarea, [role="button"], .cursor-pointer {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+button:active, [role="button"]:active, .active\:scale-95:active {
+  transform: scale(0.96);
+  transition: transform 0.05s ease-out;
+}
+
 /* 3Dカードフリップ */
 .flip-card {
   perspective: 1000px;

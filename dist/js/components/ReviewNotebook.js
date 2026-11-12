@@ -377,7 +377,7 @@ export class ReviewNotebookComponent {
                     </div>
                   `}
                   ${(() => {
-                    const displayAns = m.correctAnswer || m.answer || m.mongolian || (parsed && parsed.matchedWord ? (parsed.matchedWord.dictForm || parsed.matchedWord.mongolian) : '') || '';
+                    const displayAns = m.correctAnswer || m.answer || m.mongolian || (parsed && (parsed.correctAns || (parsed.matchedWord ? (parsed.matchedWord.dictForm || parsed.matchedWord.mongolian) : ''))) || '';
                     return `
                       <div class="p-2 bg-emerald-50/80 rounded-lg text-emerald-950">
                         <span class="text-slate-400 text-[10px] block">${parsed.isExplicitNonWord ? '正解:' : '正しい解答（見出し語）:'}</span>
@@ -559,15 +559,45 @@ export class ReviewNotebookComponent {
     let correctAns = (item.correctAnswer || item.answer || item.mongolian || '').trim();
 
     // 未設定の場合は空間・指示詞や各種クイズデータから検索して補完
+    const normPrompt = (str) => (str || '').replace(/^【[^】]+】\s*/g, '').replace(/_+/g, '_').replace(/[【】\[\]()（）\s.,!?:;«»"'\-]/g, '').trim().toLowerCase();
+    const qNorm = normPrompt(rawQ);
+
+    // 過去の古い不十分な設問名（例: 【疑問形】単体）を完全な設問文に自動補正
+    if (!qNorm || qNorm === '疑問形' || qNorm === '疑問文' || qNorm === '文法') {
+      const gqFix = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes)
+        ? initialGrammarQuizzes.find(x => x.id === item.id || (correctAns && x.answer === correctAns))
+        : null;
+      if (gqFix && gqFix.question) {
+        rawQ = gqFix.question;
+        correctAns = gqFix.answer;
+        item.question = gqFix.question;
+        item.correctAnswer = gqFix.answer;
+        if (!item.explanation) item.explanation = gqFix.explanation;
+      }
+    }
+
     if (!correctAns) {
-      const qText = rawQ;
-      const sq = (typeof spatialQuizzes !== 'undefined' && spatialQuizzes) ? spatialQuizzes.find(x => x.id === item.id || (qText && x.prompt === qText)) : null;
+      const sq = (typeof spatialQuizzes !== 'undefined' && spatialQuizzes) ? spatialQuizzes.find(x => x.id === item.id || (qNorm && normPrompt(x.prompt) === qNorm)) : null;
       if (sq) {
         correctAns = sq.answer;
         item.correctAnswer = sq.answer;
         if (!item.explanation) item.explanation = sq.explanation;
         if (!item.options || item.options.length === 0) item.options = sq.options;
         if (!item.japanese) item.japanese = sq.promptJa;
+      }
+      const gq = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes) ? initialGrammarQuizzes.find(x => x.id === item.id || (qNorm && normPrompt(x.question) === qNorm)) : null;
+      if (gq) {
+        correctAns = gq.answer;
+        item.correctAnswer = gq.answer;
+        if (!item.explanation) item.explanation = gq.explanation;
+        if (!item.options || item.options.length === 0) item.options = gq.options || [];
+      }
+      const dq = (typeof initialDeclensionQuizzes !== 'undefined' && initialDeclensionQuizzes) ? initialDeclensionQuizzes.find(x => x.id === item.id || (qNorm && normPrompt(x.question) === qNorm)) : null;
+      if (dq) {
+        correctAns = dq.answer;
+        item.correctAnswer = dq.answer;
+        if (!item.explanation) item.explanation = dq.explanation;
+        if (!item.options || item.options.length === 0) item.options = dq.options || [];
       }
     }
     // 辞書形・語幹などの不要な括弧指示を除去
@@ -711,7 +741,8 @@ export class ReviewNotebookComponent {
         details: null,
         isVerb: false,
         isExplicitNonWord: true,
-        is4Choice: true
+        is4Choice: true,
+        correctAns: item.correctAnswer || item.answer || cleanAns || ''
       };
     }
 
@@ -891,7 +922,8 @@ export class ReviewNotebookComponent {
       matchedWord,
       details,
       isVerb: isV,
-      isExplicitNonWord
+      isExplicitNonWord,
+      correctAns: cleanAns || correctAns || ''
     };
   }
 

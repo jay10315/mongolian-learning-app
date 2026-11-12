@@ -1316,26 +1316,41 @@ export class StorageService {
         }
 
         // 正解や解説が未設定の問題（空間・指示詞、文法、格変化など）を全自動で補完
+        const normPrompt = (str) => (str || '').replace(/^【[^】]+】\s*/g, '').replace(/_+/g, '_').replace(/[【】\[\]()（）\s.,!?:;«»"'\-]/g, '').trim().toLowerCase();
+        const qNorm = normPrompt(m.question || m.prompt);
+
+        // 過去の古い不十分な設問名（例: 【疑問形】単体）を完全な設問文に自動補正
+        if (!qNorm || qNorm === '疑問形' || qNorm === '疑問文' || qNorm === '文法') {
+          const gqFix = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes)
+            ? initialGrammarQuizzes.find(x => x.id === m.id || (m.correctAnswer && x.answer === m.correctAnswer))
+            : null;
+          if (gqFix && gqFix.question) {
+            m.question = gqFix.question;
+            m.correctAnswer = gqFix.answer;
+            m.explanation = gqFix.explanation || m.explanation;
+            mutated = true;
+          }
+        }
+
         if (!m.correctAnswer || !m.explanation || !m.options || m.options.length === 0) {
           if (!m.correctAnswer && (m.mongolian || m.answer)) {
             m.correctAnswer = m.mongolian || m.answer;
             mutated = true;
           }
-          const qText = (m.question || m.prompt || '').trim();
-          const sq = (typeof spatialQuizzes !== 'undefined' && spatialQuizzes) ? spatialQuizzes.find(x => x.id === m.id || (qText && x.prompt === qText)) : null;
+          const sq = (typeof spatialQuizzes !== 'undefined' && spatialQuizzes) ? spatialQuizzes.find(x => x.id === m.id || (qNorm && normPrompt(x.prompt) === qNorm)) : null;
           if (sq) {
             if (!m.correctAnswer) { m.correctAnswer = sq.answer; mutated = true; }
             if (!m.explanation) { m.explanation = sq.explanation; mutated = true; }
             if (!m.options || m.options.length === 0) { m.options = sq.options; mutated = true; }
             if (!m.japanese) { m.japanese = sq.promptJa; mutated = true; }
           }
-          const gq = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes) ? initialGrammarQuizzes.find(x => x.id === m.id || (qText && x.question === qText)) : null;
+          const gq = (typeof initialGrammarQuizzes !== 'undefined' && initialGrammarQuizzes) ? initialGrammarQuizzes.find(x => x.id === m.id || (qNorm && normPrompt(x.question) === qNorm)) : null;
           if (gq) {
             if (!m.correctAnswer) { m.correctAnswer = gq.answer; mutated = true; }
             if (!m.explanation) { m.explanation = gq.explanation; mutated = true; }
             if (!m.options || m.options.length === 0) { m.options = gq.options || []; mutated = true; }
           }
-          const dq = (typeof initialDeclensionQuizzes !== 'undefined' && initialDeclensionQuizzes) ? initialDeclensionQuizzes.find(x => x.id === m.id || (qText && x.question === qText)) : null;
+          const dq = (typeof initialDeclensionQuizzes !== 'undefined' && initialDeclensionQuizzes) ? initialDeclensionQuizzes.find(x => x.id === m.id || (qNorm && normPrompt(x.question) === qNorm)) : null;
           if (dq) {
             if (!m.correctAnswer) { m.correctAnswer = dq.answer; mutated = true; }
             if (!m.explanation) { m.explanation = dq.explanation; mutated = true; }
