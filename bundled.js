@@ -115738,9 +115738,6 @@ const SPATIAL_SVGS = {
   <ellipse cx="87" cy="58" rx="4" ry="2" fill="#f59e0b"/>
   <!-- Highlight Arrow pointing ON TOP -->
   <path d="M 80,6 L 80,16 M 75,12 L 80,17 L 85,12" stroke="#ef4444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Label Badge -->
-  <rect x="52" y="3" width="56" height="18" rx="9" fill="#ef4444"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дээр (上)</text>
 </svg>`,
   "box_under": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115759,9 +115756,6 @@ const SPATIAL_SVGS = {
   <polygon points="125,42 80,59 80,82 125,65" fill="#9333ea" stroke="#6b21a8" stroke-width="2"/>
   <!-- Arrow pointing down UNDER -->
   <path d="M 80,68 L 80,84 M 76,80 L 80,85 L 84,80" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Badge -->
-  <rect x="52" y="3" width="56" height="18" rx="9" fill="#9333ea"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">доор (下)</text>
 </svg>`,
   "box_inside": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115785,9 +115779,6 @@ const SPATIAL_SVGS = {
   <polygon points="120,50 80,65 80,95 120,80" fill="#059669" stroke="#047857" stroke-width="2" opacity="0.95"/>
   <!-- Heart icon -->
   <path d="M 80,26 C 78,22 73,22 73,26 C 73,29 80,33 80,33 C 80,33 87,29 87,26 C 87,22 82,22 80,26 Z" fill="#ef4444"/>
-  <!-- Badge -->
-  <rect x="50" y="3" width="60" height="18" rx="9" fill="#059669"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дотор (中)</text>
 </svg>`,
   "box_outside": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115810,9 +115801,6 @@ const SPATIAL_SVGS = {
   <ellipse cx="30" cy="72" rx="3.5" ry="8" fill="#1e293b" transform="rotate(-40 30 72)"/>
   <!-- Arrow from inside to outside -->
   <path d="M 80,80 Q 62,80 56,78" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3,2"/>
-  <!-- Badge -->
-  <rect x="50" y="3" width="60" height="18" rx="9" fill="#d97706"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">гадна (外)</text>
 </svg>`,
   "box_front": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115836,9 +115824,6 @@ const SPATIAL_SVGS = {
   <!-- Feet -->
   <ellipse cx="73" cy="107" rx="5" ry="2.5" fill="#f59e0b"/>
   <ellipse cx="87" cy="107" rx="5" ry="2.5" fill="#f59e0b"/>
-  <!-- Badge -->
-  <rect x="52" y="3" width="56" height="18" rx="9" fill="#16a34a"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">өмнө (前)</text>
 </svg>`,
   "box_behind": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115858,9 +115843,6 @@ const SPATIAL_SVGS = {
   <rect x="48" y="56" width="14" height="14" fill="#93c5fd" stroke="#475569" stroke-width="1"/>
   <rect x="78" y="56" width="14" height="14" fill="#93c5fd" stroke="#475569" stroke-width="1"/>
   <rect x="62" y="76" width="16" height="24" fill="#78350f"/>
-  <!-- Badge -->
-  <rect x="42" y="3" width="76" height="18" rx="9" fill="#7e22ce"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">ард / хойно (後)</text>
 </svg>`,
   "box_between": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115870,10 +115852,8 @@ const SPATIAL_SVGS = {
   <ellipse cx="80" cy="106" rx="65" ry="8" fill="#fecdd3" opacity="0.6"/>
   <!-- Left Box A -->
   <rect x="18" y="50" width="34" height="46" rx="4" fill="#fb7185" stroke="#be123c" stroke-width="2"/>
-  <text x="35" y="78" fill="#ffffff" font-size="14" font-weight="black" text-anchor="middle">A</text>
   <!-- Right Box B -->
   <rect x="108" y="50" width="34" height="46" rx="4" fill="#fb7185" stroke="#be123c" stroke-width="2"/>
-  <text x="125" y="78" fill="#ffffff" font-size="14" font-weight="black" text-anchor="middle">B</text>
   <!-- Penguin in the MIDDLE BETWEEN A and B -->
   <ellipse cx="80" cy="74" rx="13" ry="17" fill="#1e293b"/>
   <ellipse cx="80" cy="76" rx="8" ry="11" fill="#ffffff"/>
@@ -115885,9 +115865,6 @@ const SPATIAL_SVGS = {
   <ellipse cx="95" cy="72" rx="4" ry="9" fill="#1e293b" transform="rotate(30 95 72)"/>
   <!-- Bidirectional arrow -->
   <path d="M 54,42 L 106,42 M 58,38 L 54,42 L 58,46 M 102,38 L 106,42 L 102,46" stroke="#e11d48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Badge -->
-  <rect x="46" y="3" width="68" height="18" rx="9" fill="#e11d48"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">хооронд (間)</text>
 </svg>`,
   "box_middle": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115908,9 +115885,6 @@ const SPATIAL_SVGS = {
   <ellipse cx="80" cy="60" rx="9" ry="9" fill="#1e293b"/>
   <circle cx="77" cy="59" r="1.5" fill="#0f172a"/><circle cx="83" cy="59" r="1.5" fill="#0f172a"/>
   <polygon points="80,62 77,65 83,65" fill="#f59e0b"/>
-  <!-- Badge -->
-  <rect x="50" y="3" width="60" height="18" rx="9" fill="#0d9488"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дунд (真ん中)</text>
 </svg>`,
   "box_beside": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115930,9 +115904,6 @@ const SPATIAL_SVGS = {
   <polygon points="105,63 102,66 108,66" fill="#f59e0b"/>
   <!-- Arrow indicating side -->
   <path d="M 74,74 L 88,74 M 84,70 L 89,74 L 84,78" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Badge -->
-  <rect x="36" y="3" width="88" height="18" rx="9" fill="#2563eb"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дэргэд / хажууд (横)</text>
 </svg>`,
   "box_opposite": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115957,9 +115928,6 @@ const SPATIAL_SVGS = {
   <polygon points="128,63 125,66 131,66" fill="#f59e0b"/>
   <!-- Facing cross-arrow -->
   <path d="M 58,68 L 110,68 M 62,64 L 58,68 L 62,72 M 106,64 L 110,68 L 106,72" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Badge -->
-  <rect x="42" y="3" width="76" height="18" rx="9" fill="#0284c7"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">эсрэг талд (向かい)</text>
 </svg>`,
   "box_around": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115976,9 +115944,6 @@ const SPATIAL_SVGS = {
   <circle cx="114" cy="53" r="7" fill="#1e293b"/>
   <circle cx="113" cy="52" r="1.2" fill="#ffffff"/><circle cx="116" cy="52" r="1.2" fill="#ffffff"/>
   <polygon points="112,54 108,56 112,58" fill="#f59e0b"/>
-  <!-- Badge -->
-  <rect x="50" y="3" width="60" height="18" rx="9" fill="#c026d3"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">тойронд (周り)</text>
 </svg>`,
   "dir_left": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -115991,9 +115956,6 @@ const SPATIAL_SVGS = {
   <path d="M 68,68 L 26,68 M 36,56 L 24,68 L 36,80" stroke="#2563eb" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
   <!-- Target Penguin on LEFT -->
   <ellipse cx="44" cy="70" rx="12" ry="16" fill="#1e293b" opacity="0.3"/>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#2563eb"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">зүүн талд (左側)</text>
 </svg>`,
   "dir_right": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116006,9 +115968,6 @@ const SPATIAL_SVGS = {
   <path d="M 92,68 L 134,68 M 124,56 L 136,68 L 124,80" stroke="#f97316" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
   <!-- Target Penguin on RIGHT -->
   <ellipse cx="116" cy="70" rx="12" ry="16" fill="#1e293b" opacity="0.3"/>
-  <!-- Badge -->
-  <rect x="42" y="3" width="76" height="18" rx="9" fill="#ea580c"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">баруун талд (右側)</text>
 </svg>`,
   "point_this": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116018,7 +115977,6 @@ const SPATIAL_SVGS = {
   <!-- Speaker Hand on Left, pointing CLOSE -->
   <circle cx="35" cy="75" r="16" fill="#fbbf24"/>
   <rect x="35" y="68" width="30" height="14" rx="7" fill="#fbbf24"/>
-  <text x="35" y="79" fill="#78350f" font-size="10" font-weight="bold" text-anchor="middle">私</text>
   <!-- Short Distance Indicator [20cm] -->
   <path d="M 68,75 L 88,75" stroke="#059669" stroke-width="2.5" stroke-dasharray="3,2"/>
   <!-- Close Target Object (Apple) -->
@@ -116027,9 +115985,6 @@ const SPATIAL_SVGS = {
   <ellipse cx="114" cy="56" rx="4" ry="2" fill="#22c55e"/>
   <!-- Sparkling stars -->
   <text x="126" y="60" fill="#f59e0b" font-size="14">✨</text>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#059669"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">энэ (これ・近)</text>
 </svg>`,
   "point_that": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116039,17 +115994,12 @@ const SPATIAL_SVGS = {
   <!-- Speaker Hand on Left -->
   <circle cx="28" cy="82" r="14" fill="#fbbf24"/>
   <rect x="28" y="76" width="22" height="12" rx="6" fill="#fbbf24"/>
-  <text x="28" y="86" fill="#78350f" font-size="9" font-weight="bold" text-anchor="middle">私</text>
   <!-- Long distance dotted line -->
   <path d="M 52,80 L 118,48" stroke="#0284c7" stroke-width="2" stroke-dasharray="5,4"/>
   <polygon points="120,46 110,48 114,54" fill="#0284c7"/>
   <!-- Distant Target Object (Far mountain/Ger) -->
   <path d="M 112,58 L 142,58 L 138,40 L 116,40 Z" fill="#e2e8f0" stroke="#0369a1" stroke-width="1.5"/>
   <polygon points="112,40 127,28 142,40" fill="#38bdf8"/>
-  <text x="127" y="52" fill="#0369a1" font-size="8" text-anchor="middle">遠い</text>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#0284c7"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">тэр (あれ・遠)</text>
 </svg>`,
   "point_these": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116063,10 +116013,6 @@ const SPATIAL_SVGS = {
   <rect x="80" y="58" width="20" height="26" rx="2" fill="#a855f7" stroke="#6b21a8" stroke-width="1.5"/>
   <rect x="104" y="54" width="20" height="26" rx="2" fill="#c084fc" stroke="#6b21a8" stroke-width="1.5"/>
   <rect x="128" y="62" width="20" height="26" rx="2" fill="#e9d5ff" stroke="#6b21a8" stroke-width="1.5"/>
-  <text x="114" y="100" fill="#6b21a8" font-size="11" font-weight="bold" text-anchor="middle">複数の本 (手元)</text>
-  <!-- Badge -->
-  <rect x="42" y="3" width="76" height="18" rx="9" fill="#9333ea"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">эдгээр (これら)</text>
 </svg>`,
   "point_those": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116081,10 +116027,6 @@ const SPATIAL_SVGS = {
   <ellipse cx="106" cy="50" rx="10" ry="7" fill="#64748b"/>
   <ellipse cx="126" cy="46" rx="10" ry="7" fill="#64748b"/>
   <ellipse cx="144" cy="52" rx="10" ry="7" fill="#64748b"/>
-  <text x="125" y="70" fill="#475569" font-size="10" font-weight="bold" text-anchor="middle">遠くの馬たち</text>
-  <!-- Badge -->
-  <rect x="42" y="3" width="76" height="18" rx="9" fill="#475569"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">тэдгээр (あれら)</text>
 </svg>`,
   "point_here": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116098,9 +116040,6 @@ const SPATIAL_SVGS = {
   <!-- Big Red Location Pin 📍 right HERE -->
   <path d="M 80,42 C 70,42 64,48 64,56 C 64,68 80,82 80,82 C 80,82 96,68 96,56 C 96,48 90,42 80,42 Z" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/>
   <circle cx="80" cy="55" r="5" fill="#ffffff"/>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#059669"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">энд (ここ・足元)</text>
 </svg>`,
   "point_there": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116116,9 +116055,6 @@ const SPATIAL_SVGS = {
   <ellipse cx="36" cy="92" rx="12" ry="15" fill="#1e293b"/>
   <ellipse cx="36" cy="78" rx="8" ry="8" fill="#1e293b"/>
   <path d="M 52,78 L 105,60" stroke="#0284c7" stroke-width="2" stroke-dasharray="3,3"/>
-  <!-- Badge -->
-  <rect x="42" y="3" width="76" height="18" rx="9" fill="#0284c7"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">тэнд (あそこ・遠)</text>
 </svg>`,
   "arrow_towards": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116130,9 +116066,6 @@ const SPATIAL_SVGS = {
   <polygon points="65,30 95,30 95,65 115,65 80,105 45,65 65,65" fill="url(#arrow_grad_in)" stroke="#1e40af" stroke-width="2.5"/>
   <!-- Ripple lines at bottom -->
   <ellipse cx="80" cy="108" rx="36" ry="6" fill="#3b82f6" opacity="0.3"/>
-  <!-- Badge -->
-  <rect x="36" y="3" width="88" height="18" rx="9" fill="#1d4ed8"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">наашаа (こちらへ)</text>
 </svg>`,
   "arrow_away": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116142,9 +116075,6 @@ const SPATIAL_SVGS = {
   <rect width="160" height="120" rx="16" fill="url(#bg_away)"/>
   <!-- Big 3D Arrow shooting AWAY into horizon -->
   <polygon points="65,100 95,100 95,65 115,65 80,25 45,65 65,65" fill="url(#arrow_grad_out)" stroke="#9d174d" stroke-width="2.5"/>
-  <!-- Badge -->
-  <rect x="36" y="3" width="88" height="18" rx="9" fill="#be185d"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">цаашаа (あちらへ)</text>
 </svg>`,
   "arrow_up": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116155,9 +116085,6 @@ const SPATIAL_SVGS = {
   <path d="M 25,100 L 50,100 L 50,80 L 75,80 L 75,60 L 100,60 L 100,40 L 125,40" fill="none" stroke="#0891b2" stroke-width="3" stroke-linecap="round"/>
   <!-- Arrow UP -->
   <path d="M 40,88 Q 75,45 115,30 M 102,28 L 118,29 L 115,44" fill="none" stroke="#06b6d4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Badge -->
-  <rect x="46" y="3" width="68" height="18" rx="9" fill="#0891b2"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дээшээ (上へ)</text>
 </svg>`,
   "arrow_down": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116168,9 +116095,6 @@ const SPATIAL_SVGS = {
   <path d="M 25,40 L 50,40 L 50,60 L 75,60 L 75,80 L 100,80 L 100,100 L 125,100" fill="none" stroke="#ea580c" stroke-width="3" stroke-linecap="round"/>
   <!-- Arrow DOWN -->
   <path d="M 38,32 Q 78,75 118,92 M 106,94 L 120,93 L 118,78" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Badge -->
-  <rect x="46" y="3" width="68" height="18" rx="9" fill="#c2410c"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">доошоо (下へ)</text>
 </svg>`,
   "shape_like_this": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116183,9 +116107,6 @@ const SPATIAL_SVGS = {
   <text x="80" y="74" fill="#7c3aed" font-weight="black" font-size="20" text-anchor="middle">=</text>
   <circle cx="112" cy="68" r="18" fill="#a78bfa" stroke="#5b21b6" stroke-width="2"/>
   <text x="112" y="73" fill="#ffffff" font-weight="bold" font-size="13" text-anchor="middle">★</text>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#6d28d9"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">ийм (このような)</text>
 </svg>`,
   "shape_like_that": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116195,10 +116116,6 @@ const SPATIAL_SVGS = {
   <!-- Giant glowing star admiring from afar -->
   <polygon points="115,35 122,50 138,52 126,64 129,80 115,72 101,80 104,64 92,52 108,50" fill="#f59e0b" stroke="#b45309" stroke-width="2"/>
   <!-- Admiring eyes / exclamation -->
-  <text x="45" y="75" fill="#b45309" font-size="14" font-weight="black">あんなに?!</text>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#b45309"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">тийм (あのような)</text>
 </svg>`,
   "time_before": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116210,14 +116127,9 @@ const SPATIAL_SVGS = {
   <polygon points="144,72 136,68 136,76" fill="#64748b"/>
   <!-- Center Marker (Event/Now) -->
   <circle cx="95" cy="72" r="5" fill="#0284c7"/>
-  <text x="95" y="90" fill="#0369a1" font-size="10" font-weight="bold" text-anchor="middle">基準の時</text>
   <!-- Left Target Highlight (BEFORE) -->
   <circle cx="48" cy="72" r="8" fill="#ef4444"/>
   <path d="M 85,55 L 55,55 M 62,49 L 52,55 L 62,61" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="48" y="90" fill="#dc2626" font-size="10" font-weight="bold" text-anchor="middle">〜の前</text>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#dc2626"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">өмнө (〜の前)</text>
 </svg>`,
   "time_after": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116229,14 +116141,9 @@ const SPATIAL_SVGS = {
   <polygon points="144,72 136,68 136,76" fill="#64748b"/>
   <!-- Center Marker (Event/Now) -->
   <circle cx="55" cy="72" r="5" fill="#059669"/>
-  <text x="55" y="90" fill="#047857" font-size="10" font-weight="bold" text-anchor="middle">基準の時</text>
   <!-- Right Target Highlight (AFTER) -->
   <circle cx="112" cy="72" r="8" fill="#10b981"/>
   <path d="M 68,55 L 102,55 M 95,49 L 105,55 L 95,61" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="112" y="90" fill="#059669" font-size="10" font-weight="bold" text-anchor="middle">〜の後</text>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#059669"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">дараа (〜の後)</text>
 </svg>`,
   "time_until": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116249,10 +116156,6 @@ const SPATIAL_SVGS = {
   <!-- Goal Flag at End 🚩 -->
   <line x1="118" y1="40" x2="118" y2="85" stroke="#78350f" stroke-width="2.5"/>
   <polygon points="118,42 142,50 118,58" fill="#ef4444"/>
-  <text x="118" y="98" fill="#b45309" font-size="10" font-weight="bold" text-anchor="middle">終了点 (17:00)</text>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#d97706"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">хүртэл (〜まで)</text>
 </svg>`,
   "time_throughout": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116262,11 +116165,7 @@ const SPATIAL_SVGS = {
   <rect width="160" height="120" rx="16" fill="url(#bg_t_thru)"/>
   <!-- Entire span filled block -->
   <rect x="25" y="55" width="110" height="26" rx="13" fill="url(#bar_grad)"/>
-  <text x="80" y="72" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">期間ずっと（1年間等）</text>
   <path d="M 22,90 L 138,90" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
-  <!-- Badge -->
-  <rect x="42" y="3" width="76" height="18" rx="9" fill="#7c3aed"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">турш (〜の間中)</text>
 </svg>`,
   "time_since": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116276,14 +116175,9 @@ const SPATIAL_SVGS = {
   <!-- Flag in past -->
   <line x1="36" y1="46" x2="36" y2="85" stroke="#1e3a8a" stroke-width="2"/>
   <polygon points="36,48 54,54 36,60" fill="#2563eb"/>
-  <text x="36" y="98" fill="#1e40af" font-size="9" font-weight="bold" text-anchor="middle">過去の起点</text>
   <!-- Arrow continuing from past to NOW -->
   <path d="M 40,70 L 126,70 M 118,64 L 128,70 L 118,76" stroke="#2563eb" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
   <circle cx="130" cy="70" r="5" fill="#ef4444"/>
-  <text x="130" y="98" fill="#dc2626" font-size="9" font-weight="bold" text-anchor="middle">現在</text>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#1d4ed8"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">хойш (〜以来)</text>
 </svg>`,
   "time_when": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116298,9 +116192,6 @@ const SPATIAL_SVGS = {
   <!-- Stars -->
   <text x="122" y="52" fill="#eab308" font-size="14">✨</text>
   <text x="32" y="75" fill="#eab308" font-size="14">✨</text>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#16a34a"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">үед (〜の時)</text>
 </svg>`,
   "time_while": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116311,10 +116202,6 @@ const SPATIAL_SVGS = {
   <polygon points="65,40 95,40 80,65 95,90 65,90 80,65" fill="#e9d5ff" stroke="#9333ea" stroke-width="2"/>
   <polygon points="72,82 88,82 80,68" fill="#a855f7"/>
   <line x1="80" y1="58" x2="80" y2="66" stroke="#a855f7" stroke-width="2" stroke-dasharray="2,2"/>
-  <text x="80" y="105" fill="#7e22ce" font-size="9" font-weight="bold" text-anchor="middle">〜の合間に</text>
-  <!-- Badge -->
-  <rect x="44" y="3" width="72" height="18" rx="9" fill="#9333ea"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">зуур (〜の間に)</text>
 </svg>`,
   "time_first": `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
   <defs>
@@ -116325,9 +116212,6 @@ const SPATIAL_SVGS = {
   <rect x="55" y="55" width="50" height="42" rx="4" fill="#f97316" stroke="#c2410c" stroke-width="2"/>
   <circle cx="80" cy="42" r="16" fill="#facc15" stroke="#ca8a04" stroke-width="2"/>
   <text x="80" y="48" fill="#78350f" font-size="16" font-weight="black" text-anchor="middle">1</text>
-  <!-- Badge -->
-  <rect x="40" y="3" width="80" height="18" rx="9" fill="#ea580c"/>
-  <text x="80" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">эхлээд (まず初めに)</text>
 </svg>`,
 };
 
@@ -116865,7 +116749,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_on",
     "prompt": "Ширээн ___ шинэ ном, дэвтэр байна.",
-    "promptJa": "机の___新しい本とノートがあります。（机の上に）",
+    "promptJa": "机の___新しい本とノートがあります。",
     "options": [
       "дээр",
       "доор",
@@ -116880,7 +116764,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_under",
     "prompt": "Сандлын ___ хөөрхөн жижигхэн муур унтаж байна.",
-    "promptJa": "椅子の___可愛い小さな猫が眠っています。（椅子の下に）",
+    "promptJa": "椅子の___可愛い小さな猫が眠っています。",
     "options": [
       "доор",
       "дээр",
@@ -116895,7 +116779,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_inside",
     "prompt": "Цүнхэн ___ миний түлхүүр болон гар утас байна.",
-    "promptJa": "バッグの___私の鍵と携帯電話があります。（バッグの中に）",
+    "promptJa": "バッグの___私の鍵と携帯電話があります。",
     "options": [
       "дотор",
       "гадна",
@@ -116910,7 +116794,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_outside",
     "prompt": "Байшингийн ___ цас орж, хүйтэн салхи салхилж байна.",
-    "promptJa": "家の___雪が降り、冷たい風が吹いています。（家の外で）",
+    "promptJa": "家の___雪が降り、冷たい風が吹いています。",
     "options": [
       "гадна",
       "дотор",
@@ -116925,7 +116809,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_front",
     "prompt": "Сургуулийн ___ том мод болон сайхан цэцэгс ургажээ.",
-    "promptJa": "学校の___大きな木と美しい花々が生えています。（学校の前に）",
+    "promptJa": "学校の___大きな木と美しい花々が生えています。",
     "options": [
       "өмнө",
       "хойно",
@@ -116940,7 +116824,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_behind",
     "prompt": "Номын сангийн ___ хүүхдүүдийн тоглох сагсан бөмбөгийн талбай бий.",
-    "promptJa": "図書館の___子供たちが遊ぶバスケットボール場があります。（図書館の裏・後ろに）",
+    "promptJa": "図書館の___子供たちが遊ぶバスケットボール場があります。",
     "options": [
       "ард",
       "өмнө",
@@ -116955,7 +116839,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_between",
     "prompt": "Хоёр байшингийн ___ нарийхан жим зам байна.",
-    "promptJa": "2つの家の___細い小道があります。（2つの家の間に）",
+    "promptJa": "2つの家の___細い小道があります。",
     "options": [
       "хооронд",
       "дунд",
@@ -116970,7 +116854,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_middle",
     "prompt": "Тэр олон хүмүүсийн ___ зогсоод инээмсэглэж байв.",
-    "promptJa": "彼は大勢の人々の___立って微笑んでいました。（人々の真ん中で）",
+    "promptJa": "彼は大勢の人々の___立って微笑んでいました。",
     "options": [
       "дунд",
       "хооронд",
@@ -116985,7 +116869,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_beside",
     "prompt": "Миний ___ суугаад, энэ зургийг хамт хараарай.",
-    "promptJa": "私の___座って、この写真を一緒に見てください。（私の隣・そばに）",
+    "promptJa": "私の___座って、この写真を一緒に見てください。",
     "options": [
       "дэргэд",
       "доор",
@@ -117000,7 +116884,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_opposite",
     "prompt": "Замын ___ шинэ эмийн сан нээгдсэн байна.",
-    "promptJa": "道路の___新しい薬局がオープンしています。（道路の向かい側に）",
+    "promptJa": "道路の___新しい薬局がオープンしています。",
     "options": [
       "эсрэг талд",
       "дотор",
@@ -117015,7 +116899,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_around",
     "prompt": "Сайхан нуурын ___ олон ногоон мод ургажээ.",
-    "promptJa": "美しい湖の___たくさんの緑の木が生えています。（湖の周りに）",
+    "promptJa": "美しい湖の___たくさんの緑の木が生えています。",
     "options": [
       "тойронд",
       "дотор",
@@ -117030,7 +116914,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "dir_left",
     "prompt": "Ширээний ___ талд номын тавиур байна.",
-    "promptJa": "机の___側に本棚があります。（左側に）",
+    "promptJa": "机の___側に本棚があります。",
     "options": [
       "зүүн",
       "дээр",
@@ -117045,7 +116929,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "dir_right",
     "prompt": "Зургийн ___ талд байгаа хүн бол манай аав юм.",
-    "promptJa": "写真の___側にいる人は私の父です。（右側に）",
+    "promptJa": "写真の___側にいる人は私の父です。",
     "options": [
       "баруун",
       "зүүн",
@@ -117060,7 +116944,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "point_this",
     "prompt": "___ ном маш сонирхолтой тул би өдөр бүр уншдаг.",
-    "promptJa": "___本はとても面白いので、私は毎日読んでいます。（この本は [手元]）",
+    "promptJa": "___本はとても面白いので、私は毎日読んでいます。",
     "options": [
       "Энэ",
       "Тэр",
@@ -117075,7 +116959,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "point_that",
     "prompt": "___ алсын цэнхэр уулыг хар даа, ямар сайхан бэ!",
-    "promptJa": "___遠くの青い山をごらん、なんて美しいのでしょう！（あの山を [遠方]）",
+    "promptJa": "___遠くの青い山をごらん、なんて美しいのでしょう！",
     "options": [
       "Тэр",
       "Энэ",
@@ -117090,7 +116974,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "point_these",
     "prompt": "___ шинэ үгсийг цээжилбэл шалгалтад тустай.",
-    "promptJa": "___新しい単語たちを暗記すれば試験に役立ちます。（これらの単語を [手元の複数]）",
+    "promptJa": "___新しい単語たちを暗記すれば試験に役立ちます。",
     "options": [
       "Эдгээр",
       "Тэдгээр",
@@ -117105,7 +116989,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "point_those",
     "prompt": "Тал нутагт бэлчиж буй ___ олон адууг хараарай.",
-    "promptJa": "草原で草を食んでいる___たくさんの馬たちをごらん。（あの馬たちを [遠くの複数]）",
+    "promptJa": "草原で草を食んでいる___たくさんの馬たちをごらん。",
     "options": [
       "тэдгээр",
       "эдгээр",
@@ -117120,7 +117004,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "point_here",
     "prompt": "Би одоо ___ амьдарч байна. Чи хэзээ ирэх вэ?",
-    "promptJa": "私は今___住んでいます。あなたはいつ来ますか？（ここに）",
+    "promptJa": "私は今___住んでいます。あなたはいつ来ますか？",
     "options": [
       "энд",
       "тэнд",
@@ -117135,7 +117019,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "point_there",
     "prompt": "___ нэг том банк болон шуудангийн газар бий.",
-    "promptJa": "___ひとつの大きな銀行と郵便局があります。（あそこに）",
+    "promptJa": "___ひとつの大きな銀行と郵便局があります。",
     "options": [
       "Тэнд",
       "Энд",
@@ -117150,7 +117034,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "arrow_towards",
     "prompt": "Цаг агаар хүйтэн байна, ___ гэрт ороод дулаац.",
-    "promptJa": "天気が寒いです、___家の中に入って暖まって。（こちらへ）",
+    "promptJa": "天気が寒いです、___家の中に入って暖まって。",
     "options": [
       "наашаа",
       "цаашаа",
@@ -117165,7 +117049,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "arrow_away",
     "prompt": "Энэ замаар ___ явбал цэцэрлэгт хүрээлэн байгаа.",
-    "promptJa": "この道を___行けば、公園があります。（あちらへ / 先へ）",
+    "promptJa": "この道を___行けば、公園があります。",
     "options": [
       "цаашаа",
       "наашаа",
@@ -117180,7 +117064,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "arrow_up",
     "prompt": "Шат өөд ___ гараад баруун тийшээ эргээрэй.",
-    "promptJa": "階段を___上がって、右へ曲がってください。（上へ）",
+    "promptJa": "階段を___上がって、右へ曲がってください。",
     "options": [
       "дээшээ",
       "доошоо",
@@ -117195,7 +117079,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "arrow_down",
     "prompt": "Уулнаас болгоомжтой ___ буугаарай, хальтиргаатай байна.",
-    "promptJa": "山から気をつけて___降りてください、滑りやすいです。（下へ）",
+    "promptJa": "山から気をつけて___降りてください、滑りやすいです。",
     "options": [
       "доошоо",
       "дээшээ",
@@ -117210,7 +117094,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "shape_like_this",
     "prompt": "Би ___ хөөрхөн бэлэг авсандаа маш их баярласан.",
-    "promptJa": "私は___可愛いプレゼントをもらってとても嬉しかったです。（こんな・このような）",
+    "promptJa": "私は___可愛いプレゼントをもらってとても嬉しかったです。",
     "options": [
       "ийм",
       "энд",
@@ -117225,7 +117109,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "shape_like_that",
     "prompt": "___ хэцүү ажлыг ганцаараа хийж чадах уу?",
-    "promptJa": "___難しい仕事を一人でやり遂げられますか？（あんな・そんな）",
+    "promptJa": "___難しい仕事を一人でやり遂げられますか？",
     "options": [
       "Тийм",
       "Энд",
@@ -117240,7 +117124,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_before",
     "prompt": "Би гурван жилийн ___ Монгол улсад анх удаа ирсэн.",
-    "promptJa": "私は3年の___モンゴル国に初めて来ました。（3年前に）",
+    "promptJa": "私は3年の___モンゴル国に初めて来ました。",
     "options": [
       "өмнө",
       "дараа",
@@ -117255,7 +117139,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_after",
     "prompt": "Хичээл тарсны ___ бид хамтдаа хоолонд орцгооё.",
-    "promptJa": "授業が終わった___私たちは一緒に食事に行きましょう。（終わった後に）",
+    "promptJa": "授業が終わった___私たちは一緒に食事に行きましょう。",
     "options": [
       "дараа",
       "өмнө",
@@ -117270,7 +117154,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_until",
     "prompt": "Маргааш өглөөний арван цаг ___ энэ даалгаврыг явуулаарай.",
-    "promptJa": "明日の朝10時___この課題を送ってください。（10時までに）",
+    "promptJa": "明日の朝10時___この課題を送ってください。",
     "options": [
       "хүртэл",
       "дараа",
@@ -117285,7 +117169,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_throughout",
     "prompt": "Зуны амралтынхаа ___ би олон сонирхолтой ном уншсан.",
-    "promptJa": "夏休みの___私はたくさんの面白い本を読みました。（夏休みの間ずっと）",
+    "promptJa": "夏休みの___私はたくさんの面白い本を読みました。",
     "options": [
       "турш",
       "хүртэл",
@@ -117300,7 +117184,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_since",
     "prompt": "Японоос ирснээс ___ би өдөр бүр монгол хоол идэж байна.",
-    "promptJa": "日本から来て___私は毎日モンゴル料理を食べています。（来て以来・来てからずっと）",
+    "promptJa": "日本から来て___私は毎日モンゴル料理を食べています。",
     "options": [
       "хойш",
       "өмнө",
@@ -117315,7 +117199,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_when",
     "prompt": "Бага насны хүүхэд байх ___ би их сахилгагүй байсан.",
-    "promptJa": "幼い子供であった___私はとてもやんちゃでした。（子供の頃に / 子供の時に）",
+    "promptJa": "幼い子供であった___私はとてもやんちゃでした。",
     "options": [
       "үед",
       "хүртэл",
@@ -117330,7 +117214,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_while",
     "prompt": "Замдаа явах ___ би найзтайгаа утсаар ярилаа.",
-    "promptJa": "道を行く___私は友達と電話で話しました。（行く合間に / 移動している間に）",
+    "promptJa": "道を行く___私は友達と電話で話しました。",
     "options": [
       "зуур",
       "дараа",
@@ -117345,7 +117229,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_first",
     "prompt": "___ гараа угаагаад, дараа нь хоолоо идээрэй.",
-    "promptJa": "___手を洗って、その後にご飯を食べてください。（まず初めに）",
+    "promptJa": "___手を洗って、その後にご飯を食べてください。",
     "options": [
       "Эхлээд",
       "Сүүлд",
@@ -117360,7 +117244,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_on",
     "prompt": "Ор ___ миний дулаахан хөнжил байна.",
-    "promptJa": "ベッドの___私の温かい毛布があります。（ベッドの上に）",
+    "promptJa": "ベッドの___私の温かい毛布があります。",
     "options": [
       "дээр",
       "доор",
@@ -117375,7 +117259,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_under",
     "prompt": "Модны ___ сэрүүн сүүдэрт суугаад амарцгаая.",
-    "promptJa": "木の___涼しい日陰に座って休みましょう。（木の下の）",
+    "promptJa": "木の___涼しい日陰に座って休みましょう。",
     "options": [
       "доор",
       "дээр",
@@ -117390,7 +117274,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_inside",
     "prompt": "Хөргөгч ___ сүү, тараг, жимс байна.",
-    "promptJa": "冷蔵庫の___牛乳、ヨーグルト、果物があります。（冷蔵庫の中に）",
+    "promptJa": "冷蔵庫の___牛乳、ヨーグルト、果物があります。",
     "options": [
       "дотор",
       "дээр",
@@ -117405,7 +117289,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_outside",
     "prompt": "Гадаа хүйтэн байна, үүдний ___ удаан зогсож болохгүй.",
-    "promptJa": "外は寒いです、玄関の___長く立っていてはいけません。（玄関の外に）",
+    "promptJa": "外は寒いです、玄関の___長く立っていてはいけません。",
     "options": [
       "гадна",
       "дотор",
@@ -117420,7 +117304,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_front",
     "prompt": "Эмнэлгийн ___ олон түргэн тусламжийн машин зогсож байна.",
-    "promptJa": "病院の___多くの救急車が停まっています。（病院の前に）",
+    "promptJa": "病院の___多くの救急車が停まっています。",
     "options": [
       "өмнө",
       "хойно",
@@ -117435,7 +117319,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_behind",
     "prompt": "Цэцэрлэгийн ___ өндөр уул сүндэрлэж харагдана.",
-    "promptJa": "幼稚園・公園の___高い山がそびえて見えます。（裏・後ろに）",
+    "promptJa": "幼稚園・公園の___高い山がそびえて見えます。",
     "options": [
       "ард",
       "дотор",
@@ -117450,7 +117334,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_between",
     "prompt": "Ширээ, сандал хоёрын ___ миний үзэг уначихжээ.",
-    "promptJa": "机と椅子の2つの___私のペンが落ちてしまいました。（間に）",
+    "promptJa": "机と椅子の2つの___私のペンが落ちてしまいました。",
     "options": [
       "хооронд",
       "дунд",
@@ -117465,7 +117349,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_middle",
     "prompt": "Цэцэгсийн ___ нэгэн үзэсгэлэнтэй эрвээхэй нисэж байна.",
-    "promptJa": "たくさんの花々の___一匹の美しい蝶が飛んでいます。（花々の真ん中で）",
+    "promptJa": "たくさんの花々の___一匹の美しい蝶が飛んでいます。",
     "options": [
       "дунд",
       "хооронд",
@@ -117480,7 +117364,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_beside",
     "prompt": "Манай байрны ___ нэг жижигхэн кофе шоп бий.",
-    "promptJa": "私たちのアパートの___小さなカフェがあります。（すぐ横・隣に）",
+    "promptJa": "私たちのアパートの___小さなカフェがあります。",
     "options": [
       "хажууд",
       "дотор",
@@ -117495,7 +117379,7 @@ const spatialQuizzes = [
     "category": "spatial",
     "svgKey": "box_opposite",
     "prompt": "Их дэлгүүрийн ___ талд том зогсоол байдаг.",
-    "promptJa": "ノミンデパートの___側に大きな駐車場があります。（向かい側に）",
+    "promptJa": "ノミンデパートの___側に大きな駐車場があります。",
     "options": [
       "эсрэг",
       "дотор",
@@ -117510,7 +117394,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "point_this",
     "prompt": "___ асуултыг би сайн ойлгохгүй байна, зааж өгнө үү.",
-    "promptJa": "___質問を私はよく理解できません、教えてください。（この質問を [手元]）",
+    "promptJa": "___質問を私はよく理解できません、教えてください。",
     "options": [
       "Энэ",
       "Тэр",
@@ -117525,7 +117409,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "point_that",
     "prompt": "___ барилга хэдэн онд баригдсан бэ?",
-    "promptJa": "___建物は何年に建てられたのですか？（あの・その建物は）",
+    "promptJa": "___建物は何年に建てられたのですか？",
     "options": [
       "Тэр",
       "Энд",
@@ -117540,7 +117424,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "point_here",
     "prompt": "Манай гэр бүл ___ гурван жил амьдарч байна.",
-    "promptJa": "私たちの家族は___3年間住んでいます。（ここに / ここで）",
+    "promptJa": "私たちの家族は___3年間住んでいます。",
     "options": [
       "энд",
       "наашаа",
@@ -117555,7 +117439,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "point_there",
     "prompt": "Багш одоо ___ хичээл зааж байгаа тул битгий чимээ гарга.",
-    "promptJa": "先生は今___授業を教えているので、音を立てないで。（あそこで）",
+    "promptJa": "先生は今___授業を教えているので、音を立てないで。",
     "options": [
       "тэнд",
       "энд",
@@ -117570,7 +117454,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "arrow_towards",
     "prompt": "Бүгдээрээ ___ ирээд дугуйрч суугаарай.",
-    "promptJa": "みんな___来て円になって座ってください。（こちらへ）",
+    "promptJa": "みんな___来て円になって座ってください。",
     "options": [
       "наашаа",
       "цаашаа",
@@ -117585,7 +117469,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "arrow_away",
     "prompt": "Бид маргааш хөдөө тийшээ ___ явна.",
-    "promptJa": "私たちは明日田舎の方へ___行きます。（あちらへ / 向こうへ）",
+    "promptJa": "私たちは明日田舎の方へ___行きます。",
     "options": [
       "цаашаа",
       "наашаа",
@@ -117600,7 +117484,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "arrow_up",
     "prompt": "Тэнгэр өөд ___ харвал олон түмэн од гялалзаж байна.",
-    "promptJa": "空に向かって___見上げると、無数の星が輝いています。（上を）",
+    "promptJa": "空に向かって___見上げると、無数の星が輝いています。",
     "options": [
       "дээшээ",
       "доошоо",
@@ -117615,7 +117499,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "arrow_down",
     "prompt": "Нүх рүү ___ битгий шагайгаарай, аюултай.",
-    "promptJa": "穴へ向かって___覗き込まないでください、危ないです。（下を）",
+    "promptJa": "穴へ向かって___覗き込まないでください、危ないです。",
     "options": [
       "доошоо",
       "дээшээ",
@@ -117630,7 +117514,7 @@ const spatialQuizzes = [
     "category": "demonstrative",
     "svgKey": "shape_like_this",
     "prompt": "Японд ___ төрлийн цахилгаан хэрэгсэл маш их зарагддаг.",
-    "promptJa": "日本で___種類の電化製品がとてもよく売れています。（このような・こんな）",
+    "promptJa": "日本で___種類の電化製品がとてもよく売れています。",
     "options": [
       "ийм",
       "энд",
@@ -117660,7 +117544,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_before",
     "prompt": "Монгол явахын ___ би монгол бичиг бага зэрэг сурсан.",
-    "promptJa": "モンゴルへ行く___私はモンゴル文字を少し勉強しました。（行く前に）",
+    "promptJa": "モンゴルへ行く___私はモンゴル文字を少し勉強しました。",
     "options": [
       "өмнө",
       "дараа",
@@ -117675,7 +117559,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_after",
     "prompt": "Уулзсаны ___ би чам руу зурвас илгээнэ.",
-    "promptJa": "会った___私はあなたにメッセージを送ります。（会った後に）",
+    "promptJa": "会った___私はあなたにメッセージを送ります。",
     "options": [
       "дараа",
       "өмнө",
@@ -117690,7 +117574,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_until",
     "prompt": "Бид нар орой болтол буюу нар жаргах ___ ажилласан.",
-    "promptJa": "私たちは日が暮れる___働きました。（日が沈むまで）",
+    "promptJa": "私たちは日が暮れる___働きました。",
     "options": [
       "хүртэл",
       "дараа",
@@ -117705,7 +117589,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_throughout",
     "prompt": "Өвлийн ___ Монголд маш хүйтэн байдаг.",
-    "promptJa": "冬の___モンゴルはとても寒いです。（冬の間ずっと）",
+    "promptJa": "冬の___モンゴルはとても寒いです。",
     "options": [
       "турш",
       "хүртэл",
@@ -117720,7 +117604,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_since",
     "prompt": "Тэр үеэс ___ би монгол хэлээ тасралтгүй сурч байгаа.",
-    "promptJa": "その時___私はモンゴル語を途切れることなく学び続けている。（その時以来・その時からずっと）",
+    "promptJa": "その時___私はモンゴル語を途切れることなく学び続けている。",
     "options": [
       "хойш",
       "өмнө",
@@ -117735,7 +117619,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_when",
     "prompt": "Оюутан байх ___ олон гадаад найзтай болсон.",
-    "promptJa": "学生であった___たくさんの外国人の友達ができました。（学生だった頃に・時に）",
+    "promptJa": "学生であった___たくさんの外国人の友達ができました。",
     "options": [
       "үед",
       "хүртэл",
@@ -117750,7 +117634,7 @@ const spatialQuizzes = [
     "category": "temporal",
     "svgKey": "time_first",
     "prompt": "Шалгалт эхлэхэд ___ нэрээ бичээрэй.",
-    "promptJa": "試験が始まったら___自分の名前を書きなさい。（まず最初に）",
+    "promptJa": "試験が始まったら___自分の名前を書きなさい。",
     "options": [
       "эхлээд",
       "сүүлд",
