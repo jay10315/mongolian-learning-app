@@ -167,6 +167,9 @@ export class WordTestComponent {
             <label class="block text-xs font-bold text-slate-700 mb-1.5">出題対象</label>
             <select id="select-filter" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-medium">
               <option value="all" ${this.state.settings.filter === 'all' ? 'selected' : ''}>すべての登録単語からランダム</option>
+              <option value="urgent" ${this.state.settings.filter === 'urgent' ? 'selected' : ''}>
+                ⚡ すぐ覚える単語のみ（${(StorageService.getUrgentWords ? StorageService.getUrgentWords() : []).length}語）
+              </option>
               <option value="srs_due" ${this.state.settings.filter === 'srs_due' ? 'selected' : ''}>
                 ⚡ 忘却曲線：本日の復習期日（${StorageService.getDueReviewWords().length}語）
               </option>
@@ -251,7 +254,10 @@ export class WordTestComponent {
 
     // 絞り込み（イラストモード時は無効）
     if (this.state.settings.mode !== 'visual') {
-      if (this.state.settings.filter === 'srs_due') {
+      if (this.state.settings.filter === 'urgent') {
+        // すぐ覚える単語（最優先学習）のみを厳格に出題（通常やあとでは混入させない）
+        list = StorageService.getUrgentWords ? StorageService.getUrgentWords() : [];
+      } else if (this.state.settings.filter === 'srs_due') {
         list = list.filter(v => v.srsLevel > 0 && v.isDue);
       } else if (this.state.settings.filter === 'high_risk') {
         let highRisk = StorageService.getHighRiskWords();

@@ -27,6 +27,7 @@ export class HomeComponent {
     const laterWordsCount = unaddedLaterWords.length;
 
     // SRS忘却曲線データ（正式登録単語のみを対象に集計・あとで覚える単語は完全除外）
+    const urgentWords = StorageService.getUrgentWords ? StorageService.getUrgentWords() : [];
     const dueWords = StorageService.getDueReviewWords();
     const highRiskWords = StorageService.getHighRiskWords();
     const studiedWords = vocabList.filter(v => v.srsLevel > 0);
@@ -173,8 +174,38 @@ export class HomeComponent {
             <span class="text-xs text-slate-400 font-medium">忘却曲線 ＆ 弱点分析</span>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
             
+            <!-- タスク0: ⚡ すぐ覚える単語（最優先集中枠） -->
+            <div class="p-4 rounded-xl border ${urgentWords.length > 0 ? 'border-amber-400 bg-gradient-to-br from-amber-50/90 to-orange-50/90 shadow-2xs' : 'border-slate-200 bg-slate-50'} flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-xs font-black text-slate-800 flex items-center gap-1">
+                    <span class="text-amber-500">⚡</span> すぐ覚える単語
+                  </span>
+                  <span class="text-xs font-black px-2 py-0.5 rounded-full ${urgentWords.length > 0 ? 'bg-amber-600 text-white' : 'bg-slate-200 text-slate-600'}">
+                    ${urgentWords.length} 語
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  ${urgentWords.length > 0 ? '最優先で覚えたい単語です。他の単語と混ぜずに、この枠だけで集中特訓して確実に記憶定着させます。' : 'すぐ覚える単語は登録されていません。教材管理から最優先単語を登録できます。'}
+                </p>
+                ${urgentWords.length > 0 ? `
+                  <div class="flex flex-wrap gap-1 mt-2">
+                    ${urgentWords.slice(0, 3).map(w => `
+                      <span class="inline-block bg-white/90 border border-amber-300 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold text-amber-900 truncate max-w-[90px]">
+                        ${w.mongolian || ''}
+                      </span>
+                    `).join('')}
+                    ${urgentWords.length > 3 ? `<span class="text-[10px] text-amber-700 font-bold self-center">+${urgentWords.length - 3}</span>` : ''}
+                  </div>
+                ` : ''}
+              </div>
+              <button type="button" id="btn-start-urgent-review" class="mt-3 w-full py-2.5 ${urgentWords.length > 0 ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-xs font-black' : 'bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold'} rounded-lg text-xs transition-all active:scale-98 cursor-pointer">
+                ${urgentWords.length > 0 ? `すぐ覚える単語を特訓 (${urgentWords.length}語) →` : '＋ 教材管理で単語を登録'}
+              </button>
+            </div>
+
             <!-- タスク1: 忘却曲線 今日の復習期日 -->
             <div class="p-4 rounded-xl border ${dueWords.length > 0 ? 'border-emerald-300 bg-emerald-50/60' : 'border-slate-200 bg-slate-50'} flex flex-col justify-between">
               <div>
@@ -1143,6 +1174,18 @@ export class HomeComponent {
     });
 
     // 忘却曲線復習ボタン（該当単語を直接全問特訓開始）
+    // すぐ覚える単語（最優先集中特訓）ボタン
+    const urgentBtn = container.querySelector('#btn-start-urgent-review');
+    if (urgentBtn) {
+      urgentBtn.addEventListener('click', () => {
+        if (urgentWords.length > 0) {
+          if (onNavigate) onNavigate('word_test', { filter: 'urgent', autoStart: true, count: 'all' });
+        } else {
+          if (onNavigate) onNavigate('material');
+        }
+      });
+    }
+
     const srsBtn = container.querySelector('#btn-start-srs-review');
     if (srsBtn && dueWords.length > 0) {
       srsBtn.addEventListener('click', () => {

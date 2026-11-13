@@ -28,6 +28,7 @@ import { cleanMongolianMojibake } from '../utils/helpers.js';
 
 const STORAGE_KEYS = {
   VOCABULARY: 'mongol_app_vocabulary_v9',
+  URGENT_WORDS: 'mongol_app_urgent_words_v1',
   WORD_PROGRESS: 'mongol_app_word_progress_v1',
   GRAMMAR: 'mongol_app_grammar_v4',
   GRAMMAR_QUIZZES: 'mongol_app_grammar_quizzes_v6',
@@ -461,6 +462,14 @@ export class StorageService {
       changed = true;
     }
 
+    // あとで覚える単語へ移動した際は「すぐ覚える単語」からも解除
+    let urgentIds = this.getUrgentWordIds ? this.getUrgentWordIds() : [];
+    if (urgentIds.includes(wordId)) {
+      urgentIds = urgentIds.filter(id => id !== wordId);
+      this.saveUrgentWordIds(urgentIds);
+      changed = true;
+    }
+
     if (changed) {
       if (typeof SyncService !== 'undefined' && SyncService.notifyDataChanged) {
         SyncService.notifyDataChanged();
@@ -602,6 +611,7 @@ export class StorageService {
     const progressMap = this.getAllWordProgress();
     const addedSet = new Set(this.getAddedLaterWordIds());
     const demotedSet = new Set(this.getDemotedToLaterWordIds());
+    const urgentSet = new Set(this.getUrgentWordIds());
 
     // initialVocabulary の最新解説・成り立ち・格支配情報を常にマージ
     const initMap = {};
@@ -632,7 +642,18 @@ export class StorageService {
 
       const isAdded = addedSet.has(item.id);
       const isDemoted = demotedSet.has(item.id);
+      const isUrgent = urgentSet.has(item.id) || item.learningTarget === 'urgent';
       const isActiveLearning = (classData.status === 'textbook' ? !isDemoted : (isAdded && !isDemoted));
+      
+      // 登録先ターゲット（'urgent': すぐ覚える, 'now': 今覚える, 'later': あとで覚える）
+      let learningTarget = 'now';
+      if (isUrgent) {
+        learningTarget = 'urgent';
+      } else if (isDemoted || (!isAdded && classData.status === 'later')) {
+        learningTarget = 'later';
+      } else {
+        learningTarget = 'now';
+      }
 
       return {
         ...mergedItem,
@@ -643,6 +664,8 @@ export class StorageService {
         laterReason: classData.reason || '',
         isAddedToLearning: isAdded,
         isDemotedToLater: isDemoted,
+        isUrgentLearning: isUrgent,
+        learningTarget: learningTarget,
         isActiveLearning: isActiveLearning,
         stem: classData.stem || item.root || '',
         dictForm: classData.dictForm || item.dictForm || item.mongolian || '',
@@ -723,6 +746,87 @@ export class StorageService {
   }
 
   /**
+   * 「すぐ覚える単語」（最優先学習に指定された単語ID一覧）を取得
+   */
+  static getUrgentWordIds() {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.URGENT_WORDS || 'mongol_app_urgent_words_v1');
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /**
+   * 「すぐ覚える単語」のID一覧を保存
+   */
+  static saveUrgentWordIds(ids) {
+    this.setItem(STORAGE_KEYS.URGENT_WORDS || 'mongol_app_urgent_words_v1', Array.from(new Set(ids)));
+    this.clearVocabCache();
+  }
+
+  /**
+   * 「すぐ覚える単語」（最優先枠）の単語リストを取得
+   */
+  static getUrgentWords() {
+    return this.getAllVocabulary().filter(item => item.learningTarget === 'urgent' || item.isUrgentLearning);
+  }
+
+  /**
+   * 「今覚える単語」（通常の学習枠）の単語リストを取得
+   */
+  static getNowWords() {
+    return this.getAllVocabulary().filter(item => item.learningTarget === 'now');
+  }
+
+  /**
+   * 単語の登録先ターゲットを変更（'now' | 'urgent' | 'later'）
+   * 既存の学習進捗・SRSレベル・間違い履歴などは一切消去せず完全に保持します
+   */
+  static setWordLearningTarget(wordId, target) {
+    if (!wordId || !['now', 'urgent', 'later'].includes(target)) return false;
+
+    let urgentIds = new Set(this.getUrgentWordIds());
+    let added = new Set(this.getAddedLaterWordIds());
+    let demoted = new Set(this.getDemotedToLaterWordIds());
+
+    if (target === 'urgent') {
+      urgentIds.add(wordId);
+      demoted.delete(wordId);
+      added.add(wordId);
+    } else if (target === 'now') {
+      urgentIds.delete(wordId);
+      demoted.delete(wordId);
+      added.add(wordId);
+    } else if (target === 'later') {
+      urgentIds.delete(wordId);
+      demoted.add(wordId);
+      added.delete(wordId);
+    }
+
+    this.saveUrgentWordIds(Array.from(urgentIds));
+    this.setItem('mongol_app_added_later_words_v1', Array.from(added));
+    this.setItem('mongol_app_demoted_to_later_words_v1', Array.from(demoted));
+
+    // カスタム単語として VOCABULARY に登録されているものがあれば learningTarget も同期
+    try {
+      const rawList = this.getVocabulary({ includeAll: true });
+      const item = rawList.find(v => v.id === wordId);
+      if (item) {
+        item.learningTarget = target;
+        item.textbookStatus = target === 'later' ? 'later' : 'textbook';
+        this.updateVocabularyItem(item);
+      }
+    } catch (e) {
+      console.warn('Sync custom word learningTarget warning:', e);
+    }
+
+    this.clearVocabCache();
+    window.dispatchEvent(new CustomEvent('mongol_app_vocab_target_changed', { detail: { wordId, target } }));
+    return true;
+  }
+
+  /**
    * 今日の忘却曲線復習予定の単語リスト（復習期日が到来している単語）
    */
   static getDueReviewWords() {
@@ -755,33 +859,64 @@ export class StorageService {
     localStorage.setItem(STORAGE_KEYS.VOCABULARY, JSON.stringify(items));
   }
 
-  static addVocabularyItem(item) {
-    const list = this.getVocabulary();
+  static addVocabularyItem(item, target = 'now') {
+    const rawList = [];
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.VOCABULARY);
+      const parsed = data ? JSON.parse(data) : [];
+      rawList.push(...parsed);
+    } catch(e) {}
+
     const newItem = {
       ...item,
       id: item.id || `v_custom_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      learningTarget: target,
+      textbookStatus: target === 'later' ? 'later' : 'textbook',
       wrongCount: item.wrongCount || 0,
       srsLevel: item.srsLevel || 0,
       isMastered: false,
       createdAt: new Date().toISOString()
     };
-    list.unshift(newItem);
-    this.saveVocabulary(list);
+
+    rawList.unshift(newItem);
+    this.saveVocabulary(rawList);
+
+    // ターゲット別の個別セットに反映
+    this.setWordLearningTarget(newItem.id, target);
+
     return newItem;
   }
 
-  static addVocabularyBatch(items) {
-    const list = this.getVocabulary();
-    const formatted = items.map(item => ({
-      ...item,
-      id: item.id || `v_custom_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      wrongCount: item.wrongCount || 0,
-      srsLevel: item.srsLevel || 0,
-      isMastered: false,
-      createdAt: new Date().toISOString()
-    }));
-    const merged = [...formatted, ...list];
+  static addVocabularyBatch(items, defaultTarget = 'now') {
+    const rawList = [];
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.VOCABULARY);
+      const parsed = data ? JSON.parse(data) : [];
+      rawList.push(...parsed);
+    } catch(e) {}
+
+    const formatted = items.map(item => {
+      const target = item.learningTarget || defaultTarget || 'now';
+      return {
+        ...item,
+        id: item.id || `v_custom_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        learningTarget: target,
+        textbookStatus: target === 'later' ? 'later' : 'textbook',
+        wrongCount: item.wrongCount || 0,
+        srsLevel: item.srsLevel || 0,
+        isMastered: false,
+        createdAt: new Date().toISOString()
+      };
+    });
+
+    const merged = [...formatted, ...rawList];
     this.saveVocabulary(merged);
+
+    // 各アイテムのターゲット設定
+    formatted.forEach(item => {
+      this.setWordLearningTarget(item.id, item.learningTarget || defaultTarget || 'now');
+    });
+
     return formatted.length;
   }
 
